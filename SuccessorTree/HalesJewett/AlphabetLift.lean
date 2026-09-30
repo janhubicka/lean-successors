@@ -25,7 +25,17 @@ def optionSymbol : LineSymbol α → LineSymbol (Option α)
   induction w with
   | nil => rfl
   | cons x xs ih =>
-      cases x <;> simp [optionSymbol, evalWord, optionWord, ih]
+      cases x with
+      | const b =>
+          change
+            some b :: evalWord (some a) (xs.map optionSymbol) =
+              some b :: optionWord (evalWord a xs)
+          exact congrArg (List.cons (some b)) ih
+      | parameter =>
+          change
+            some a :: evalWord (some a) (xs.map optionSymbol) =
+              some a :: optionWord (evalWord a xs)
+          exact congrArg (List.cons (some a)) ih
 
 def LeftVariableWord.optionLift
     (B : LeftVariableWord α) : LeftVariableWord (Option α) :=
@@ -113,9 +123,13 @@ theorem nestedSubspace_eval_optionWord
       | cons a u =>
           obtain ⟨t, ht⟩ := ih u
           refine ⟨W.eval (a :: t), ?_⟩
+          change
+            optionWord (W.eval (a :: t)) =
+              (nestedSubspace (W :: Ws)).eval
+                (some a :: optionWord u)
           rw [nestedSubspace_cons_eval_cons]
           rw [← ht]
-          simpa [optionWord] using W.optionLift_eval (a :: t)
+          exact (W.optionLift_eval (a :: t)).symm
 
 /-- If a nonempty nested system starts with W and is fed a nonempty
 old-letter word, its output is the lift of W evaluated at some old-letter
@@ -128,13 +142,13 @@ theorem nestedSubspace_cons_eval_optionWord
         optionWord (W.eval t) := by
   obtain ⟨v, hv⟩ := nestedSubspace_eval_optionWord Ws u
   refine ⟨a :: v, ?_⟩
-  rw [nestedSubspace_cons_eval_cons]
   change
-    W.optionLift.eval
-        (some a :: (nestedSubspace Ws).eval (optionWord u)) =
+    (nestedSubspace (W :: Ws)).eval
+        (some a :: optionWord u) =
       optionWord (W.eval (a :: v))
+  rw [nestedSubspace_cons_eval_cons]
   rw [← hv]
-  simpa [optionWord] using W.optionLift_eval (a :: v)
+  exact W.optionLift_eval (a :: v)
 
 def prefixApply : List (Subspace α) → List (Option α) → List (Option α)
   | [], v => v
