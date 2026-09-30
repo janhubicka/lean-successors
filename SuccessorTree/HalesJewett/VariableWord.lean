@@ -39,32 +39,32 @@ end LeftVariableWord
 
 /-- An infinite variable word in block normal form. -/
 structure Subspace (α : Type u) where
-  prefix : List α
-  block : Nat → LeftVariableWord α
+  head : List α
+  blocks : Nat → LeftVariableWord α
 
 namespace Subspace
 
 /-- Evaluate successive blocks, starting at block `i`. -/
 def evalFrom (W : Subspace α) (i : Nat) : List α → List α
   | [] => []
-  | a :: u => (W.block i).eval a ++ W.evalFrom (i + 1) u
+  | a :: u => (W.blocks i).eval a ++ W.evalFrom (i + 1) u
 
 /-- Substitute a finite constant word and truncate before the next variable. -/
 def eval (W : Subspace α) (u : List α) : List α :=
-  W.prefix ++ W.evalFrom 0 u
+  W.head ++ W.evalFrom 0 u
 
-@[simp] theorem eval_nil (W : Subspace α) : W.eval [] = W.prefix := by
+@[simp] theorem eval_nil (W : Subspace α) : W.eval [] = W.head := by
   simp [eval, evalFrom]
 
 @[simp] theorem evalFrom_singletonBlock (i : Nat) (u : List α) :
-    ({ prefix := []; block := fun _ => ⟨[]⟩ } : Subspace α).evalFrom i u = u := by
+    ({ head := []; blocks := fun _ => ⟨[]⟩ } : Subspace α).evalFrom i u = u := by
   induction u generalizing i with
   | nil => simp [evalFrom]
   | cons a u ih => simp [evalFrom, LeftVariableWord.eval, ih]
 
 /-- The identity subspace `λ₀ λ₁ λ₂ ...`. -/
 def identity : Subspace α where
-  prefix := []
+  head := []
   block := fun _ => ⟨[]⟩
 
 @[simp] theorem identity_eval (u : List α) : (identity : Subspace α).eval u = u := by
@@ -73,10 +73,10 @@ def identity : Subspace α where
 /-- Prepend one identity variable and shift all variables of `W` by one.
 In paper notation this is `λ₀ ⌢ W⁺`. -/
 def prependIdentity (W : Subspace α) : Subspace α where
-  prefix := []
-  block
-    | 0 => ⟨constants W.prefix⟩
-    | i + 1 => W.block i
+  head := []
+  blocks
+    | 0 => ⟨constants W.head⟩
+    | i + 1 => W.blocks i
 
 @[simp] theorem prependIdentity_evalFrom_succ
     (W : Subspace α) (i : Nat) (u : List α) :
@@ -123,10 +123,10 @@ theorem shift_eval_append
 
 /-- The first coordinate of a subspace as a starred combinatorial line. -/
 def firstLine (W : Subspace α) : StarLine α where
-  word := constants W.prefix ++ (LineSymbol.parameter :: (W.block 0).tail)
+  word := constants W.head ++ (LineSymbol.parameter :: (W.blocks 0).tail)
   hasParameter := by simp
 
-@[simp] theorem firstLine_star (W : Subspace α) : W.firstLine.star = W.prefix := by
+@[simp] theorem firstLine_star (W : Subspace α) : W.firstLine.star = W.head := by
   simp [firstLine, StarLine.star, starPrefix]
 
 @[simp] theorem firstLine_eval (W : Subspace α) (a : α) :
