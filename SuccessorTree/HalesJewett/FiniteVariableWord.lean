@@ -125,5 +125,145 @@ theorem evalIndexed_indexedLine_eval
     evalIndexed (u ++ [a]) (indexedLine n L) = L.eval a := by
   exact evalIndexed_indexedLine_eval u n a L.word hu
 
+
+/-- Extract the variable indices occurring in an indexed word. -/
+def variableIndices : List (IndexedSymbol α) → List Nat
+  | [] => []
+  | .const _ :: w => variableIndices w
+  | .var i :: w => i :: variableIndices w
+
+@[simp] theorem variableIndices_nil :
+    variableIndices ([] : List (IndexedSymbol α)) = [] := rfl
+
+@[simp] theorem variableIndices_const (a : α)
+    (w : List (IndexedSymbol α)) :
+    variableIndices (.const a :: w) = variableIndices w := rfl
+
+@[simp] theorem variableIndices_var (i : Nat)
+    (w : List (IndexedSymbol α)) :
+    variableIndices (.var i :: w) = i :: variableIndices w := rfl
+
+@[simp] theorem variableIndices_append
+    (u v : List (IndexedSymbol α)) :
+    variableIndices (u ++ v) = variableIndices u ++ variableIndices v := by
+  induction u with
+  | nil => rfl
+  | cons x xs ih =>
+      cases x <;> simp [ih]
+
+/-- Number of parameter occurrences in a one-variable raw word. -/
+def parameterCount : List (LineSymbol α) → Nat
+  | [] => 0
+  | .const _ :: w => parameterCount w
+  | .parameter :: w => parameterCount w + 1
+
+theorem parameterCount_pos_of_mem
+    (w : List (LineSymbol α))
+    (h : LineSymbol.parameter ∈ w) :
+    0 < parameterCount w := by
+  induction w with
+  | nil => simp at h
+  | cons x xs ih =>
+      cases x with
+      | const a =>
+          simp only [List.mem_cons] at h
+          rcases h with h | h
+          · cases h
+          · exact ih h
+      | parameter =>
+          simp [parameterCount]
+
+/-- An indexed line contributes only copies of its new variable. -/
+theorem variableIndices_indexedLine
+    (n : Nat) (L : StarLine α) :
+    variableIndices (indexedLine n L) =
+      List.replicate (parameterCount L.word) n := by
+  unfold indexedLine
+  induction L.word with
+  | nil => rfl
+  | cons x xs ih =>
+      cases x with
+      | const a =>
+          simpa [IndexedSymbol.fromLine, variableIndices, parameterCount] using ih
+      | parameter =>
+          simp [IndexedSymbol.fromLine, variableIndices, parameterCount, ih,
+            List.replicate_succ]
+
+/-- The new variable really occurs in an indexed starred line. -/
+theorem newVariable_mem_indexedLine
+    (n : Nat) (L : StarLine α) :
+    n ∈ variableIndices (indexedLine n L) := by
+  rw [variableIndices_indexedLine]
+  have hp : 0 < parameterCount L.word :=
+    parameterCount_pos_of_mem L.word L.hasParameter
+  simpa using hp
+
+/-- All variables in an indexed line have the selected index. -/
+theorem eq_newVariable_of_mem_indexedLine
+    {n i : Nat} {L : StarLine α}
+    (h : i ∈ variableIndices (indexedLine n L)) :
+    i = n := by
+  rw [variableIndices_indexedLine] at h
+  simpa using h
+
+/-- A concrete finite `n`-variable word.
+
+The variable-index list is nondecreasing, every index below `n` occurs, and
+no index at least `n` occurs.  This is equivalent to the ordering convention
+in the forcing note. -/
+structure FiniteVariableWord (α : Type u) (n : Nat) where
+  raw : List (IndexedSymbol α)
+  ordered : (variableIndices raw).Pairwise (· ≤ ·)
+  below : ∀ i ∈ variableIndices raw, i < n
+  occurs : ∀ i, i < n → i ∈ variableIndices raw
+
+namespace FiniteVariableWord
+
+/-- Evaluate a finite variable word on a finite list of letters. -/
+def eval (U : FiniteVariableWord α n) (u : List α) : List α :=
+  evalIndexed u U.raw
+
+/-- Append a starred line as the new variable `λ_n`. -/
+def extendByLine (U : FiniteVariableWord α n) (L : StarLine α) :
+    FiniteVariableWord α (n + 1) where
+  raw := U.raw ++ indexedLine n L
+  ordered := by
+    rw [variableIndices_append, List.pairwise_append]
+    refine ⟨U.ordered, ?_, ?_⟩
+    · apply List.pairwise_of_forall_mem_list
+      intro i hi j hj
+      have hi' := eq_newVariable_of_mem_indexedLine hi
+      have hj' := eq_newVariable_of_mem_indexedLine hj
+      omega
+    · intro i hi j hj
+      have hi' := U.below i hi
+      have hj' := eq_newVariable_of_mem_indexedLine hj
+      omega
+  below := by
+    intro i hi
+    rw [variableIndices_append] at hi
+    rcases List.mem_append.mp hi with hi | hi
+    · exact Nat.lt.step (U.below i hi)
+    · have hi' := eq_newVariable_of_mem_indexedLine hi
+      omega
+  occurs := by
+    intro i hi
+    rw [variableIndices_append]
+    by_cases hin : i < n
+    · exact List.mem_append_left _ (U.occurs i hin)
+    · have hieq : i = n := by omega
+      subst i
+      exact List.mem_append_right _ (newVariable_mem_indexedLine n L)
+
+/-- Every variable of `U` is resolvable by a list of length at least `n`. -/
+theorem resolvable_of_length_ge
+    (U : FiniteVariableWord α n) (u : List α)
+    (h : n ≤ u.length) :
+    ∀ i ∈ variableIndices U.raw, i < u.length := by
+  intro i hi
+  exact lt_of_lt_of_le (U.below i hi) h
+
+end FiniteVariableWord
+
 end HalesJewett
 end SuccessorTree
