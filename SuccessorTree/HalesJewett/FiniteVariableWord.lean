@@ -301,14 +301,16 @@ def indexedConstants (u : List α) : List (IndexedSymbol α) :=
   induction u with
   | nil => rfl
   | cons a u ih =>
-      simp [indexedConstants, ih]
+      change variableIndices (IndexedSymbol.const a :: indexedConstants u) = []
+      simpa using ih
 
 @[simp] theorem evalIndexed_indexedConstants (v u : List α) :
     evalIndexed v (indexedConstants u) = u := by
   induction u with
   | nil => rfl
   | cons a u ih =>
-      simp [indexedConstants, ih]
+      change a :: evalIndexed v (indexedConstants u) = a :: u
+      exact congrArg (List.cons a) ih
 
 /-- A concrete finite `n`-variable word.
 
@@ -358,7 +360,7 @@ def extendByLine (U : FiniteVariableWord α n) (L : StarLine α) :
     intro i hi
     rw [variableIndices_append] at hi
     rcases List.mem_append.mp hi with hi | hi
-    · exact Nat.lt.step (U.below i hi)
+    · exact Nat.lt_succ_of_lt (U.below i hi)
     · have hi' := eq_newVariable_of_mem_indexedLine hi
       omega
   occurs := by
