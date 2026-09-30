@@ -156,6 +156,59 @@ theorem compose_eval (W U : Subspace α) (v : List α) :
   simp only [eval, evalFrom_append, blockStart]
   simp [List.append_assoc]
 
+/-- Inside the initial identity part of a shift, block starts are unchanged. -/
+theorem shift_blockStart_eq
+    (U : Subspace α) (n i : Nat) (h : i < n) :
+    (shift U n).blockStart i = i := by
+  induction i with
+  | zero =>
+      rw [blockStart, shift_head_of_pos U h]
+      rfl
+  | succ i ih =>
+      have hi : i < n := lt_trans (Nat.lt_succ_self i) h
+      rw [blockStart, ih hi]
+      have hb := shift_blocks_eq_identity_of_succ_lt U n i h
+      rw [hb]
+      simp
+
+/-- Positive shifted composition preserves the outer constant head literally. -/
+theorem compose_shift_head_eq
+    (W U : Subspace α) (n : Nat) (h : 0 < n) :
+    (compose W (shift U n)).head = W.head := by
+  change W.eval (shift U n).head = W.head
+  rw [shift_head_of_pos U h]
+  exact W.eval_nil
+
+/-- Blocks strictly below the last identity coordinate are literally preserved
+by shifted composition. -/
+theorem compose_shift_blocks_eq
+    (W U : Subspace α) (n i : Nat) (h : i + 1 < n) :
+    (compose W (shift U n)).blocks i = W.blocks i := by
+  change composeBlock W (shift U n) i = W.blocks i
+  unfold composeBlock
+  rw [shift_blockStart_eq U n i (Nat.lt_of_succ_lt h),
+    shift_blocks_eq_identity_of_succ_lt U n i h]
+  cases hB : W.blocks i with
+  | mk tail =>
+      simp [hB, substSymbolsFrom]
+
+/-- Composing with a shift does not change evaluations strictly below the
+shift level.  This is the corrected stabilization property used in forcing
+Lemma 2. -/
+theorem compose_shift_eval_of_length_lt
+    (W U : Subspace α) (n : Nat) (u : List α)
+    (h : u.length < n) :
+    (compose W (shift U n)).eval u = W.eval u := by
+  rw [compose_eval, shift_eval_of_length_lt U n u h]
+
+/-- General prefix/tail Shift identity after outer composition. -/
+theorem compose_shift_eval_append_of_length_le
+    (W U : Subspace α) (n : Nat) (u v : List α)
+    (h : u.length ≤ n) :
+    (compose W (shift U n)).eval (u ++ v) =
+      W.eval (u ++ (shift U (n - u.length)).eval v) := by
+  rw [compose_eval, shift_eval_append_of_length_le U n u v h]
+
 /-- The paper's Shift observation:
 if `u` has length `n`, then
 `W(Shift(U,n))(u⌢v) = W(u⌢U(v))`. -/

@@ -6,3 +6,14 @@ import SuccessorTree.HalesJewett.Forcing
 import SuccessorTree.HalesJewett.Composition
 import SuccessorTree.HalesJewett.ForcingReduction
 import SuccessorTree.HalesJewett.FiniteVariableWord
+import SuccessorTree.HalesJewett.ForcingLemmaOne
+import SuccessorTree.HalesJewett.GreedyLimit
+import SuccessorTree.HalesJewett.ForcingMaximal
+import SuccessorTree.HalesJewett.ForcingLemmaTwo
+import SuccessorTree.HalesJewett.ForcingFusion
+import SuccessorTree.HalesJewett.ForcingFusionLimit
+import SuccessorTree.HalesJewett.ForcingProposition
+import SuccessorTree.HalesJewett.LineSchedule
+import SuccessorTree.HalesJewett.AlphabetLift
+import SuccessorTree.HalesJewett.AlphabetEquiv
+import SuccessorTree.HalesJewett.AlphabetInduction

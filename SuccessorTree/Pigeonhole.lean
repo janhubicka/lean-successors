@@ -1,4 +1,5 @@
 import SuccessorTree.Support
+import SuccessorTree.HalesJewett.AlphabetInduction
 
 /-!
 # The Hales--Jewett core of the one-dimensional pigeonhole lemma
@@ -71,6 +72,18 @@ theorem oneDimensionalPigeonhole
         exact sys.replay_base L hsupp]
       exact hmono e
 
+/-- The one-dimensional successor-tree pigeonhole theorem with the
+Hales--Jewett input fully discharged.  The only remaining interface is the
+tree-specific replay system, which will later be instantiated from M3. -/
+theorem oneDimensionalPigeonhole_finite
+    [Fintype Γ] [Fintype κ]
+    (sys : ReplaySystem Γ Approx Block)
+    (colour : Approx → κ) :
+    ∃ h : Block, ∀ x : LineInput Γ,
+      colour (sys.apply h x) = colour (sys.apply h LineInput.base) := by
+  exact sys.oneDimensionalPigeonhole
+    (HalesJewett.starHJ_finite (α := Γ) (κ := κ)) colour
+
 /-- Equivalent pairwise formulation of the monochromatic line conclusion. -/
 theorem oneDimensionalPigeonhole_pairwise
     [Fintype Γ] [Fintype κ]
@@ -80,6 +93,18 @@ theorem oneDimensionalPigeonhole_pairwise
     ∃ h : Block, ∀ x y : LineInput Γ,
       colour (sys.apply h x) = colour (sys.apply h y) := by
   obtain ⟨h, hh⟩ := sys.oneDimensionalPigeonhole hj colour
+  refine ⟨h, ?_⟩
+  intro x y
+  exact (hh x).trans (hh y).symm
+
+/-- Pairwise form with Hales--Jewett fully discharged. -/
+theorem oneDimensionalPigeonhole_pairwise_finite
+    [Fintype Γ] [Fintype κ]
+    (sys : ReplaySystem Γ Approx Block)
+    (colour : Approx → κ) :
+    ∃ h : Block, ∀ x y : LineInput Γ,
+      colour (sys.apply h x) = colour (sys.apply h y) := by
+  obtain ⟨h, hh⟩ := sys.oneDimensionalPigeonhole_finite colour
   refine ⟨h, ?_⟩
   intro x y
   exact (hh x).trans (hh y).symm
