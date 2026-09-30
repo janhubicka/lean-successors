@@ -64,7 +64,7 @@ theorem map_lt_of_lt (F : ShapeMap S) {a b : T} (hab : a < b) :
           rw [← hdiff]
           omega
         have htail : F c < F b :=
-          ih (LevelTree.lev b - LevelTree.lev c) hsmaller hcb'
+          ih (LevelTree.lev b - LevelTree.lev c) hsmaller hcb' rfl
         exact hfirst.trans htail
 
 theorem map_le_of_le (F : ShapeMap S) {a b : T} (hab : a ≤ b) :
