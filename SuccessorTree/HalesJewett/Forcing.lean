@@ -63,7 +63,7 @@ theorem large_pullback {A : Set Word} (hA : S.Large A) (W : Space) :
     S.Large (S.pullback W A) := by
   intro U
   obtain ⟨w, hw⟩ := hA (S.comp W U)
-  refine ⟨S.act U w, ?_⟩
+  refine ⟨w, ?_⟩
   change S.act W (S.act U w) ∈ A
   simpa only [← S.act_comp W U w] using hw
 
