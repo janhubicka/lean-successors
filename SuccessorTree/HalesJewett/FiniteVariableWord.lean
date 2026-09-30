@@ -340,6 +340,70 @@ def extendByLine (U : FiniteVariableWord α n) (L : StarLine α) :
       subst i
       exact List.mem_append_right _ (newVariable_mem_indexedLine n L)
 
+/-- Appending a new line does not change evaluations using fewer than
+`n` letters: evaluation already stops inside `U`. -/
+theorem extendByLine_eval_of_length_lt
+    (U : FiniteVariableWord α n) (L : StarLine α)
+    (u : List α) (hu : u.length < n) :
+    (U.extendByLine L).eval u = U.eval u := by
+  change evalIndexed u (U.raw ++ indexedLine n L) =
+    evalIndexed u U.raw
+  apply evalIndexed_append_of_unresolved
+  refine ⟨u.length, U.occurs u.length hu, ?_⟩
+  rw [List.getElem?_eq_none_iff]
+
+/-- At exactly `n` supplied letters, the newly appended line contributes its
+star value `L(*)`. -/
+theorem extendByLine_eval_of_length_eq
+    (U : FiniteVariableWord α n) (L : StarLine α)
+    (u : List α) (hu : u.length = n) :
+    (U.extendByLine L).eval u = U.eval u ++ L.star := by
+  change evalIndexed u (U.raw ++ indexedLine n L) =
+    evalIndexed u U.raw ++ L.star
+  rw [evalIndexed_append_of_resolved]
+  · rw [evalIndexed_indexedLine_star' u n L hu]
+  · intro i hi
+    have hil : i < u.length := by
+      rw [hu]
+      exact U.below i hi
+    cases hget : u[i]? with
+    | none =>
+        rw [List.getElem?_eq_none_iff] at hget
+        omega
+    | some a =>
+        exact ⟨a, hget⟩
+
+/-- If `u` has length `n`, then supplying one additional letter `a`
+makes the new line contribute `L(a)`, while the old part still evaluates as
+`U(u)`. -/
+theorem extendByLine_eval_append_letter
+    (U : FiniteVariableWord α n) (L : StarLine α)
+    (u : List α) (a : α) (hu : u.length = n) :
+    (U.extendByLine L).eval (u ++ [a]) =
+      U.eval u ++ L.eval a := by
+  change evalIndexed (u ++ [a]) (U.raw ++ indexedLine n L) =
+    evalIndexed u U.raw ++ L.eval a
+  rw [evalIndexed_append_of_resolved]
+  · have hsame :
+        evalIndexed (u ++ [a]) U.raw = evalIndexed u U.raw := by
+      apply evalIndexed_eq_of_getElem_eq
+      intro i hi
+      have hil : i < u.length := by
+        rw [hu]
+        exact U.below i hi
+      rw [List.getElem?_append_left hil]
+    rw [hsame, evalIndexed_indexedLine_eval' u n a L hu]
+  · intro i hi
+    have hil : i < (u ++ [a]).length := by
+      simp [hu]
+      exact Nat.lt_succ_of_lt (U.below i hi)
+    cases hget : (u ++ [a])[i]? with
+    | none =>
+        rw [List.getElem?_eq_none_iff] at hget
+        omega
+    | some b =>
+        exact ⟨b, hget⟩
+
 /-- Every variable of `U` is resolvable by a list of length at least `n`. -/
 theorem resolvable_of_length_ge
     (U : FiniteVariableWord α n) (u : List α)
