@@ -52,7 +52,7 @@ def linePrefixSubspace (L : StarLine α) : Subspace α where
 @[simp] theorem linePrefixSubspace_eval_nil
     (L : StarLine α) :
     (linePrefixSubspace L).eval [] = L.star := by
-  rfl
+  simp [Subspace.eval, Subspace.evalFrom, linePrefixSubspace]
 
 @[simp] theorem linePrefixSubspace_eval_cons
     (L : StarLine α) (a : α) (u : List α) :
