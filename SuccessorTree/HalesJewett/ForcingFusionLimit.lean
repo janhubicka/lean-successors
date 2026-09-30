@@ -5,63 +5,15 @@ import Mathlib.Tactic
 /-!
 # Fusion limit for forcing Lemma 2
 
-The recursive bad-line construction changes only coordinates at or above the
-current scheduled line length. Since the schedule lengths tend to infinity,
-every fixed finite block eventually stabilizes. This file makes that diagonal
-limit explicit and closes the contradiction argument of Lemma 2, assuming a
-line schedule.
+The fusion level at stage i is strictly above i. Therefore every fixed block k
+is unchanged by all steps from stage k+1 onward. This gives a direct blockwise
+fusion limit without sorting the line enumeration by length.
 -/
 
 namespace SuccessorTree
 namespace HalesJewett
 
 open Set
-
-namespace LineSchedule
-
-/-- A stage after which every scheduled line has raw length strictly larger
-than r. -/
-noncomputable def rawStableStage (S : LineSchedule α) (r : Nat) : Nat :=
-  Classical.choose (S.length_unbounded r)
-
-theorem rawStableStage_spec
-    (S : LineSchedule α) (r i : Nat)
-    (h : S.rawStableStage r ≤ i) :
-    r < (S.line i).word.length :=
-  Classical.choose_spec (S.length_unbounded r) i h
-
-/-- Monotone envelope of the raw stabilization stages. -/
-noncomputable def stableStage (S : LineSchedule α) : Nat → Nat
-  | 0 => 0
-  | r + 1 => max (S.stableStage r) (S.rawStableStage (r + 1))
-
-theorem stableStage_le_succ (S : LineSchedule α) (r : Nat) :
-    S.stableStage r ≤ S.stableStage (r + 1) := by
-  simp [stableStage]
-
-theorem stableStage_mono (S : LineSchedule α) :
-    Monotone S.stableStage :=
-  monotone_nat_of_le_succ S.stableStage_le_succ
-
-theorem rawStableStage_le_stableStage_succ
-    (S : LineSchedule α) (r : Nat) :
-    S.rawStableStage (r + 1) ≤ S.stableStage (r + 1) := by
-  simp [stableStage]
-
-/-- Once the monotone stabilization stage for r is reached, all later
-scheduled line lengths are strictly larger than r. -/
-theorem length_gt_of_stableStage_le
-    (S : LineSchedule α) (r i : Nat)
-    (h : S.stableStage r ≤ i) :
-    r < (S.line i).word.length := by
-  cases r with
-  | zero =>
-      exact S.length_pos i
-  | succ r =>
-      exact S.rawStableStage_spec (r + 1) i
-        (le_trans (S.rawStableStage_le_stableStage_succ r) h)
-
-end LineSchedule
 
 /-- Every fusion stage keeps the empty constant head. -/
 theorem fusionSeq_head_eq_nil
@@ -78,16 +30,16 @@ theorem fusionSeq_head_eq_nil
       unfold fusionStep
       rw [Subspace.compose_shift_head_eq]
       · exact ih
-      · exact S.length_pos i
+      · exact S.level_pos i
 
-/-- One fusion step literally preserves every block strictly below the shift
+/-- One fusion step literally preserves every block strictly below its fusion
 level. -/
 theorem fusionSeq_block_succ_eq
     (A : Set (List α))
     (hNo : ∀ W : Subspace α, ¬ HasLargePlus W A)
     (S : LineSchedule α)
     (i k : Nat)
-    (h : k + 1 < (S.line i).word.length) :
+    (h : k + 1 < S.fusionLevel i) :
     (fusionSeq A hNo S (i + 1)).blocks k =
       (fusionSeq A hNo S i).blocks k := by
   rw [fusionSeq_succ]
@@ -95,15 +47,15 @@ theorem fusionSeq_block_succ_eq
   exact Subspace.compose_shift_blocks_eq
     (fusionSeq A hNo S i)
     (chosenFusionRefiner A hNo (fusionSeq A hNo S i) (S.line i))
-    (S.line i).word.length k h
+    (S.fusionLevel i) k h
 
-/-- After the stabilization stage for block k, that block never changes. -/
+/-- Block k is permanent from any stage p with k+1 <= p onward. -/
 theorem fusionSeq_block_eq_of_le
     (A : Set (List α))
     (hNo : ∀ W : Subspace α, ¬ HasLargePlus W A)
     (S : LineSchedule α)
     (k p q : Nat)
-    (hstable : S.stableStage (k + 1) ≤ p)
+    (hstable : k + 1 ≤ p)
     (hpq : p ≤ q) :
     (fusionSeq A hNo S q).blocks k =
       (fusionSeq A hNo S p).blocks k := by
@@ -117,39 +69,38 @@ theorem fusionSeq_block_eq_of_le
       · subst p
         rfl
       · have hpq' : p ≤ q := by omega
-        have hqstable : S.stableStage (k + 1) ≤ q :=
-          le_trans hstable hpq'
-        have hlen : k + 1 < (S.line q).word.length :=
-          S.length_gt_of_stableStage_le (k + 1) q hqstable
+        have hkq : k + 1 ≤ q := le_trans hstable hpq'
+        have hlevel : k + 1 < S.fusionLevel q :=
+          lt_of_le_of_lt hkq (S.index_lt_level q)
         calc
           (fusionSeq A hNo S (q + 1)).blocks k =
               (fusionSeq A hNo S q).blocks k :=
-            fusionSeq_block_succ_eq A hNo S q k hlen
+            fusionSeq_block_succ_eq A hNo S q k hlevel
           _ = (fusionSeq A hNo S p).blocks k :=
             ih p hstable hpq'
 
-/-- The blockwise diagonal fusion limit. -/
+/-- The direct blockwise fusion limit. -/
 noncomputable def fusionLimit
     (A : Set (List α))
     (hNo : ∀ W : Subspace α, ¬ HasLargePlus W A)
     (S : LineSchedule α) : Subspace α where
   head := []
   blocks := fun k =>
-    (fusionSeq A hNo S (S.stableStage (k + 1))).blocks k
+    (fusionSeq A hNo S (k + 1)).blocks k
 
 theorem fusionLimit_block_eq_of_stage_ge
     (A : Set (List α))
     (hNo : ∀ W : Subspace α, ¬ HasLargePlus W A)
     (S : LineSchedule α)
     (k n : Nat)
-    (h : S.stableStage (k + 1) ≤ n) :
+    (h : k + 1 ≤ n) :
     (fusionLimit A hNo S).blocks k =
       (fusionSeq A hNo S n).blocks k := by
   change
-    (fusionSeq A hNo S (S.stableStage (k + 1))).blocks k =
+    (fusionSeq A hNo S (k + 1)).blocks k =
       (fusionSeq A hNo S n).blocks k
   exact (fusionSeq_block_eq_of_le
-    A hNo S k (S.stableStage (k + 1)) n le_rfl h).symm
+    A hNo S k (k + 1) n le_rfl h).symm
 
 namespace Subspace
 
@@ -194,14 +145,14 @@ theorem eval_eq_of_head_blocks
 
 end Subspace
 
-/-- Every finite evaluation of the fusion limit agrees with every sufficiently
-late stage. -/
+/-- Every finite evaluation of the fusion limit agrees with every stage whose
+index is at least the input length. -/
 theorem fusionLimit_eval_eq_of_stage_ge
     (A : Set (List α))
     (hNo : ∀ W : Subspace α, ¬ HasLargePlus W A)
     (S : LineSchedule α)
     (u : List α) (n : Nat)
-    (h : S.stableStage u.length ≤ n) :
+    (h : u.length ≤ n) :
     (fusionLimit A hNo S).eval u =
       (fusionSeq A hNo S n).eval u := by
   apply Subspace.eval_eq_of_head_blocks
@@ -209,11 +160,10 @@ theorem fusionLimit_eval_eq_of_stage_ge
     rfl
   · intro k hk
     apply fusionLimit_block_eq_of_stage_ge
-    have hk' : k + 1 ≤ u.length := Nat.succ_le_of_lt hk
-    exact le_trans (S.stableStage_mono hk') h
+    exact le_trans (Nat.succ_le_of_lt hk) h
 
-/-- The fusion contradiction closes Lemma 2, provided a line schedule is
-available. -/
+/-- The fusion contradiction closes Lemma 2 for any surjective line
+enumeration. -/
 theorem exists_hasLargePlus_of_schedule
     [Fintype α] [DecidableEq α]
     (A : Set (List α))
@@ -241,11 +191,11 @@ theorem exists_hasLargePlus_of_schedule
     large_set_contains_line B hB hjProduct
   obtain ⟨j, hj⟩ := S.covers L
 
-  let N : Nat := max (j + 1) (S.stableStage L.word.length)
+  let N : Nat := max (j + 1) L.word.length
   have hjN : j < N := by
     dsimp [N]
     omega
-  have hstage : S.stableStage L.word.length ≤ N := by
+  have hwordN : L.word.length ≤ N := by
     dsimp [N]
     exact le_max_right _ _
 
@@ -257,22 +207,18 @@ theorem exists_hasLargePlus_of_schedule
 
   constructor
   · change Wlim.eval L.star ∈ A at hLstar
-    have hsstage : S.stableStage L.star.length ≤ N := by
-      exact le_trans
-        (S.stableStage_mono L.length_star_le_word_length) hstage
+    have hsN : L.star.length ≤ N :=
+      le_trans L.length_star_le_word_length hwordN
     have heq :=
-      fusionLimit_eval_eq_of_stage_ge
-        A hNo S L.star N hsstage
+      fusionLimit_eval_eq_of_stage_ge A hNo S L.star N hsN
     simpa [Wlim, heq] using hLstar
   · intro c
-    have hc : Wlim.eval (L.eval c) ∈ A := by
-      exact hLeval c
-    have hcstage : S.stableStage (L.eval c).length ≤ N := by
+    have hc : Wlim.eval (L.eval c) ∈ A := hLeval c
+    have hcN : (L.eval c).length ≤ N := by
       rw [L.length_eval]
-      exact hstage
+      exact hwordN
     have heq :=
-      fusionLimit_eval_eq_of_stage_ge
-        A hNo S (L.eval c) N hcstage
+      fusionLimit_eval_eq_of_stage_ge A hNo S (L.eval c) N hcN
     simpa [Wlim, heq] using hc
 
 end HalesJewett
