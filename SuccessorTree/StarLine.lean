@@ -127,7 +127,7 @@ def constants (s : List α) : List (LineSymbol α) :=
       exact congrArg (List.cons b) ih
 
 /-- Raw decomposition at the first parameter. -/
-theorem word_eq_constants_star_parameter_tail
+theorem rawWord_eq_constants_star_parameter_tail
     (w : List (LineSymbol α))
     (h : LineSymbol.parameter ∈ w) :
     w =
@@ -153,15 +153,22 @@ theorem StarLine.word_eq_constants_star_parameter_tail (L : StarLine α) :
     L.word =
       constants L.star ++
         (LineSymbol.parameter :: afterFirstParameter L.word) := by
-  exact word_eq_constants_star_parameter_tail L.word L.hasParameter
+  exact rawWord_eq_constants_star_parameter_tail L.word L.hasParameter
 
 /-- Ordinary evaluation of a starred line has the corresponding decomposition. -/
 theorem StarLine.eval_eq_star_parameter_tail (L : StarLine α) (a : α) :
     L.eval a =
       L.star ++ (a :: evalWord a (afterFirstParameter L.word)) := by
-  rw [StarLine.eval, L.word_eq_constants_star_parameter_tail,
-    evalWord_constants_append]
-  rfl
+  calc
+    L.eval a = evalWord a L.word := rfl
+    _ = evalWord a
+        (constants L.star ++
+          (LineSymbol.parameter :: afterFirstParameter L.word)) := by
+      exact congrArg (evalWord a) L.word_eq_constants_star_parameter_tail
+    _ = L.star ++
+        (a :: evalWord a (afterFirstParameter L.word)) := by
+      rw [evalWord_constants_append]
+      rfl
 
 /-- Prepend a fixed constant support word to a starred line. -/
 def StarLine.prepend (s : List α) (L : StarLine α) : StarLine α where
