@@ -156,6 +156,15 @@ theorem compose_eval (W U : Subspace α) (v : List α) :
   simp only [eval, evalFrom_append, blockStart]
   simp [List.append_assoc]
 
+/-- Composing with a shift does not change evaluations strictly below the
+shift level.  This is the corrected stabilization property used in forcing
+Lemma 2. -/
+theorem compose_shift_eval_of_length_lt
+    (W U : Subspace α) (n : Nat) (u : List α)
+    (h : u.length < n) :
+    (compose W (shift U n)).eval u = W.eval u := by
+  rw [compose_eval, shift_eval_of_length_lt U n u h]
+
 /-- The paper's Shift observation:
 if `u` has length `n`, then
 `W(Shift(U,n))(u⌢v) = W(u⌢U(v))`. -/
