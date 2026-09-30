@@ -13,3 +13,4 @@ import SuccessorTree.HalesJewett.ForcingLemmaTwo
 import SuccessorTree.HalesJewett.ForcingFusion
 import SuccessorTree.HalesJewett.ForcingFusionLimit
 import SuccessorTree.HalesJewett.ForcingProposition
+import SuccessorTree.HalesJewett.LineSchedule
