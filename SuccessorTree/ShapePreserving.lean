@@ -178,9 +178,8 @@ private theorem list_map_eq_of_mem_eq
       have hxs : ∀ y ∈ xs, f y = g y := by
         intro y hy
         exact h y (by simp [hy])
-      simp only [List.map_cons, hx]
-      congr
-      exact ih hxs
+      simp only [List.map_cons]
+      rw [hx, ih hxs]
 
 /-- The pointwise fusion limit from Proposition `prop:shape-pres`. -/
 noncomputable def fusionLimit (F : Nat → ShapeMap S) (hF : FusionStable F) :
