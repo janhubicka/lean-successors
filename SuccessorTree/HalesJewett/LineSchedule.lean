@@ -194,20 +194,24 @@ noncomputable def scheduledLine [Fintype α] (i : Nat) : StarLine α :=
   (lineBucket (α := α) (lineBucketNumber (α := α) i + 1)).getD
     (lineBucketOffset (α := α) i) (defaultStarLine α)
 
-theorem scheduledLine_eq_getElem [Fintype α] (i : Nat) :
+theorem scheduledLine_eq_get [Fintype α] (i : Nat) :
     scheduledLine (α := α) i =
-      (lineBucket (α := α) (lineBucketNumber (α := α) i + 1))
-        [lineBucketOffset (α := α) i] := by
+      (lineBucket (α := α) (lineBucketNumber (α := α) i + 1)).get
+        ⟨lineBucketOffset (α := α) i,
+          lineBucketOffset_lt_length (α := α) i⟩ := by
   unfold scheduledLine
-  exact List.getD_eq_getElem
-    (lineBucketOffset_lt_length (α := α) i)
+  simpa using
+    (List.getD_eq_getElem
+      (lineBucket (α := α) (lineBucketNumber (α := α) i + 1))
+      (defaultStarLine α)
+      (lineBucketOffset_lt_length (α := α) i))
 
 theorem scheduledLine_length [Fintype α] (i : Nat) :
     (scheduledLine (α := α) i).word.length =
       lineBucketNumber (α := α) i + 1 := by
-  rw [scheduledLine_eq_getElem]
+  rw [scheduledLine_eq_get]
   apply length_eq_of_mem_lineBucket
-  exact List.getElem_mem _
+  exact List.get_mem _ _
 
 theorem lineBucketNumber_mono [Fintype α] :
     Monotone (lineBucketNumber (α := α)) := by
@@ -272,12 +276,13 @@ theorem scheduledLine_covers [Fintype α] (L : StarLine α) :
     dsimp [i]
     omega
   refine ⟨i, ?_⟩
-  rw [scheduledLine_eq_getElem]
-  change
-    (lineBucket (α := α) (lineBucketNumber (α := α) i + 1))
-      [lineBucketOffset (α := α) i] = L
+  unfold scheduledLine
   rw [hnum, hoff]
-  exact hk
+  rw [List.getD_eq_getElem
+      (lineBucket (α := α) (m + 1))
+      (defaultStarLine α)
+      k.isLt]
+  simpa using hk
 
 theorem scheduledLine_length_unbounded [Fintype α] :
     ∀ r : Nat, ∃ N : Nat, ∀ i : Nat, N ≤ i →
