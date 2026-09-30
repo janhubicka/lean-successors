@@ -206,6 +206,112 @@ theorem eq_newVariable_of_mem_indexedLine
   rw [variableIndices_indexedLine] at h
   exact (List.mem_replicate.mp h).2
 
+/-- If some variable occurring in `w` is unresolved by `u`, then
+appending a tail after `w` cannot affect the evaluation: evaluation stops
+inside `w`. -/
+theorem evalIndexed_append_of_unresolved
+    (u : List α) (w tail : List (IndexedSymbol α))
+    (h : ∃ i, i ∈ variableIndices w ∧ u[i]? = none) :
+    evalIndexed u (w ++ tail) = evalIndexed u w := by
+  induction w with
+  | nil =>
+      simp at h
+  | cons x xs ih =>
+      cases x with
+      | const a =>
+          simp only [variableIndices_const] at h
+          simp only [List.cons_append, evalIndexed_const]
+          exact congrArg (List.cons a) (ih h)
+      | var i =>
+          simp only [variableIndices_var, List.mem_cons] at h
+          by_cases hi : u[i]? = none
+          · simp [evalIndexed, hi]
+          · rcases h with ⟨j, hj | hj, hnone⟩
+            · subst j
+              exact False.elim (hi hnone)
+            · cases hget : u[i]? with
+              | none => exact False.elim (hi hget)
+              | some a =>
+                  simp only [List.cons_append]
+                  rw [evalIndexed_var_some _ _ _ _ hget,
+                    evalIndexed_var_some _ _ _ _ hget]
+                  exact congrArg (List.cons a) (ih ⟨j, hj, hnone⟩)
+
+/-- If every variable occurring in `w` is resolved by `u`, evaluation
+distributes across an appended tail. -/
+theorem evalIndexed_append_of_resolved
+    (u : List α) (w tail : List (IndexedSymbol α))
+    (h : ∀ i, i ∈ variableIndices w → ∃ a, u[i]? = some a) :
+    evalIndexed u (w ++ tail) =
+      evalIndexed u w ++ evalIndexed u tail := by
+  induction w with
+  | nil => rfl
+  | cons x xs ih =>
+      cases x with
+      | const a =>
+          simp only [List.cons_append, evalIndexed_const]
+          have htail :
+              ∀ i, i ∈ variableIndices xs → ∃ b, u[i]? = some b := by
+            intro i hi
+            exact h i hi
+          exact congrArg (List.cons a) (ih htail)
+      | var i =>
+          have hiMem : i ∈ variableIndices (.var i :: xs) := by simp
+          obtain ⟨a, hget⟩ := h i hiMem
+          simp only [List.cons_append]
+          rw [evalIndexed_var_some _ _ _ _ hget,
+            evalIndexed_var_some _ _ _ _ hget]
+          rw [ih]
+          · rfl
+          · intro j hj
+            exact h j (by simp [hj])
+
+/-- Evaluation of an indexed word depends only on the supplied coordinates
+whose indices actually occur in the word. -/
+theorem evalIndexed_eq_of_getElem_eq
+    (u v : List α) (w : List (IndexedSymbol α))
+    (h : ∀ i, i ∈ variableIndices w → u[i]? = v[i]?) :
+    evalIndexed u w = evalIndexed v w := by
+  induction w with
+  | nil => rfl
+  | cons x xs ih =>
+      cases x with
+      | const a =>
+          simp only [evalIndexed_const]
+          exact congrArg (List.cons a) (ih (fun i hi => h i hi))
+      | var i =>
+          have hi : u[i]? = v[i]? := h i (by simp)
+          cases hu : u[i]? with
+          | none =>
+              have hv : v[i]? = none := by simpa [hu] using hi.symm
+              simp [evalIndexed, hu, hv]
+          | some a =>
+              have hv : v[i]? = some a := by simpa [hu] using hi.symm
+              rw [evalIndexed_var_some _ _ _ _ hu,
+                evalIndexed_var_some _ _ _ _ hv]
+              exact congrArg (List.cons a)
+                (ih (fun j hj => h j (by simp [hj])))
+
+/-- Encode an ordinary constant word as an indexed word with no variables. -/
+def indexedConstants (u : List α) : List (IndexedSymbol α) :=
+  u.map IndexedSymbol.const
+
+@[simp] theorem variableIndices_indexedConstants (u : List α) :
+    variableIndices (indexedConstants u) = [] := by
+  induction u with
+  | nil => rfl
+  | cons a u ih =>
+      change variableIndices (IndexedSymbol.const a :: indexedConstants u) = []
+      simpa using ih
+
+@[simp] theorem evalIndexed_indexedConstants (v u : List α) :
+    evalIndexed v (indexedConstants u) = u := by
+  induction u with
+  | nil => rfl
+  | cons a u ih =>
+      change a :: evalIndexed v (indexedConstants u) = a :: u
+      exact congrArg (List.cons a) ih
+
 /-- A concrete finite `n`-variable word.
 
 The variable-index list is nondecreasing, every index below `n` occurs, and
@@ -222,6 +328,17 @@ namespace FiniteVariableWord
 /-- Evaluate a finite variable word on a finite list of letters. -/
 def eval (U : FiniteVariableWord α n) (u : List α) : List α :=
   evalIndexed u U.raw
+
+/-- A 0-variable word consisting of a prescribed constant word. -/
+def zeroWord (u : List α) : FiniteVariableWord α 0 where
+  raw := indexedConstants u
+  ordered := by simp
+  below := by simp
+  occurs := by simp
+
+@[simp] theorem zeroWord_eval (u v : List α) :
+    (zeroWord u).eval v = u := by
+  simp [zeroWord, eval]
 
 /-- Append a starred line as the new variable `λ_n`. -/
 def extendByLine (U : FiniteVariableWord α n) (L : StarLine α) :
@@ -243,7 +360,7 @@ def extendByLine (U : FiniteVariableWord α n) (L : StarLine α) :
     intro i hi
     rw [variableIndices_append] at hi
     rcases List.mem_append.mp hi with hi | hi
-    · exact Nat.lt.step (U.below i hi)
+    · exact Nat.lt_succ_of_lt (U.below i hi)
     · have hi' := eq_newVariable_of_mem_indexedLine hi
       omega
   occurs := by
@@ -254,6 +371,70 @@ def extendByLine (U : FiniteVariableWord α n) (L : StarLine α) :
     · have hieq : i = n := by omega
       subst i
       exact List.mem_append_right _ (newVariable_mem_indexedLine n L)
+
+/-- Appending a new line does not change evaluations using fewer than
+`n` letters: evaluation already stops inside `U`. -/
+theorem extendByLine_eval_of_length_lt
+    (U : FiniteVariableWord α n) (L : StarLine α)
+    (u : List α) (hu : u.length < n) :
+    (U.extendByLine L).eval u = U.eval u := by
+  change evalIndexed u (U.raw ++ indexedLine n L) =
+    evalIndexed u U.raw
+  apply evalIndexed_append_of_unresolved
+  refine ⟨u.length, U.occurs u.length hu, ?_⟩
+  rw [List.getElem?_eq_none_iff]
+
+/-- At exactly `n` supplied letters, the newly appended line contributes its
+star value `L(*)`. -/
+theorem extendByLine_eval_of_length_eq
+    (U : FiniteVariableWord α n) (L : StarLine α)
+    (u : List α) (hu : u.length = n) :
+    (U.extendByLine L).eval u = U.eval u ++ L.star := by
+  change evalIndexed u (U.raw ++ indexedLine n L) =
+    evalIndexed u U.raw ++ L.star
+  rw [evalIndexed_append_of_resolved]
+  · rw [evalIndexed_indexedLine_star' u n L hu]
+  · intro i hi
+    have hil : i < u.length := by
+      rw [hu]
+      exact U.below i hi
+    cases hget : u[i]? with
+    | none =>
+        rw [List.getElem?_eq_none_iff] at hget
+        omega
+    | some a =>
+        exact ⟨a, rfl⟩
+
+/-- If `u` has length `n`, then supplying one additional letter `a`
+makes the new line contribute `L(a)`, while the old part still evaluates as
+`U(u)`. -/
+theorem extendByLine_eval_append_letter
+    (U : FiniteVariableWord α n) (L : StarLine α)
+    (u : List α) (a : α) (hu : u.length = n) :
+    (U.extendByLine L).eval (u ++ [a]) =
+      U.eval u ++ L.eval a := by
+  change evalIndexed (u ++ [a]) (U.raw ++ indexedLine n L) =
+    evalIndexed u U.raw ++ L.eval a
+  rw [evalIndexed_append_of_resolved]
+  · have hsame :
+        evalIndexed (u ++ [a]) U.raw = evalIndexed u U.raw := by
+      apply evalIndexed_eq_of_getElem_eq
+      intro i hi
+      have hil : i < u.length := by
+        rw [hu]
+        exact U.below i hi
+      rw [List.getElem?_append_left hil]
+    rw [hsame, evalIndexed_indexedLine_eval' u n a L hu]
+  · intro i hi
+    have hil : i < (u ++ [a]).length := by
+      simp [hu]
+      exact Nat.le_of_lt (U.below i hi)
+    cases hget : (u ++ [a])[i]? with
+    | none =>
+        rw [List.getElem?_eq_none_iff] at hget
+        omega
+    | some b =>
+        exact ⟨b, rfl⟩
 
 /-- Every variable of `U` is resolvable by a list of length at least `n`. -/
 theorem resolvable_of_length_ge

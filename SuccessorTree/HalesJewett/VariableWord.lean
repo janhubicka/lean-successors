@@ -115,6 +115,84 @@ def shift (W : Subspace α) : Nat → Subspace α
 @[simp] theorem shift_succ (W : Subspace α) (n : Nat) :
     shift W (n + 1) = prependIdentity (shift W n) := rfl
 
+/-- Strictly below the shift level, evaluation is exactly the identity.
+The strict inequality is essential: at length exactly `n`, the constant head
+of `W` may already appear. -/
+theorem shift_eval_of_length_lt
+    (W : Subspace α) (n : Nat) (u : List α)
+    (h : u.length < n) :
+    (shift W n).eval u = u := by
+  induction n generalizing u with
+  | zero =>
+      omega
+  | succ n ih =>
+      cases u with
+      | nil =>
+          simp [shift, prependIdentity, eval, evalFrom]
+      | cons a u =>
+          have hu : u.length < n := by
+            simpa using h
+          simp only [shift_succ, prependIdentity_eval_cons]
+          rw [ih u hu]
+
+/-- Positive shifts have empty constant head. -/
+@[simp] theorem shift_head_of_pos
+    (W : Subspace α) {n : Nat} (h : 0 < n) :
+    (shift W n).head = [] := by
+  cases n with
+  | zero => omega
+  | succ n => rfl
+
+/-- Strictly before the last identity coordinate of a shift, the stored block
+is literally the identity block. -/
+theorem shift_blocks_eq_identity_of_succ_lt
+    (W : Subspace α) (n i : Nat)
+    (h : i + 1 < n) :
+    (shift W n).blocks i = ⟨[]⟩ := by
+  induction n generalizing i with
+  | zero =>
+      omega
+  | succ n ih =>
+      rw [shift_succ]
+      cases i with
+      | zero =>
+          have hn : 0 < n := by omega
+          change
+            (LeftVariableWord.mk (constants (shift W n).head)) =
+              LeftVariableWord.mk []
+          rw [shift_head_of_pos W hn]
+          rfl
+      | succ i =>
+          change (shift W n).blocks i = LeftVariableWord.mk []
+          apply ih
+          omega
+
+/-- General prefix/tail form of Shift.  If the fixed prefix has
+length at most the shift level, the remaining tail sees the residual shift. -/
+theorem shift_eval_append_of_length_le
+    (W : Subspace α) (n : Nat) (u v : List α)
+    (h : u.length ≤ n) :
+    (shift W n).eval (u ++ v) =
+      u ++ (shift W (n - u.length)).eval v := by
+  induction n generalizing u with
+  | zero =>
+      have hu0 : u.length = 0 := Nat.eq_zero_of_le_zero h
+      have : u = [] := List.length_eq_zero_iff.mp hu0
+      subst u
+      simp
+  | succ n ih =>
+      cases u with
+      | nil =>
+          simp
+      | cons a u =>
+          have htail : u.length ≤ n := by
+            simpa using h
+          simp only [List.cons_append, shift_succ, prependIdentity_eval_cons]
+          rw [ih u htail]
+          have hsub : (n + 1) - (u.length + 1) = n - u.length := by
+            omega
+          simp [hsub]
+
 /-- Fundamental shift identity. If `u` has length `n`, then the first `n`
 coordinates of `Shift(W,n)` are the identity coordinates and the tail acts as
 `W` on `v`. -/
