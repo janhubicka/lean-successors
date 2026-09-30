@@ -1,5 +1,4 @@
 import SuccessorTree.StarLine
-import Mathlib.Data.Finset.Univ
 
 /-!
 # Support lemmas for the Hales--Jewett reduction
