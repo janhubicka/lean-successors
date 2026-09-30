@@ -1,4 +1,5 @@
 import SuccessorTree.StarLine
 import SuccessorTree.Support
 import SuccessorTree.Pigeonhole
+import SuccessorTree.HalesJewett.VariableWord
 import SuccessorTree.HalesJewett.Forcing
