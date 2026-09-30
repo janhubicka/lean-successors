@@ -1,4 +1,5 @@
 import Mathlib.Data.Set.Basic
+import Mathlib.Data.Fintype.Basic
 
 /-!
 # Combinatorial-forcing core for Hales--Jewett
@@ -103,6 +104,83 @@ theorem binary_cover_has_large_pullback [Nonempty Word]
     rcases hcover with hA₀ | hA₁
     · exact False.elim (hW (S.act U w) hA₀)
     · exact hA₁
+
+
+/-- A colouring is homogeneous on a subspace if all of its finite evaluations
+have the same colour. -/
+def Homogeneous (colour : Word → κ) (W : Space) : Prop :=
+  ∀ x y : Word, colour (S.act W x) = colour (S.act W y)
+
+/-- Binary Ramsey property for the abstract subspace action. -/
+def BinaryRamsey : Prop :=
+  ∀ colour : Word → Bool, ∃ W : Space, S.Homogeneous colour W
+
+/-- Binary homogeneity upgrades to homogeneity for any colouring whose range is
+contained in a prescribed finite set.
+
+This is the formal refinement/composition argument used to repair the
+finite-colour gap in the Hubička--Smolík draft.
+-/
+theorem finiteRamsey_of_binary_on
+    [Nonempty Word] [DecidableEq κ]
+    (hbin : S.BinaryRamsey)
+    (C : Finset κ) :
+    ∀ colour : Word → κ, (∀ w : Word, colour w ∈ C) →
+      ∃ W : Space, S.Homogeneous colour W := by
+  classical
+  induction C using Finset.induction_on with
+  | empty =>
+      intro colour hC
+      obtain ⟨w⟩ := ‹Nonempty Word›
+      have hw := hC w
+      simp at hw
+  | @insert c C hc ih =>
+      intro colour hC
+      obtain ⟨W, hW⟩ :=
+        hbin (fun w => decide (colour w = c))
+      obtain ⟨w₀⟩ := ‹Nonempty Word›
+      by_cases hbase : colour (S.act W w₀) = c
+      · refine ⟨W, ?_⟩
+        intro x y
+        have hxBool := hW x w₀
+        have hyBool := hW y w₀
+        have hx : colour (S.act W x) = c := by
+          have htrue :
+              decide (colour (S.act W x) = c) = true := by
+            simpa [hbase] using hxBool
+          exact of_decide_eq_true htrue
+        have hy : colour (S.act W y) = c := by
+          have htrue :
+              decide (colour (S.act W y) = c) = true := by
+            simpa [hbase] using hyBool
+          exact of_decide_eq_true htrue
+        exact hx.trans hy.symm
+      · have hnot : ∀ x : Word, colour (S.act W x) ≠ c := by
+          intro x hx
+          have hEq := hW x w₀
+          simp [hx, hbase] at hEq
+        have hC' : ∀ x : Word, colour (S.act W x) ∈ C := by
+          intro x
+          have hx := hC (S.act W x)
+          rcases Finset.mem_insert.mp hx with hx | hx
+          · exact False.elim (hnot x hx)
+          · exact hx
+        obtain ⟨U, hU⟩ :=
+          ih (fun x => colour (S.act W x)) hC'
+        refine ⟨S.comp W U, ?_⟩
+        intro x y
+        simpa only [S.act_comp] using hU x y
+
+/-- Binary Ramsey implies the finite-colour Ramsey property for every finite
+colour type. -/
+theorem finiteRamsey_of_binary
+    [Nonempty Word] [Fintype κ] [DecidableEq κ]
+    (hbin : S.BinaryRamsey)
+    (colour : Word → κ) :
+    ∃ W : Space, S.Homogeneous colour W := by
+  apply S.finiteRamsey_of_binary_on hbin Finset.univ colour
+  intro w
+  exact Finset.mem_univ _
 
 /-- Partition formulation matching the note literally. -/
 theorem binary_partition_has_large_pullback [Nonempty Word]
