@@ -3,3 +3,4 @@ import SuccessorTree.Support
 import SuccessorTree.Pigeonhole
 import SuccessorTree.HalesJewett.VariableWord
 import SuccessorTree.HalesJewett.Forcing
+import SuccessorTree.HalesJewett.Composition
