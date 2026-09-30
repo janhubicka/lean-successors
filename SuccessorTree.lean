@@ -7,3 +7,4 @@ import SuccessorTree.HalesJewett.Composition
 import SuccessorTree.HalesJewett.ForcingReduction
 import SuccessorTree.HalesJewett.FiniteVariableWord
 import SuccessorTree.HalesJewett.ForcingLemmaOne
+import SuccessorTree.HalesJewett.GreedyLimit
