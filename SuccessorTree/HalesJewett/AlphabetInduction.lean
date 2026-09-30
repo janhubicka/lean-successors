@@ -361,11 +361,13 @@ theorem allStarHJ_option
           simpa [hlen] using hsplit
         rw [hsplit']
 
-        have hdEq : d = (d - 1) + 1 := by omega
         have hrepOld :
             List.replicate d a =
               a :: List.replicate (d - 1) a := by
-          rw [hdEq, List.replicate_succ]
+          cases d with
+          | zero => omega
+          | succ n =>
+              simp [List.replicate_succ]
         obtain ⟨t, ht⟩ :=
           nestedSubspace_cons_eval_optionWord
             Wp Cp a (List.replicate (d - 1) a)
@@ -450,14 +452,17 @@ theorem allStarHJ_finite
       exact finiteStarHJ_option hγ
   exact hfinite inferInstance
 
+universe u v w
+
 /-- Renaming the finite colour type preserves StarHJ. -/
 theorem starHJ_colour_equiv
-    [Fintype α] [Fintype κ] [Fintype λ]
-    (e : κ ≃ λ)
-    (h : StarHJ α λ) :
+    {α : Type u} {κ : Type v} {δ : Type w}
+    [Fintype α] [Fintype κ] [Fintype δ]
+    (e : κ ≃ δ)
+    (h : StarHJ α δ) :
     StarHJ α κ := by
   intro colour
-  obtain ⟨L, hL⟩ := h (fun w => e (colour w))
+  obtain ⟨L, hL⟩ := h (fun word => e (colour word))
   refine ⟨L, ?_⟩
   intro a
   apply e.injective
@@ -466,12 +471,16 @@ theorem starHJ_colour_equiv
 /-- The fully discharged starred Hales--Jewett theorem, for arbitrary finite
 alphabet and colour universes. -/
 theorem starHJ_finite
+    {α : Type u} {κ : Type v}
     [Fintype α] [Fintype κ] :
     StarHJ α κ := by
   classical
-  let e : κ ≃ Fin (Fintype.card κ) := Fintype.equivFin κ
-  have hfin : StarHJ α (Fin (Fintype.card κ)) :=
-    allStarHJ_finite α (Fin (Fintype.card κ))
+  let δ : Type u := ULift.{u} (Fin (Fintype.card κ))
+  let e : κ ≃ δ :=
+    (Fintype.equivFin κ).trans Equiv.ulift.symm
+  have hfin : StarHJ α δ := by
+    dsimp [δ]
+    exact allStarHJ_finite α (ULift.{u} (Fin (Fintype.card κ)))
   exact starHJ_colour_equiv e hfin
 
 end HalesJewett
