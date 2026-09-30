@@ -56,6 +56,11 @@ These are local repairs, not changes to the proof strategy.
 4. **Lemma 2: enumeration typo.**  Near the final contradiction, `L_j = L`
    should read `L^j = L`.
 
+5. **Empty alphabet base case.**  The one-dimensional theorem is stated for every
+   finite alphabet, while the induction proof names only `|Σ| = 1` as its base.
+   Add the trivial `|Σ| = 0` case, and keep the pigeonhole argument for the
+   singleton alphabet.
+
 ## Points to make explicit in Lean
 
 The paper uses several substitution identities as "easy to see" steps.  The
