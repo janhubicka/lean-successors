@@ -10,3 +10,4 @@ import SuccessorTree.HalesJewett.ForcingLemmaOne
 import SuccessorTree.HalesJewett.GreedyLimit
 import SuccessorTree.HalesJewett.ForcingMaximal
 import SuccessorTree.HalesJewett.ForcingLemmaTwo
+import SuccessorTree.HalesJewett.ForcingFusion
