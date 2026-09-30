@@ -143,6 +143,7 @@ theorem proposition_invariants
       · intro u hu v hv
         have hu0 : u = [] := List.length_eq_zero_iff.mp hu
         subst u
+        change v ∈ A at hv
         change (Subspace.identity : Subspace α).eval ([] ++ v) ∈ A
         simpa using hv
   | succ i ih =>
@@ -192,7 +193,9 @@ theorem proposition_invariants
             ((propositionU A hA hjProduct S i).shift i)).eval
               ((w ++ [c]) ++ v) ∈ A
         rw [Subspace.compose_eval]
-        rw [← List.append_assoc]
+        have harg : (w ++ [c]) ++ v = w ++ (c :: v) := by
+          simp [List.append_assoc]
+        rw [harg]
         have hshift :=
           Subspace.shift_eval_append
             (propositionU A hA hjProduct S i)
