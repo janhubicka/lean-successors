@@ -12,3 +12,4 @@ import SuccessorTree.HalesJewett.ForcingMaximal
 import SuccessorTree.HalesJewett.ForcingLemmaTwo
 import SuccessorTree.HalesJewett.ForcingFusion
 import SuccessorTree.HalesJewett.ForcingFusionLimit
+import SuccessorTree.HalesJewett.ForcingProposition
