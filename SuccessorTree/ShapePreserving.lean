@@ -58,11 +58,13 @@ theorem map_lt_of_lt (F : ShapeMap S) {a b : T} (hab : a < b) :
         have hfirst : F a < F c := F.map_lt_of_covBy hac
         have hlevels : LevelTree.lev c = LevelTree.lev a + 1 :=
           LevelTree.covBy_level_eq hac
+        have habLevels : LevelTree.lev a < LevelTree.lev b :=
+          LevelTree.lt_level_lt hab
         have hsmaller : LevelTree.lev b - LevelTree.lev c < d := by
           rw [← hdiff]
           omega
         have htail : F c < F b :=
-          ih (LevelTree.lev b - LevelTree.lev c) hsmaller rfl hcb'
+          ih (LevelTree.lev b - LevelTree.lev c) hsmaller hcb'
         exact hfirst.trans htail
 
 theorem map_le_of_le (F : ShapeMap S) {a b : T} (hab : a ≤ b) :
@@ -93,15 +95,15 @@ theorem level_lt_of_level_lt (F : ShapeMap S) {a b : T}
 
 /-- The level map induced by a shape-preserving map. -/
 noncomputable def levelMap (F : ShapeMap S) (n : Nat) : Nat :=
-  let a := Classical.choose (LevelTree.level_nonempty n)
+  let a := Classical.choose (LevelTree.level_nonempty (T := T) n)
   LevelTree.lev (F a)
 
 theorem levelMap_eq (F : ShapeMap S) {a : T} :
     F.levelMap (LevelTree.lev a) = LevelTree.lev (F a) := by
   unfold levelMap
-  let x := Classical.choose (LevelTree.level_nonempty (LevelTree.lev a))
+  let x := Classical.choose (LevelTree.level_nonempty (T := T) (LevelTree.lev a))
   have hx : LevelTree.lev x = LevelTree.lev a :=
-    Classical.choose_spec (LevelTree.level_nonempty (LevelTree.lev a))
+    Classical.choose_spec (LevelTree.level_nonempty (T := T) (LevelTree.lev a))
   exact F.level_eq_of_level_eq hx
 
 /-- The identity map is shape-preserving. -/
