@@ -250,10 +250,11 @@ theorem evalIndexed_append_of_resolved
       cases x with
       | const a =>
           simp only [List.cons_append, evalIndexed_const]
-          rw [ih]
-          · rfl
-          · intro i hi
+          have htail :
+              ∀ i, i ∈ variableIndices xs → ∃ b, u[i]? = some b := by
+            intro i hi
             exact h i hi
+          exact congrArg (List.cons a) (ih htail)
       | var i =>
           have hiMem : i ∈ variableIndices (.var i :: xs) := by simp
           obtain ⟨a, hget⟩ := h i hiMem
