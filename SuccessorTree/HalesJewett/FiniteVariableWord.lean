@@ -323,6 +323,10 @@ structure FiniteVariableWord (α : Type u) (n : Nat) where
 
 namespace FiniteVariableWord
 
+/-- Evaluate a finite variable word on a finite list of letters. -/
+def eval (U : FiniteVariableWord α n) (u : List α) : List α :=
+  evalIndexed u U.raw
+
 /-- A 0-variable word consisting of a prescribed constant word. -/
 def zeroWord (u : List α) : FiniteVariableWord α 0 where
   raw := indexedConstants u
@@ -333,10 +337,6 @@ def zeroWord (u : List α) : FiniteVariableWord α 0 where
 @[simp] theorem zeroWord_eval (u v : List α) :
     (zeroWord u).eval v = u := by
   simp [zeroWord, eval]
-
-/-- Evaluate a finite variable word on a finite list of letters. -/
-def eval (U : FiniteVariableWord α n) (u : List α) : List α :=
-  evalIndexed u U.raw
 
 /-- Append a starred line as the new variable `λ_n`. -/
 def extendByLine (U : FiniteVariableWord α n) (L : StarLine α) :
