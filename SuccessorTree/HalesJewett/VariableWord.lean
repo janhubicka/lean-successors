@@ -135,6 +135,32 @@ theorem shift_eval_of_length_lt
           simp only [shift_succ, prependIdentity_eval_cons]
           rw [ih u hu]
 
+/-- General prefix/tail form of Shift.  If the fixed prefix has
+length at most the shift level, the remaining tail sees the residual shift. -/
+theorem shift_eval_append_of_length_le
+    (W : Subspace α) (n : Nat) (u v : List α)
+    (h : u.length ≤ n) :
+    (shift W n).eval (u ++ v) =
+      u ++ (shift W (n - u.length)).eval v := by
+  induction n generalizing u with
+  | zero =>
+      have hu0 : u.length = 0 := Nat.eq_zero_of_le_zero h
+      have : u = [] := List.length_eq_zero_iff.mp hu0
+      subst u
+      simp
+  | succ n ih =>
+      cases u with
+      | nil =>
+          simp
+      | cons a u =>
+          have htail : u.length ≤ n := by
+            simpa using h
+          simp only [List.cons_append, shift_succ, prependIdentity_eval_cons]
+          rw [ih u htail]
+          have hsub : (n + 1) - (u.length + 1) = n - u.length := by
+            omega
+          simp [hsub]
+
 /-- Fundamental shift identity. If `u` has length `n`, then the first `n`
 coordinates of `Shift(W,n)` are the identity coordinates and the tail acts as
 `W` on `v`. -/
