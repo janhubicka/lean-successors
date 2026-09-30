@@ -145,8 +145,12 @@ def firstLine (W : Subspace α) : StarLine α where
 
 @[simp] theorem firstLine_eval (W : Subspace α) (a : α) :
     W.firstLine.eval a = W.eval [a] := by
-  simp [firstLine, StarLine.eval, eval, evalFrom, LeftVariableWord.eval,
-    evalWord, List.append_assoc]
+  change
+    evalWord a (constants W.head ++
+      (LineSymbol.parameter :: (W.blocks 0).tail)) =
+    W.head ++ ((W.blocks 0).eval a ++ [])
+  rw [evalWord_constants_append]
+  simp [evalWord, LeftVariableWord.eval]
 
 end Subspace
 
