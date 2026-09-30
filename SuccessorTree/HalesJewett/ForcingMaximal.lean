@@ -181,7 +181,7 @@ theorem exists_not_mem_of_ne_univ
 the finite product colour types used in its proof, every large set contains a
 starred line. -/
 theorem large_set_contains_line
-    [Fintype α]
+    [Fintype α] [DecidableEq α]
     (A : Set (List α))
     (hlarge : WordLarge A)
     (hjProduct :
