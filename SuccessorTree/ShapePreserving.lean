@@ -143,6 +143,111 @@ def comp (F G : ShapeMap S) : ShapeMap S where
 @[simp] theorem comp_apply (F G : ShapeMap S) (a : T) :
     (F.comp G) a = F (G a) := rfl
 
+/-- Successive members of a fusion sequence agree on every node whose level
+has already been frozen. -/
+def FusionStable (F : Nat → ShapeMap S) : Prop :=
+  ∀ (i : Nat) (a : T), LevelTree.lev a ≤ i → F i a = F (i + 1) a
+
+theorem fusion_stable_add (F : Nat → ShapeMap S) (hF : FusionStable F)
+    (a : T) (d : Nat) :
+    F (LevelTree.lev a + d) a = F (LevelTree.lev a) a := by
+  induction d with
+  | zero => simp
+  | succ d ih =>
+      have hs := hF (LevelTree.lev a + d) a (by omega)
+      calc
+        F (LevelTree.lev a + (d + 1)) a =
+            F ((LevelTree.lev a + d) + 1) a := by congr 1 <;> omega
+        _ = F (LevelTree.lev a + d) a := hs.symm
+        _ = F (LevelTree.lev a) a := ih
+
+theorem fusion_stable_of_le (F : Nat → ShapeMap S) (hF : FusionStable F)
+    (a : T) {i : Nat} (hi : LevelTree.lev a ≤ i) :
+    F i a = F (LevelTree.lev a) a := by
+  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hi
+  exact fusion_stable_add F hF a d
+
+/-- The pointwise fusion limit from Proposition `prop:shape-pres`. -/
+noncomputable def fusionLimit (F : Nat → ShapeMap S) (hF : FusionStable F) :
+    ShapeMap S where
+  toFun := fun a => F (LevelTree.lev a) a
+  injective' := by
+    intro a b hab
+    let i := max (LevelTree.lev a) (LevelTree.lev b)
+    have hai : LevelTree.lev a ≤ i := Nat.le_max_left _ _
+    have hbi : LevelTree.lev b ≤ i := Nat.le_max_right _ _
+    have haeq : F i a = F (LevelTree.lev a) a :=
+      fusion_stable_of_le F hF a hai
+    have hbeq : F i b = F (LevelTree.lev b) b :=
+      fusion_stable_of_le F hF b hbi
+    apply (F i).injective
+    calc
+      F i a = F (LevelTree.lev a) a := haeq
+      _ = F (LevelTree.lev b) b := hab
+      _ = F i b := hbeq.symm
+  level_preserving' := by
+    intro a b hab
+    subst hab
+    exact (F (LevelTree.lev b)).level_eq_of_level_eq rfl
+  weak_succ' := by
+    intro a b p c hsucc
+    let k := LevelTree.lev a
+    have hbLevel : LevelTree.lev b = k + 1 := by
+      exact LevelTree.covBy_level_eq (S.covBy_of_succ_eq_some hsucc)
+    have haStable : F (k + 1) a = F k a :=
+      hF k a (by simp [k])
+    have hbDef : F (LevelTree.lev b) b = F (k + 1) b := by
+      rw [hbLevel]
+    have hparam : ∀ x ∈ p,
+        F (LevelTree.lev x) x = F (k + 1) x := by
+      intro x hx
+      have hxlt : LevelTree.lev x < k :=
+        S.parameter_level_lt hsucc hx
+      have hxle : LevelTree.lev x ≤ k + 1 := by omega
+      exact (fusion_stable_of_le F hF x hxle).symm
+    have hmap :
+        p.map (fun x => F (LevelTree.lev x) x) =
+          p.map (fun x => F (k + 1) x) := by
+      induction p with
+      | nil => rfl
+      | cons x xs ih =>
+          have hx : F (LevelTree.lev x) x = F (k + 1) x := by
+            apply hparam x
+            simp
+          have hxs : ∀ y ∈ xs,
+              F (LevelTree.lev y) y = F (k + 1) y := by
+            intro y hy
+            apply hparam y
+            simp [hy]
+          simp only [List.map_cons, hx]
+          congr
+          exact ih hxs
+    obtain ⟨d, hd, hdb⟩ := (F (k + 1)).weak_succ' hsucc
+    refine ⟨d, ?_, ?_⟩
+    · simpa [fusionLimit, k, haStable, hmap] using hd
+    · simpa [fusionLimit, hbDef] using hdb
+  root_le' := by
+    intro a ha
+    simpa [fusionLimit, ha] using (F 0).root_le' ha
+
+@[simp] theorem fusionLimit_apply (F : Nat → ShapeMap S)
+    (hF : FusionStable F) (a : T) :
+    fusionLimit F hF a = F (LevelTree.lev a) a := rfl
+
+/-- The fusion limit agrees with the prescribed stage on every frozen level. -/
+theorem fusionLimit_eq_stage (F : Nat → ShapeMap S) (hF : FusionStable F)
+    {i : Nat} {a : T} (ha : LevelTree.lev a ≤ i) :
+    fusionLimit F hF a = F i a := by
+  exact (fusion_stable_of_le F hF a ha).symm
+
+/-- The pointwise fusion limit is unique with the stabilization property. -/
+theorem fusionLimit_unique (F : Nat → ShapeMap S) (hF : FusionStable F)
+    (G : ShapeMap S)
+    (hG : ∀ (i : Nat) (a : T), LevelTree.lev a ≤ i → G a = F i a) :
+    G.toFun = (fusionLimit F hF).toFun := by
+  funext a
+  exact hG (LevelTree.lev a) a le_rfl
+
 end ShapeMap
 
 end SuccessorTree
