@@ -165,6 +165,14 @@ theorem compose_shift_eval_of_length_lt
     (compose W (shift U n)).eval u = W.eval u := by
   rw [compose_eval, shift_eval_of_length_lt U n u h]
 
+/-- General prefix/tail Shift identity after outer composition. -/
+theorem compose_shift_eval_append_of_length_le
+    (W U : Subspace α) (n : Nat) (u v : List α)
+    (h : u.length ≤ n) :
+    (compose W (shift U n)).eval (u ++ v) =
+      W.eval (u ++ (shift U (n - u.length)).eval v) := by
+  rw [compose_eval, shift_eval_append_of_length_le U n u v h]
+
 /-- The paper's Shift observation:
 if `u` has length `n`, then
 `W(Shift(U,n))(u⌢v) = W(u⌢U(v))`. -/
