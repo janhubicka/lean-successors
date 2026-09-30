@@ -8,8 +8,8 @@ This file isolates the combinatorial object used in the proof of the
 one-dimensional pigeonhole lemma in the successor-tree paper.
 
 A `StarLine α` is a finite word over constants from `α` and one distinguished
-parameter symbol, required to occur at least once.  Evaluating the parameter at
-`a : α` gives an ordinary word.  The `star` evaluation truncates immediately
+parameter symbol, required to occur at least once. Evaluating the parameter at
+`a : α` gives an ordinary word. The `star` evaluation truncates immediately
 before the first parameter, exactly as in the paper's `L(*)` notation.
 -/
 
@@ -27,9 +27,12 @@ def eval (a : α) : LineSymbol α → α
   | const b => b
   | parameter => a
 
+@[simp] theorem eval_const (a b : α) : eval a (.const b) = b := rfl
+@[simp] theorem eval_parameter (a : α) : eval a (.parameter) = a := rfl
+
 end LineSymbol
 
-/-- The prefix before the first parameter.  Constants after the first parameter
+/-- The prefix before the first parameter. Constants after the first parameter
 are intentionally discarded. -/
 def starPrefix : List (LineSymbol α) → List α
   | [] => []
@@ -67,11 +70,17 @@ end StarLine
 theorem starPrefix_isPrefix_evalWord (w : List (LineSymbol α)) (a : α) :
     starPrefix w <+: evalWord a w := by
   induction w with
-  | nil => simp [starPrefix, evalWord]
+  | nil =>
+      exact ⟨[], rfl⟩
   | cons x xs ih =>
       cases x with
-      | parameter => simp [starPrefix, evalWord]
-      | const b => simpa [starPrefix, evalWord] using ih.cons b
+      | parameter =>
+          refine ⟨a :: evalWord a xs, ?_⟩
+          rfl
+      | const b =>
+          rcases ih with ⟨t, ht⟩
+          refine ⟨t, ?_⟩
+          simpa [starPrefix, evalWord] using congrArg (List.cons b) ht
 
 /-- In particular, `L(*)` is a prefix of every `L(a)`. -/
 theorem StarLine.star_isPrefix_eval (L : StarLine α) (a : α) :
@@ -82,19 +91,29 @@ theorem StarLine.star_isPrefix_eval (L : StarLine α) (a : α) :
 def constants (s : List α) : List (LineSymbol α) :=
   s.map LineSymbol.const
 
+@[simp] theorem constants_nil : constants ([] : List α) = [] := rfl
+
+@[simp] theorem constants_cons (a : α) (s : List α) :
+    constants (a :: s) = LineSymbol.const a :: constants s := rfl
+
 @[simp] theorem evalWord_constants (s : List α) (a : α) :
     evalWord a (constants s) = s := by
-  simp [evalWord, constants, LineSymbol.eval]
+  induction s with
+  | nil => rfl
+  | cons b s ih =>
+      simp [evalWord, constants, ih]
 
 @[simp] theorem starPrefix_constants_append (s : List α) (w : List (LineSymbol α)) :
     starPrefix (constants s ++ w) = s ++ starPrefix w := by
   induction s with
-  | nil => simp [constants]
-  | cons a s ih => simp [constants, starPrefix, ih]
+  | nil => rfl
+  | cons b s ih =>
+      change b :: starPrefix (constants s ++ w) = b :: (s ++ starPrefix w)
+      exact congrArg (List.cons b) ih
 
 @[simp] theorem evalWord_constants_append (s : List α) (w : List (LineSymbol α)) (a : α) :
     evalWord a (constants s ++ w) = s ++ evalWord a w := by
-  simp [evalWord, constants, LineSymbol.eval]
+  rw [evalWord, List.map_append, evalWord_constants]
 
 /-- Prepend a fixed constant support word to a starred line. -/
 def StarLine.prepend (s : List α) (L : StarLine α) : StarLine α where
@@ -105,10 +124,10 @@ def StarLine.prepend (s : List α) (L : StarLine α) : StarLine α where
 
 @[simp] theorem StarLine.eval_prepend (s : List α) (L : StarLine α) (a : α) :
     (L.prepend s).eval a = s ++ L.eval a := by
-  simp [StarLine.prepend, StarLine.eval]
+  exact evalWord_constants_append s L.word a
 
 @[simp] theorem StarLine.star_prepend (s : List α) (L : StarLine α) :
     (L.prepend s).star = s ++ L.star := by
-  simp [StarLine.prepend, StarLine.star]
+  exact starPrefix_constants_append s L.word
 
 end SuccessorTree
