@@ -253,17 +253,11 @@ theorem scheduledLine_covers [Fintype α] (L : StarLine α) :
     dsimp [i]
     omega
   refine ⟨i, ?_⟩
-  have hfin :
-      (⟨lineBucketOffset (α := α) i, by
-        simpa [lineBucketSize, hnum] using
-          lineBucketOffset_lt (α := α) i⟩ :
-        Fin (lineBucket (α := α) (m + 1)).length) = k := by
-    apply Fin.ext
-    exact hoff
-  change
-    (lineBucket (α := α) (lineBucketNumber (α := α) i + 1)).get
-        ⟨lineBucketOffset (α := α) i, _⟩ = L
-  simpa [hnum, hfin] using hk
+  unfold scheduledLine
+  simp only [hnum]
+  convert hk using 1
+  apply Fin.ext
+  exact hoff
 
 theorem scheduledLine_length_unbounded [Fintype α] :
     ∀ r : Nat, ∃ N : Nat, ∀ i : Nat, N ≤ i →
