@@ -135,6 +135,38 @@ theorem shift_eval_of_length_lt
           simp only [shift_succ, prependIdentity_eval_cons]
           rw [ih u hu]
 
+/-- Positive shifts have empty constant head. -/
+@[simp] theorem shift_head_of_pos
+    (W : Subspace α) {n : Nat} (h : 0 < n) :
+    (shift W n).head = [] := by
+  cases n with
+  | zero => omega
+  | succ n => rfl
+
+/-- Strictly before the last identity coordinate of a shift, the stored block
+is literally the identity block. -/
+theorem shift_blocks_eq_identity_of_succ_lt
+    (W : Subspace α) (n i : Nat)
+    (h : i + 1 < n) :
+    (shift W n).blocks i = ⟨[]⟩ := by
+  induction n generalizing i with
+  | zero =>
+      omega
+  | succ n ih =>
+      rw [shift_succ]
+      cases i with
+      | zero =>
+          have hn : 0 < n := by omega
+          change
+            (LeftVariableWord.mk (constants (shift W n).head)) =
+              LeftVariableWord.mk []
+          rw [shift_head_of_pos W hn]
+          rfl
+      | succ i =>
+          change (shift W n).blocks i = LeftVariableWord.mk []
+          apply ih
+          omega
+
 /-- General prefix/tail form of Shift.  If the fixed prefix has
 length at most the shift level, the remaining tail sees the residual shift. -/
 theorem shift_eval_append_of_length_le
