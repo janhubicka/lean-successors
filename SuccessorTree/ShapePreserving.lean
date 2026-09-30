@@ -167,6 +167,21 @@ theorem fusion_stable_of_le (F : Nat → ShapeMap S) (hF : FusionStable F)
   obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hi
   exact fusion_stable_add F hF a d
 
+private theorem list_map_eq_of_mem_eq
+    (p : List T) (f g : T → T)
+    (h : ∀ x ∈ p, f x = g x) :
+    p.map f = p.map g := by
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : f x = g x := h x (by simp)
+      have hxs : ∀ y ∈ xs, f y = g y := by
+        intro y hy
+        exact h y (by simp [hy])
+      simp only [List.map_cons, hx]
+      congr
+      exact ih hxs
+
 /-- The pointwise fusion limit from Proposition `prop:shape-pres`. -/
 noncomputable def fusionLimit (F : Nat → ShapeMap S) (hF : FusionStable F) :
     ShapeMap S where
@@ -187,15 +202,15 @@ noncomputable def fusionLimit (F : Nat → ShapeMap S) (hF : FusionStable F) :
       _ = F i b := hbeq.symm
   level_preserving' := by
     intro a b hab
-    subst hab
-    exact (F (LevelTree.lev b)).level_eq_of_level_eq rfl
+    rw [← hab]
+    exact (F (LevelTree.lev a)).level_eq_of_level_eq hab
   weak_succ' := by
     intro a b p c hsucc
     let k := LevelTree.lev a
     have hbLevel : LevelTree.lev b = k + 1 := by
       exact LevelTree.covBy_level_eq (S.covBy_of_succ_eq_some hsucc)
     have haStable : F (k + 1) a = F k a :=
-      hF k a (by simp [k])
+      (hF k a (by simp [k])).symm
     have hbDef : F (LevelTree.lev b) b = F (k + 1) b := by
       rw [hbLevel]
     have hparam : ∀ x ∈ p,
@@ -207,28 +222,17 @@ noncomputable def fusionLimit (F : Nat → ShapeMap S) (hF : FusionStable F) :
       exact (fusion_stable_of_le F hF x hxle).symm
     have hmap :
         p.map (fun x => F (LevelTree.lev x) x) =
-          p.map (fun x => F (k + 1) x) := by
-      induction p with
-      | nil => rfl
-      | cons x xs ih =>
-          have hx : F (LevelTree.lev x) x = F (k + 1) x := by
-            apply hparam x
-            simp
-          have hxs : ∀ y ∈ xs,
-              F (LevelTree.lev y) y = F (k + 1) y := by
-            intro y hy
-            apply hparam y
-            simp [hy]
-          simp only [List.map_cons, hx]
-          congr
-          exact ih hxs
+          p.map (fun x => F (k + 1) x) :=
+      list_map_eq_of_mem_eq p
+        (fun x => F (LevelTree.lev x) x)
+        (fun x => F (k + 1) x) hparam
     obtain ⟨d, hd, hdb⟩ := (F (k + 1)).weak_succ' hsucc
     refine ⟨d, ?_, ?_⟩
-    · simpa [fusionLimit, k, haStable, hmap] using hd
-    · simpa [fusionLimit, hbDef] using hdb
+    · simpa [k, haStable, hmap] using hd
+    · simpa [hbDef] using hdb
   root_le' := by
     intro a ha
-    simpa [fusionLimit, ha] using (F 0).root_le' ha
+    simpa [ha] using (F 0).root_le' ha
 
 @[simp] theorem fusionLimit_apply (F : Nat → ShapeMap S)
     (hF : FusionStable F) (a : T) :
