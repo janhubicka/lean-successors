@@ -170,6 +170,20 @@ theorem StarLine.eval_eq_star_parameter_tail (L : StarLine α) (a : α) :
       rw [evalWord_constants_append]
       rfl
 
+@[simp] theorem StarLine.length_eval (L : StarLine α) (a : α) :
+    (L.eval a).length = L.word.length := by
+  simp [StarLine.eval, evalWord]
+
+theorem StarLine.length_star_lt_word_length (L : StarLine α) :
+    L.star.length < L.word.length := by
+  have hlen := congrArg List.length L.word_eq_constants_star_parameter_tail
+  simp only [List.length_append, List.length_cons, List.length_map] at hlen
+  omega
+
+theorem StarLine.length_star_le_word_length (L : StarLine α) :
+    L.star.length ≤ L.word.length :=
+  Nat.le_of_lt L.length_star_lt_word_length
+
 /-- Prepend a fixed constant support word to a starred line. -/
 def StarLine.prepend (s : List α) (L : StarLine α) : StarLine α where
   word := constants s ++ L.word
