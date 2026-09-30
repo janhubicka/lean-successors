@@ -48,6 +48,11 @@ abbrev lev (a : T) : Nat := LevelTree.level a
 theorem lt_level_lt {a b : T} (h : a < b) : lev a < lev b :=
   LevelTree.level_lt h
 
+theorem level_le_of_le {a b : T} (h : a ≤ b) : lev a ≤ lev b := by
+  rcases h.eq_or_lt with h | h
+  · simpa [h]
+  · exact Nat.le_of_lt (lt_level_lt h)
+
 theorem covBy_level_eq {a b : T} (h : a ⋖ b) :
     lev b = lev a + 1 :=
   LevelTree.covBy_level h
@@ -105,10 +110,9 @@ theorem exists_covBy_between {a b : T} (hab : a < b) :
   have hac : a ≤ c := by
     rcases comparable_below hab.le hcb with h | h
     · exact h
-    · have hl := lt_level_lt (lt_of_le_of_ne h (fun hca => by
-          subst hca
-          simp [c, level_ancestor] at hlevel))
-      simp [c, level_ancestor] at hl
+    · have hl := level_le_of_le h
+      have hc : lev c = lev a + 1 := by
+        simp [c, level_ancestor]
       omega
   refine ⟨c, covBy_of_le_level_succ hac ?_, hcb⟩
   simp [c, level_ancestor]
