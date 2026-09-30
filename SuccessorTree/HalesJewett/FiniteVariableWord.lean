@@ -372,7 +372,7 @@ theorem extendByLine_eval_of_length_eq
         rw [List.getElem?_eq_none_iff] at hget
         omega
     | some a =>
-        exact ⟨a, hget⟩
+        exact ⟨a, rfl⟩
 
 /-- If `u` has length `n`, then supplying one additional letter `a`
 makes the new line contribute `L(a)`, while the old part still evaluates as
@@ -397,13 +397,13 @@ theorem extendByLine_eval_append_letter
   · intro i hi
     have hil : i < (u ++ [a]).length := by
       simp [hu]
-      exact Nat.lt_succ_of_lt (U.below i hi)
+      exact Nat.le_of_lt (U.below i hi)
     cases hget : (u ++ [a])[i]? with
     | none =>
         rw [List.getElem?_eq_none_iff] at hget
         omega
     | some b =>
-        exact ⟨b, hget⟩
+        exact ⟨b, rfl⟩
 
 /-- Every variable of `U` is resolvable by a list of length at least `n`. -/
 theorem resolvable_of_length_ge
