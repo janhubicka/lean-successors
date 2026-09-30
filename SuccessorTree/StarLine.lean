@@ -77,7 +77,7 @@ theorem starPrefix_isPrefix_evalWord (w : List (LineSymbol α)) (a : α) :
       | const b =>
           rcases ih with ⟨t, ht⟩
           refine ⟨t, ?_⟩
-          simp [starPrefix, evalWord, ht]
+          simp [starPrefix, evalWord, LineSymbol.eval, ht]
 
 /-- In particular, `L(*)` is a prefix of every `L(a)`. -/
 theorem StarLine.star_isPrefix_eval (L : StarLine α) (a : α) :
