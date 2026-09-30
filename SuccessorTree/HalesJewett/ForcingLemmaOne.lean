@@ -35,7 +35,8 @@ def exactWordOfList (u : List α) {n : Nat} (h : u.length = n) :
     (u : List α) {n : Nat} (h : u.length = n) :
     List.ofFn (exactWordOfList u h) = u := by
   subst n
-  simpa [exactWordOfList] using (List.ofFn_get u)
+  change List.ofFn (fun i : Fin u.length => u.get i) = u
+  exact List.ofFn_get u
 
 /-- A finite `n`-variable word avoids `A` when none of its evaluations
 using at most `n` supplied letters lies in `A`. -/
@@ -59,7 +60,7 @@ fails to avoid `A`, then starred Hales--Jewett produces a line all of whose
 star/evaluation values lie in `A`.
 -/
 theorem line_mem_of_maximal_avoider
-    [Fintype α]
+    [Fintype α] [DecidableEq α]
     (A : Set (List α))
     (U : FiniteVariableWord α n)
     (havoid : U.Avoids A)
@@ -124,21 +125,21 @@ theorem line_mem_of_maximal_avoider
     exact False.elim ((hmax L) hext)
 
   obtain ⟨q, hq⟩ := hex
-  let prefix := U.eval (List.ofFn q)
-  refine ⟨L.prepend prefix, ?_, ?_⟩
-  · have hmem : prefix ++ L.star ∈ A := by
-      change decide (prefix ++ L.star ∈ A) = true at hq
+  let pref := U.eval (List.ofFn q)
+  refine ⟨L.prepend pref, ?_, ?_⟩
+  · have hmem : pref ++ L.star ∈ A := by
+      change decide (pref ++ L.star ∈ A) = true at hq
       exact of_decide_eq_true hq
-    simpa [prefix] using hmem
+    simpa [pref] using hmem
   · intro a
     have hqa : colour (L.eval a) q = true := by
       calc
         colour (L.eval a) q = colour L.star q := congrFun (hmono a) q
         _ = true := hq
-    have hmem : prefix ++ L.eval a ∈ A := by
-      change decide (prefix ++ L.eval a ∈ A) = true at hqa
+    have hmem : pref ++ L.eval a ∈ A := by
+      change decide (pref ++ L.eval a ∈ A) = true at hqa
       exact of_decide_eq_true hqa
-    simpa [prefix] using hmem
+    simpa [pref] using hmem
 
 end HalesJewett
 end SuccessorTree
