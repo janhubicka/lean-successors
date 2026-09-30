@@ -101,7 +101,8 @@ def constants (s : List α) : List (LineSymbol α) :=
   induction s with
   | nil => rfl
   | cons b s ih =>
-      simp [evalWord, constants, ih]
+      change b :: evalWord a (constants s) = b :: s
+      exact congrArg (List.cons b) ih
 
 @[simp] theorem starPrefix_constants_append (s : List α) (w : List (LineSymbol α)) :
     starPrefix (constants s ++ w) = s ++ starPrefix w := by
@@ -113,7 +114,11 @@ def constants (s : List α) : List (LineSymbol α) :=
 
 @[simp] theorem evalWord_constants_append (s : List α) (w : List (LineSymbol α)) (a : α) :
     evalWord a (constants s ++ w) = s ++ evalWord a w := by
-  rw [evalWord, List.map_append, evalWord_constants]
+  induction s with
+  | nil => rfl
+  | cons b s ih =>
+      change b :: evalWord a (constants s ++ w) = b :: (s ++ evalWord a w)
+      exact congrArg (List.cons b) ih
 
 /-- Prepend a fixed constant support word to a starred line. -/
 def StarLine.prepend (s : List α) (L : StarLine α) : StarLine α where
