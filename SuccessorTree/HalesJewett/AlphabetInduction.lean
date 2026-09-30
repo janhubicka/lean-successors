@@ -307,7 +307,8 @@ theorem allStarHJ_option
               List.replicate q none := by
           rw [← List.replicate_add, hpqd]
         rw [hrep]
-        exact (hstageNone q hqR).trans (hpqColour.trans hstar.symm)
+        exact (hstageNone q hqR).trans
+          (hpqColour.symm.trans hstar.symm)
     | some a =>
         rw [show K = subspaceImageLine U B by rfl,
           subspaceImageLine_eval]
