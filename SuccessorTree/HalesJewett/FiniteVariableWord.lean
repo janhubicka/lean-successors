@@ -196,7 +196,7 @@ theorem newVariable_mem_indexedLine
   rw [variableIndices_indexedLine]
   have hp : 0 < parameterCount L.word :=
     parameterCount_pos_of_mem L.word L.hasParameter
-  simpa using hp
+  exact List.mem_replicate.mpr ⟨Nat.ne_of_gt hp, rfl⟩
 
 /-- All variables in an indexed line have the selected index. -/
 theorem eq_newVariable_of_mem_indexedLine
@@ -204,7 +204,7 @@ theorem eq_newVariable_of_mem_indexedLine
     (h : i ∈ variableIndices (indexedLine n L)) :
     i = n := by
   rw [variableIndices_indexedLine] at h
-  simpa using h
+  exact (List.mem_replicate.mp h).2
 
 /-- A concrete finite `n`-variable word.
 
