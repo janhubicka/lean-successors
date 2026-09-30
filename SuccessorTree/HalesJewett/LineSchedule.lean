@@ -40,6 +40,16 @@ noncomputable instance fixedLineFintype [Fintype α] :
 def FixedLine.toStarLine (F : FixedLine α n) : StarLine α :=
   ⟨List.ofFn F.1, F.2⟩
 
+theorem starLine_word_injective :
+    Function.Injective (fun L : StarLine α => L.word) := by
+  intro L K h
+  cases L with
+  | mk w hw =>
+      cases K with
+      | mk v hv =>
+          cases h
+          rfl
+
 /-- All starred lines of one fixed raw length. -/
 noncomputable def lineBucket [Fintype α] (n : Nat) : List (StarLine α) := by
   classical
@@ -64,7 +74,7 @@ theorem mem_lineBucket_self
   have hF : F ∈ (Finset.univ : Finset (FixedLine α L.word.length)).toList := by
     simp
   have hEq : F.toStarLine = L := by
-    apply StarLine.word_injective
+    apply starLine_word_injective
     simp [FixedLine.toStarLine, F]
   rw [lineBucket]
   exact List.mem_map.mpr ⟨F, hF, hEq⟩
@@ -81,7 +91,7 @@ theorem lineBucket_nonempty
   have hm : F.toStarLine ∈ lineBucket (α := α) (n + 1) := by
     rw [lineBucket]
     exact List.mem_map.mpr ⟨F, hF, rfl⟩
-  exact List.length_pos.mpr ⟨_, hm⟩
+  exact List.length_pos_iff_exists_mem.mpr ⟨_, hm⟩
 
 /-- Size of the bucket of lines of raw length n+1. -/
 noncomputable def lineBucketSize [Fintype α] (n : Nat) : Nat :=
@@ -95,7 +105,8 @@ theorem lineBucketSize_pos [Fintype α] (n : Nat) :
 n+1). -/
 noncomputable def lineBucketStart [Fintype α] : Nat → Nat
   | 0 => 0
-  | n + 1 => lineBucketStart n + lineBucketSize (α := α) n
+  | n + 1 =>
+      lineBucketStart (α := α) n + lineBucketSize (α := α) n
 
 @[simp] theorem lineBucketStart_zero [Fintype α] :
     lineBucketStart (α := α) 0 = 0 := rfl
@@ -196,6 +207,9 @@ theorem lineBucketNumber_mono [Fintype α] :
 theorem scheduledLine_length_mono [Fintype α] :
     Monotone (fun i => (scheduledLine (α := α) i).word.length) := by
   intro i j hij
+  change
+    (scheduledLine (α := α) i).word.length ≤
+      (scheduledLine (α := α) j).word.length
   rw [scheduledLine_length, scheduledLine_length]
   exact Nat.add_le_add_right (lineBucketNumber_mono (α := α) hij) 1
 
@@ -229,24 +243,27 @@ theorem scheduledLine_covers [Fintype α] (L : StarLine α) :
               (lineBucketNumber (α := α) i + 1) ≤
             lineBucketStart (α := α) m :=
         lineBucketStart_mono (α := α) (by omega)
-      dsimp [i] at hspec
-      omega
+      have hiStart : lineBucketStart (α := α) m ≤ i := by
+        dsimp [i]
+        exact Nat.le_add_right _ _
+      exact (not_lt_of_ge hiStart) (lt_of_lt_of_le hspec hmono)
   have hoff : lineBucketOffset (α := α) i = k.val := by
     unfold lineBucketOffset
     rw [hnum]
     dsimp [i]
     omega
   refine ⟨i, ?_⟩
-  unfold scheduledLine
-  rw [hnum]
   have hfin :
       (⟨lineBucketOffset (α := α) i, by
-        simpa [lineBucketSize] using lineBucketOffset_lt (α := α) i⟩ :
+        simpa [lineBucketSize, hnum] using
+          lineBucketOffset_lt (α := α) i⟩ :
         Fin (lineBucket (α := α) (m + 1)).length) = k := by
     apply Fin.ext
     exact hoff
-  rw [hfin]
-  exact hk
+  change
+    (lineBucket (α := α) (lineBucketNumber (α := α) i + 1)).get
+        ⟨lineBucketOffset (α := α) i, _⟩ = L
+  simpa [hnum, hfin] using hk
 
 theorem scheduledLine_length_unbounded [Fintype α] :
     ∀ r : Nat, ∃ N : Nat, ∀ i : Nat, N ≤ i →
