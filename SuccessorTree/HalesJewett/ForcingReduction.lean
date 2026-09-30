@@ -55,7 +55,10 @@ theorem binaryRamsey_of_largeSetTheorem
     have hy := hU y
     change colour (S.act W (S.act U x)) = false at hx
     change colour (S.act W (S.act U y)) = false at hy
-    simpa only [S.act_comp] using hx.trans hy.symm
+    change colour (S.act (S.comp W U) x) =
+      colour (S.act (S.comp W U) y)
+    rw [S.act_comp, S.act_comp]
+    exact hx.trans hy.symm
   · obtain ⟨U, hU⟩ := force (S.pullback W A₁) hlarge
     refine ⟨S.comp W U, ?_⟩
     intro x y
@@ -63,7 +66,10 @@ theorem binaryRamsey_of_largeSetTheorem
     have hy := hU y
     change colour (S.act W (S.act U x)) = true at hx
     change colour (S.act W (S.act U y)) = true at hy
-    simpa only [S.act_comp] using hx.trans hy.symm
+    change colour (S.act (S.comp W U) x) =
+      colour (S.act (S.comp W U) y)
+    rw [S.act_comp, S.act_comp]
+    exact hx.trans hy.symm
 
 /-- Proposition 1 implies the finite-colour infinite-dimensional theorem. -/
 theorem finiteRamsey_of_largeSetTheorem
@@ -89,8 +95,8 @@ theorem starHJ_of_largeSetTheorem
     finiteRamsey_of_largeSetTheorem force colour
   refine ⟨W.firstLine, ?_⟩
   intro a
+  rw [Subspace.firstLine_eval, Subspace.firstLine_star]
   have h := hW [a] []
-  change colour (W.eval [a]) = colour W.head
   change colour (W.eval [a]) = colour (W.eval []) at h
   simpa using h
 
