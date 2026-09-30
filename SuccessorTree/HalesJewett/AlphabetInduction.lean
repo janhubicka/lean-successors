@@ -5,6 +5,7 @@ import SuccessorTree.HalesJewett.ForcingProposition
 import SuccessorTree.HalesJewett.ForcingLemmaTwo
 import Mathlib.Data.Fintype.Option
 import Mathlib.Data.Fintype.Pigeonhole
+import Mathlib.Data.Fintype.EquivFin
 import Mathlib.Tactic
 
 /-!
@@ -176,26 +177,36 @@ def repetitionLine (p d : Nat) (hd : 0 < d) :
     constants (List.replicate p (none : Option α)) ++
       List.replicate d LineSymbol.parameter
   hasParameter := by
-    simp [hd]
+    apply List.mem_append.mpr
+    exact Or.inr (by
+      simpa [Nat.ne_of_gt hd])
 
 @[simp] theorem repetitionLine_star
     (p d : Nat) (hd : 0 < d) :
     (repetitionLine (α := α) p d hd).star =
       List.replicate p (none : Option α) := by
+  change
+    starPrefix
+      (constants (List.replicate p (none : Option α)) ++
+        List.replicate d LineSymbol.parameter) =
+      List.replicate p (none : Option α)
+  rw [starPrefix_constants_append]
   cases d with
   | zero => omega
   | succ d =>
-      simp [repetitionLine, List.replicate_succ]
+      simp [List.replicate_succ, starPrefix]
 
 @[simp] theorem repetitionLine_eval
     (p d : Nat) (hd : 0 < d) (x : Option α) :
     (repetitionLine (α := α) p d hd).eval x =
       List.replicate p (none : Option α) ++ List.replicate d x := by
-  cases d with
-  | zero => omega
-  | succ d =>
-      simp [repetitionLine, StarLine.eval, evalWord,
-        List.replicate_succ, List.map_replicate]
+  change
+    evalWord x
+      (constants (List.replicate p (none : Option α)) ++
+        List.replicate d LineSymbol.parameter) =
+      List.replicate p (none : Option α) ++ List.replicate d x
+  rw [evalWord_constants_append]
+  simp [evalWord, List.map_replicate, LineSymbol.eval]
 
 /-- Image of a one-variable line under a subspace. -/
 def subspaceImageLine
@@ -205,7 +216,8 @@ def subspaceImageLine
 @[simp] theorem subspaceImageLine_star
     (U : Subspace α) (L : StarLine α) :
     (subspaceImageLine U L).star = U.eval L.star := by
-  change (U.compose (linePrefixSubspace L)).head = U.eval L.star
+  unfold subspaceImageLine
+  rw [Subspace.firstLine_star]
   rfl
 
 @[simp] theorem subspaceImageLine_eval
@@ -271,12 +283,18 @@ theorem allStarHJ_option
       rw [show Ws =
           alphabetWords hall colour r ++ Wr :: Cr by
             simpa [Ws, Wr] using hrdec]
-      rw [← hlen]
       have hsplit :=
         nestedSubspace_eval_none_prefix
           (alphabetWords hall colour r) (Wr :: Cr) []
       simp only [List.append_nil] at hsplit
-      rw [hsplit, nestedSubspace_cons_eval_nil]
+      have hsplit' :
+          (nestedSubspace
+              (alphabetWords hall colour r ++ Wr :: Cr)).eval
+              (List.replicate r (none : Option α)) =
+            prefixApply (alphabetWords hall colour r)
+              ((nestedSubspace (Wr :: Cr)).eval []) := by
+        simpa [hlen] using hsplit
+      rw [hsplit', nestedSubspace_cons_eval_nil]
       exact alphabetStepWord_colour hall colour
         (alphabetWords hall colour r) []
 
@@ -328,12 +346,20 @@ theorem allStarHJ_option
         rw [show Ws =
             alphabetWords hall colour p ++ Wp :: Cp by
               simpa [Ws, Wp] using hpdec]
-        rw [← hlen]
         have hsplit :=
           nestedSubspace_eval_none_prefix
             (alphabetWords hall colour p) (Wp :: Cp)
             (List.replicate d (some a))
-        rw [hsplit]
+        have hsplit' :
+            (nestedSubspace
+                (alphabetWords hall colour p ++ Wp :: Cp)).eval
+                (List.replicate p (none : Option α) ++
+                  List.replicate d (some a)) =
+              prefixApply (alphabetWords hall colour p)
+                ((nestedSubspace (Wp :: Cp)).eval
+                  (List.replicate d (some a))) := by
+          simpa [hlen] using hsplit
+        rw [hsplit']
 
         have hdEq : d = (d - 1) + 1 := by omega
         have hrepOld :
@@ -422,14 +448,31 @@ theorem allStarHJ_finite
     · exact finiteStarHJ_empty
     · intro γ hγFintype hγ
       exact finiteStarHJ_option hγ
-    · exact α
   exact hfinite inferInstance
 
-/-- The fully discharged starred Hales--Jewett theorem. -/
+/-- Renaming the finite colour type preserves StarHJ. -/
+theorem starHJ_colour_equiv
+    [Fintype α] [Fintype κ] [Fintype λ]
+    (e : κ ≃ λ)
+    (h : StarHJ α λ) :
+    StarHJ α κ := by
+  intro colour
+  obtain ⟨L, hL⟩ := h (fun w => e (colour w))
+  refine ⟨L, ?_⟩
+  intro a
+  apply e.injective
+  exact hL a
+
+/-- The fully discharged starred Hales--Jewett theorem, for arbitrary finite
+alphabet and colour universes. -/
 theorem starHJ_finite
     [Fintype α] [Fintype κ] :
-    StarHJ α κ :=
-  allStarHJ_finite α κ
+    StarHJ α κ := by
+  classical
+  let e : κ ≃ Fin (Fintype.card κ) := Fintype.equivFin κ
+  have hfin : StarHJ α (Fin (Fintype.card κ)) :=
+    allStarHJ_finite α (Fin (Fintype.card κ))
+  exact starHJ_colour_equiv e hfin
 
 end HalesJewett
 end SuccessorTree
