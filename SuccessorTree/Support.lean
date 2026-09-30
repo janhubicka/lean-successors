@@ -1,15 +1,15 @@
 import SuccessorTree.StarLine
-import Mathlib.Data.Finset.Univ
+import Mathlib.Data.Finset.Dedup
 
 /-!
 # Support lemmas for the Hales--Jewett reduction
 
 The successor-tree proof first fixes a word `s` containing every one-step
-transition.  Hales--Jewett is then applied to the colouring of words *after*
-this support prefix.  This file formalizes that bookkeeping.
+transition. Hales--Jewett is then applied to the colouring of words *after*
+this support prefix. This file formalizes that bookkeeping.
 
 The actual starred Hales--Jewett theorem is intentionally exposed as a single
-hypothesis (`StarHJ`) for now.  The rest of the reduction is proved in Lean.
+hypothesis (`StarHJ`) for now. The rest of the reduction is proved in Lean.
 -/
 
 namespace SuccessorTree
@@ -20,8 +20,8 @@ def StarMonochromatic (colour : List α → κ) (L : StarLine α) : Prop :=
   ∀ a : α, colour (L.eval a) = colour L.star
 
 /-- The exact combinatorial input needed by the successor-tree pigeonhole
-argument.  A future milestone will prove this from a finite Hales--Jewett
-formalization rather than assume it. -/
+argument. A future milestone will prove this from the Hubička--Smolík
+combinatorial-forcing proof rather than assume it. -/
 def StarHJ (α κ : Type*) [Fintype α] [Fintype κ] : Prop :=
   ∀ colour : List α → κ, ∃ L : StarLine α, StarMonochromatic colour L
 
