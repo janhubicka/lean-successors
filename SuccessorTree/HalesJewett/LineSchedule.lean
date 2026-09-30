@@ -178,11 +178,16 @@ theorem lineBucketOffset_lt [Fintype α] (i : Nat) :
   unfold lineBucketOffset
   omega
 
+theorem lineBucketOffset_lt_length [Fintype α] (i : Nat) :
+    lineBucketOffset (α := α) i <
+      (lineBucket (α := α) (lineBucketNumber (α := α) i + 1)).length := by
+  exact lineBucketOffset_lt (α := α) i
+
 /-- The line at schedule position i. -/
 noncomputable def scheduledLine [Fintype α] (i : Nat) : StarLine α :=
   (lineBucket (α := α) (lineBucketNumber (α := α) i + 1)).get
-    ⟨lineBucketOffset (α := α) i, by
-      simpa [lineBucketSize] using lineBucketOffset_lt (α := α) i⟩
+    ⟨lineBucketOffset (α := α) i,
+      lineBucketOffset_lt_length (α := α) i⟩
 
 theorem scheduledLine_length [Fintype α] (i : Nat) :
     (scheduledLine (α := α) i).word.length =
