@@ -206,6 +206,91 @@ theorem eq_newVariable_of_mem_indexedLine
   rw [variableIndices_indexedLine] at h
   exact (List.mem_replicate.mp h).2
 
+/-- If some variable occurring in `w` is unresolved by `u`, then
+appending a tail after `w` cannot affect the evaluation: evaluation stops
+inside `w`. -/
+theorem evalIndexed_append_of_unresolved
+    (u : List α) (w tail : List (IndexedSymbol α))
+    (h : ∃ i, i ∈ variableIndices w ∧ u[i]? = none) :
+    evalIndexed u (w ++ tail) = evalIndexed u w := by
+  induction w with
+  | nil =>
+      simp at h
+  | cons x xs ih =>
+      cases x with
+      | const a =>
+          simp only [variableIndices_const] at h
+          simp only [List.cons_append, evalIndexed_const]
+          exact congrArg (List.cons a) (ih h)
+      | var i =>
+          simp only [variableIndices_var, List.mem_cons] at h
+          by_cases hi : u[i]? = none
+          · simp [evalIndexed, hi]
+          · rcases h with ⟨j, hj | hj, hnone⟩
+            · subst j
+              exact False.elim (hi hnone)
+            · cases hget : u[i]? with
+              | none => exact False.elim (hi hget)
+              | some a =>
+                  simp only [List.cons_append]
+                  rw [evalIndexed_var_some _ _ _ _ hget,
+                    evalIndexed_var_some _ _ _ _ hget]
+                  exact congrArg (List.cons a) (ih ⟨j, hj, hnone⟩)
+
+/-- If every variable occurring in `w` is resolved by `u`, evaluation
+distributes across an appended tail. -/
+theorem evalIndexed_append_of_resolved
+    (u : List α) (w tail : List (IndexedSymbol α))
+    (h : ∀ i, i ∈ variableIndices w → ∃ a, u[i]? = some a) :
+    evalIndexed u (w ++ tail) =
+      evalIndexed u w ++ evalIndexed u tail := by
+  induction w with
+  | nil => rfl
+  | cons x xs ih =>
+      cases x with
+      | const a =>
+          simp only [List.cons_append, evalIndexed_const]
+          rw [ih]
+          · rfl
+          · intro i hi
+            exact h i hi
+      | var i =>
+          have hiMem : i ∈ variableIndices (.var i :: xs) := by simp
+          obtain ⟨a, hget⟩ := h i hiMem
+          simp only [List.cons_append]
+          rw [evalIndexed_var_some _ _ _ _ hget,
+            evalIndexed_var_some _ _ _ _ hget]
+          rw [ih]
+          · rfl
+          · intro j hj
+            exact h j (by simp [hj])
+
+/-- Evaluation of an indexed word depends only on the supplied coordinates
+whose indices actually occur in the word. -/
+theorem evalIndexed_eq_of_getElem_eq
+    (u v : List α) (w : List (IndexedSymbol α))
+    (h : ∀ i, i ∈ variableIndices w → u[i]? = v[i]?) :
+    evalIndexed u w = evalIndexed v w := by
+  induction w with
+  | nil => rfl
+  | cons x xs ih =>
+      cases x with
+      | const a =>
+          simp only [evalIndexed_const]
+          exact congrArg (List.cons a) (ih (fun i hi => h i hi))
+      | var i =>
+          have hi : u[i]? = v[i]? := h i (by simp)
+          cases hu : u[i]? with
+          | none =>
+              have hv : v[i]? = none := by simpa [hu] using hi.symm
+              simp [evalIndexed, hu, hv]
+          | some a =>
+              have hv : v[i]? = some a := by simpa [hu] using hi.symm
+              rw [evalIndexed_var_some _ _ _ _ hu,
+                evalIndexed_var_some _ _ _ _ hv]
+              exact congrArg (List.cons a)
+                (ih (fun j hj => h j (by simp [hj])))
+
 /-- A concrete finite `n`-variable word.
 
 The variable-index list is nondecreasing, every index below `n` occurs, and
