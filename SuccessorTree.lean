@@ -1,3 +1,4 @@
+import SuccessorTree.ShapePreserving
 import SuccessorTree.Tree
 import SuccessorTree.Successor
 import SuccessorTree.StarLine
