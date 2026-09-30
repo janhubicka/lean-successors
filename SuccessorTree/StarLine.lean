@@ -93,40 +93,6 @@ def afterFirstParameter : List (LineSymbol α) → List (LineSymbol α)
   | LineSymbol.parameter :: w => w
   | LineSymbol.const _ :: w => afterFirstParameter w
 
-/-- A starred line decomposes into its constant star prefix, its first
-parameter, and the remaining raw tail. -/
-theorem StarLine.word_eq_constants_star_parameter_tail (L : StarLine α) :
-    L.word =
-      constants L.star ++
-        (LineSymbol.parameter :: afterFirstParameter L.word) := by
-  induction L.word with
-  | nil =>
-      simp at L.hasParameter
-  | cons x xs ih =>
-      cases x with
-      | parameter =>
-          rfl
-      | const a =>
-          have hmem : LineSymbol.parameter ∈ xs := by
-            simpa using L.hasParameter
-          let L' : StarLine α := ⟨xs, hmem⟩
-          have hih := ih L'
-          change
-            LineSymbol.const a :: xs =
-              constants (a :: starPrefix xs) ++
-                (LineSymbol.parameter ::
-                  afterFirstParameter
-                    (LineSymbol.const a :: xs))
-          simp only [constants_cons, List.cons_append, afterFirstParameter]
-          exact congrArg (List.cons (LineSymbol.const a)) hih
-
-/-- Ordinary evaluation of a starred line has the corresponding decomposition. -/
-theorem StarLine.eval_eq_star_parameter_tail (L : StarLine α) (a : α) :
-    L.eval a =
-      L.star ++ (a :: evalWord a (afterFirstParameter L.word)) := by
-  rw [StarLine.eval, L.word_eq_constants_star_parameter_tail]
-  simp [evalWord, evalWord_constants]
-
 /-- Turn a constant word into line symbols. -/
 def constants (s : List α) : List (LineSymbol α) :=
   s.map LineSymbol.const
@@ -159,6 +125,43 @@ def constants (s : List α) : List (LineSymbol α) :=
   | cons b s ih =>
       change b :: evalWord a (constants s ++ w) = b :: (s ++ evalWord a w)
       exact congrArg (List.cons b) ih
+
+/-- Raw decomposition at the first parameter. -/
+theorem word_eq_constants_star_parameter_tail
+    (w : List (LineSymbol α))
+    (h : LineSymbol.parameter ∈ w) :
+    w =
+      constants (starPrefix w) ++
+        (LineSymbol.parameter :: afterFirstParameter w) := by
+  induction w with
+  | nil =>
+      simp at h
+  | cons x xs ih =>
+      cases x with
+      | parameter =>
+          rfl
+      | const a =>
+          have htail : LineSymbol.parameter ∈ xs := by
+            simpa using h
+          simp only [starPrefix, afterFirstParameter, constants_cons,
+            List.cons_append]
+          exact congrArg (List.cons (LineSymbol.const a)) (ih htail)
+
+/-- A starred line decomposes into its constant star prefix, its first
+parameter, and the remaining raw tail. -/
+theorem StarLine.word_eq_constants_star_parameter_tail (L : StarLine α) :
+    L.word =
+      constants L.star ++
+        (LineSymbol.parameter :: afterFirstParameter L.word) := by
+  exact word_eq_constants_star_parameter_tail L.word L.hasParameter
+
+/-- Ordinary evaluation of a starred line has the corresponding decomposition. -/
+theorem StarLine.eval_eq_star_parameter_tail (L : StarLine α) (a : α) :
+    L.eval a =
+      L.star ++ (a :: evalWord a (afterFirstParameter L.word)) := by
+  rw [StarLine.eval, L.word_eq_constants_star_parameter_tail,
+    evalWord_constants_append]
+  rfl
 
 /-- Prepend a fixed constant support word to a starred line. -/
 def StarLine.prepend (s : List α) (L : StarLine α) : StarLine α where
