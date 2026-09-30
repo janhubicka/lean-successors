@@ -54,7 +54,7 @@ def eval (W : Subspace α) (u : List α) : List α :=
   W.head ++ W.evalFrom 0 u
 
 @[simp] theorem eval_nil (W : Subspace α) : W.eval [] = W.head := by
-  rfl
+  simp [eval, evalFrom]
 
 /-- The identity subspace `λ₀ λ₁ λ₂ ...`. -/
 def identity : Subspace α where
@@ -146,7 +146,7 @@ def firstLine (W : Subspace α) : StarLine α where
 @[simp] theorem firstLine_eval (W : Subspace α) (a : α) :
     W.firstLine.eval a = W.eval [a] := by
   simp [firstLine, StarLine.eval, eval, evalFrom, LeftVariableWord.eval,
-    List.append_assoc]
+    evalWord, List.append_assoc]
 
 end Subspace
 
