@@ -186,7 +186,7 @@ theorem compose_shift_blocks_eq
     (compose W (shift U n)).blocks i = W.blocks i := by
   change composeBlock W (shift U n) i = W.blocks i
   unfold composeBlock
-  rw [shift_blockStart_eq U n i (lt_of_succ_lt h),
+  rw [shift_blockStart_eq U n i (Nat.lt_of_succ_lt h),
     shift_blocks_eq_identity_of_succ_lt U n i h]
   cases hB : W.blocks i with
   | mk tail =>
