@@ -34,7 +34,7 @@ paper proves for the constructed block `h`.
 ## Hales--Jewett proof audit
 
 `docs/hales-jewett-proof-audit.md` records the first independent audit of the
-combinatorial-forcing proof.  The argument is structurally sound, with four
+combinatorial-forcing proof.  The argument is structurally sound, with five
 local source repairs identified before formalization.
 
 ## Next verification steps
