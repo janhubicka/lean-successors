@@ -117,6 +117,25 @@ theorem nestedSubspace_eval_optionWord
           rw [← ht]
           simpa [optionWord] using W.optionLift_eval (a :: t)
 
+/-- If a nonempty nested system starts with W and is fed a nonempty
+old-letter word, its output is the lift of W evaluated at some old-letter
+word. This is the formal v_a used in the alphabet-increase proof. -/
+theorem nestedSubspace_cons_eval_optionWord
+    (W : Subspace α) (Ws : List (Subspace α))
+    (a : α) (u : List α) :
+    ∃ t : List α,
+      (nestedSubspace (W :: Ws)).eval (optionWord (a :: u)) =
+        optionWord (W.eval t) := by
+  obtain ⟨v, hv⟩ := nestedSubspace_eval_optionWord Ws u
+  refine ⟨a :: v, ?_⟩
+  rw [nestedSubspace_cons_eval_cons]
+  change
+    W.optionLift.eval
+        (some a :: (nestedSubspace Ws).eval (optionWord u)) =
+      optionWord (W.eval (a :: v))
+  rw [← hv]
+  simpa [optionWord] using W.optionLift_eval (a :: v)
+
 def prefixApply : List (Subspace α) → List (Option α) → List (Option α)
   | [], v => v
   | W :: Ws, v =>
