@@ -15,3 +15,4 @@ import SuccessorTree.HalesJewett.ForcingFusionLimit
 import SuccessorTree.HalesJewett.ForcingProposition
 import SuccessorTree.HalesJewett.LineSchedule
 import SuccessorTree.HalesJewett.AlphabetLift
+import SuccessorTree.HalesJewett.AlphabetEquiv
