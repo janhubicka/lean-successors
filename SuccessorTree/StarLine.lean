@@ -177,7 +177,7 @@ theorem StarLine.eval_eq_star_parameter_tail (L : StarLine α) (a : α) :
 theorem StarLine.length_star_lt_word_length (L : StarLine α) :
     L.star.length < L.word.length := by
   have hlen := congrArg List.length L.word_eq_constants_star_parameter_tail
-  simp only [List.length_append, List.length_cons, List.length_map] at hlen
+  simp [constants] at hlen
   omega
 
 theorem StarLine.length_star_le_word_length (L : StarLine α) :
