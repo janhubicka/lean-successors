@@ -62,9 +62,12 @@ theorem evalWord_substSymbolsFrom
   induction xs generalizing i with
   | nil => rfl
   | cons x xs ih =>
-      simp only [substSymbolsFrom, evalWord_append,
-        evalWord_substSymbolAt, evalWord, List.map_cons, evalFrom]
-      rw [ih (i + 1)]
+      change
+        evalWord a (W.substSymbolAt i x ++
+          W.substSymbolsFrom (i + 1) xs) =
+        (W.blocks i).eval (LineSymbol.eval a x) ++
+          W.evalFrom (i + 1) (evalWord a xs)
+      rw [evalWord_append, evalWord_substSymbolAt, ih (i + 1)]
 
 /-- Raw position at which the `k`th variable block of `U` starts. -/
 def blockStart (U : Subspace α) : Nat → Nat
@@ -74,13 +77,13 @@ def blockStart (U : Subspace α) : Nat → Nat
 @[simp] theorem LeftVariableWord.length_eval
     (B : LeftVariableWord α) (a : α) :
     (B.eval a).length = 1 + B.tail.length := by
-  simp [LeftVariableWord.eval, evalWord]
+  simp [LeftVariableWord.eval, evalWord, Nat.add_comm]
 
 /-- Moving to the next inner block consumes exactly the evaluated length of
 the current block. -/
 theorem blockStart_succ (U : Subspace α) (k : Nat) (a : α) :
     U.blockStart (k + 1) =
-      U.blockStart k + (U.blocks k).eval a |>.length := by
+      U.blockStart k + ((U.blocks k).eval a).length := by
   simp [blockStart, LeftVariableWord.length_eval, Nat.add_assoc]
 
 /-- The `k`th block of the composite.  The first raw symbol of every inner
