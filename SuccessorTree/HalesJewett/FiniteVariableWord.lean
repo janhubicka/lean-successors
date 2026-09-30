@@ -292,6 +292,24 @@ theorem evalIndexed_eq_of_getElem_eq
               exact congrArg (List.cons a)
                 (ih (fun j hj => h j (by simp [hj])))
 
+/-- Encode an ordinary constant word as an indexed word with no variables. -/
+def indexedConstants (u : List α) : List (IndexedSymbol α) :=
+  u.map IndexedSymbol.const
+
+@[simp] theorem variableIndices_indexedConstants (u : List α) :
+    variableIndices (indexedConstants u) = [] := by
+  induction u with
+  | nil => rfl
+  | cons a u ih =>
+      simp [indexedConstants, ih]
+
+@[simp] theorem evalIndexed_indexedConstants (v u : List α) :
+    evalIndexed v (indexedConstants u) = u := by
+  induction u with
+  | nil => rfl
+  | cons a u ih =>
+      simp [indexedConstants, ih]
+
 /-- A concrete finite `n`-variable word.
 
 The variable-index list is nondecreasing, every index below `n` occurs, and
@@ -304,6 +322,17 @@ structure FiniteVariableWord (α : Type u) (n : Nat) where
   occurs : ∀ i, i < n → i ∈ variableIndices raw
 
 namespace FiniteVariableWord
+
+/-- A 0-variable word consisting of a prescribed constant word. -/
+def zeroWord (u : List α) : FiniteVariableWord α 0 where
+  raw := indexedConstants u
+  ordered := by simp
+  below := by simp
+  occurs := by simp
+
+@[simp] theorem zeroWord_eval (u v : List α) :
+    (zeroWord u).eval v = u := by
+  simp [zeroWord, eval]
 
 /-- Evaluate a finite variable word on a finite list of letters. -/
 def eval (U : FiniteVariableWord α n) (u : List α) : List α :=
