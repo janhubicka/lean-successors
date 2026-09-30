@@ -1,6 +1,7 @@
 import SuccessorTree.HalesJewett.ForcingFusion
 import Mathlib.Data.Fintype.Pi
 import Mathlib.Data.List.OfFn
+import Mathlib.Data.List.GetD
 import Mathlib.Data.Nat.Find
 import Mathlib.Tactic
 
@@ -183,17 +184,30 @@ theorem lineBucketOffset_lt_length [Fintype α] (i : Nat) :
       (lineBucket (α := α) (lineBucketNumber (α := α) i + 1)).length := by
   exact lineBucketOffset_lt (α := α) i
 
+/-- A harmless default line; the schedule's proved offset bound means
+it is never actually selected. -/
+def defaultStarLine (α : Type u) : StarLine α :=
+  ⟨[LineSymbol.parameter], by simp⟩
+
 /-- The line at schedule position i. -/
 noncomputable def scheduledLine [Fintype α] (i : Nat) : StarLine α :=
-  (lineBucket (α := α) (lineBucketNumber (α := α) i + 1)).get
-    ⟨lineBucketOffset (α := α) i,
-      lineBucketOffset_lt_length (α := α) i⟩
+  (lineBucket (α := α) (lineBucketNumber (α := α) i + 1)).getD
+    (lineBucketOffset (α := α) i) (defaultStarLine α)
+
+theorem scheduledLine_eq_getElem [Fintype α] (i : Nat) :
+    scheduledLine (α := α) i =
+      (lineBucket (α := α) (lineBucketNumber (α := α) i + 1))
+        [lineBucketOffset (α := α) i] := by
+  unfold scheduledLine
+  exact List.getD_eq_getElem
+    (lineBucketOffset_lt_length (α := α) i)
 
 theorem scheduledLine_length [Fintype α] (i : Nat) :
     (scheduledLine (α := α) i).word.length =
       lineBucketNumber (α := α) i + 1 := by
+  rw [scheduledLine_eq_getElem]
   apply length_eq_of_mem_lineBucket
-  exact List.get_mem _ _
+  exact List.getElem_mem _
 
 theorem lineBucketNumber_mono [Fintype α] :
     Monotone (lineBucketNumber (α := α)) := by
@@ -258,11 +272,12 @@ theorem scheduledLine_covers [Fintype α] (L : StarLine α) :
     dsimp [i]
     omega
   refine ⟨i, ?_⟩
-  unfold scheduledLine
-  simp only [hnum]
-  convert hk using 1
-  apply Fin.ext
-  exact hoff
+  rw [scheduledLine_eq_getElem]
+  change
+    (lineBucket (α := α) (lineBucketNumber (α := α) i + 1))
+      [lineBucketOffset (α := α) i] = L
+  rw [hnum, hoff]
+  exact hk
 
 theorem scheduledLine_length_unbounded [Fintype α] :
     ∀ r : Nat, ∃ N : Nat, ∀ i : Nat, N ≤ i →
