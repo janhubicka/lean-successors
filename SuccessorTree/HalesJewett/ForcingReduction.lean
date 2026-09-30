@@ -55,8 +55,7 @@ theorem binaryRamsey_of_largeSetTheorem
     have hy := hU y
     change colour (S.act W (S.act U x)) = false at hx
     change colour (S.act W (S.act U y)) = false at hy
-    rw [S.act_comp]
-    exact hx.trans hy.symm
+    simpa only [S.act_comp] using hx.trans hy.symm
   · obtain ⟨U, hU⟩ := force (S.pullback W A₁) hlarge
     refine ⟨S.comp W U, ?_⟩
     intro x y
@@ -64,15 +63,15 @@ theorem binaryRamsey_of_largeSetTheorem
     have hy := hU y
     change colour (S.act W (S.act U x)) = true at hx
     change colour (S.act W (S.act U y)) = true at hy
-    rw [S.act_comp]
-    exact hx.trans hy.symm
+    simpa only [S.act_comp] using hx.trans hy.symm
 
 /-- Proposition 1 implies the finite-colour infinite-dimensional theorem. -/
 theorem finiteRamsey_of_largeSetTheorem
-    [Fintype κ] [DecidableEq κ]
+    [Fintype κ]
     (force : LargeSetTheorem α)
     (colour : List α → κ) :
     ∃ W : Subspace α, (subspaceAction α).Homogeneous colour W := by
+  classical
   let S := subspaceAction α
   have hbin : S.BinaryRamsey :=
     binaryRamsey_of_largeSetTheorem force
@@ -81,15 +80,19 @@ theorem finiteRamsey_of_largeSetTheorem
 /-- The forcing proposition implies exactly the starred Hales--Jewett input
 used by the successor-tree pigeonhole lemma. -/
 theorem starHJ_of_largeSetTheorem
-    [Fintype α] [Fintype κ] [DecidableEq κ]
+    [Fintype α] [Fintype κ]
     (force : LargeSetTheorem α) :
     StarHJ α κ := by
+  classical
   intro colour
   obtain ⟨W, hW⟩ :=
     finiteRamsey_of_largeSetTheorem force colour
   refine ⟨W.firstLine, ?_⟩
   intro a
-  simpa using hW [a] []
+  have h := hW [a] []
+  change colour (W.eval [a]) = colour W.head
+  change colour (W.eval [a]) = colour (W.eval []) at h
+  simpa using h
 
 end HalesJewett
 end SuccessorTree
