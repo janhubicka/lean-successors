@@ -50,21 +50,21 @@ theorem evalWord_mapLineWord
             f b :: (evalWord a xs).map f
           exact congrArg (List.cons (f b)) ih
 
-def StarLine.mapAlphabet (L : StarLine α) (f : α → β) : StarLine β where
+def mapStarLine (L : StarLine α) (f : α → β) : StarLine β where
   word := mapLineWord f L.word
   hasParameter := by
     unfold mapLineWord
     apply List.mem_map.mpr
     exact ⟨LineSymbol.parameter, L.hasParameter, rfl⟩
 
-@[simp] theorem StarLine.mapAlphabet_star
+@[simp] theorem mapStarLine_star
     (L : StarLine α) (f : α → β) :
-    (L.mapAlphabet f).star = L.star.map f := by
+    (mapStarLine L f).star = L.star.map f := by
   exact starPrefix_mapLineWord f L.word
 
-@[simp] theorem StarLine.mapAlphabet_eval
+@[simp] theorem mapStarLine_eval
     (L : StarLine α) (f : α → β) (a : α) :
-    (L.mapAlphabet f).eval (f a) = (L.eval a).map f := by
+    (mapStarLine L f).eval (f a) = (L.eval a).map f := by
   exact evalWord_mapLineWord f a L.word
 
 /-- Starred Hales--Jewett is invariant under renaming of the alphabet. -/
@@ -76,16 +76,16 @@ theorem starHJ_equiv
   intro colour
   let colour' : List α → κ := fun w => colour (w.map e)
   obtain ⟨L, hL⟩ := h colour'
-  refine ⟨L.mapAlphabet e, ?_⟩
+  refine ⟨mapStarLine L e, ?_⟩
   intro b
   let a : α := e.symm b
   have hm := hL a
   change
-    colour ((L.mapAlphabet e).eval b) =
-      colour (L.mapAlphabet e).star
+    colour ((mapStarLine L e).eval b) =
+      colour (mapStarLine L e).star
   have heb : e a = b := by
     simp [a]
-  rw [← heb, L.mapAlphabet_eval, L.mapAlphabet_star]
+  rw [← heb, mapStarLine_eval L, mapStarLine_star L]
   exact hm
 
 end HalesJewett
