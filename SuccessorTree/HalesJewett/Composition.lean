@@ -156,6 +156,16 @@ theorem compose_eval (W U : Subspace α) (v : List α) :
   simp only [eval, evalFrom_append, blockStart]
   simp [List.append_assoc]
 
+/-- The paper's Shift observation:
+if `u` has length `n`, then
+`W(Shift(U,n))(u⌢v) = W(u⌢U(v))`. -/
+theorem compose_shift_eval_append
+    (W U : Subspace α) (n : Nat) (u v : List α)
+    (hu : u.length = n) :
+    (compose W (shift U n)).eval (u ++ v) =
+      W.eval (u ++ U.eval v) := by
+  rw [compose_eval, shift_eval_append U n u v hu]
+
 end Subspace
 
 /-- Concrete substitution action of infinite variable words on finite words. -/
