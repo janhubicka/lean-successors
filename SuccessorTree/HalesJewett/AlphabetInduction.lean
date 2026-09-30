@@ -364,9 +364,16 @@ theorem allStarHJ_option
         have hrepOld :
             List.replicate d a =
               a :: List.replicate (d - 1) a := by
-          obtain ⟨n, rfl⟩ :=
+          obtain ⟨n, hn⟩ :=
             Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hd)
-          simp [List.replicate_succ]
+          calc
+            List.replicate d a =
+                List.replicate (n + 1) a := by rw [hn]
+            _ = a :: List.replicate n a := by
+              simp [List.replicate_succ]
+            _ = a :: List.replicate (d - 1) a := by
+              rw [hn]
+              simp
         obtain ⟨t, ht⟩ :=
           nestedSubspace_cons_eval_optionWord
             Wp Cp a (List.replicate (d - 1) a)
