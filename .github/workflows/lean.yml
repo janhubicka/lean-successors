@@ -11,23 +11,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # The GitHub runner is ephemeral. Cache the Lean toolchain separately from
-      # lean-action's .lake cache so unchanged toolchains are not downloaded on
-      # every CI run.
+      # GitHub-hosted runners are ephemeral. Cache the pinned Lean toolchain so
+      # elan does not download and unpack it on every CI run.
       - name: Cache Lean toolchain
         uses: actions/cache@v5
         with:
           path: ~/.elan/toolchains
           key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
 
-      # lean-action installs elan, restores/saves .lake, downloads the Mathlib
-      # binary cache when Mathlib is detected, and builds the project.
-      - name: Build Lean project
-        uses: leanprover/lean-action@v1
+      # Keep dependency checkouts and compiled project artifacts between runs.
+      # Each commit gets a new cache, restored from the most recent compatible
+      # predecessor when there is no exact hit.
+      - name: Cache Lake workspace
+        uses: actions/cache@v5
         with:
-          auto-config: false
-          build: true
-          test: false
-          lint: false
-          use-mathlib-cache: true
-          use-github-cache: true
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve dependencies
+        run: lake update
+
+      - name: Download Mathlib cache
+        run: lake exe cache get
+
+      - name: Build
+        run: lake build
