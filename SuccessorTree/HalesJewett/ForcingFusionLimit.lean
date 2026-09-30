@@ -169,8 +169,10 @@ theorem evalFrom_eq_of_blocks
           W.blocks ((base + 1) + j) =
             V.blocks ((base + 1) + j) := by
         intro j hj
-        have hj' := h (j + 1) (by omega)
-        convert hj' using 1 <;> omega
+        have hjlen : j + 1 < (a :: u).length := by
+          simpa using Nat.succ_lt_succ hj
+        have hj' := h (j + 1) hjlen
+        simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hj'
       change
         (W.blocks base).eval a ++ W.evalFrom (base + 1) u =
           (V.blocks base).eval a ++ V.evalFrom (base + 1) u
@@ -249,6 +251,7 @@ theorem exists_hasLargePlus_of_schedule
 
   have hbad :=
     fusionSeq_bad_before A hNo S N j hjN
+  unfold ScheduledBad at hbad
   rw [hj] at hbad
   apply hbad []
 
