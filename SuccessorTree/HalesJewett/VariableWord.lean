@@ -115,6 +115,26 @@ def shift (W : Subspace α) : Nat → Subspace α
 @[simp] theorem shift_succ (W : Subspace α) (n : Nat) :
     shift W (n + 1) = prependIdentity (shift W n) := rfl
 
+/-- Strictly below the shift level, evaluation is exactly the identity.
+The strict inequality is essential: at length exactly `n`, the constant head
+of `W` may already appear. -/
+theorem shift_eval_of_length_lt
+    (W : Subspace α) (n : Nat) (u : List α)
+    (h : u.length < n) :
+    (shift W n).eval u = u := by
+  induction n generalizing u with
+  | zero =>
+      omega
+  | succ n ih =>
+      cases u with
+      | nil =>
+          simp [shift, prependIdentity, eval, evalFrom]
+      | cons a u =>
+          have hu : u.length < n := by
+            simpa using h
+          simp only [shift_succ, prependIdentity_eval_cons]
+          rw [ih u hu]
+
 /-- Fundamental shift identity. If `u` has length `n`, then the first `n`
 coordinates of `Shift(W,n)` are the identity coordinates and the tail acts as
 `W` on `v`. -/
