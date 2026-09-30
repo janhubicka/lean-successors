@@ -16,3 +16,4 @@ import SuccessorTree.HalesJewett.ForcingProposition
 import SuccessorTree.HalesJewett.LineSchedule
 import SuccessorTree.HalesJewett.AlphabetLift
 import SuccessorTree.HalesJewett.AlphabetEquiv
+import SuccessorTree.HalesJewett.AlphabetInduction
