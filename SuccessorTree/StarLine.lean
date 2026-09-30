@@ -67,11 +67,17 @@ end StarLine
 theorem starPrefix_isPrefix_evalWord (w : List (LineSymbol α)) (a : α) :
     starPrefix w <+: evalWord a w := by
   induction w with
-  | nil => simp [starPrefix, evalWord]
+  | nil =>
+      exact ⟨[], rfl⟩
   | cons x xs ih =>
       cases x with
-      | parameter => simp [starPrefix, evalWord]
-      | const b => simpa [starPrefix, evalWord] using ih.cons b
+      | parameter =>
+          exact ⟨evalWord a (LineSymbol.parameter :: xs), by
+            simp [starPrefix]⟩
+      | const b =>
+          rcases ih with ⟨t, ht⟩
+          refine ⟨t, ?_⟩
+          simp [starPrefix, evalWord, ht]
 
 /-- In particular, `L(*)` is a prefix of every `L(a)`. -/
 theorem StarLine.star_isPrefix_eval (L : StarLine α) (a : α) :
@@ -84,17 +90,20 @@ def constants (s : List α) : List (LineSymbol α) :=
 
 @[simp] theorem evalWord_constants (s : List α) (a : α) :
     evalWord a (constants s) = s := by
-  simp [evalWord, constants, LineSymbol.eval]
+  simp [evalWord, constants, Function.comp_def, LineSymbol.eval]
 
 @[simp] theorem starPrefix_constants_append (s : List α) (w : List (LineSymbol α)) :
     starPrefix (constants s ++ w) = s ++ starPrefix w := by
+  change starPrefix (s.map LineSymbol.const ++ w) = s ++ starPrefix w
   induction s with
-  | nil => simp [constants]
-  | cons a s ih => simp [constants, starPrefix, ih]
+  | nil => rfl
+  | cons b s ih =>
+      simp only [List.map_cons, List.cons_append, starPrefix]
+      rw [ih]
 
 @[simp] theorem evalWord_constants_append (s : List α) (w : List (LineSymbol α)) (a : α) :
     evalWord a (constants s ++ w) = s ++ evalWord a w := by
-  simp [evalWord, constants, LineSymbol.eval]
+  simp [evalWord, constants, Function.comp_def, LineSymbol.eval]
 
 /-- Prepend a fixed constant support word to a starred line. -/
 def StarLine.prepend (s : List α) (L : StarLine α) : StarLine α where
