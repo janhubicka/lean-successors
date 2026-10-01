@@ -359,6 +359,169 @@ theorem MovingOne.step_successor
   rw [MovingOne.step_apply]
   exact hexact
 
+/-- Extensional equality for one-moving-level approximations. -/
+@[ext] theorem MovingOne.ext
+    {X Y : MovingOne H n}
+    (h : ∀ a : InitialSegment T n,
+      (X.approx a).1 = (Y.approx a).1) :
+    X = Y := by
+  obtain ⟨top, htop⟩ := H.level_nonempty n
+  let a : InitialSegment T n := ⟨top, by omega⟩
+  have hdst : X.dst = Y.dst := by
+    calc
+      X.dst = LevelTree.lev (X.approx a).1 :=
+        (X.approx.top_level a htop).symm
+      _ = LevelTree.lev (Y.approx a).1 := by
+        rw [h a]
+      _ = Y.dst := Y.approx.top_level a htop
+  cases X with
+  | mk dx AX hX =>
+      cases Y with
+      | mk dy AY hY =>
+          dsimp at hdst h ⊢
+          subst dy
+          have hA : AX = AY := by
+            apply Approximation.ext
+            exact h
+          subst AY
+          rfl
+
+/-- Two moving source levels, the extensional version of AM^n_2. -/
+structure MovingTwo (H : SMTree S) (n : Nat) where
+  dst : Nat
+  approx : Approximation H (n + 1) dst
+  fixesBelow : approx.FixesBelow n
+
+namespace MovingTwo
+
+/-- The first shape-preserving block after the first parameter of a line is
+the canonical extension of its star-prefix word, restricted through n+1. -/
+noncomputable def fromOne
+    (X : MovingOne H n) : MovingTwo H n := by
+  let F := X.approx.canonicalExtension
+  have hF : F ∈ H.M := X.approx.canonicalExtension_mem
+  have hnext :
+      H.levelMap F (n + 1) = X.dst + 1 :=
+    X.approx.canonicalExtension_nextLevel
+  let B : Approximation H (n + 1) (X.dst + 1) :=
+    Approximation.ofMemberAt F hF (n + 1) (X.dst + 1) hnext
+  refine ⟨X.dst + 1, B, ?_⟩
+  intro a ha
+  change F a.1 = a.1
+  exact X.approx.canonicalExtension_eq_id_below
+    X.fixesBelow le_rfl ha
+
+@[simp] theorem fromOne_dst
+    (X : MovingOne H n) :
+    (fromOne X).dst = X.dst + 1 := rfl
+
+/-- Restriction of a two-moving-level block to its lower moving level. -/
+noncomputable def base
+    (B : MovingTwo H n) : MovingOne H n := by
+  let F := B.approx.someExtension
+  let d := H.levelMap F n
+  let A : Approximation H n d :=
+    Approximation.ofMemberAt F B.approx.someExtension_mem n d rfl
+  refine ⟨d, A, ?_⟩
+  intro a ha
+  change F a.1 = a.1
+  let au : InitialSegment T (n + 1) :=
+    InitialSegment.castLE (Nat.le_succ n) a
+  calc
+    F a.1 = (B.approx au).1 :=
+      B.approx.someExtension_apply au
+    _ = a.1 := B.fixesBelow au ha
+
+/-- Compose a two-moving-level block with a one-step line letter. -/
+noncomputable def letter
+    (B : MovingTwo H n) (e : OneStep H n) :
+    MovingOne H n := by
+  let C : Approximation H n B.dst :=
+    B.approx.comp e.toApprox
+  refine ⟨B.dst, C, ?_⟩
+  intro a ha
+  change (B.approx (e.toApprox a)).1 = a.1
+  let au : InitialSegment T (n + 1) :=
+    InitialSegment.castLE (Nat.le_succ n) a
+  have he : e.toApprox a = au := by
+    apply Subtype.ext
+    exact e.fixesBelow a ha
+  rw [he]
+  exact B.fixesBelow au ha
+
+/-- Action of a two-moving-level block on the finite line L_n. -/
+noncomputable def apply
+    (B : MovingTwo H n) :
+    LineInput (OneStep H n) → MovingOne H n
+  | .base => B.base
+  | .letter e => B.letter e
+
+@[simp] theorem apply_base
+    (B : MovingTwo H n) :
+    B.apply LineInput.base = B.base := rfl
+
+@[simp] theorem apply_letter
+    (B : MovingTwo H n) (e : OneStep H n) :
+    B.apply (LineInput.letter e) = B.letter e := rfl
+
+/-- Pointwise restriction identity for the base action. -/
+theorem base_apply
+    (B : MovingTwo H n) (a : InitialSegment T n) :
+    ((B.base).approx a).1 =
+      (B.approx (InitialSegment.castLE (Nat.le_succ n) a)).1 := by
+  change B.approx.someExtension a.1 =
+    (B.approx (InitialSegment.castLE (Nat.le_succ n) a)).1
+  exact B.approx.someExtension_apply
+    (InitialSegment.castLE (Nat.le_succ n) a)
+
+/-- Pointwise formula for the letter action. -/
+@[simp] theorem letter_apply
+    (B : MovingTwo H n) (e : OneStep H n)
+    (a : InitialSegment T n) :
+    ((B.letter e).approx a).1 =
+      (B.approx (e.toApprox a)).1 := rfl
+
+end MovingTwo
+
+end Approximation
+
+namespace SMTree
+
+/-- A fixed choice of the M3 duplication map. -/
+noncomputable def duplicator
+    (H : SMTree S) (source target : Nat)
+    (h : source < target) : ShapeMap S :=
+  Classical.choose (H.m3 source target h)
+
+theorem duplicator_mem
+    (H : SMTree S) (source target : Nat)
+    (h : source < target) :
+    H.duplicator source target h ∈ H.M :=
+  (Classical.choose_spec (H.m3 source target h)).1
+
+theorem duplicator_skipsOnly
+    (H : SMTree S) (source target : Nat)
+    (h : source < target) :
+    (H.duplicator source target h).SkipsOnly target :=
+  (Classical.choose_spec (H.m3 source target h)).2.1
+
+theorem duplicator_spec
+    (H : SMTree S) (source target : Nat)
+    (h : source < target)
+    (a b : T) (p : List T) (c : Label) (s : T)
+    (ha : LevelTree.lev a = source)
+    (hb : LevelTree.lev b = target)
+    (hsucc : S.succ a p c = some s)
+    (hsb : s ≤ b) :
+    S.succ b p c =
+      some (H.duplicator source target h b) := by
+  exact (Classical.choose_spec (H.m3 source target h)).2.2
+    a b p c s ha hb hsucc hsb
+
+end SMTree
+
+namespace Approximation
+
 end Approximation
 
 end SuccessorTree
