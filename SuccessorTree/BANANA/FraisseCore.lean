@@ -1,0 +1,54 @@
+import SuccessorTree.BANANA.EPPA
+import SuccessorTree.BANANA.StrongAmalgamation
+
+namespace SuccessorTree.BANANA
+
+/-- An embedding of two-sorted bilinear structures.  This is the finite
+BANANA embedding notion stripped of first-order-language bureaucracy. -/
+structure PairingEmbedding
+    {K LA RA LB RB : Type*} [Field K]
+    [AddCommGroup LA] [Module K LA] [AddCommGroup RA] [Module K RA]
+    [AddCommGroup LB] [Module K LB] [AddCommGroup RB] [Module K RB]
+    (βA : BilinearPairing K LA RA) (βB : BilinearPairing K LB RB) where
+  left : LA →ₗ[K] LB
+  right : RA →ₗ[K] RB
+  left_injective : Function.Injective left
+  right_injective : Function.Injective right
+  preserves : ∀ x y, βB (left x) (right y) = βA x y
+
+/-- Any injective linear map can be put into the split-coordinate form
+used by the explicit BANANA amalgamation construction. -/
+noncomputable theorem exists_split_equiv_of_injective
+    {K V W : Type*} [Field K]
+    [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]
+    (f : V →ₗ[K] W) (hf : Function.Injective f) :
+    ∃ Q : Submodule K W, ∃ e : (V × Q) ≃ₗ[K] W,
+      ∀ x : V, e (x, 0) = f x := by
+  obtain ⟨Q, hQ⟩ := Submodule.exists_isCompl (LinearMap.range f)
+  let er : V ≃ₗ[K] LinearMap.range f := LinearEquiv.ofInjective f hf
+  let ep : (LinearMap.range f × Q) ≃ₗ[K] W :=
+    (LinearMap.range f).prodEquivOfIsCompl Q hQ
+  refine ⟨Q, (er.prodCongr (LinearEquiv.refl K Q)).trans ep, ?_⟩
+  intro x
+  simp [er, ep, LinearEquiv.trans_apply]
+
+/-- Both sides of a BANANA embedding admit compatible split coordinates.
+Thus arbitrary amalgamation diagrams reduce to the split situation treated
+in `StrongAmalgamation.lean`. -/
+noncomputable theorem PairingEmbedding.exists_split_coordinates
+    {K LA RA LB RB : Type*} [Field K]
+    [AddCommGroup LA] [Module K LA] [AddCommGroup RA] [Module K RA]
+    [AddCommGroup LB] [Module K LB] [AddCommGroup RB] [Module K RB]
+    {βA : BilinearPairing K LA RA} {βB : BilinearPairing K LB RB}
+    (e : PairingEmbedding βA βB) :
+    ∃ QL : Submodule K LB, ∃ QR : Submodule K RB,
+      ∃ eL : (LA × QL) ≃ₗ[K] LB, ∃ eR : (RA × QR) ≃ₗ[K] RB,
+        (∀ x : LA, eL (x, 0) = e.left x) ∧
+        (∀ y : RA, eR (y, 0) = e.right y) := by
+  obtain ⟨QL, eL, hL⟩ :=
+    exists_split_equiv_of_injective e.left e.left_injective
+  obtain ⟨QR, eR, hR⟩ :=
+    exists_split_equiv_of_injective e.right e.right_injective
+  exact ⟨QL, QR, eL, eR, hL, hR⟩
+
+end SuccessorTree.BANANA
