@@ -291,8 +291,11 @@ private theorem list_map_eq_self_of_fixed
   | nil => rfl
   | cons x xs ih =>
       have hx : f x = x := h x (List.mem_cons_self)
+      have hxs : ∀ y ∈ xs, f y = y := by
+        intro y hy
+        exact h y (List.mem_cons_of_mem x hy)
       simp only [List.map_cons]
-      rw [hx, ih]
+      rw [hx, ih hxs]
 
 /-- Every word map fixes the parameter list of a one-level letter edge. -/
 theorem map_letterCode_params_eq
