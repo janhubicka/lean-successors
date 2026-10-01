@@ -115,6 +115,131 @@ theorem duplicate_level_at (H : SMTree S)
       simp [ha]
     _ = m + 1 := by rw [ha]
 
+/-- A chosen occurrence of a supported letter inside the star prefix. -/
+structure SupportOccurrence (s : List α) (e : α) where
+  before : List α
+  after : List α
+  eq_word : s = before ++ e :: after
+
+noncomputable def supportOccurrence
+    (s : List α) (hs : Supports s) (e : α) :
+    SupportOccurrence s e := by
+  classical
+  obtain ⟨u, v, huv⟩ := exists_split_of_mem (hs e)
+  exact ⟨u, v, huv⟩
+
+theorem supportOccurrence_before_lt
+    (s : List α) (hs : Supports s) (e : α) :
+    (supportOccurrence s hs e).before.length < s.length := by
+  have hspec := (supportOccurrence s hs e).eq_word
+  rw [hspec]
+  simp
+  omega
+
+/-- Source base level of the edge represented by a raw line symbol.
+
+A parameter reuses the first parameter edge, whose base comes after the whole
+star prefix. A constant reuses its chosen earlier support occurrence.
+-/
+noncomputable def replaySource
+    (n : Nat) (s : List (OneLevelLetter H n))
+    (hs : Supports s) :
+    LineSymbol (OneLevelLetter H n) → Nat
+  | .parameter => n + s.length
+  | .const e => n + (supportOccurrence s hs e).before.length
+
+theorem replaySource_lt
+    (H : SMTree S) {n : Nat}
+    (s : List (OneLevelLetter H n))
+    (hs : Supports s)
+    (k : Nat) (x : LineSymbol (OneLevelLetter H n)) :
+    replaySource n s hs x < n + s.length + 1 + k := by
+  cases x with
+  | parameter =>
+      simp [replaySource]
+      omega
+  | const e =>
+      have hlt := supportOccurrence_before_lt s hs e
+      simp [replaySource]
+      omega
+
+/-- M3 duplication used for the k-th symbol after the first parameter. -/
+noncomputable def replayDup
+    (H : SMTree S) {n : Nat}
+    (s : List (OneLevelLetter H n))
+    (hs : Supports s)
+    (k : Nat) (x : LineSymbol (OneLevelLetter H n)) :
+    MMap H :=
+  H.duplicate
+    (replaySource n s hs x)
+    (n + s.length + 1 + k)
+    (H.replaySource_lt s hs k x)
+
+/-- Fold the M3 replay duplications through the raw tail after the first
+parameter. -/
+noncomputable def replayTail
+    (H : SMTree S) {n : Nat}
+    (s : List (OneLevelLetter H n))
+    (hs : Supports s) :
+    Nat → List (LineSymbol (OneLevelLetter H n)) → MMap H → MMap H
+  | _, [], B => B
+  | k, x :: xs, B =>
+      replayTail H s hs (k + 1) xs
+        (MMap.comp H (H.replayDup s hs k x) B)
+
+/-- Final total replay block attached to a supported starred line. -/
+noncomputable def replayMap
+    (H : SMTree S) {n : Nat}
+    (L : StarLine (OneLevelLetter H n))
+    (hs : Supports L.star) : MMap H :=
+  replayTail H L.star hs 0 (afterFirstParameter L.word)
+    (wordMap H n L.star)
+
+/-- Every remaining duplication is invisible below its current target level. -/
+theorem replayTail_apply_of_level_lt
+    (H : SMTree S) {n : Nat}
+    (s : List (OneLevelLetter H n))
+    (hs : Supports s)
+    (k : Nat) (xs : List (LineSymbol (OneLevelLetter H n)))
+    (B : MMap H) (a : T)
+    (ha : LevelTree.lev (B a) < n + s.length + 1 + k) :
+    replayTail H s hs k xs B a = B a := by
+  induction xs generalizing k B with
+  | nil =>
+      rfl
+  | cons x xs ih =>
+      let D := H.replayDup s hs k x
+      have hD : D (B a) = B a := by
+        apply H.duplicate_eq_id_below
+        exact ha
+      change
+        replayTail H s hs (k + 1) xs
+            (MMap.comp H D B) a =
+          B a
+      have hcomp : MMap.comp H D B a = B a := by
+        simpa [D] using hD
+      rw [ih]
+      · exact hcomp
+      · rw [hcomp]
+        omega
+
+/-- The replay map agrees with g_{L(*)} on the whole base restriction
+T(<=n). -/
+theorem replayMap_base
+    (H : SMTree S) {n : Nat}
+    (L : StarLine (OneLevelLetter H n))
+    (hs : Supports L.star)
+    (a : {a : T // LevelTree.lev a ≤ n}) :
+    H.replayMap L hs a.1 = wordMap H n L.star a.1 := by
+  unfold replayMap
+  apply H.replayTail_apply_of_level_lt
+  by_cases hlt : LevelTree.lev a.1 < n
+  · rw [wordMap_eq_id_below H n L.star hlt]
+    omega
+  · have heq : LevelTree.lev a.1 = n := by omega
+    rw [H.level_wordMap_at n L.star heq]
+    omega
+
 /-- Replay one earlier occurrence of a letter by M3.
 
 If the source occurrence follows a prefix u, then its source base is on level
