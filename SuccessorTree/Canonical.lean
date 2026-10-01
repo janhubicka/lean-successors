@@ -168,6 +168,55 @@ theorem lower_next_level_once
 
   exact ⟨F1, hF1, hF1agree, hnext⟩
 
+/-- Number of missing target levels between consecutive source levels. -/
+def nextGap (H : SMTree S) (F : ShapeMap S) (m : Nat) : Nat :=
+  H.levelMap F (m + 1) - (H.levelMap F m + 1)
+
+/-- Repeatedly apply M2 until two consecutive source levels become consecutive
+target levels, while preserving the already-fixed prefix. -/
+theorem close_next_level
+    (H : SMTree S) (F : ShapeMap S) (hF : F ∈ H.M) (m : Nat) :
+    ∃ G : ShapeMap S,
+      G ∈ H.M ∧
+      G.AgreesThrough F m ∧
+      H.levelMap G (m + 1) = H.levelMap F m + 1 := by
+  have aux :
+      ∀ d : Nat, ∀ K : ShapeMap S, K ∈ H.M →
+        nextGap H K m = d →
+        ∃ G : ShapeMap S,
+          G ∈ H.M ∧
+          G.AgreesThrough K m ∧
+          H.levelMap G (m + 1) = H.levelMap K m + 1 := by
+    intro d
+    induction d using Nat.strong_induction_on with
+    | h d ih =>
+        intro K hK hd
+        have hmono :
+            H.levelMap K m < H.levelMap K (m + 1) :=
+          H.levelMap_strictMono K (Nat.lt_succ_self m)
+        by_cases hclosed :
+            H.levelMap K (m + 1) = H.levelMap K m + 1
+        · exact ⟨K, hK, K.agreesThrough_refl m, hclosed⟩
+        · have hgap :
+              H.levelMap K m + 1 < H.levelMap K (m + 1) := by
+            omega
+          obtain ⟨K1, hK1, hK1agree, hK1next⟩ :=
+            H.lower_next_level_once K hK m hgap
+          have hK1base :
+              H.levelMap K1 m = H.levelMap K m :=
+            H.levelMap_eq_of_agreesThrough hK1agree le_rfl
+          have hmeasure :
+              nextGap H K1 m < d := by
+            rw [← hd]
+            unfold nextGap
+            rw [hK1next, hK1base]
+            omega
+          obtain ⟨G, hG, hGagree, hGnext⟩ :=
+            ih (nextGap H K1 m) hmeasure K1 hK1 rfl
+          refine ⟨G, hG, hGagree.agreesThrough_trans hK1agree, ?_⟩
+          rw [hGnext, hK1base]
+  exact aux (nextGap H F m) F hF rfl
+
 end SMTree
 
 end SuccessorTree
