@@ -140,7 +140,7 @@ theorem card_f2_perfectCompletion_carrier {l r : Type*}
       (((l ⊕ r → ZMod 2) ⊕ (r ⊕ l → ZMod 2))) =
       2 ^ (Nat.card l + Nat.card r + 1) := by
   simp only [Nat.card_sum, Nat.card_fun, Nat.card_zmod]
-  rw [← Nat.add_assoc, pow_succ]
+  rw [Nat.add_comm (Nat.card r) (Nat.card l), pow_succ]
   ring
 
 
