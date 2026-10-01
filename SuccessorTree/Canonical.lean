@@ -223,13 +223,6 @@ structure MemberMap (H : SMTree S) where
   map : ShapeMap S
   mem : map ∈ H.M
 
-namespace MemberMap
-
-instance (H : SMTree S) : Coe (MemberMap H) (ShapeMap S) :=
-  ⟨MemberMap.map⟩
-
-end MemberMap
-
 /-- Chosen gap-closed successor stage. -/
 noncomputable def closeNextChoice
     (H : SMTree S) (X : MemberMap H) (m : Nat) : MemberMap H :=
