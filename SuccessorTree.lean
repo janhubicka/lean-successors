@@ -36,3 +36,4 @@ import SuccessorTree.BANANA.StrongAmalgamation
 import SuccessorTree.BANANA.Coherence
 import SuccessorTree.BANANA.TupleInvariant
 import SuccessorTree.BANANA.GeneratedPairing
+import SuccessorTree.BANANA.FraisseCore
