@@ -1,4 +1,5 @@
 import SuccessorTree.Approximation
+import SuccessorTree.Pigeonhole
 import Mathlib.Tactic
 
 /-!
@@ -451,6 +452,87 @@ theorem duplicate_occurrence_at_word_endpoint
   · exact H.level_wordMap_at n (u ++ e :: v) ha
   · exact hlt
   · exact H.wordMap_append_letter_le u v e a ha
+
+/-- How a total replay block acts on the base restriction or on one
+one-level letter. -/
+def replayApply
+    (H : SMTree S) (n : Nat)
+    (B : MMap H) :
+    LineInput (OneLevelLetter H n) → RestrictedMap T n
+  | .base => B.restrictLe H n
+  | .letter e => (MMap.comp H B e.toMMap).restrictLe H n
+
+@[simp] theorem replayApply_base_apply
+    (H : SMTree S) (n : Nat)
+    (B : MMap H)
+    (a : {a : T // LevelTree.lev a ≤ n}) :
+    replayApply H n B LineInput.base a = B a.1 := rfl
+
+@[simp] theorem replayApply_letter_apply
+    (H : SMTree S) (n : Nat)
+    (B : MMap H) (e : OneLevelLetter H n)
+    (a : {a : T // LevelTree.lev a ≤ n}) :
+    replayApply H n B (LineInput.letter e) a =
+      B (e a.1) := rfl
+
+/-- Concrete ReplaySystem supplied by M1--M3. -/
+noncomputable def replaySystem
+    (H : SMTree S) (n : Nat) :
+    ReplaySystem
+      (OneLevelLetter H n)
+      (RestrictedMap T n)
+      (MMap H) where
+  wordApprox := wordApprox H n
+  apply := replayApply H n
+  replay := fun L hs => H.replayMap L hs
+  replay_base := by
+    intro L hs
+    funext a
+    exact H.replayMap_base L hs a
+  replay_letter := by
+    intro L hs e
+    funext a
+    by_cases hlt : LevelTree.lev a.1 < n
+    · have he : e a.1 = a.1 :=
+        e.eq_id_below H hlt
+      have hbase :=
+        H.replayMap_base L hs a
+      have hstar :
+          wordMap H n L.star a.1 = a.1 :=
+        H.wordMap_eq_id_below n L.star hlt
+      have heval :
+          wordMap H n (L.eval e) a.1 = a.1 :=
+        H.wordMap_eq_id_below n (L.eval e) hlt
+      change H.replayMap L hs (e a.1) =
+        wordMap H n (L.eval e) a.1
+      rw [he, hbase, hstar, heval]
+    · have ha : LevelTree.lev a.1 = n := by omega
+      change H.replayMap L hs (e a.1) =
+        wordMap H n (L.eval e) a.1
+      exact H.replayMap_letter L hs e a.1 ha
+
+/-- Lemma 3.1's Hales--Jewett step with the replay interface fully
+instantiated from the tree axioms. -/
+theorem oneDimensionalPigeonhole_tree
+    [Fintype κ]
+    (H : SMTree S) (n : Nat)
+    (colour : RestrictedMap T n → κ) :
+    ∃ B : MMap H,
+      ∀ x : LineInput (OneLevelLetter H n),
+        colour (replayApply H n B x) =
+          colour (replayApply H n B LineInput.base) := by
+  exact (H.replaySystem n).oneDimensionalPigeonhole_finite colour
+
+/-- Pairwise form of the concrete one-dimensional pigeonhole conclusion. -/
+theorem oneDimensionalPigeonhole_tree_pairwise
+    [Fintype κ]
+    (H : SMTree S) (n : Nat)
+    (colour : RestrictedMap T n → κ) :
+    ∃ B : MMap H,
+      ∀ x y : LineInput (OneLevelLetter H n),
+        colour (replayApply H n B x) =
+          colour (replayApply H n B y) := by
+  exact (H.replaySystem n).oneDimensionalPigeonhole_pairwise_finite colour
 
 end SMTree
 
