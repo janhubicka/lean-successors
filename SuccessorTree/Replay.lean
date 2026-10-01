@@ -522,6 +522,85 @@ end SMTree
 
 namespace Approximation
 
+namespace MovingTwo
+
+/-- Duplicate a successor pattern from an earlier reference level onto the
+current top target level of a two-moving-level block. -/
+noncomputable def duplicate
+    (B : MovingTwo H n) (source : Nat)
+    (hsource : source < B.dst) :
+    MovingTwo H n := by
+  let D := H.duplicator source B.dst hsource
+  have hD : D ∈ H.M :=
+    H.duplicator_mem source B.dst hsource
+  have hDskip : D.SkipsOnly B.dst :=
+    H.duplicator_skipsOnly source B.dst hsource
+  let F := D.comp B.approx.someExtension
+  have hF : F ∈ H.M :=
+    H.comp_mem hD B.approx.someExtension_mem
+  have hlevel :
+      H.levelMap F (n + 1) = B.dst + 1 := by
+    rw [H.levelMap_comp]
+    rw [B.approx.someExtension_levelMap]
+    rw [H.levelMap_of_skipsOnly D B.dst hDskip]
+    simp
+  let C : Approximation H (n + 1) (B.dst + 1) :=
+    Approximation.ofMemberAt F hF (n + 1) (B.dst + 1) hlevel
+  refine ⟨B.dst + 1, C, ?_⟩
+  intro a ha
+  change F a.1 = a.1
+  let au := a
+  have hBa :
+      B.approx.someExtension a.1 = a.1 := by
+    calc
+      B.approx.someExtension a.1 = (B.approx au).1 :=
+        B.approx.someExtension_apply au
+      _ = a.1 := B.fixesBelow au ha
+  have hndst : n < B.dst := by
+    have hle :=
+      H.level_le_levelMap B.approx.someExtension (n + 1)
+    rw [B.approx.someExtension_levelMap] at hle
+    omega
+  have hDa : D a.1 = a.1 :=
+    H.eq_id_below_skip D B.dst hDskip (by omega)
+  change D (B.approx.someExtension a.1) = a.1
+  rw [hBa, hDa]
+
+@[simp] theorem duplicate_dst
+    (B : MovingTwo H n) (source : Nat)
+    (hsource : source < B.dst) :
+    (B.duplicate source hsource).dst = B.dst + 1 := rfl
+
+/-- M3 pointwise specification after duplicating the top of a block. -/
+theorem duplicate_top_successor
+    (B : MovingTwo H n) (source : Nat)
+    (hsource : source < B.dst)
+    (z : InitialSegment T (n + 1))
+    (hz : LevelTree.lev z.1 = n + 1)
+    (a s : T) (p : List T) (c : Label)
+    (ha : LevelTree.lev a = source)
+    (hsucc : S.succ a p c = some s)
+    (hsb : s ≤ (B.approx z).1) :
+    S.succ (B.approx z).1 p c =
+      some ((B.duplicate source hsource).approx z).1 := by
+  let D := H.duplicator source B.dst hsource
+  have hBtop :
+      LevelTree.lev (B.approx z).1 = B.dst :=
+    B.approx.top_level z hz
+  have hExt :
+      B.approx.someExtension z.1 = (B.approx z).1 :=
+    B.approx.someExtension_apply z
+  have hspec :=
+    H.duplicator_spec source B.dst hsource
+      a (B.approx z).1 p c s ha hBtop hsucc hsb
+  change
+    S.succ (B.approx z).1 p c =
+      some (D (B.approx.someExtension z.1))
+  rw [hExt]
+  exact hspec
+
+end MovingTwo
+
 end Approximation
 
 end SuccessorTree
