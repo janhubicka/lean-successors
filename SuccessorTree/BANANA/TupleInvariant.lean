@@ -119,7 +119,8 @@ theorem generatedSpanEquivOfRelationPatternEq_apply_tupleLinearMap
         (LinearMap.ker (tupleLinearMap x)).mkQ c :=
     LinearMap.quotKerEquivRange_symm_apply_image (f := tupleLinearMap x) c v.property
   rw [hv]
-  simp only [Submodule.quotEquivOfEq_mk, LinearMap.quotKerEquivRange_apply_mk]
+  simp only [Submodule.mkQ_apply, Submodule.quotEquivOfEq_mk,
+    LinearMap.quotKerEquivRange_apply_mk]
 
 /-- The canonical span equivalence sends every distinguished generator to
 the corresponding distinguished generator. -/
