@@ -14,7 +14,9 @@ fields below are elementary consequences of that definition:
 * levels strictly increase along the tree order;
 * an immediate successor raises the level by one;
 * predecessors of a common node are comparable;
-* every level is finite.
+* every level is finite;
+* nodes with a common predecessor have the greatest common predecessor (meet)
+  used in the paper.
 
 Keeping these consequences explicit makes dependencies in later proofs easy
 to audit.  A separate representation-equivalence lemma can later connect this
@@ -34,6 +36,12 @@ class LevelTree (T : Type u) [PartialOrder T] where
   ancestor_exists : ∀ (a : T) (n : Nat), n ≤ level a →
     ∃ b : T, b ≤ a ∧ level b = n
   level_finite : ∀ n : Nat, Set.Finite {a : T | level a = n}
+  /-- Greatest common predecessor; the laws below are required only when a
+  common predecessor exists.  This is the paper's meet operation. -/
+  meet : T → T → T
+  meet_le_left : ∀ {a b : T}, (∃ c : T, c ≤ a ∧ c ≤ b) → meet a b ≤ a
+  meet_le_right : ∀ {a b : T}, (∃ c : T, c ≤ a ∧ c ≤ b) → meet a b ≤ b
+  le_meet : ∀ {a b c : T}, c ≤ a → c ≤ b → c ≤ meet a b
 
 namespace LevelTree
 
@@ -113,6 +121,42 @@ theorem exists_covBy_between {a b : T} (hab : a < b) :
       omega
   refine ⟨c, covBy_of_le_level_succ hac ?_, hcb⟩
   simp [c, level_ancestor]
+
+/-- Two distinct immediate-successor cones above `x` have meet exactly
+`x`.  This is the order-theoretic step used in the paper's meet-preservation
+argument. -/
+theorem meet_le_of_distinct_covBy
+    {x s t a b : T}
+    (hxs : x ⋖ s) (hxt : x ⋖ t) (hst : s ≠ t)
+    (hsa : s ≤ a) (htb : t ≤ b) :
+    LevelTree.meet a b ≤ x := by
+  have hxa : x ≤ a := hxs.le.trans hsa
+  have hxb : x ≤ b := hxt.le.trans htb
+  have hcommon : ∃ c : T, c ≤ a ∧ c ≤ b := ⟨x, hxa, hxb⟩
+  have hma : LevelTree.meet a b ≤ a := LevelTree.meet_le_left hcommon
+  have hmb : LevelTree.meet a b ≤ b := LevelTree.meet_le_right hcommon
+  have hxm : x ≤ LevelTree.meet a b := LevelTree.le_meet hxa hxb
+  rcases hxm.eq_or_lt with hEq | hxm'
+  · simpa [hEq]
+  · have hsm : s ≤ LevelTree.meet a b := by
+      rcases comparable_below hsa hma with h | h
+      · exact h
+      · rcases h.eq_or_lt with hEq | hlt
+        · simpa [hEq]
+        · exact False.elim ((not_covBy_of_lt_of_lt hxm' hlt) hxs)
+    have htm : t ≤ LevelTree.meet a b := by
+      rcases comparable_below htb hmb with h | h
+      · exact h
+      · rcases h.eq_or_lt with hEq | hlt
+        · simpa [hEq]
+        · exact False.elim ((not_covBy_of_lt_of_lt hxm' hlt) hxt)
+    rcases comparable_below hsm htm with hstle | htsle
+    · have heq : s = t := same_level_of_le hstle (by
+        rw [covBy_level_eq hxs, covBy_level_eq hxt])
+      exact False.elim (hst heq)
+    · have heq : t = s := same_level_of_le htsle (by
+        rw [covBy_level_eq hxt, covBy_level_eq hxs])
+      exact False.elim (hst heq.symm)
 
 end LevelTree
 
