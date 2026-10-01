@@ -115,6 +115,63 @@ theorem duplicate_level_at (H : SMTree S)
       simp [ha]
     _ = m + 1 := by rw [ha]
 
+/-- Replay one earlier occurrence of a letter by M3.
+
+If the source occurrence follows a prefix u, then its source base is on level
+n + |u|.  Thus replaying the same successor transition at a node b of level m
+uses the duplication map F_m^(n+|u|).  This is the indexing needed in the
+proof of Lemma 3.1.
+-/
+theorem duplicate_word_occurrence
+    (H : SMTree S) {n : Nat}
+    (u v : List (OneLevelLetter H n))
+    (e : OneLevelLetter H n)
+    (a b : T)
+    (ha : LevelTree.lev a = n)
+    (hb : LevelTree.lev b = m)
+    (hsourceTarget : n + u.length < m)
+    (hbelow :
+      wordMap H n (u ++ [e]) a ≤ b) :
+    S.succ b
+        (H.letterCode e a ha).params
+        (H.letterCode e a ha).char =
+      some (H.duplicate (n + u.length) m hsourceTarget b) := by
+  have hbase :
+      LevelTree.lev (wordMap H n u a) = n + u.length :=
+    H.level_wordMap_at n u ha
+  have hedge :=
+    H.wordMap_append_letter_succ u e a ha
+  exact H.duplicate_rule
+    (n + u.length) m hsourceTarget
+    (wordMap H n u a) b
+    (H.letterCode e a ha).params
+    (H.letterCode e a ha).char
+    (wordMap H n (u ++ [e]) a)
+    hbase hb hedge hbelow
+
+/-- Specialization when b is the endpoint of a longer word containing that
+occurrence. -/
+theorem duplicate_occurrence_at_word_endpoint
+    (H : SMTree S) {n : Nat}
+    (u v : List (OneLevelLetter H n))
+    (e : OneLevelLetter H n)
+    (a : T) (ha : LevelTree.lev a = n)
+    (hlt : n + u.length <
+      n + (u ++ e :: v).length) :
+    S.succ (wordMap H n (u ++ e :: v) a)
+        (H.letterCode e a ha).params
+        (H.letterCode e a ha).char =
+      some
+        (H.duplicate
+          (n + u.length)
+          (n + (u ++ e :: v).length)
+          hlt
+          (wordMap H n (u ++ e :: v) a)) := by
+  apply H.duplicate_word_occurrence u v e a
+  · exact H.level_wordMap_at n (u ++ e :: v) ha
+  · exact hlt
+  · exact H.wordMap_append_letter_le u v e a ha
+
 end SMTree
 
 end SuccessorTree
