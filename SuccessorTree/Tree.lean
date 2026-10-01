@@ -8,14 +8,13 @@ This is the structural interface used to formalize the paper before the first
 pigeonhole lemma.
 
 The paper defines the level of a node as the number of strict predecessors.
-For a nonempty pruned finitely-branching tree with finitely many roots, the
+For the paper's (possibly empty, not necessarily pruned) trees, the
 fields below are elementary consequences of that definition:
 
 * levels strictly increase along the tree order;
 * an immediate successor raises the level by one;
 * predecessors of a common node are comparable;
-* every level is finite and nonempty;
-* every node has an immediate successor.
+* every level is finite.
 
 Keeping these consequences explicit makes dependencies in later proofs easy
 to audit.  A separate representation-equivalence lemma can later connect this
@@ -24,8 +23,8 @@ interface to the paper's set-theoretic definition verbatim.
 
 namespace SuccessorTree
 
-/-- The order/level facts about the paper's corrected (nonempty, pruned) tree
-definition which are used by the successor machinery. -/
+/-- The order/level facts about the paper's tree definition which are used by
+the successor machinery. No nonemptiness or pruning assumption is built in. -/
 class LevelTree (T : Type u) [PartialOrder T] where
   level : T → Nat
   level_lt : ∀ {a b : T}, a < b → level a < level b
@@ -35,8 +34,6 @@ class LevelTree (T : Type u) [PartialOrder T] where
   ancestor_exists : ∀ (a : T) (n : Nat), n ≤ level a →
     ∃ b : T, b ≤ a ∧ level b = n
   level_finite : ∀ n : Nat, Set.Finite {a : T | level a = n}
-  level_nonempty : ∀ n : Nat, ∃ a : T, level a = n
-  pruned : ∀ a : T, ∃ b : T, a ⋖ b
 
 namespace LevelTree
 
@@ -116,9 +113,6 @@ theorem exists_covBy_between {a b : T} (hab : a < b) :
       omega
   refine ⟨c, covBy_of_le_level_succ hac ?_, hcb⟩
   simp [c, level_ancestor]
-
-theorem exists_immediateSuccessor (a : T) : ∃ b : T, a ⋖ b :=
-  LevelTree.pruned a
 
 end LevelTree
 
