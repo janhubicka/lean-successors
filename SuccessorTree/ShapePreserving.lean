@@ -29,6 +29,17 @@ variable {S : STree T Label}
 
 instance : CoeFun (ShapeMap S) (fun _ => T → T) := ⟨ShapeMap.toFun⟩
 
+/-- Shape maps are determined by their underlying functions. -/
+theorem ext_toFun {F G : ShapeMap S} (h : F.toFun = G.toFun) : F = G := by
+  cases F
+  cases G
+  cases h
+  rfl
+
+/-- Pointwise extensionality for shape maps. -/
+theorem ext_apply {F G : ShapeMap S} (h : ∀ a : T, F a = G a) : F = G :=
+  ext_toFun (funext h)
+
 theorem injective (F : ShapeMap S) : Function.Injective F := F.injective'
 
 theorem level_eq_of_level_eq (F : ShapeMap S) {a b : T}
