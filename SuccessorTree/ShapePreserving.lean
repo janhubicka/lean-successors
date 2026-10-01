@@ -35,7 +35,8 @@ structure ShapeMap (S : STree Node Char) where
 
 namespace ShapeMap
 
-instance : CoeFun (ShapeMap S) (fun _ => Node → Node) :=
+instance (S : STree Node Char) :
+    CoeFun (ShapeMap S) (fun _ => Node → Node) :=
   ⟨ShapeMap.toFun⟩
 
 @[simp] theorem level_apply' (F : ShapeMap S) (a : Node) :
@@ -92,9 +93,9 @@ theorem monotone (F : ShapeMap S) : Monotone F := by
   · exact (F.map_lt hlt).le
 
 def id (S : STree Node Char) : ShapeMap S where
-  toFun := id
+  toFun := fun a => a
   injective := Function.injective_id
-  levelMap := id
+  levelMap := fun n => n
   level_apply := by
     intro a
     rfl
