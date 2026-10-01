@@ -2,6 +2,7 @@ import SuccessorTree.ShapePreserving
 import SuccessorTree.Monoid
 import SuccessorTree.Canonical
 import SuccessorTree.Approximation
+import SuccessorTree.WordApprox
 import SuccessorTree.Tree
 import SuccessorTree.Successor
 import SuccessorTree.Decomposition
