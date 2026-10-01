@@ -1,4 +1,5 @@
 import SuccessorTree.Monoid
+import Mathlib.Data.Fintype.Pi
 import Mathlib.Tactic
 
 /-!
