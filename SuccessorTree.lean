@@ -2,6 +2,7 @@ import SuccessorTree.ShapePreserving
 import SuccessorTree.Monoid
 import SuccessorTree.Tree
 import SuccessorTree.Successor
+import SuccessorTree.Decomposition
 import SuccessorTree.StarLine
 import SuccessorTree.Support
 import SuccessorTree.Pigeonhole
