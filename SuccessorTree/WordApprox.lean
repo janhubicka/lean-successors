@@ -17,7 +17,7 @@ namespace ShapeMap
 variable {T : Type u} {Label : Type v} [PartialOrder T] [LevelTree T]
 variable {S : STree T Label}
 
-private theorem list_map_eq_self_of_mem_fix
+theorem list_map_eq_self_of_mem_fix
     (p : List T) (F : ShapeMap S)
     (h : ∀ x ∈ p, F x = x) :
     p.map F = p := by
@@ -95,6 +95,72 @@ theorem levelMap_comp
     _ = H.levelMap F (LevelTree.lev (G a)) :=
           (H.levelMap_eq F (a := G a)).symm
     _ = H.levelMap F (H.levelMap G n) := by rw [hG]
+
+namespace Letter
+
+theorem level_apply_top
+    (e : H.Letter n) (x : BoundedNode T n)
+    (hx : LevelTree.lev x.1 = n) :
+    LevelTree.lev (e x).1 = n + 1 := by
+  have happ := Letter.realizer_apply H e x
+  calc
+    LevelTree.lev (e x).1 =
+        LevelTree.lev (Letter.realizer H e x.1) :=
+      congrArg LevelTree.lev happ.symm
+    _ = H.levelMap (Letter.realizer H e) n := by
+      have h := H.levelMap_eq (Letter.realizer H e) (a := x.1)
+      rw [hx] at h
+      exact h.symm
+    _ = n + 1 := Letter.realizer_levelMap H e
+
+theorem le_apply_top
+    (e : H.Letter n) (x : BoundedNode T n)
+    (hx : LevelTree.lev x.1 = n) :
+    x.1 ≤ (e x).1 := by
+  have hle :=
+    (Letter.realizer H e).le_apply_of_fixesBelow
+      (Letter.realizer_fixesBelow H e) hx
+  rw [Letter.realizer_apply H e x] at hle
+  exact hle
+
+theorem covBy_apply_top
+    (e : H.Letter n) (x : BoundedNode T n)
+    (hx : LevelTree.lev x.1 = n) :
+    x.1 ⋖ (e x).1 := by
+  apply LevelTree.covBy_of_le_level_succ
+    (Letter.le_apply_top H e x hx)
+  rw [Letter.level_apply_top H e x hx, hx]
+
+theorem output_pos
+    (e : H.Letter n) (x : BoundedNode T n)
+    (hx : LevelTree.lev x.1 = n) :
+    0 < LevelTree.lev (e x).1 := by
+  rw [Letter.level_apply_top H e x hx]
+  omega
+
+theorem parent_apply_top
+    (e : H.Letter n) (x : BoundedNode T n)
+    (hx : LevelTree.lev x.1 = n) :
+    LevelTree.parent (e x).1 (Letter.output_pos H e x hx) = x.1 := by
+  let y := (e x).1
+  have hy : LevelTree.lev y = n + 1 :=
+    Letter.level_apply_top H e x hx
+  have hpar :=
+    LevelTree.parent_le y (Letter.output_pos H e x hx)
+  have hxy : x.1 ≤ y :=
+    (Letter.covBy_apply_top H e x hx).le
+  have hpLevel :
+      LevelTree.lev
+          (LevelTree.parent y (Letter.output_pos H e x hx)) = n := by
+    rw [LevelTree.level_parent]
+    omega
+  rcases LevelTree.comparable_below hpar hxy with h | h
+  · exact LevelTree.same_level_of_le h
+      (hpLevel.trans hx.symm)
+  · exact (LevelTree.same_level_of_le h
+      (hx.trans hpLevel.symm)).symm
+
+end Letter
 
 namespace Approx
 
@@ -180,6 +246,90 @@ noncomputable def step
     (x : BoundedNode T n) :
     Approx.step H g e x =
       Approx.tightRealizer H g (Letter.realizer H e x.1) := rfl
+
+/-- Exact top-level recursion from Lemma 3.1:
+the next word approximation uses the decomposition data of the letter image. -/
+theorem step_top_succ
+    (g : H.Approx n n) (e : H.Letter n)
+    (x : BoundedNode T n)
+    (hx : LevelTree.lev x.1 = n) :
+    let hy := Letter.output_pos H e x hx
+    S.succ (g x)
+      (S.Dp (e x).1 hy)
+      (S.Dc (e x).1 hy) =
+      some (Approx.step H g e x) := by
+  let G := Approx.tightRealizer H g
+  let y := (e x).1
+  let hy : 0 < LevelTree.lev y :=
+    Letter.output_pos H e x hx
+
+  have hparent : LevelTree.parent y hy = x.1 := by
+    exact Letter.parent_apply_top H e x hx
+
+  have hbase : G x.1 = g x := by
+    have hagree :=
+      Approx.tightRealizer_agrees H g x.1 x.2
+    exact hagree.trans (Approx.realizer_apply H g x)
+
+  have hparams : ∀ z ∈ S.Dp y hy, G z = z := by
+    intro z hz
+    have hzlt :=
+      S.Dp_parameter_level_lt y hy hz
+    rw [hparent, hx] at hzlt
+    have hagree :=
+      Approx.tightRealizer_agrees H g z (Nat.le_of_lt hzlt)
+    have hfix :=
+      Approx.realizer_fixesBelow H g z hzlt
+    exact hagree.trans hfix
+
+  have hpmap :
+      (S.Dp y hy).map G = S.Dp y hy :=
+    ShapeMap.list_map_eq_self_of_mem_fix
+      (S.Dp y hy) G hparams
+
+  obtain ⟨d, hsucc, hdy⟩ :=
+    G.weak_succ' (S.succ_parent_Dp_Dc y hy)
+
+  have hsucc' :
+      S.succ (g x) (S.Dp y hy) (S.Dc y hy) = some d := by
+    simpa [G, hparent, hbase, hpmap] using hsucc
+
+  have hGxLevel :
+      LevelTree.lev (G x.1) =
+        H.levelMap G n := by
+    have h := H.levelMap_eq G (a := x.1)
+    rw [hx] at h
+    exact h.symm
+
+  have hyLevel : LevelTree.lev y = n + 1 :=
+    Letter.level_apply_top H e x hx
+
+  have hGyLevel :
+      LevelTree.lev (G y) =
+        H.levelMap G (n + 1) := by
+    have h := H.levelMap_eq G (a := y)
+    rw [hyLevel] at h
+    exact h.symm
+
+  have hdLevel :
+      LevelTree.lev d = LevelTree.lev (G x.1) + 1 := by
+    exact LevelTree.covBy_level_eq
+      (S.covBy_of_succ_eq_some hsucc)
+
+  have hsame : LevelTree.lev d = LevelTree.lev (G y) := by
+    rw [hdLevel, hGxLevel, hGyLevel]
+    exact Approx.tightRealizer_next H g
+
+  have hdeq : d = G y :=
+    LevelTree.same_level_of_le hdy hsame
+
+  have hstep : Approx.step H g e x = G y := by
+    rw [Approx.step_apply H g e x]
+    change G (Letter.realizer H e x.1) = G y
+    rw [Letter.realizer_apply H e x]
+
+  dsimp
+  simpa [y, hy, hdeq, hstep] using hsucc'
 
 /-- Each letter raises the image of the top source level by exactly one. -/
 theorem targetLevel_step
