@@ -453,24 +453,68 @@ theorem replayMap_letter
   rw [L.eval_eq_star_parameter_tail]
   simpa [List.append_assoc] using h
 
+/-- Total M-extension representing an AM^n_2 block. -/
+structure ReplayBlock
+    (H : SMTree S) (n : Nat) where
+  toMMap : MMap H
+  fixesBelow :
+    ∀ a : T, LevelTree.lev a < n → toMMap a = a
+
+namespace ReplayBlock
+
+instance (H : SMTree S) (n : Nat) :
+    CoeFun (ReplayBlock H n) (fun _ => T → T) :=
+  ⟨fun B => B.toMMap⟩
+
+/-- The finite two-level restriction represented by the block. -/
+def restrictTwo
+    (H : SMTree S) (n : Nat) (B : ReplayBlock H n) :
+    RestrictedMap T (n + 1) :=
+  B.toMMap.restrictLe H (n + 1)
+
+end ReplayBlock
+
+/-- The M3 replay block fixes all levels below n. -/
+theorem replayMap_eq_id_below
+    (H : SMTree S) {n : Nat}
+    (L : StarLine (OneLevelLetter H n))
+    (hs : Supports L.star)
+    {a : T} (ha : LevelTree.lev a < n) :
+    H.replayMap L hs a = a := by
+  let aa : {x : T // LevelTree.lev x ≤ n} :=
+    ⟨a, Nat.le_of_lt ha⟩
+  have hbase := H.replayMap_base L hs aa
+  have hword := H.wordMap_eq_id_below n L.star ha
+  exact hbase.trans hword
+
+/-- Replay packaged as an AM^n_2 block. -/
+noncomputable def replayBlock
+    (H : SMTree S) {n : Nat}
+    (L : StarLine (OneLevelLetter H n))
+    (hs : Supports L.star) :
+    ReplayBlock H n where
+  toMMap := H.replayMap L hs
+  fixesBelow := fun a ha => H.replayMap_eq_id_below L hs ha
+
 /-- How a total replay block acts on the base restriction or on one
 one-level letter. -/
 def replayApply
     (H : SMTree S) (n : Nat)
-    (B : MMap H) :
+    (B : ReplayBlock H n) :
     LineInput (OneLevelLetter H n) → RestrictedMap T n
-  | .base => B.restrictLe H n
-  | .letter e => (MMap.comp H B e.toMMap).restrictLe H n
+  | .base => B.toMMap.restrictLe H n
+  | .letter e =>
+      (MMap.comp H B.toMMap e.toMMap).restrictLe H n
 
 @[simp] theorem replayApply_base_apply
     (H : SMTree S) (n : Nat)
-    (B : MMap H)
+    (B : ReplayBlock H n)
     (a : {a : T // LevelTree.lev a ≤ n}) :
     replayApply H n B LineInput.base a = B a.1 := rfl
 
 @[simp] theorem replayApply_letter_apply
     (H : SMTree S) (n : Nat)
-    (B : MMap H) (e : OneLevelLetter H n)
+    (B : ReplayBlock H n) (e : OneLevelLetter H n)
     (a : {a : T // LevelTree.lev a ≤ n}) :
     replayApply H n B (LineInput.letter e) a =
       B (e a.1) := rfl
@@ -481,10 +525,10 @@ noncomputable def replaySystem
     ReplaySystem
       (OneLevelLetter H n)
       (RestrictedMap T n)
-      (MMap H) where
+      (ReplayBlock H n) where
   wordApprox := wordApprox H n
   apply := replayApply H n
-  replay := fun L hs => H.replayMap L hs
+  replay := fun L hs => H.replayBlock L hs
   replay_base := by
     intro L hs
     funext a
@@ -517,7 +561,7 @@ theorem oneDimensionalPigeonhole_tree
     [Fintype κ]
     (H : SMTree S) (n : Nat)
     (colour : RestrictedMap T n → κ) :
-    ∃ B : MMap H,
+    ∃ B : ReplayBlock H n,
       ∀ x : LineInput (OneLevelLetter H n),
         colour (replayApply H n B x) =
           colour (replayApply H n B LineInput.base) := by
@@ -528,7 +572,7 @@ theorem oneDimensionalPigeonhole_tree_pairwise
     [Fintype κ]
     (H : SMTree S) (n : Nat)
     (colour : RestrictedMap T n → κ) :
-    ∃ B : MMap H,
+    ∃ B : ReplayBlock H n,
       ∀ x y : LineInput (OneLevelLetter H n),
         colour (replayApply H n B x) =
           colour (replayApply H n B y) := by
