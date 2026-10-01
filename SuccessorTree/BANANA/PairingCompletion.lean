@@ -135,11 +135,12 @@ theorem completionRightInclusion_injective {R l r : Type*}
 /-- For the BANANA field `F₂`, a completed pairing with original coordinate
 sets `l,r` has `2^(|l|+|r|+1)` carrier elements across its two sorts. -/
 theorem card_f2_perfectCompletion_carrier {l r : Type*}
-    [Fintype l] [Fintype r] :
-    Fintype.card
+    [Finite l] [Finite r] :
+    Nat.card
       (((l ⊕ r → ZMod 2) ⊕ (r ⊕ l → ZMod 2))) =
-      2 ^ (Fintype.card l + Fintype.card r + 1) := by
-  simp [pow_succ, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc, two_mul]
+      2 ^ (Nat.card l + Nat.card r + 1) := by
+  simp [Nat.card_sum, Nat.card_fun, Nat.card_zmod, pow_succ,
+    Nat.add_comm, Nat.add_left_comm, Nat.add_assoc]
 
 
 end SuccessorTree.BANANA
