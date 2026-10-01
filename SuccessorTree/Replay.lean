@@ -218,6 +218,145 @@ theorem wordApprox_snoc
   rw [wordApprox_append]
   rfl
 
+/-- A one-step alphabet letter places each top-level source node below its
+image. -/
+theorem OneStep.le_apply
+    (e : OneStep H n)
+    (a : InitialSegment T n)
+    (ha : LevelTree.lev a.1 = n) :
+    a.1 ≤ (e.toApprox a).1 := by
+  let F := e.toApprox.someExtension
+  have hFa : F a.1 = (e.toApprox a).1 :=
+    e.toApprox.someExtension_apply a
+  cases n with
+  | zero =>
+      have hroot : a.1 ≤ F a.1 :=
+        F.root_le' (by simpa using ha)
+      simpa [hFa] using hroot
+  | succ k =>
+      have hk_le : k ≤ LevelTree.lev a.1 := by omega
+      let x := LevelTree.ancestor a.1 k hk_le
+      have hxa : x ≤ a.1 :=
+        LevelTree.ancestor_le a.1 k hk_le
+      have hxlev : LevelTree.lev x = k :=
+        LevelTree.level_ancestor a.1 k hk_le
+      have hcover : x ⋖ a.1 := by
+        apply LevelTree.covBy_of_le_level_succ hxa
+        omega
+      obtain ⟨p, c, hsucc⟩ := S.s3 hcover
+      let xs : InitialSegment T (k + 1) :=
+        ⟨x, by simpa [hxlev]⟩
+      have hxfixFinite : (e.toApprox xs).1 = x := by
+        apply e.fixesBelow xs
+        omega
+      have hFx : F x = x := by
+        calc
+          F x = (e.toApprox xs).1 :=
+            e.toApprox.someExtension_apply xs
+          _ = x := hxfixFinite
+      have hpfix : ∀ y ∈ p, F y = y := by
+        intro y hy
+        have hylt := S.parameter_level_lt hsucc hy
+        let ys : InitialSegment T (k + 1) :=
+          ⟨y, by omega⟩
+        calc
+          F y = (e.toApprox ys).1 :=
+            e.toApprox.someExtension_apply ys
+          _ = y := e.fixesBelow ys (by omega)
+      have hpmap : p.map F = p := by
+        induction p with
+        | nil => rfl
+        | cons y ys ih =>
+            have hy : F y = y := hpfix y (by simp)
+            have hys : ∀ z ∈ ys, F z = z := by
+              intro z hz
+              exact hpfix z (by simp [hz])
+            simp only [List.map_cons]
+            rw [hy, ih hys]
+      obtain ⟨d, hd, hda⟩ := F.weak_succ' hsucc
+      have hd' : S.succ x p c = some d := by
+        simpa [hFx, hpmap] using hd
+      have hdeq : d = a.1 := by
+        exact Option.some.inj (hd'.symm.trans hsucc)
+      subst d
+      rw [hFa] at hda
+      exact hda
+
+/-- A one-step alphabet letter has an S-decomposition over every top-level
+source node. -/
+theorem OneStep.exists_successor
+    (e : OneStep H n)
+    (a : InitialSegment T n)
+    (ha : LevelTree.lev a.1 = n) :
+    ∃ p : List T, ∃ c : Label,
+      S.succ a.1 p c = some (e.toApprox a).1 := by
+  have hle := e.le_apply a ha
+  have htop :
+      LevelTree.lev (e.toApprox a).1 = n + 1 :=
+    e.toApprox.top_level a ha
+  have hcover : a.1 ⋖ (e.toApprox a).1 := by
+    apply LevelTree.covBy_of_le_level_succ hle
+    omega
+  exact S.s3 hcover
+
+private theorem replay_map_eq_self
+    (p : List T) (F : ShapeMap S)
+    (h : ∀ x ∈ p, F x = x) :
+    p.map F = p := by
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx := h x (by simp)
+      have hxs : ∀ y ∈ xs, F y = y := by
+        intro y hy
+        exact h y (by simp [hy])
+      simp only [List.map_cons]
+      rw [hx, ih hxs]
+
+/-- Pointwise form of the recursive equation
+g_(u appended e)(a) = g_u^+(e(a)). -/
+theorem MovingOne.step_apply
+    (X : MovingOne H n) (e : OneStep H n)
+    (a : InitialSegment T n) :
+    ((X.step e).approx a).1 =
+      X.approx.canonicalExtension (e.toApprox a).1 := by
+  rfl
+
+/-- On a top source node, appending a letter transports its successor
+decomposition through the preceding canonical extension. -/
+theorem MovingOne.step_successor
+    (X : MovingOne H n) (e : OneStep H n)
+    (a : InitialSegment T n)
+    (ha : LevelTree.lev a.1 = n)
+    {p : List T} {c : Label}
+    (hsucc : S.succ a.1 p c = some (e.toApprox a).1) :
+    S.succ (X.approx a).1 p c =
+      some ((X.step e).approx a).1 := by
+  let F := X.approx.canonicalExtension
+  have hpfix : ∀ y ∈ p, F y = y := by
+    intro y hy
+    have hylt := S.parameter_level_lt hsucc hy
+    exact X.approx.canonicalExtension_eq_id_below
+      X.fixesBelow le_rfl (by omega)
+  have hpmap : p.map F = p :=
+    replay_map_eq_self p F hpfix
+  have hlevels :
+      H.levelMap F (LevelTree.lev (e.toApprox a).1) =
+        H.levelMap F (LevelTree.lev a.1) + 1 := by
+    have heTop :
+        LevelTree.lev (e.toApprox a).1 = n + 1 :=
+      e.toApprox.top_level a ha
+    rw [ha, heTop]
+    exact X.approx.canonicalExtension_nextLevel
+  have hexact :=
+    H.succ_eq_of_consecutive_levels F hsucc hlevels
+  have hFa :
+      F a.1 = (X.approx a).1 :=
+    X.approx.canonicalExtension_apply a
+  rw [hFa, hpmap] at hexact
+  rw [MovingOne.step_apply]
+  exact hexact
+
 end MovingOne
 
 end Approximation
