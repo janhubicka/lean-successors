@@ -51,4 +51,54 @@ theorem PairingEmbedding.exists_split_coordinates
     exists_split_equiv_of_injective e.right e.right_injective
   exact ⟨QL, QR, eL, eR, hL, hR⟩
 
+
+/-- Orthogonal direct sum of two bilinear pairings.  This is the joint
+embedding construction for finite BANANA structures. -/
+def pairingSum
+    {K L₁ R₁ L₂ R₂ : Type*} [Field K]
+    [AddCommGroup L₁] [Module K L₁] [AddCommGroup R₁] [Module K R₁]
+    [AddCommGroup L₂] [Module K L₂] [AddCommGroup R₂] [Module K R₂]
+    (β₁ : BilinearPairing K L₁ R₁) (β₂ : BilinearPairing K L₂ R₂) :
+    BilinearPairing K (L₁ × L₂) (R₁ × R₂) := by
+  apply LinearMap.mk₂ K (fun x y => β₁ x.1 y.1 + β₂ x.2 y.2)
+  · intro x x' y
+    simp [add_assoc, add_left_comm, add_comm]
+  · intro c x y
+    simp [mul_add]
+  · intro x y y'
+    simp [add_assoc, add_left_comm, add_comm]
+  · intro c x y
+    simp [mul_add]
+
+/-- The first summand embeds into the orthogonal sum. -/
+def pairingSumInl
+    {K L₁ R₁ L₂ R₂ : Type*} [Field K]
+    [AddCommGroup L₁] [Module K L₁] [AddCommGroup R₁] [Module K R₁]
+    [AddCommGroup L₂] [Module K L₂] [AddCommGroup R₂] [Module K R₂]
+    (β₁ : BilinearPairing K L₁ R₁) (β₂ : BilinearPairing K L₂ R₂) :
+    PairingEmbedding β₁ (pairingSum β₁ β₂) where
+  left := LinearMap.inl K L₁ L₂
+  right := LinearMap.inl K R₁ R₂
+  left_injective := LinearMap.inl_injective
+  right_injective := LinearMap.inl_injective
+  preserves := by
+    intro x y
+    simp [pairingSum]
+
+/-- The second summand embeds into the orthogonal sum. -/
+def pairingSumInr
+    {K L₁ R₁ L₂ R₂ : Type*} [Field K]
+    [AddCommGroup L₁] [Module K L₁] [AddCommGroup R₁] [Module K R₁]
+    [AddCommGroup L₂] [Module K L₂] [AddCommGroup R₂] [Module K R₂]
+    (β₁ : BilinearPairing K L₁ R₁) (β₂ : BilinearPairing K L₂ R₂) :
+    PairingEmbedding β₂ (pairingSum β₁ β₂) where
+  left := LinearMap.inr K L₁ L₂
+  right := LinearMap.inr K R₁ R₂
+  left_injective := LinearMap.inr_injective
+  right_injective := LinearMap.inr_injective
+  preserves := by
+    intro x y
+    simp [pairingSum]
+
+
 end SuccessorTree.BANANA
