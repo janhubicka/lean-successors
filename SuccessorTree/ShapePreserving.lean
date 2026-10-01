@@ -55,37 +55,44 @@ theorem map_lt_of_immediate
 /-- Proposition 2.1(i): shape-preserving maps preserve strict tree order. -/
 theorem map_lt
     (F : ShapeMap S) {a b : Node} (hab : a < b) :
-    F a < F b := by
-  generalize hn : S.tree.level b = n
-  induction n using Nat.strong_induction_on generalizing a b with
-  | h n ih =>
-      have hlab : S.tree.level a < S.tree.level b :=
-        S.tree.level_strict hab
-      by_cases himm :
-          S.tree.level b = S.tree.level a + 1
-      · exact F.map_lt_of_immediate ⟨hab, himm⟩
-      · have hbpos : 0 < S.tree.level b := by omega
-        obtain ⟨c, hc⟩ :=
-          S.tree.exists_immediate_predecessor b hbpos
-        have hlac : S.tree.level a ≤ S.tree.level c := by
-          omega
-        have hacle : a ≤ c :=
-          S.tree.predecessor_le hab hc.1 hlac
-        have hac : a < c := by
-          rcases hacle.eq_or_lt with hEq | hlt
-          · subst c
-            exact False.elim (himm hc.2)
-          · exact hlt
-        have hclevel : S.tree.level c < n := by
-          rw [← hn]
-          exact S.tree.level_strict hc.1
-        have hFac : F a < F c :=
-          ih (S.tree.level c) hclevel a c rfl hac
-        have hFcb : F c < F b :=
-          F.map_lt_of_immediate hc
-        exact lt_trans hFac hFcb
+    F.toFun a < F.toFun b := by
+  have aux :
+      ∀ N : Nat, ∀ b : Node, S.tree.level b = N →
+        ∀ a : Node, a < b → F.toFun a < F.toFun b := by
+    intro N
+    induction N using Nat.strong_induction_on with
+    | h N ih =>
+        intro b hb a hab
+        have hlab : S.tree.level a < S.tree.level b :=
+          S.tree.level_strict hab
+        by_cases himm :
+            S.tree.level b = S.tree.level a + 1
+        · exact F.map_lt_of_immediate ⟨hab, himm⟩
+        · have hbpos : 0 < S.tree.level b := by omega
+          obtain ⟨c, hc⟩ :=
+            S.tree.exists_immediate_predecessor b hbpos
+          have hcbLevel :
+              S.tree.level b = S.tree.level c + 1 := hc.2
+          have hlac : S.tree.level a ≤ S.tree.level c := by
+            omega
+          have hacle : a ≤ c :=
+            S.tree.predecessor_le hab hc.1 hlac
+          have hac : a < c := by
+            rcases hacle.eq_or_lt with hEq | hlt
+            · subst c
+              exact False.elim (himm hcbLevel)
+            · exact hlt
+          have hclevel : S.tree.level c < N := by
+            rw [← hb]
+            exact S.tree.level_strict hc.1
+          have hFac : F.toFun a < F.toFun c :=
+            ih (S.tree.level c) hclevel c rfl a hac
+          have hFcb : F.toFun c < F.toFun b :=
+            F.map_lt_of_immediate hc
+          exact lt_trans hFac hFcb
+  exact aux (S.tree.level b) b rfl a hab
 
-theorem monotone (F : ShapeMap S) : Monotone F := by
+theorem monotone_toFun (F : ShapeMap S) : Monotone F.toFun := by
   intro a b hab
   rcases hab.eq_or_lt with hEq | hlt
   · subst b
@@ -119,17 +126,17 @@ def comp (F G : ShapeMap S) : ShapeMap S where
     intro a b ps c h
     obtain ⟨y, hy, hyb⟩ := G.weak_succ h
     obtain ⟨z, hz, hzy⟩ := F.weak_succ hy
-    refine ⟨z, ?_, le_trans hzy (F.monotone hyb)⟩
+    refine ⟨z, ?_, le_trans hzy (F.monotone_toFun hyb)⟩
     simpa [Function.comp_def, List.map_map] using hz
   root_cone := by
     intro r b hr hrb
     exact F.root_cone hr (G.root_cone hr hrb)
 
 @[simp] theorem id_apply (S : STree Node Char) (a : Node) :
-    ShapeMap.id S a = a := rfl
+    (ShapeMap.id S).toFun a = a := rfl
 
 @[simp] theorem comp_apply (F G : ShapeMap S) (a : Node) :
-    F.comp G a = F (G a) := rfl
+    (ShapeMap.comp F G).toFun a = F.toFun (G.toFun a) := rfl
 
 def SkipsLevel (F : ShapeMap S) (m : Nat) : Prop :=
   ∀ n : Nat, F.levelMap n ≠ m
