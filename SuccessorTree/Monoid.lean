@@ -407,6 +407,107 @@ theorem le_apply_at_skip (H : SMTree S) (F : ShapeMap S) (m : Nat)
       have hdaeq : d = a := Option.some.inj hsome
       simpa [hdaeq] using hda
 
+private theorem list_map_eq_of_mem_eq_two
+    (p : List T) (f g : T → T)
+    (h : ∀ x ∈ p, f x = g x) :
+    p.map f = p.map g := by
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : f x = g x := h x (by simp)
+      have hxs : ∀ y ∈ xs, f y = g y := by
+        intro y hy
+        exact h y (by simp [hy])
+      simp only [List.map_cons]
+      rw [hx, ih hxs]
+
+/-- A one-level skip map is uniquely determined by its image of the skipped
+source level, exactly as claimed before Definition `def:sntree` in the
+paper. -/
+theorem eq_of_skipsOnly_levelImage
+    (H : SMTree S) (F G : ShapeMap S) (m : Nat)
+    (hF : F.SkipsOnly m) (hG : G.SkipsOnly m)
+    (himage :
+      Set.range (fun a : {a : T // LevelTree.lev a = m} => F a.1) =
+      Set.range (fun a : {a : T // LevelTree.lev a = m} => G a.1)) :
+    F.toFun = G.toFun := by
+  funext a
+  have hp : ∀ k : Nat, ∀ a : T,
+      LevelTree.lev a = k → F a = G a := by
+    intro k
+    induction k using Nat.strong_induction_on with
+    | h k ih =>
+        intro a hlev
+        by_cases hbelow : k < m
+        · have hFa : F a = a :=
+            H.eq_id_below_skip F m hF (by simpa [hlev] using hbelow)
+          have hGa : G a = a :=
+            H.eq_id_below_skip G m hG (by simpa [hlev] using hbelow)
+          exact hFa.trans hGa.symm
+        · by_cases hat : k = m
+          · have hlevm : LevelTree.lev a = m := hlev.trans hat
+            have hmemF :
+                F a ∈ Set.range
+                  (fun x : {x : T // LevelTree.lev x = m} => F x.1) :=
+              ⟨⟨a, hlevm⟩, rfl⟩
+            have hmemG :
+                F a ∈ Set.range
+                  (fun x : {x : T // LevelTree.lev x = m} => G x.1) := by
+              rw [← himage]
+              exact hmemF
+            rcases hmemG with ⟨b, hb⟩
+            have haLe : a ≤ F a :=
+              H.le_apply_at_skip F m hF hlevm
+            have hbLeG : b.1 ≤ G b.1 :=
+              H.le_apply_at_skip G m hG b.2
+            have hbLeFa : b.1 ≤ F a := by
+              simpa [hb] using hbLeG
+            have habLevel : LevelTree.lev a = LevelTree.lev b.1 :=
+              hlevm.trans b.2.symm
+            have hab : a = b.1 := by
+              rcases LevelTree.comparable_below haLe hbLeFa with hab | hba
+              · exact LevelTree.same_level_of_le hab habLevel
+              · exact (LevelTree.same_level_of_le hba habLevel.symm).symm
+            subst b
+            exact hb.symm
+          · have habove : m < k := by omega
+            cases k with
+            | zero => omega
+            | succ j =>
+                have hj_le : j ≤ LevelTree.lev a := by omega
+                let x := LevelTree.ancestor a j hj_le
+                have hxa : x ≤ a := LevelTree.ancestor_le a j hj_le
+                have hxlev : LevelTree.lev x = j :=
+                  LevelTree.level_ancestor a j hj_le
+                have hcover : x ⋖ a := by
+                  apply LevelTree.covBy_of_le_level_succ hxa
+                  omega
+                obtain ⟨p, c, hsucc⟩ := S.s3 hcover
+                have hxEq : F x = G x :=
+                  ih j (by omega) x hxlev
+                have hpEq : ∀ y ∈ p, F y = G y := by
+                  intro y hy
+                  have hyltx := S.parameter_level_lt hsucc hy
+                  have hyltk : LevelTree.lev y < Nat.succ j := by
+                    omega
+                  exact ih (LevelTree.lev y) hyltk y rfl
+                have hpmap : p.map F = p.map G :=
+                  list_map_eq_of_mem_eq_two p F G hpEq
+                have hFsucc :
+                    S.succ (F x) (p.map F) c = some (F a) :=
+                  H.succ_eq_above_skip F m hF hsucc (by omega)
+                have hGsucc :
+                    S.succ (G x) (p.map G) c = some (G a) :=
+                  H.succ_eq_above_skip G m hG hsucc (by omega)
+                have hsome : (some (F a) : Option T) = some (G a) := by
+                  calc
+                    some (F a) = S.succ (F x) (p.map F) c := hFsucc.symm
+                    _ = S.succ (G x) (p.map G) c := by
+                      rw [hxEq, hpmap]
+                    _ = some (G a) := hGsucc
+                exact Option.some.inj hsome
+  exact hp (LevelTree.lev a) a rfl
+
 end SMTree
 
 end SuccessorTree
