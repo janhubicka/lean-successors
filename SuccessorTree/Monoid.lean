@@ -153,8 +153,8 @@ private theorem strictMono_nat_id_le (f : Nat → Nat) (hf : StrictMono f) :
   induction n with
   | zero => omega
   | succ n ih =>
-      have hs := hf (Nat.lt_succ_self n)
-      omega
+      have hs : f n < f (Nat.succ n) := hf (Nat.lt_succ_self n)
+      exact (Nat.succ_le_succ ih).trans (Nat.succ_le_iff.mpr hs)
 
 /-- A strictly increasing self-map of `Nat` whose range omits exactly `m`
 is the unique order embedding which inserts one gap at `m`. -/
@@ -202,7 +202,8 @@ private theorem strictMono_range_compl_singleton
           omega
         have hnotgt : ¬ n + 1 < j := by
           intro hjgt
-          have hs := hf hjgt
+          have hs : f (n + 1) < f j := hf hjgt
+          have hidn := hid (n + 1)
           rw [hj] at hs
           omega
         have hjeq : j = n + 1 := by omega
@@ -231,7 +232,9 @@ private theorem strictMono_range_compl_singleton
     | zero => simpa using hcross
     | succ d ih =>
         obtain ⟨j, hj⟩ := hin (m + d + 2) (by omega)
-        have hstep := hf (show m + d < m + (d + 1) by omega)
+        have hstep : f (m + d) < f (m + d + 1) := by
+          apply hf
+          omega
         rw [ih] at hstep
         have hnotlt : ¬ j < m + d + 1 := by
           intro hjlt
@@ -241,7 +244,7 @@ private theorem strictMono_range_compl_singleton
           omega
         have hnotgt : ¬ m + d + 1 < j := by
           intro hjgt
-          have hs := hf hjgt
+          have hs : f (m + d + 1) < f j := hf hjgt
           rw [hj] at hs
           omega
         have hjeq : j = m + d + 1 := by omega
@@ -468,8 +471,9 @@ theorem eq_of_skipsOnly_levelImage
               rcases LevelTree.comparable_below haLe hbLeFa with hab | hba
               · exact LevelTree.same_level_of_le hab habLevel
               · exact (LevelTree.same_level_of_le hba habLevel.symm).symm
-            subst b
-            exact hb.symm
+            have hb' := hb
+            rw [← hab] at hb'
+            exact hb'.symm
           · have habove : m < k := by omega
             cases k with
             | zero => omega
