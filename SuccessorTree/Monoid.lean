@@ -264,6 +264,77 @@ theorem levelMap_of_skipsOnly (H : SMTree S) (F : ShapeMap S) (m : Nat)
     Set.range (H.levelMap F) = F.levelRange := H.range_levelMap F
     _ = {k | k ≠ m} := hskip
 
+theorem level_eq_of_lt_skipped (H : SMTree S) (F : ShapeMap S) (m : Nat)
+    (hskip : F.SkipsOnly m) {a : T} (ha : LevelTree.lev a < m) :
+    LevelTree.lev (F a) = LevelTree.lev a := by
+  calc
+    LevelTree.lev (F a) = H.levelMap F (LevelTree.lev a) :=
+      (H.levelMap_eq F (a := a)).symm
+    _ = LevelTree.lev a := by
+      rw [H.levelMap_of_skipsOnly F m hskip]
+      simp [ha]
+
+private theorem list_map_eq_self_of_mem_eq
+    (p : List T) (f : T → T)
+    (h : ∀ x ∈ p, f x = x) :
+    p.map f = p := by
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : f x = x := h x (by simp)
+      have hxs : ∀ y ∈ xs, f y = y := by
+        intro y hy
+        exact h y (by simp [hy])
+      simp only [List.map_cons]
+      rw [hx, ih hxs]
+
+/-- A map which skips only level `m` is literally the identity below `m`.
+This formalizes the first sentence of the paper's uniqueness discussion for
+one-level skip maps. -/
+theorem eq_id_below_skip (H : SMTree S) (F : ShapeMap S) (m : Nat)
+    (hskip : F.SkipsOnly m) {a : T} (ha : LevelTree.lev a < m) :
+    F a = a := by
+  have hp : ∀ k : Nat, ∀ a : T,
+      LevelTree.lev a = k → k < m → F a = a := by
+    intro k
+    induction k using Nat.strong_induction_on with
+    | h k ih =>
+        intro a hlev hkm
+        have hFaLevel : LevelTree.lev (F a) = LevelTree.lev a :=
+          H.level_eq_of_lt_skipped F m hskip (by simpa [hlev] using hkm)
+        cases k with
+        | zero =>
+            have hroot : a ≤ F a := F.root_le' (by simpa [hlev])
+            exact (LevelTree.same_level_of_le hroot hFaLevel.symm).symm
+        | succ k =>
+            have hk_le : k ≤ LevelTree.lev a := by omega
+            let x := LevelTree.ancestor a k hk_le
+            have hxa : x ≤ a := LevelTree.ancestor_le a k hk_le
+            have hxlev : LevelTree.lev x = k := LevelTree.level_ancestor a k hk_le
+            have hcover : x ⋖ a := by
+              apply LevelTree.covBy_of_le_level_succ hxa
+              omega
+            obtain ⟨p, c, hsucc⟩ := S.s3 hcover
+            have hxfix : F x = x :=
+              ih k (by omega) x hxlev (by omega)
+            have hpfix : ∀ y ∈ p, F y = y := by
+              intro y hy
+              have hyltx := S.parameter_level_lt hsucc hy
+              have hyltk : LevelTree.lev y < k := by
+                simpa [hxlev] using hyltx
+              exact ih (LevelTree.lev y) (by omega) y rfl (by omega)
+            have hpmap : p.map F = p :=
+              list_map_eq_self_of_mem_eq p F hpfix
+            obtain ⟨d, hFd, hda⟩ := F.weak_succ' hsucc
+            have hFd' : S.succ x p c = some d := by
+              simpa [hxfix, hpmap] using hFd
+            have hsome : (some d : Option T) = some a :=
+              hFd'.symm.trans hsucc
+            have hdaeq : d = a := Option.some.inj hsome
+            subst d
+            exact (LevelTree.same_level_of_le hda hFaLevel.symm).symm
+  exact hp (LevelTree.lev a) a rfl ha
+
 end SMTree
 
 end SuccessorTree
