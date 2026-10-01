@@ -147,6 +147,123 @@ theorem range_levelMap (H : SMTree S) (F : ShapeMap S) :
     refine ⟨LevelTree.lev a, ?_⟩
     exact (H.levelMap_eq F (a := a)).trans ha
 
+private theorem strictMono_nat_id_le (f : Nat → Nat) (hf : StrictMono f) :
+    ∀ n : Nat, n ≤ f n := by
+  intro n
+  induction n with
+  | zero => omega
+  | succ n ih =>
+      have hs := hf (Nat.lt_succ_self n)
+      omega
+
+/-- A strictly increasing self-map of `Nat` whose range omits exactly `m`
+is the unique order embedding which inserts one gap at `m`. -/
+private theorem strictMono_range_compl_singleton
+    (f : Nat → Nat) (hf : StrictMono f) (m : Nat)
+    (hr : Set.range f = {k | k ≠ m}) :
+    ∀ n : Nat, f n = if n < m then n else n + 1 := by
+  have hin : ∀ k : Nat, k ≠ m → ∃ j : Nat, f j = k := by
+    intro k hk
+    have hmem : k ∈ Set.range f := by
+      rw [hr]
+      exact hk
+    exact hmem
+  have hskip : f m ≠ m := by
+    intro hm
+    have hmem : m ∈ Set.range f := ⟨m, hm⟩
+    rw [hr] at hmem
+    exact hmem rfl
+  have hid : ∀ n : Nat, n ≤ f n := strictMono_nat_id_le f hf
+  have hbelow : ∀ n : Nat, n < m → f n = n := by
+    intro n
+    induction n with
+    | zero =>
+        intro h0m
+        obtain ⟨j, hj⟩ := hin 0 (by omega)
+        have hj0 : j = 0 := by
+          by_contra hne
+          have hjpos : 0 < j := Nat.pos_of_ne_zero hne
+          have hs := hf hjpos
+          rw [hj] at hs
+          omega
+        subst j
+        exact hj
+    | succ n ih =>
+        intro hnm
+        have ihn : f n = n := ih (by omega)
+        obtain ⟨j, hj⟩ := hin (n + 1) (by omega)
+        have hstep := hf (Nat.lt_succ_self n)
+        rw [ihn] at hstep
+        have hnotlt : ¬ j < n + 1 := by
+          intro hjlt
+          have hjle : j ≤ n := by omega
+          have hmono := hf.monotone hjle
+          rw [hj, ihn] at hmono
+          omega
+        have hnotgt : ¬ n + 1 < j := by
+          intro hjgt
+          have hs := hf hjgt
+          rw [hj] at hs
+          omega
+        have hjeq : j = n + 1 := by omega
+        subst j
+        exact hj
+  have hcross : f m = m + 1 := by
+    have hmle : m ≤ f m := hid m
+    have hmge : m + 1 ≤ f m := by omega
+    obtain ⟨j, hj⟩ := hin (m + 1) (by omega)
+    have hnotlt : ¬ j < m := by
+      intro hjlt
+      have hjval := hbelow j hjlt
+      rw [hjval] at hj
+      omega
+    have hnotgt : ¬ m < j := by
+      intro hjgt
+      have hs := hf hjgt
+      rw [hj] at hs
+      omega
+    have hjeq : j = m := by omega
+    subst j
+    exact hj
+  have habove : ∀ d : Nat, f (m + d) = m + d + 1 := by
+    intro d
+    induction d with
+    | zero => simpa using hcross
+    | succ d ih =>
+        obtain ⟨j, hj⟩ := hin (m + d + 2) (by omega)
+        have hstep := hf (show m + d < m + (d + 1) by omega)
+        rw [ih] at hstep
+        have hnotlt : ¬ j < m + d + 1 := by
+          intro hjlt
+          have hjle : j ≤ m + d := by omega
+          have hmono := hf.monotone hjle
+          rw [hj, ih] at hmono
+          omega
+        have hnotgt : ¬ m + d + 1 < j := by
+          intro hjgt
+          have hs := hf hjgt
+          rw [hj] at hs
+          omega
+        have hjeq : j = m + d + 1 := by omega
+        subst j
+        simpa [Nat.add_assoc] using hj
+  intro n
+  by_cases hnm : n < m
+  · simp [hnm, hbelow n hnm]
+  · have hmn : m ≤ n := Nat.le_of_not_gt hnm
+    obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hmn
+    simp [habove d]
+
+/-- Exact level behaviour of a map which skips only one level. -/
+theorem levelMap_of_skipsOnly (H : SMTree S) (F : ShapeMap S) (m : Nat)
+    (hskip : F.SkipsOnly m) (n : Nat) :
+    H.levelMap F n = if n < m then n else n + 1 := by
+  apply strictMono_range_compl_singleton (H.levelMap F)
+    (H.levelMap_strictMono F) m
+  calc
+    Set.range (H.levelMap F) = F.levelRange := H.range_levelMap F
+    _ = {k | k ≠ m} := hskip
+
 end SMTree
 
 end SuccessorTree
