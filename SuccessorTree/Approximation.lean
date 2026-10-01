@@ -87,6 +87,43 @@ theorem level_succ_at (H : SMTree S) {n : Nat}
 
 end OneLevelLetter
 
+/-- Successor decomposition data for a fixed edge a <. b. -/
+structure SuccCode (S : STree T Label) (a b : T) where
+  params : List T
+  char : Label
+  succ_eq : S.succ a params char = some b
+
+/-- S3 supplies successor code for every cover. -/
+noncomputable def succCodeOfCovBy (S : STree T Label)
+    {a b : T} (h : a ⋖ b) : SuccCode S a b := by
+  classical
+  obtain ⟨p, c, hc⟩ := S.s3 h
+  exact ⟨p, c, hc⟩
+
+@[simp] theorem succCodeOfCovBy_eq (S : STree T Label)
+    {a b : T} (h : a ⋖ b) :
+    S.succ a (succCodeOfCovBy S h).params
+      (succCodeOfCovBy S h).char = some b :=
+  (succCodeOfCovBy S h).succ_eq
+
+/-- The skipped-level image of a letter is an immediate successor of the
+original node. -/
+theorem letter_covBy (H : SMTree S) {n : Nat}
+    (e : OneLevelLetter H n) {a : T}
+    (ha : LevelTree.lev a = n) :
+    a ⋖ e a := by
+  have hle : a ≤ e a :=
+    H.le_apply_at_skip e.toMMap.map n e.skips ha
+  have hlev : LevelTree.lev (e a) = LevelTree.lev a + 1 := by
+    rw [e.level_succ_at H ha, ha]
+  exact LevelTree.covBy_of_le_level_succ hle hlev
+
+/-- Dp/Dc for the node e(a), where e is a one-level Hales--Jewett letter. -/
+noncomputable def letterCode (H : SMTree S) {n : Nat}
+    (e : OneLevelLetter H n) (a : T)
+    (ha : LevelTree.lev a = n) : SuccCode S a (e a) :=
+  succCodeOfCovBy S (H.letter_covBy e ha)
+
 /-- Nodes on one fixed level, packaged as a finite type. -/
 abbrev LevelNode (T : Type u) [PartialOrder T] [LevelTree T] (n : Nat) :=
   {a : T // LevelTree.lev a = n}
@@ -128,18 +165,31 @@ theorem OneLevelLetter.levelImage_injective
       e.toMMap.map.toFun = f.toMMap.map.toFun :=
     H.eq_of_skipsOnly_levelImage
       e.toMMap.map f.toMMap.map n e.skips f.skips himage
-  apply OneLevelLetter.ext
-  apply MMap.ext
-  apply ShapeMap.ext
-  exact hfun
+  cases e with
+  | mk em he =>
+      cases f with
+      | mk fm hf =>
+          dsimp at hfun
+          have hmap : em.map = fm.map := by
+            apply ShapeMap.ext
+            exact hfun
+          cases em with
+          | mk emap emem =>
+              cases fm with
+              | mk fmap fmem =>
+                  dsimp at hmap
+                  cases hmap
+                  rfl
 
 /-- The Hales--Jewett alphabet at a fixed level is finite. -/
 noncomputable instance oneLevelLetterFintype
     (H : SMTree S) (n : Nat) :
     Fintype (OneLevelLetter H n) :=
-  Fintype.ofInjective
+  letI : Fintype (LevelNode T n) := levelNodeFintype T n
+  letI : Fintype (LevelNode T (n + 1)) := levelNodeFintype T (n + 1)
+  exact Fintype.ofInjective
     (fun e : OneLevelLetter H n => e.levelImage H)
-    (H.levelImage_injective n)
+    (OneLevelLetter.levelImage_injective H n)
 
 /-- Interpretation of a finite word as the canonical total extension g_w^+.
 
@@ -206,7 +256,7 @@ theorem level_wordMap_of_ge (H : SMTree S) (n : Nat)
   induction w with
   | nil => simp
   | cons e w ih =>
-      rw [wordMap_cons_apply, e.level_apply H, ih ha]
+      rw [wordMap_cons_apply, e.level_apply H, ih]
       have hnot : ¬ LevelTree.lev a + w.length < n := by omega
       simp [hnot]
       omega
@@ -304,7 +354,7 @@ theorem wordMap_le_append
   | nil =>
       simp
   | append_singleton v e ih =>
-      rw [List.append_assoc]
+      rw [← List.append_assoc]
       exact ih.trans
         (H.wordMap_covBy_append_letter (u ++ v) e a ha).le
 
