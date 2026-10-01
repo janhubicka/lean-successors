@@ -73,6 +73,44 @@ theorem map_le_of_le (F : ShapeMap S) {a b : T} (hab : a ≤ b) :
   · simpa [h]
   · exact (F.map_lt_of_lt h).le
 
+/-- Paper Proposition `prop:shape-pres`, clause (ii), in a formulation
+which does not introduce separate partial notation for \(\Dp\) and \(\Dc\):
+the decomposition of the next predecessor level remains defined after applying
+a shape-preserving map, and its image lies below the image of the whole node. -/
+theorem preserves_decomposition (F : ShapeMap S) (a : T) (n : Nat)
+    (hn : n < LevelTree.lev a) :
+    ∃ p : List T, ∃ c : Label, ∃ d : T,
+      let hn0 : n ≤ LevelTree.lev a := Nat.le_of_lt hn
+      let hn1 : n + 1 ≤ LevelTree.lev a := Nat.succ_le_iff.mpr hn
+      let x := LevelTree.ancestor a n hn0
+      let y := LevelTree.ancestor a (n + 1) hn1
+      S.succ x p c = some y ∧
+      S.succ (F x) (p.map F) c = some d ∧
+      d ≤ F a := by
+  let hn0 : n ≤ LevelTree.lev a := Nat.le_of_lt hn
+  let hn1 : n + 1 ≤ LevelTree.lev a := Nat.succ_le_iff.mpr hn
+  let x := LevelTree.ancestor a n hn0
+  let y := LevelTree.ancestor a (n + 1) hn1
+  have hxa : x ≤ a := LevelTree.ancestor_le a n hn0
+  have hya : y ≤ a := LevelTree.ancestor_le a (n + 1) hn1
+  have hxlev : LevelTree.lev x = n := LevelTree.level_ancestor a n hn0
+  have hylev : LevelTree.lev y = n + 1 :=
+    LevelTree.level_ancestor a (n + 1) hn1
+  have hxy : x ≤ y := by
+    rcases LevelTree.comparable_below hxa hya with h | h
+    · exact h
+    · have hlev := LevelTree.level_le_of_le h
+      omega
+  have hcover : x ⋖ y := by
+    apply LevelTree.covBy_of_le_level_succ hxy
+    omega
+  obtain ⟨p, c, hsucc⟩ := S.s3 hcover
+  obtain ⟨d, hFd, hdy⟩ := F.weak_succ' hsucc
+  refine ⟨p, c, d, ?_⟩
+  dsimp [hn0, hn1, x, y]
+  refine ⟨hsucc, hFd, ?_⟩
+  exact hdy.trans (F.map_le_of_le hya)
+
 /-- Relative order of levels is preserved, even for incomparable nodes. -/
 theorem level_lt_of_level_lt (F : ShapeMap S) {a b : T}
     (hab : LevelTree.lev a < LevelTree.lev b) :
