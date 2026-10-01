@@ -30,7 +30,7 @@ theorem level_le_levelMap (H : SMTree S) (F : ShapeMap S) :
   | succ n ih =>
       have hs :=
         H.levelMap_strictMono F (Nat.lt_succ_self n)
-      omega
+      exact Nat.succ_le_of_lt (lt_of_le_of_lt ih hs)
 
 /-- Agreement of global shape maps through source level n gives agreement of
 their induced level maps on every lower source level. -/
@@ -169,7 +169,7 @@ theorem lower_next_level_once
   exact ⟨F1, hF1, hF1agree, hnext⟩
 
 /-- Number of missing target levels between consecutive source levels. -/
-def nextGap (H : SMTree S) (F : ShapeMap S) (m : Nat) : Nat :=
+noncomputable def nextGap (H : SMTree S) (F : ShapeMap S) (m : Nat) : Nat :=
   H.levelMap F (m + 1) - (H.levelMap F m + 1)
 
 /-- Repeatedly apply M2 until two consecutive source levels become consecutive
@@ -213,7 +213,8 @@ theorem close_next_level
             omega
           obtain ⟨G, hG, hGagree, hGnext⟩ :=
             ih (nextGap H K1 m) hmeasure K1 hK1 rfl
-          refine ⟨G, hG, hGagree.agreesThrough_trans hK1agree, ?_⟩
+          refine ⟨G, hG,
+            ShapeMap.agreesThrough_trans hGagree hK1agree, ?_⟩
           rw [hGnext, hK1base]
   exact aux (nextGap H F m) F hF rfl
 
