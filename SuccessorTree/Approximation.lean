@@ -261,7 +261,9 @@ def OneStep (H : SMTree S) (n : Nat) :=
 
 noncomputable instance oneStepFintype :
     Fintype (OneStep H n) :=
-  Fintype.ofFinite _
+  Fintype.ofInjective
+    (fun e : OneStep H n => e.1)
+    Subtype.val_injective
 
 theorem OneStep.fixesBelow (e : OneStep H n) :
     e.1.FixesBelow n :=
