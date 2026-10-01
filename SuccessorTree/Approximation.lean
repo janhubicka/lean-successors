@@ -290,12 +290,9 @@ private theorem list_map_eq_self_of_fixed
   induction p with
   | nil => rfl
   | cons x xs ih =>
-      have hx : f x = x := h x (by simp)
-      have hxs : ∀ y ∈ xs, f y = y := by
-        intro y hy
-        exact h y (by simp [hy])
+      have hx : f x = x := h x (List.mem_cons_self)
       simp only [List.map_cons]
-      rw [hx, ih hxs]
+      rw [hx, ih]
 
 private theorem list_map_eq_of_fixed
     {α : Type u} {β : Type w} (p : List α) (f g : α → β)
@@ -304,12 +301,9 @@ private theorem list_map_eq_of_fixed
   induction p with
   | nil => rfl
   | cons x xs ih =>
-      have hx : f x = g x := h x (by simp)
-      have hxs : ∀ y ∈ xs, f y = g y := by
-        intro y hy
-        exact h y (by simp [hy])
+      have hx : f x = g x := h x (List.mem_cons_self)
       simp only [List.map_cons]
-      rw [hx, ih hxs]
+      rw [hx, ih]
 
 /-- Every word map fixes the parameter list of a one-level letter edge. -/
 theorem map_letterCode_params_eq
