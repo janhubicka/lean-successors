@@ -28,11 +28,13 @@ theorem set_finite :
   | zero =>
       apply (LevelTree.level_finite 0).subset
       intro a ha
+      change LevelTree.lev a ≤ 0 at ha
       have hzero : LevelTree.lev a = 0 := by omega
       exact hzero
   | succ m ih =>
       apply (ih.union (LevelTree.level_finite (m + 1))).subset
       intro a ha
+      change LevelTree.lev a ≤ m + 1 at ha
       by_cases hle : LevelTree.lev a ≤ m
       · exact Or.inl hle
       · have heq : LevelTree.lev a = m + 1 := by omega
@@ -96,15 +98,15 @@ noncomputable def realizer (g : H.Approx n top) : ShapeMap S :=
   Classical.choose g.2
 
 theorem realizer_mem (g : H.Approx n top) :
-    g.realizer ∈ H.M :=
+    Approx.realizer H g ∈ H.M :=
   (Classical.choose_spec g.2).1
 
 theorem realizer_fixesBelow (g : H.Approx n top) :
-    g.realizer.FixesBelow n :=
+    (Approx.realizer H g).FixesBelow n :=
   (Classical.choose_spec g.2).2.1
 
 theorem realizer_apply (g : H.Approx n top) (x : BoundedNode T top) :
-    g.realizer x.1 = g x :=
+    Approx.realizer H g x.1 = g x :=
   (Classical.choose_spec g.2).2.2 x
 
 noncomputable def ofShapeMap
@@ -115,16 +117,18 @@ noncomputable def ofShapeMap
 @[simp] theorem ofShapeMap_apply
     (F : ShapeMap S) (hmem : F ∈ H.M) (hfix : F.FixesBelow n)
     (x : BoundedNode T top) :
-    H.Approx.ofShapeMap F hmem hfix x = F x.1 := rfl
+    Approx.ofShapeMap H F hmem hfix x = F x.1 := rfl
 
 /-- Restrict an approximation to a smaller bounded source. -/
 noncomputable def restrict
     (g : H.Approx n top) (small : Nat) (hsmall : small ≤ top) :
     H.Approx n small :=
   ⟨fun x => g ⟨x.1, x.2.trans hsmall⟩,
-    ⟨g.realizer, g.realizer_mem, g.realizer_fixesBelow, by
-      intro x
-      exact g.realizer_apply ⟨x.1, x.2.trans hsmall⟩⟩⟩
+    ⟨Approx.realizer H g,
+      Approx.realizer_mem H g,
+      Approx.realizer_fixesBelow H g, by
+        intro x
+        exact Approx.realizer_apply H g ⟨x.1, x.2.trans hsmall⟩⟩⟩
 
 end Approx
 
@@ -146,36 +150,41 @@ instance : CoeFun (H.Letter n)
     (fun _ => BoundedNode T n → BoundedNode T (n + 1)) :=
   ⟨fun e => e.1⟩
 
-noncomputable instance fintype : Fintype (H.Letter n) :=
-  Fintype.ofFinite _
+noncomputable instance fintype : Fintype (H.Letter n) := by
+  classical
+  letI : Fintype (BoundedNode T n) := BoundedNode.fintype n
+  letI : Fintype (BoundedNode T (n + 1)) := BoundedNode.fintype (n + 1)
+  exact Fintype.ofFinite _
 
 noncomputable def realizer (e : H.Letter n) : ShapeMap S :=
   Classical.choose e.2
 
 theorem realizer_mem (e : H.Letter n) :
-    e.realizer ∈ H.M :=
+    Letter.realizer H e ∈ H.M :=
   (Classical.choose_spec e.2).1
 
 theorem realizer_fixesBelow (e : H.Letter n) :
-    e.realizer.FixesBelow n :=
+    (Letter.realizer H e).FixesBelow n :=
   (Classical.choose_spec e.2).2.1
 
 theorem realizer_levelMap (e : H.Letter n) :
-    H.levelMap e.realizer n = n + 1 :=
+    H.levelMap (Letter.realizer H e) n = n + 1 :=
   (Classical.choose_spec e.2).2.2.1
 
 theorem realizer_apply (e : H.Letter n) (x : BoundedNode T n) :
-    e.realizer x.1 = (e x).1 :=
+    Letter.realizer H e x.1 = (e x).1 :=
   (Classical.choose_spec e.2).2.2.2 x
 
 /-- Forget the output bound and view a letter as a one-level approximation. -/
 noncomputable def toApprox (e : H.Letter n) : H.Approx n n :=
   ⟨fun x => (e x).1,
-    ⟨e.realizer, e.realizer_mem, e.realizer_fixesBelow,
-      fun x => e.realizer_apply x⟩⟩
+    ⟨Letter.realizer H e,
+      Letter.realizer_mem H e,
+      Letter.realizer_fixesBelow H e,
+      fun x => Letter.realizer_apply H e x⟩⟩
 
 @[simp] theorem toApprox_apply (e : H.Letter n) (x : BoundedNode T n) :
-    e.toApprox x = (e x).1 := rfl
+    Letter.toApprox H e x = (e x).1 := rfl
 
 end Letter
 
