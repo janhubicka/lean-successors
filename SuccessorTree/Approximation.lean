@@ -46,6 +46,18 @@ def comp (H : SMTree S) (F G : MMap H) : MMap H where
 @[simp] theorem comp_apply (H : SMTree S) (F G : MMap H) (a : T) :
     MMap.comp H F G a = F (G a) := rfl
 
+/-- M-maps are determined by their underlying shape maps. -/
+theorem ext_map {H : SMTree S} {F G : MMap H} (h : F.map = G.map) : F = G := by
+  cases F
+  cases G
+  cases h
+  rfl
+
+/-- Pointwise extensionality for M-maps. -/
+theorem ext_apply {H : SMTree S} {F G : MMap H}
+    (h : ∀ a : T, F a = G a) : F = G :=
+  ext_map (ShapeMap.ext_apply h)
+
 end MMap
 
 /-- A letter of the Hales--Jewett alphabet at level n.
@@ -84,6 +96,14 @@ theorem level_succ_at (H : SMTree S) {n : Nat}
     LevelTree.lev (e a) = n + 1 := by
   rw [e.level_apply H, ha]
   simp
+
+/-- One-level letters are determined by their underlying M-maps. -/
+theorem ext_toMMap {H : SMTree S} {n : Nat} {e f : OneLevelLetter H n}
+    (h : e.toMMap = f.toMMap) : e = f := by
+  cases e
+  cases f
+  cases h
+  rfl
 
 end OneLevelLetter
 
@@ -166,20 +186,9 @@ theorem OneLevelLetter.levelImage_injective
       e.toMMap.map.toFun = f.toMMap.map.toFun :=
     H.eq_of_skipsOnly_levelImage
       e.toMMap.map f.toMMap.map n e.skips f.skips himage
-  cases e with
-  | mk em he =>
-      cases f with
-      | mk fm hf =>
-          dsimp at hfun
-          have hmap : em.map = fm.map :=
-            ShapeMap.ext_toFun hfun
-          cases em with
-          | mk emap emem =>
-              cases fm with
-              | mk fmap fmem =>
-                  dsimp at hmap
-                  cases hmap
-                  rfl
+  apply OneLevelLetter.ext_toMMap
+  apply MMap.ext_map
+  exact ShapeMap.ext_toFun hfun
 
 /-- The Hales--Jewett alphabet at a fixed level is finite. -/
 noncomputable instance oneLevelLetterFintype
