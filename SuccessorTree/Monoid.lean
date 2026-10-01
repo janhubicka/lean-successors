@@ -40,9 +40,8 @@ structure SMTree (S : STree Node Char) where
       ∃ F1 F2 : ShapeMap S,
         mem F1 ∧
         mem F2 ∧
-        F1.levelMap n = F.levelMap n - 1 ∧
         F2.SkipsOnlyLevel (F.levelMap n - 1) ∧
-        (∀ a : Node, F2 (F1 a) = F a)
+        AgreesThrough S (F2.comp F1) F n
 
   -- M3: duplication.  The chosen map F_m^n skips only level m and copies,
   -- at level m, the successor data seen at level n.
