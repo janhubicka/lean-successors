@@ -25,6 +25,8 @@ structure LevelTree (Node : Type u) [PartialOrder Node] where
 
 namespace LevelTree
 
+variable {Node : Type u} [PartialOrder Node]
+
 def IsRoot (T : LevelTree Node) (a : Node) : Prop :=
   T.level a = 0
 
@@ -67,8 +69,7 @@ theorem predecessor_le
     have hdc : d < c := lt_trans hdb hb
     have hda : d = a :=
       T.predecessor_unique hdc ha hdlevel
-    subst d
-    exact hdb.le
+    simpa [hda] using hdb.le
 
 theorem predecessor_of_succ_level
     (T : LevelTree Node) {a b : Node}
