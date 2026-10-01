@@ -11,6 +11,8 @@ extra field.
 
 namespace SuccessorTree
 
+variable {Node : Type u} {Char : Type v} [PartialOrder Node]
+
 structure ShapeMap (S : STree Node Char) where
   toFun : Node → Node
   injective : Function.Injective toFun
