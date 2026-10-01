@@ -218,6 +218,8 @@ theorem wordApprox_snoc
   rw [wordApprox_append]
   rfl
 
+end MovingOne
+
 /-- A one-step alphabet letter places each top-level source node below its
 image. -/
 theorem OneStep.le_apply
@@ -356,8 +358,6 @@ theorem MovingOne.step_successor
   rw [hFa, hpmap] at hexact
   rw [MovingOne.step_apply]
   exact hexact
-
-end MovingOne
 
 end Approximation
 
