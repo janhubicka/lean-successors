@@ -143,6 +143,105 @@ theorem level_wordMap_at (H : SMTree S) (n : Nat)
       simp [hnot]
       omega
 
+/-- A letter edge has parameters strictly below the fixed level n. -/
+theorem letterCode_params_below
+    (H : SMTree S) {n : Nat}
+    (e : OneLevelLetter H n) (a : T)
+    (ha : LevelTree.lev a = n)
+    {x : T} (hx : x ∈ (H.letterCode e a ha).params) :
+    LevelTree.lev x < n := by
+  have h := S.parameter_level_lt (H.letterCode e a ha).succ_eq hx
+  simpa [ha] using h
+
+/-- Every word map fixes the parameter list of a one-level letter edge. -/
+theorem map_letterCode_params_eq
+    (H : SMTree S) {n : Nat}
+    (w : List (OneLevelLetter H n))
+    (e : OneLevelLetter H n) (a : T)
+    (ha : LevelTree.lev a = n) :
+    (H.letterCode e a ha).params.map (wordMap H n w) =
+      (H.letterCode e a ha).params := by
+  apply List.map_eq_self.mpr
+  intro x hx
+  exact wordMap_eq_id_below H n w
+    (H.letterCode_params_below e a ha hx)
+
+/-- Appending one letter gives exactly the corresponding successor edge after
+the preceding word has been applied. -/
+theorem wordMap_append_letter_succ
+    (H : SMTree S) {n : Nat}
+    (w : List (OneLevelLetter H n))
+    (e : OneLevelLetter H n) (a : T)
+    (ha : LevelTree.lev a = n) :
+    S.succ (wordMap H n w a)
+        (H.letterCode e a ha).params
+        (H.letterCode e a ha).char =
+      some (wordMap H n (w ++ [e]) a) := by
+  have hedge := (H.letterCode e a ha).succ_eq
+  have hlev : n < LevelTree.lev (e a) := by
+    rw [e.level_succ_at H ha]
+    omega
+  have hexact :
+      S.succ (wordMap H n w a)
+          ((H.letterCode e a ha).params.map (wordMap H n w))
+          (H.letterCode e a ha).char =
+        some (wordMap H n w (e a)) := by
+    induction w with
+    | nil =>
+        simpa using hedge
+    | cons d w ih =>
+        have htailLevel :
+            n < LevelTree.lev (wordMap H n w (e a)) := by
+          have hbase : LevelTree.lev (e a) = n + 1 :=
+            e.level_succ_at H ha
+          have hw :=
+            level_wordMap_at H n w
+              (a := e a) (by omega)
+          omega
+        have hd :=
+          H.succ_eq_above_skip d.toMMap.map n d.skips ih htailLevel
+        simpa [wordMap_cons_apply, List.map_map, Function.comp_def] using hd
+  rw [H.map_letterCode_params_eq w e a ha] at hexact
+  rw [wordMap_append_singleton_apply] 
+  exact hexact
+
+/-- Consecutive word prefixes form a cover on every level-n node. -/
+theorem wordMap_covBy_append_letter
+    (H : SMTree S) {n : Nat}
+    (w : List (OneLevelLetter H n))
+    (e : OneLevelLetter H n) (a : T)
+    (ha : LevelTree.lev a = n) :
+    wordMap H n w a ⋖ wordMap H n (w ++ [e]) a :=
+  S.covBy_of_succ_eq_some
+    (H.wordMap_append_letter_succ w e a ha)
+
+/-- A word prefix maps a level-n node below every longer extension. -/
+theorem wordMap_le_append
+    (H : SMTree S) {n : Nat}
+    (u v : List (OneLevelLetter H n))
+    (a : T) (ha : LevelTree.lev a = n) :
+    wordMap H n u a ≤ wordMap H n (u ++ v) a := by
+  induction v using List.reverseRecOn with
+  | nil =>
+      simp
+  | append_singleton v e ih =>
+      rw [List.append_assoc]
+      exact ih.trans
+        (H.wordMap_covBy_append_letter (u ++ v) e a ha).le
+
+/-- If a letter occurs after prefix u in a larger word, its successor edge
+lies below the endpoint of the whole word. -/
+theorem wordMap_append_letter_le
+    (H : SMTree S) {n : Nat}
+    (u v : List (OneLevelLetter H n))
+    (e : OneLevelLetter H n)
+    (a : T) (ha : LevelTree.lev a = n) :
+    wordMap H n (u ++ [e]) a ≤
+      wordMap H n (u ++ e :: v) a := by
+  have h :=
+    H.wordMap_le_append (u ++ [e]) v a ha
+  simpa [List.append_assoc] using h
+
 /-- Restriction to the finite initial segment T(<=n). -/
 abbrev RestrictedMap (T : Type u) [PartialOrder T] [LevelTree T] (n : Nat) :=
   {a : T // LevelTree.lev a ≤ n} → T
