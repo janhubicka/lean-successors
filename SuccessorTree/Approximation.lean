@@ -87,6 +87,60 @@ theorem level_succ_at (H : SMTree S) {n : Nat}
 
 end OneLevelLetter
 
+/-- Nodes on one fixed level, packaged as a finite type. -/
+abbrev LevelNode (T : Type u) [PartialOrder T] [LevelTree T] (n : Nat) :=
+  {a : T // LevelTree.lev a = n}
+
+noncomputable instance levelNodeFintype
+    (T : Type u) [PartialOrder T] [LevelTree T] (n : Nat) :
+    Fintype (LevelNode T n) :=
+  Set.Finite.fintype (LevelTree.level_finite n)
+
+/-- Action of a one-level letter on the skipped source level. -/
+def OneLevelLetter.levelImage
+    (H : SMTree S) {n : Nat}
+    (e : OneLevelLetter H n) :
+    LevelNode T n → LevelNode T (n + 1) :=
+  fun a => ⟨e a.1, e.level_succ_at H a.2⟩
+
+/-- One-level letters are determined by their action on level n. -/
+theorem OneLevelLetter.levelImage_injective
+    (H : SMTree S) (n : Nat) :
+    Function.Injective
+      (fun e : OneLevelLetter H n => e.levelImage H) := by
+  intro e f hef
+  have hpoint :
+      ∀ a : LevelNode T n, e a.1 = f a.1 := by
+    intro a
+    exact congrArg Subtype.val (congrFun hef a)
+  have himage :
+      Set.range
+          (fun a : {a : T // LevelTree.lev a = n} => e.toMMap.map a.1) =
+        Set.range
+          (fun a : {a : T // LevelTree.lev a = n} => f.toMMap.map a.1) := by
+    ext x
+    constructor
+    · rintro ⟨a, rfl⟩
+      exact ⟨a, (hpoint a).symm⟩
+    · rintro ⟨a, rfl⟩
+      exact ⟨a, hpoint a⟩
+  have hfun :
+      e.toMMap.map.toFun = f.toMMap.map.toFun :=
+    H.eq_of_skipsOnly_levelImage
+      e.toMMap.map f.toMMap.map n e.skips f.skips himage
+  apply OneLevelLetter.ext
+  apply MMap.ext
+  apply ShapeMap.ext
+  exact hfun
+
+/-- The Hales--Jewett alphabet at a fixed level is finite. -/
+noncomputable instance oneLevelLetterFintype
+    (H : SMTree S) (n : Nat) :
+    Fintype (OneLevelLetter H n) :=
+  Fintype.ofInjective
+    (fun e : OneLevelLetter H n => e.levelImage H)
+    (H.levelImage_injective n)
+
 /-- Interpretation of a finite word as the canonical total extension g_w^+.
 
 The order is the paper's order: if w=u^e, then g_w^+ = g_u^+ o e.
