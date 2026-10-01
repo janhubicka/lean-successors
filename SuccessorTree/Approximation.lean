@@ -169,9 +169,8 @@ theorem someExtension_apply (A : Approximation H src dst)
   (Classical.choose_spec A.extendible).2 a
 
 theorem someExtension_agrees (A : Approximation H src dst) :
-    forall a : T, LevelTree.lev a <= src ->
-      A.someExtension a =
-        (A ⟨a, ha⟩).1 := by
+    forall (a : T) (ha : LevelTree.lev a <= src),
+      A.someExtension a = (A ⟨a, ha⟩).1 := by
   intro a ha
   exact A.someExtension_apply ⟨a, ha⟩
 
