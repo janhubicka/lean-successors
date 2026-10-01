@@ -143,6 +143,20 @@ theorem level_wordMap_at (H : SMTree S) (n : Nat)
       simp [hnot]
       omega
 
+/-- On every input at or above n, each letter raises the level once. -/
+theorem level_wordMap_of_ge (H : SMTree S) (n : Nat)
+    (w : List (OneLevelLetter H n)) {a : T}
+    (ha : n ≤ LevelTree.lev a) :
+    LevelTree.lev (wordMap H n w a) =
+      LevelTree.lev a + w.length := by
+  induction w with
+  | nil => simp
+  | cons e w ih =>
+      rw [wordMap_cons_apply, e.level_apply H, ih ha]
+      have hnot : ¬ LevelTree.lev a + w.length < n := by omega
+      simp [hnot]
+      omega
+
 /-- A letter edge has parameters strictly below the fixed level n. -/
 theorem letterCode_params_below
     (H : SMTree S) {n : Nat}
@@ -195,7 +209,7 @@ theorem wordMap_append_letter_succ
           have hbase : LevelTree.lev (e a) = n + 1 :=
             e.level_succ_at H ha
           have hw :=
-            level_wordMap_at H n w
+            level_wordMap_of_ge H n w
               (a := e a) (by omega)
           omega
         have hd :=
