@@ -471,7 +471,8 @@ theorem eq_of_skipsOnly_levelImage
               rcases LevelTree.comparable_below haLe hbLeFa with hab | hba
               · exact LevelTree.same_level_of_le hab habLevel
               · exact (LevelTree.same_level_of_le hba habLevel.symm).symm
-            have hb' := hb
+            have hb' : G b.1 = F a := by
+              exact hb
             rw [← hab] at hb'
             exact hb'.symm
           · have habove : m < k := by omega
