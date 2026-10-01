@@ -196,6 +196,8 @@ noncomputable instance oneLevelLetterFintype
     Fintype (OneLevelLetter H n) := by
   letI : Fintype (LevelNode T n) := levelNodeFintype T n
   letI : Fintype (LevelNode T (n + 1)) := levelNodeFintype T (n + 1)
+  letI : DecidableEq (LevelNode T n) := Classical.decEq _
+  letI : DecidableEq (LevelNode T (n + 1)) := Classical.decEq _
   exact Fintype.ofInjective
     (fun e : OneLevelLetter H n => e.levelImage H)
     (OneLevelLetter.levelImage_injective H n)
