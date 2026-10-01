@@ -17,3 +17,10 @@ import SuccessorTree.HalesJewett.LineSchedule
 import SuccessorTree.HalesJewett.AlphabetLift
 import SuccessorTree.HalesJewett.AlphabetEquiv
 import SuccessorTree.HalesJewett.AlphabetInduction
+import SuccessorTree.NonPrecompact.SubsetSums
+import SuccessorTree.NonPrecompact.PersistentColourings
+import SuccessorTree.NonPrecompact.AffineParity
+import SuccessorTree.NonPrecompact.CauchyBinet
+import SuccessorTree.NonPrecompact.MatrixAffineParity
+import SuccessorTree.NonPrecompact.ResidueAlgebra
+import SuccessorTree.NonPrecompact.BilinearResidue
