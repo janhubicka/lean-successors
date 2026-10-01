@@ -48,6 +48,20 @@ def comp (H : SMTree S) (F G : MMap H) : MMap H where
 
 end MMap
 
+private theorem shapeMap_ext_toFun
+    {F G : ShapeMap S} (h : F.toFun = G.toFun) : F = G := by
+  cases F
+  cases G
+  cases h
+  rfl
+
+private theorem mmap_ext_map
+    {H : SMTree S} {F G : MMap H} (h : F.map = G.map) : F = G := by
+  cases F
+  cases G
+  cases h
+  rfl
+
 /-- A letter of the Hales--Jewett alphabet at level n.
 
 Via Proposition 1.12 in the paper, these are exactly the canonical total
@@ -58,6 +72,14 @@ structure OneLevelLetter (H : SMTree S) (n : Nat) where
   skips : toMMap.map.SkipsOnly n
 
 namespace OneLevelLetter
+
+private theorem ext_toMMap
+    {H : SMTree S} {n : Nat} {e f : OneLevelLetter H n}
+    (h : e.toMMap = f.toMMap) : e = f := by
+  cases e
+  cases f
+  cases h
+  rfl
 
 instance (H : SMTree S) (n : Nat) :
     CoeFun (OneLevelLetter H n) (fun _ => T → T) :=
@@ -128,9 +150,9 @@ theorem OneLevelLetter.levelImage_injective
       e.toMMap.map.toFun = f.toMMap.map.toFun :=
     H.eq_of_skipsOnly_levelImage
       e.toMMap.map f.toMMap.map n e.skips f.skips himage
-  apply OneLevelLetter.ext
-  apply MMap.ext
-  apply ShapeMap.ext
+  apply OneLevelLetter.ext_toMMap
+  apply mmap_ext_map
+  apply shapeMap_ext_toFun
   exact hfun
 
 /-- The Hales--Jewett alphabet at a fixed level is finite. -/
