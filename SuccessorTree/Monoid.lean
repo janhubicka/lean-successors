@@ -335,6 +335,78 @@ theorem eq_id_below_skip (H : SMTree S) (F : ShapeMap S) (m : Nat)
             exact (LevelTree.same_level_of_le hda hFaLevel.symm).symm
   exact hp (LevelTree.lev a) a rfl ha
 
+/-- Above the unique skipped level, weak successor preservation is exact. -/
+theorem succ_eq_above_skip (H : SMTree S) (F : ShapeMap S) (m : Nat)
+    (hskip : F.SkipsOnly m)
+    {a b : T} {p : List T} {c : Label}
+    (hsucc : S.succ a p c = some b)
+    (hb : m < LevelTree.lev b) :
+    S.succ (F a) (p.map F) c = some (F b) := by
+  have habCover : a ⋖ b := S.covBy_of_succ_eq_some hsucc
+  have hblev : LevelTree.lev b = LevelTree.lev a + 1 :=
+    LevelTree.covBy_level_eq habCover
+  have hma : m ≤ LevelTree.lev a := by omega
+  have hmb : m ≤ LevelTree.lev b := by omega
+  have hFa :
+      LevelTree.lev (F a) = LevelTree.lev a + 1 := by
+    calc
+      LevelTree.lev (F a) = H.levelMap F (LevelTree.lev a) :=
+        (H.levelMap_eq F (a := a)).symm
+      _ = LevelTree.lev a + 1 := by
+        rw [H.levelMap_of_skipsOnly F m hskip]
+        simp [Nat.not_lt.mpr hma]
+  have hFb :
+      LevelTree.lev (F b) = LevelTree.lev b + 1 := by
+    calc
+      LevelTree.lev (F b) = H.levelMap F (LevelTree.lev b) :=
+        (H.levelMap_eq F (a := b)).symm
+      _ = LevelTree.lev b + 1 := by
+        rw [H.levelMap_of_skipsOnly F m hskip]
+        simp [Nat.not_lt.mpr hmb]
+  obtain ⟨d, hd, hdb⟩ := F.weak_succ' hsucc
+  have hdCover : F a ⋖ d := S.covBy_of_succ_eq_some hd
+  have hdlev : LevelTree.lev d = LevelTree.lev (F a) + 1 :=
+    LevelTree.covBy_level_eq hdCover
+  have hsame : LevelTree.lev d = LevelTree.lev (F b) := by
+    omega
+  have hdeq : d = F b :=
+    LevelTree.same_level_of_le hdb hsame
+  simpa [hdeq] using hd
+
+/-- At the skipped level itself, every node lies below its image. -/
+theorem le_apply_at_skip (H : SMTree S) (F : ShapeMap S) (m : Nat)
+    (hskip : F.SkipsOnly m) {a : T} (ha : LevelTree.lev a = m) :
+    a ≤ F a := by
+  cases m with
+  | zero =>
+      exact F.root_le' ha
+  | succ k =>
+      have hk_le : k ≤ LevelTree.lev a := by omega
+      let x := LevelTree.ancestor a k hk_le
+      have hxa : x ≤ a := LevelTree.ancestor_le a k hk_le
+      have hxlev : LevelTree.lev x = k :=
+        LevelTree.level_ancestor a k hk_le
+      have hcover : x ⋖ a := by
+        apply LevelTree.covBy_of_le_level_succ hxa
+        omega
+      obtain ⟨p, c, hsucc⟩ := S.s3 hcover
+      have hxfix : F x = x :=
+        H.eq_id_below_skip F (k + 1) hskip (by omega)
+      have hpfix : ∀ y ∈ p, F y = y := by
+        intro y hy
+        have hyltx := S.parameter_level_lt hsucc hy
+        apply H.eq_id_below_skip F (k + 1) hskip
+        omega
+      have hpmap : p.map F = p :=
+        list_map_eq_self_of_mem_eq p F hpfix
+      obtain ⟨d, hFd, hda⟩ := F.weak_succ' hsucc
+      have hFd' : S.succ x p c = some d := by
+        simpa [hxfix, hpmap] using hFd
+      have hsome : (some d : Option T) = some a :=
+        hFd'.symm.trans hsucc
+      have hdaeq : d = a := Option.some.inj hsome
+      simpa [hdaeq] using hda
+
 end SMTree
 
 end SuccessorTree
