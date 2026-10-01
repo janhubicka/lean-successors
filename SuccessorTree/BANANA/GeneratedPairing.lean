@@ -61,7 +61,9 @@ theorem tupleInvariant_eq_induces_generated_pairing_equiv
       (∀ j,
         eR ⟨y j, tuple_mem_generated_range y j⟩ =
           ⟨y' j, tuple_mem_generated_range y' j⟩) ∧
-      ∀ u v, β (u : L) (v : R) = β' (eL u : L') (eR v : R') := by
+      ∀ (u : LinearMap.range (tupleLinearMap x))
+          (v : LinearMap.range (tupleLinearMap y)),
+        β (u : L) (v : R) = β' (eL u : L') (eR v : R') := by
   have hL := congrArg TupleInvariant.leftRelations h
   change relationPattern x = relationPattern x' at hL
   have hR := congrArg TupleInvariant.rightRelations h
