@@ -40,6 +40,8 @@ structure STree (Node : Type u) (Char : Type v)
 
 namespace STree
 
+variable {Node : Type u} {Char : Type v} [PartialOrder Node]
+
 def Defined (S : STree Node Char) (a : Node) (ps : List Node) (c : Char) : Prop :=
   ∃ b, S.succ a ps c = some b
 
