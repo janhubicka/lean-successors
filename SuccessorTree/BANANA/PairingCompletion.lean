@@ -139,8 +139,9 @@ theorem card_f2_perfectCompletion_carrier {l r : Type*}
     Nat.card
       (((l ⊕ r → ZMod 2) ⊕ (r ⊕ l → ZMod 2))) =
       2 ^ (Nat.card l + Nat.card r + 1) := by
-  simp [Nat.card_sum, Nat.card_fun, Nat.card_zmod, pow_succ,
-    Nat.add_comm, Nat.add_left_comm, Nat.add_assoc]
+  simp only [Nat.card_sum, Nat.card_fun, Nat.card_zmod]
+  rw [← Nat.add_assoc, pow_succ]
+  ring
 
 
 end SuccessorTree.BANANA
