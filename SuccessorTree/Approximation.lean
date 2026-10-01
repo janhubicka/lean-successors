@@ -44,7 +44,7 @@ def comp (H : SMTree S) (F G : MMap H) : MMap H where
     MMap.id H a = a := rfl
 
 @[simp] theorem comp_apply (H : SMTree S) (F G : MMap H) (a : T) :
-    H.MMap.comp F G a = F (G a) := rfl
+    MMap.comp H F G a = F (G a) := rfl
 
 end MMap
 
@@ -94,22 +94,24 @@ The order is the paper's order: if w=u^e, then g_w^+ = g_u^+ o e.
 def wordMap (H : SMTree S) (n : Nat) :
     List (OneLevelLetter H n) → MMap H
   | [] => MMap.id H
-  | e :: w => H.MMap.comp e.toMMap (wordMap H n w)
+  | e :: w => MMap.comp H e.toMMap (wordMap H n w)
 
 @[simp] theorem wordMap_nil_apply (H : SMTree S) (n : Nat) (a : T) :
     wordMap H n [] a = a := rfl
 
 @[simp] theorem wordMap_cons_apply (H : SMTree S) (n : Nat)
     (e : OneLevelLetter H n) (w : List (OneLevelLetter H n)) (a : T) :
-    wordMap H n (e :: w) a = e (wordMap H n w a) := rfl
+    wordMap H n (e :: w) a = e (wordMap H n w a) := by
+  rfl
 
 /-- Appending the last character agrees with the inductive definition in
 Lemma 3.1. -/
 theorem wordMap_append_singleton_apply (H : SMTree S) (n : Nat)
     (w : List (OneLevelLetter H n)) (e : OneLevelLetter H n) (a : T) :
     wordMap H n (w ++ [e]) a = wordMap H n w (e a) := by
-  induction w with
-  | nil => rfl
+  induction w generalizing a with
+  | nil =>
+      simp
   | cons d w ih =>
       simp only [List.cons_append, wordMap_cons_apply]
       rw [ih]
@@ -122,7 +124,7 @@ theorem wordMap_eq_id_below (H : SMTree S) (n : Nat)
   induction w with
   | nil => rfl
   | cons e w ih =>
-      rw [wordMap_cons_apply, ih ha]
+      rw [wordMap_cons_apply, ih]
       exact e.eq_id_below H ha
 
 /-- On level n, each additional letter raises the image level by exactly one. -/
