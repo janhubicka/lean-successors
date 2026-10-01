@@ -18,7 +18,7 @@ structure PairingEmbedding
 
 /-- Any injective linear map can be put into the split-coordinate form
 used by the explicit BANANA amalgamation construction. -/
-noncomputable theorem exists_split_equiv_of_injective
+theorem exists_split_equiv_of_injective
     {K V W : Type*} [Field K]
     [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]
     (f : V →ₗ[K] W) (hf : Function.Injective f) :
@@ -35,7 +35,7 @@ noncomputable theorem exists_split_equiv_of_injective
 /-- Both sides of a BANANA embedding admit compatible split coordinates.
 Thus arbitrary amalgamation diagrams reduce to the split situation treated
 in `StrongAmalgamation.lean`. -/
-noncomputable theorem PairingEmbedding.exists_split_coordinates
+theorem PairingEmbedding.exists_split_coordinates
     {K LA RA LB RB : Type*} [Field K]
     [AddCommGroup LA] [Module K LA] [AddCommGroup RA] [Module K RA]
     [AddCommGroup LB] [Module K LB] [AddCommGroup RB] [Module K RB]
