@@ -95,10 +95,11 @@ structure SuccCode (S : STree T Label) (a b : T) where
 
 /-- S3 supplies successor code for every cover. -/
 noncomputable def succCodeOfCovBy (S : STree T Label)
-    {a b : T} (h : a ⋖ b) : SuccCode S a b := by
-  classical
-  obtain ⟨p, c, hc⟩ := S.s3 h
-  exact ⟨p, c, hc⟩
+    {a b : T} (h : a ⋖ b) : SuccCode S a b :=
+  let p := Classical.choose (S.s3 h)
+  let hc := Classical.choose_spec (S.s3 h)
+  let c := Classical.choose hc
+  ⟨p, c, Classical.choose_spec hc⟩
 
 @[simp] theorem succCodeOfCovBy_eq (S : STree T Label)
     {a b : T} (h : a ⋖ b) :
@@ -170,9 +171,8 @@ theorem OneLevelLetter.levelImage_injective
       cases f with
       | mk fm hf =>
           dsimp at hfun
-          have hmap : em.map = fm.map := by
-            apply ShapeMap.ext
-            exact hfun
+          have hmap : em.map = fm.map :=
+            ShapeMap.ext_toFun hfun
           cases em with
           | mk emap emem =>
               cases fm with
@@ -184,7 +184,7 @@ theorem OneLevelLetter.levelImage_injective
 /-- The Hales--Jewett alphabet at a fixed level is finite. -/
 noncomputable instance oneLevelLetterFintype
     (H : SMTree S) (n : Nat) :
-    Fintype (OneLevelLetter H n) :=
+    Fintype (OneLevelLetter H n) := by
   letI : Fintype (LevelNode T n) := levelNodeFintype T n
   letI : Fintype (LevelNode T (n + 1)) := levelNodeFintype T (n + 1)
   exact Fintype.ofInjective
@@ -284,6 +284,7 @@ theorem map_letterCode_params_eq
     intro x hx
     apply wordMap_eq_id_below H n w
     exact H.letterCode_params_below e a ha hx
+  change p.map (wordMap H n w) = p
   induction p with
   | nil => rfl
   | cons x xs ih =>
