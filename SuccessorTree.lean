@@ -37,3 +37,5 @@ import SuccessorTree.BANANA.Coherence
 import SuccessorTree.BANANA.TupleInvariant
 import SuccessorTree.BANANA.GeneratedPairing
 import SuccessorTree.BANANA.FraisseCore
+import SuccessorTree.BANANA.FiniteCodes
+import SuccessorTree.BANANA.CompletionAction
