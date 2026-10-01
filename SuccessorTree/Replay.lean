@@ -240,6 +240,161 @@ theorem replayMap_base
     rw [H.level_wordMap_at n L.star heq]
     omega
 
+/-- One M3 replay step reproduces the next evaluated line symbol.
+
+The current ordinary word w is assumed to extend the first-parameter prefix
+s ++ [e] and to have the length corresponding to replay stage k.
+-/
+theorem replayDup_step
+    (H : SMTree S) {n : Nat}
+    (s : List (OneLevelLetter H n))
+    (hs : Supports s)
+    (e : OneLevelLetter H n)
+    (a : T) (ha : LevelTree.lev a = n)
+    (k : Nat)
+    (w : List (OneLevelLetter H n))
+    (hlen : w.length = s.length + 1 + k)
+    (hprefix : s ++ [e] <+: w)
+    (x : LineSymbol (OneLevelLetter H n)) :
+    S.succ (wordMap H n w a)
+        (H.letterCode (LineSymbol.eval e x) a ha).params
+        (H.letterCode (LineSymbol.eval e x) a ha).char =
+      some
+        ((H.replayDup s hs k x)
+          (wordMap H n w a)) := by
+  have hb :
+      LevelTree.lev (wordMap H n w a) =
+        n + s.length + 1 + k := by
+    rw [H.level_wordMap_at n w ha, hlen]
+    omega
+  have hstarPrefix : s <+: w := by
+    exact (s.prefix_append [e]).trans hprefix
+  cases x with
+  | parameter =>
+      have hbelow :
+          wordMap H n (s ++ [e]) a ≤ wordMap H n w a :=
+        H.wordMap_le_of_prefix hprefix a ha
+      have hlt :
+          n + s.length < n + s.length + 1 + k := by omega
+      have hdup :=
+        H.duplicate_word_occurrence
+          s ([] : List (OneLevelLetter H n)) e a
+          (wordMap H n w a) ha hb hlt hbelow
+      simpa [replayDup, replaySource] using hdup
+  | const d =>
+      let occ := supportOccurrence s hs d
+      have hspec : s = occ.before ++ d :: occ.after :=
+        occ.eq_word
+      have hocc :
+          wordMap H n (occ.before ++ [d]) a ≤ wordMap H n s a := by
+        have h :=
+          H.wordMap_append_letter_le
+            occ.before occ.after d a ha
+        simpa [hspec] using h
+      have hstar :
+          wordMap H n s a ≤ wordMap H n w a :=
+        H.wordMap_le_of_prefix hstarPrefix a ha
+      have hbelow :
+          wordMap H n (occ.before ++ [d]) a ≤ wordMap H n w a :=
+        hocc.trans hstar
+      have hlt :
+          n + occ.before.length < n + s.length + 1 + k := by
+        have ho := supportOccurrence_before_lt s hs d
+        omega
+      have hdup :=
+        H.duplicate_word_occurrence
+          occ.before occ.after d a
+          (wordMap H n w a) ha hb hlt hbelow
+      simpa [replayDup, replaySource, occ] using hdup
+
+/-- Inductive correctness of the tail replay on a genuine letter input. -/
+theorem replayTail_letter
+    (H : SMTree S) {n : Nat}
+    (s : List (OneLevelLetter H n))
+    (hs : Supports s)
+    (e : OneLevelLetter H n)
+    (a : T) (ha : LevelTree.lev a = n)
+    (k : Nat)
+    (xs : List (LineSymbol (OneLevelLetter H n)))
+    (B : MMap H)
+    (w : List (OneLevelLetter H n))
+    (hlen : w.length = s.length + 1 + k)
+    (hprefix : s ++ [e] <+: w)
+    (hB : B (e a) = wordMap H n w a) :
+    replayTail H s hs k xs B (e a) =
+      wordMap H n (w ++ evalWord e xs) a := by
+  induction xs generalizing k B w with
+  | nil =>
+      simpa using hB
+  | cons x xs ih =>
+      let d := LineSymbol.eval e x
+      let D := H.replayDup s hs k x
+      let w' := w ++ [d]
+      have hstep :
+          MMap.comp H D B (e a) =
+            wordMap H n w' a := by
+        have hdup :=
+          H.replayDup_step s hs e a ha k w hlen hprefix x
+        have hnext :=
+          H.wordMap_append_letter_succ w d a ha
+        have hsame :
+            D (wordMap H n w a) =
+              wordMap H n (w ++ [d]) a := by
+          apply Option.some.inj
+          calc
+            some (D (wordMap H n w a)) =
+                S.succ (wordMap H n w a)
+                  (H.letterCode d a ha).params
+                  (H.letterCode d a ha).char := by
+                    simpa [D, d] using hdup.symm
+            _ = some (wordMap H n (w ++ [d]) a) := hnext
+        change D (B (e a)) = wordMap H n w' a
+        rw [hB, hsame]
+      have hlen' :
+          w'.length = s.length + 1 + (k + 1) := by
+        simp [w', hlen]
+        omega
+      have hprefix' : s ++ [e] <+: w' :=
+        hprefix.trans (w.prefix_append [d])
+      change
+        replayTail H s hs (k + 1) xs
+          (MMap.comp H D B) (e a) =
+        wordMap H n (w ++
+          (LineSymbol.eval e x :: evalWord e xs)) a
+      have hrec :=
+        ih (k + 1) (MMap.comp H D B) w'
+          hlen' hprefix' hstep
+      simpa [w', d, evalWord, List.append_assoc] using hrec
+
+/-- The final replay map sends a letter input to g_{L(e)}. -/
+theorem replayMap_letter
+    (H : SMTree S) {n : Nat}
+    (L : StarLine (OneLevelLetter H n))
+    (hs : Supports L.star)
+    (e : OneLevelLetter H n)
+    (a : T) (ha : LevelTree.lev a = n) :
+    H.replayMap L hs (e a) =
+      wordMap H n (L.eval e) a := by
+  unfold replayMap
+  have hstart :
+      wordMap H n L.star (e a) =
+        wordMap H n (L.star ++ [e]) a := by
+    exact (wordMap_append_singleton_apply
+      H n L.star e a).symm
+  have hlen :
+      (L.star ++ [e]).length = L.star.length + 1 + 0 := by
+    simp
+  have hpref : L.star ++ [e] <+: L.star ++ [e] :=
+    List.prefix_rfl
+  have h :=
+    H.replayTail_letter L.star hs e a ha 0
+      (afterFirstParameter L.word)
+      (wordMap H n L.star)
+      (L.star ++ [e])
+      hlen hpref hstart
+  rw [L.eval_eq_star_parameter_tail]
+  simpa [List.append_assoc] using h
+
 /-- Replay one earlier occurrence of a letter by M3.
 
 If the source occurrence follows a prefix u, then its source base is on level
