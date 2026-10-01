@@ -131,6 +131,98 @@ theorem level_lt_of_level_lt (F : ShapeMap S) {a b : T}
   have hlev := LevelTree.lt_level_lt hmap
   omega
 
+private theorem list_map_injective_of_injective
+    {α : Type u} {β : Type v} {f : α → β}
+    (hf : Function.Injective f) : Function.Injective (List.map f) := by
+  intro xs ys h
+  induction xs generalizing ys with
+  | nil =>
+      cases ys with
+      | nil => rfl
+      | cons y ys => simp at h
+  | cons x xs ih =>
+      cases ys with
+      | nil => simp at h
+      | cons y ys =>
+          simp only [List.map_cons] at h
+          have hhead : f x = f y := (List.cons.inj h).1
+          have htail : List.map f xs = List.map f ys := (List.cons.inj h).2
+          have hxy : x = y := hf hhead
+          have hxsys : xs = ys := ih htail
+          simp [hxy, hxsys]
+
+/-- Paper Proposition `prop:shape-pres`, clause (iv): shape-preserving maps
+preserve the meet of two nodes which have a common predecessor (equivalently,
+in the paper's notation, the same level-zero predecessor). -/
+theorem map_meet (F : ShapeMap S) {a b : T}
+    (hcommon : ∃ r : T, r ≤ a ∧ r ≤ b) :
+    F (LevelTree.meet a b) = LevelTree.meet (F a) (F b) := by
+  let c := LevelTree.meet a b
+  have hca : c ≤ a := LevelTree.meet_le_left hcommon
+  have hcb : c ≤ b := LevelTree.meet_le_right hcommon
+  have hFca : F c ≤ F a := F.map_le_of_le hca
+  have hFcb : F c ≤ F b := F.map_le_of_le hcb
+  have hFcMeet : F c ≤ LevelTree.meet (F a) (F b) :=
+    LevelTree.le_meet hFca hFcb
+  change F c = LevelTree.meet (F a) (F b)
+  by_cases hcaEq : c = a
+  · have hab : a ≤ b := by simpa [hcaEq] using hcb
+    have hFab : F a ≤ F b := F.map_le_of_le hab
+    have hMeetFa : LevelTree.meet (F a) (F b) ≤ F a :=
+      LevelTree.meet_le_left ⟨F a, le_rfl, hFab⟩
+    have hFaMeet : F a ≤ LevelTree.meet (F a) (F b) :=
+      LevelTree.le_meet le_rfl hFab
+    have hEq : F a = LevelTree.meet (F a) (F b) :=
+      le_antisymm hFaMeet hMeetFa
+    simpa [hcaEq] using hEq
+  · by_cases hcbEq : c = b
+    · have hba : b ≤ a := by simpa [hcbEq] using hca
+      have hFba : F b ≤ F a := F.map_le_of_le hba
+      have hMeetFb : LevelTree.meet (F a) (F b) ≤ F b :=
+        LevelTree.meet_le_right ⟨F b, hFba, le_rfl⟩
+      have hFbMeet : F b ≤ LevelTree.meet (F a) (F b) :=
+        LevelTree.le_meet hFba le_rfl
+      have hEq : F b = LevelTree.meet (F a) (F b) :=
+        le_antisymm hFbMeet hMeetFb
+      simpa [hcbEq] using hEq
+    · have hcat : c < a := lt_of_le_of_ne hca hcaEq
+      have hcbt : c < b := lt_of_le_of_ne hcb hcbEq
+      obtain ⟨s, hcs, hsa⟩ := LevelTree.exists_covBy_between hcat
+      obtain ⟨t, hct, htb⟩ := LevelTree.exists_covBy_between hcbt
+      have hst : s ≠ t := by
+        intro h
+        subst t
+        have hsc : s ≤ c := by
+          change s ≤ LevelTree.meet a b
+          exact LevelTree.le_meet hsa htb
+        exact (not_lt_of_ge hsc) hcs.lt
+      obtain ⟨p, cp, hsp⟩ := S.s3 hcs
+      obtain ⟨q, cq, htq⟩ := S.s3 hct
+      obtain ⟨ds, hFsp, hds⟩ := F.weak_succ' hsp
+      obtain ⟨dt, hFtq, hdt⟩ := F.weak_succ' htq
+      have hdsdt : ds ≠ dt := by
+        intro hEq
+        have hFtq' : S.succ (F c) (q.map F) cq = some ds := by
+          simpa [hEq] using hFtq
+        have htrip := S.s2 hFsp hFtq'
+        have hpqMap : p.map F = q.map F := htrip.2.1
+        have hcpq : cp = cq := htrip.2.2
+        have hpq : p = q :=
+          list_map_injective_of_injective F.injective hpqMap
+        have hsome : (some s : Option T) = some t := by
+          calc
+            some s = S.succ c p cp := hsp.symm
+            _ = S.succ c q cq := by rw [hpq, hcpq]
+            _ = some t := htq
+        exact hst (Option.some.inj hsome)
+      have hdsA : ds ≤ F a := hds.trans (F.map_le_of_le hsa)
+      have hdtB : dt ≤ F b := hdt.trans (F.map_le_of_le htb)
+      have hFcs : F c ⋖ ds := S.covBy_of_succ_eq_some hFsp
+      have hFct : F c ⋖ dt := S.covBy_of_succ_eq_some hFtq
+      have hMeetFc : LevelTree.meet (F a) (F b) ≤ F c :=
+        LevelTree.meet_le_of_distinct_covBy hFcs hFct hdsdt hdsA hdtB
+      exact le_antisymm hFcMeet hMeetFc
+
 /-- The identity map is shape-preserving. -/
 def id (S : STree T Label) : ShapeMap S where
   toFun := fun a => a
