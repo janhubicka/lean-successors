@@ -140,7 +140,6 @@ theorem exists_reduce_next
     · simp [hq] at hlevelComp
       omega
     · simp [hq] at hlevelComp
-      dsimp [q]
       omega
 
   have hAgree : F1.AgreesThrough F n := by
@@ -202,7 +201,9 @@ theorem exists_tight_next
     by_contra hne
     have hmono := H.levelMap_strictMono G (Nat.lt_succ_self n)
     have hgap : H.levelMap G n + 1 < H.levelMap G (n + 1) := by
-      omega
+      have hle : H.levelMap G n + 1 ≤ H.levelMap G (n + 1) :=
+        Nat.succ_le_iff.mpr hmono
+      exact lt_of_le_of_ne hle (Ne.symm hne)
     obtain ⟨G1, hG1mem, hG1G, hred⟩ :=
       H.exists_reduce_next G hGmem n hgap
     have hG1F : G1.AgreesThrough F n :=
