@@ -231,22 +231,22 @@ theorem word_append
 
 theorem targetLevel_id :
     Approx.targetLevel H (H.idApprox n) = n := by
-  unfold Approx.targetLevel idApprox
-  have h :=
-    H.levelMap_eq
-      (Approx.realizer H (H.idApprox n))
-      (a := Classical.choose (H.level_nonempty n))
-  have ha := Classical.choose_spec (H.level_nonempty n)
-  have hreal :
-      Approx.realizer H (H.idApprox n)
-        (Classical.choose (H.level_nonempty n)) =
-        Classical.choose (H.level_nonempty n) := by
-    let x : BoundedNode T n :=
-      ⟨Classical.choose (H.level_nonempty n), by simpa [ha]⟩
-    exact (Approx.realizer_apply H (H.idApprox n) x).trans rfl
-  rw [ha] at h
-  rw [hreal] at h
-  simpa [ha] using h
+  have hid :
+      H.levelMap (ShapeMap.id S) n =
+        Approx.targetLevel H (H.idApprox n) := by
+    apply Approx.levelMap_eq_targetLevel H
+    intro x
+    rfl
+  obtain ⟨a, ha⟩ := H.level_nonempty n
+  have hlevel :
+      H.levelMap (ShapeMap.id S) n = n := by
+    calc
+      H.levelMap (ShapeMap.id S) n =
+          LevelTree.lev ((ShapeMap.id S) a) := by
+            simpa [ha] using H.levelMap_eq (ShapeMap.id S) (a := a)
+      _ = LevelTree.lev a := by rfl
+      _ = n := ha
+  exact hid.symm.trans hlevel
 
 /-- The paper's target-level formula for g_w. -/
 theorem targetLevel_word
