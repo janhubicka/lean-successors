@@ -117,7 +117,7 @@ theorem generatedSpanEquivOfRelationPatternEq_apply_tupleLinearMap
   have hv :
       (tupleLinearMap x).quotKerEquivRange.symm v =
         (LinearMap.ker (tupleLinearMap x)).mkQ c :=
-    LinearMap.quotKerEquivRange_symm_apply_image c v.property
+    LinearMap.quotKerEquivRange_symm_apply_image (f := tupleLinearMap x) c v.property
   rw [hv]
   simp only [Submodule.quotEquivOfEq_mk, LinearMap.quotKerEquivRange_apply_mk]
 
