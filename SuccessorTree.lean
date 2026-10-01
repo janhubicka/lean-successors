@@ -1,6 +1,7 @@
 import SuccessorTree.Tree
 import SuccessorTree.Successor
 import SuccessorTree.ShapePreserving
+import SuccessorTree.Monoid
 import SuccessorTree.StarLine
 import SuccessorTree.Support
 import SuccessorTree.Pigeonhole
