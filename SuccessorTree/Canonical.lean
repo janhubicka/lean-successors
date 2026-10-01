@@ -613,4 +613,104 @@ theorem canonicalLimit_unique
 
 end SMTree
 
+namespace Approximation
+
+variable {H : SMTree S}
+
+/-- The target cut of a finite approximation is the image of its top source
+level under any chosen global extension. -/
+theorem someExtension_levelMap
+    (A : Approximation H src dst) :
+    H.levelMap A.someExtension src = dst := by
+  obtain ⟨a, ha⟩ := H.level_nonempty src
+  let x : InitialSegment T src := ⟨a, by omega⟩
+  have happ : A.someExtension a = (A x).1 := by
+    exact A.someExtension_apply x
+  have htop : LevelTree.lev (A x).1 = dst := by
+    exact A.top_level x ha
+  calc
+    H.levelMap A.someExtension src =
+        LevelTree.lev (A.someExtension a) := by
+      simpa [ha] using H.levelMap_eq A.someExtension (a := a)
+    _ = LevelTree.lev (A x).1 := by rw [happ]
+    _ = dst := htop
+
+/-- Proposition 1.12: the canonical global extension of a finite admissible
+approximation. -/
+noncomputable def canonicalExtension
+    (A : Approximation H src dst) : ShapeMap S :=
+  H.canonicalLimit A.someExtension A.someExtension_mem src
+
+theorem canonicalExtension_mem
+    (A : Approximation H src dst) :
+    A.canonicalExtension ∈ H.M := by
+  exact H.canonicalLimit_mem
+    A.someExtension A.someExtension_mem src
+
+/-- The canonical extension really extends the finite approximation. -/
+theorem canonicalExtension_apply
+    (A : Approximation H src dst)
+    (a : InitialSegment T src) :
+    A.canonicalExtension a.1 = (A a).1 := by
+  calc
+    A.canonicalExtension a.1 =
+        A.someExtension a.1 := by
+      exact H.canonicalLimit_agrees
+        A.someExtension A.someExtension_mem src a.1 a.2
+    _ = (A a).1 := A.someExtension_apply a
+
+theorem canonicalExtension_agrees_someExtension
+    (A : Approximation H src dst) :
+    A.canonicalExtension.AgreesThrough A.someExtension src := by
+  exact H.canonicalLimit_agrees
+    A.someExtension A.someExtension_mem src
+
+/-- Every target level at or above dst occurs in the canonical extension. -/
+theorem canonicalExtension_tailFull
+    (A : Approximation H src dst) :
+    ∀ ell : Nat, dst ≤ ell → ell ∈ A.canonicalExtension.levelRange := by
+  intro ell hell
+  apply H.canonicalLimit_tailFull
+    A.someExtension A.someExtension_mem src ell
+  rw [A.someExtension_levelMap]
+  exact hell
+
+/-- The source top level is sent exactly to the approximation's target cut. -/
+theorem canonicalExtension_topLevel
+    (A : Approximation H src dst) :
+    H.levelMap A.canonicalExtension src = dst := by
+  have hagree := A.canonicalExtension_agrees_someExtension
+  calc
+    H.levelMap A.canonicalExtension src =
+        H.levelMap A.someExtension src :=
+      H.levelMap_eq_of_agreesThrough hagree le_rfl
+    _ = dst := A.someExtension_levelMap
+
+/-- Uniqueness clause of Proposition 1.12. -/
+theorem canonicalExtension_unique
+    (A : Approximation H src dst)
+    (G : ShapeMap S) (_hG : G ∈ H.M)
+    (hGextends :
+      ∀ a : InitialSegment T src, G a.1 = (A a).1)
+    (hGfull :
+      ∀ ell : Nat, dst ≤ ell → ell ∈ G.levelRange) :
+    G.toFun = A.canonicalExtension.toFun := by
+  have hGagree : G.AgreesThrough A.someExtension src := by
+    intro a ha
+    let x : InitialSegment T src := ⟨a, ha⟩
+    exact (hGextends x).trans (A.someExtension_apply x).symm
+  have hGfull' :
+      ∀ ell : Nat, H.levelMap A.someExtension src ≤ ell →
+        ell ∈ G.levelRange := by
+    intro ell hell
+    apply hGfull ell
+    rw [← A.someExtension_levelMap]
+    exact hell
+  simpa [canonicalExtension] using
+    H.canonicalLimit_unique
+      A.someExtension G A.someExtension_mem src
+      hGagree hGfull'
+
+end Approximation
+
 end SuccessorTree
