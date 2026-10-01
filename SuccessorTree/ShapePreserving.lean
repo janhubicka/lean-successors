@@ -93,19 +93,6 @@ theorem level_lt_of_level_lt (F : ShapeMap S) {a b : T}
   have hlev := LevelTree.lt_level_lt hmap
   omega
 
-/-- The level map induced by a shape-preserving map. -/
-noncomputable def levelMap (F : ShapeMap S) (n : Nat) : Nat :=
-  let a := Classical.choose (LevelTree.level_nonempty (T := T) n)
-  LevelTree.lev (F a)
-
-theorem levelMap_eq (F : ShapeMap S) {a : T} :
-    F.levelMap (LevelTree.lev a) = LevelTree.lev (F a) := by
-  unfold levelMap
-  let x := Classical.choose (LevelTree.level_nonempty (T := T) (LevelTree.lev a))
-  have hx : LevelTree.lev x = LevelTree.lev a :=
-    Classical.choose_spec (LevelTree.level_nonempty (T := T) (LevelTree.lev a))
-  exact F.level_eq_of_level_eq hx
-
 /-- The identity map is shape-preserving. -/
 def id (S : STree T Label) : ShapeMap S where
   toFun := fun a => a
