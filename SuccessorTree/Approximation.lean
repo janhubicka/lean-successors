@@ -154,7 +154,9 @@ noncomputable instance fintype : Fintype (H.Letter n) := by
   classical
   letI : Fintype (BoundedNode T n) := BoundedNode.fintype n
   letI : Fintype (BoundedNode T (n + 1)) := BoundedNode.fintype (n + 1)
-  exact Fintype.ofFinite _
+  exact Fintype.ofInjective
+    (fun e : H.Letter n => e.1)
+    Subtype.val_injective
 
 noncomputable def realizer (e : H.Letter n) : ShapeMap S :=
   Classical.choose e.2
