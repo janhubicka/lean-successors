@@ -229,10 +229,21 @@ theorem map_letterCode_params_eq
     (ha : LevelTree.lev a = n) :
     (H.letterCode e a ha).params.map (wordMap H n w) =
       (H.letterCode e a ha).params := by
-  apply List.map_eq_self.mpr
-  intro x hx
-  exact wordMap_eq_id_below H n w
-    (H.letterCode_params_below e a ha hx)
+  let p := (H.letterCode e a ha).params
+  have hfix : ∀ x ∈ p, wordMap H n w x = x := by
+    intro x hx
+    apply wordMap_eq_id_below H n w
+    exact H.letterCode_params_below e a ha hx
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : wordMap H n w x = x :=
+        hfix x (by simp)
+      have hxs : ∀ y ∈ xs, wordMap H n w y = y := by
+        intro y hy
+        exact hfix y (by simp [hy])
+      simp only [List.map_cons]
+      rw [hx, ih hxs]
 
 /-- Appending one letter gives exactly the corresponding successor edge after
 the preceding word has been applied. -/
