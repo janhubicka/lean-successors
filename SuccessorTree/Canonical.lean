@@ -447,7 +447,7 @@ theorem levelMap_succ_of_tailFull
     omega
   have hup := hstrict.monotone hkj
   rw [hj] at hup
-  omega
+  exact le_antisymm hup (Nat.succ_le_of_lt hlow)
 
 /-- If the level map sends two adjacent source levels to adjacent target
 levels, weak successor preservation is exact on that edge. -/
