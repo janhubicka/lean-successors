@@ -10,6 +10,8 @@ For a non-root node x, S3 gives a presentation x = S(a,ps,c), and S2 makes
 
 namespace SuccessorTree
 
+variable {Node : Type u} {Char : Type v} [PartialOrder Node]
+
 structure SuccData (S : STree Node Char) (x : Node) where
   base : Node
   params : List Node
