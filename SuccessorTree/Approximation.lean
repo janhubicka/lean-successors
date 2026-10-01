@@ -40,10 +40,10 @@ theorem carrier_finite :
   | succ n ih =>
       have hset :
           {a : T | LevelTree.lev a <= n + 1} =
-            {a : T | LevelTree.lev a <= n} union
+            {a : T | LevelTree.lev a <= n} ∪
               {a : T | LevelTree.lev a = n + 1} := by
         ext a
-        simp only [Set.mem_setOf_eq, Set.mem_union]
+        simp only [Set.mem_ofPred_eq, Set.mem_union]
         omega
       rw [hset]
       exact ih.union (LevelTree.level_finite (n + 1))
@@ -139,11 +139,19 @@ theorem toFun_injective :
   intro a
   exact congrArg Subtype.val (congrFun h a)
 
-noncomputable instance fintype :
-    Fintype (Approximation H src dst) :=
-  Fintype.ofInjective
+noncomputable instance finite :
+    Finite (Approximation H src dst) := by
+  letI : Fintype (InitialSegment T src) :=
+    InitialSegment.fintype (T := T) src
+  letI : Fintype (InitialSegment T dst) :=
+    InitialSegment.fintype (T := T) dst
+  exact Finite.of_injective
     (fun A : Approximation H src dst => A.toFun)
     toFun_injective
+
+noncomputable instance fintype :
+    Fintype (Approximation H src dst) :=
+  Fintype.ofFinite _
 
 /-- Choose a global monoid member witnessing admissibility.  Its tail is
 irrelevant to the extensional approximation. -/
@@ -163,7 +171,7 @@ theorem someExtension_apply (A : Approximation H src dst)
 theorem someExtension_agrees (A : Approximation H src dst) :
     forall a : T, LevelTree.lev a <= src ->
       A.someExtension a =
-        (A ⟨a, by assumption⟩).1 := by
+        (A ⟨a, ha⟩).1 := by
   intro a ha
   exact A.someExtension_apply ⟨a, ha⟩
 
