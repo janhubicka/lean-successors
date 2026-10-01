@@ -256,6 +256,32 @@ theorem wordMap_append_letter_le
     H.wordMap_le_append (u ++ [e]) v a ha
   simpa [List.append_assoc] using h
 
+/-- Split a list at a chosen occurrence. -/
+theorem exists_split_of_mem {α : Type u} {x : α} {s : List α}
+    (hx : x ∈ s) :
+    ∃ u v : List α, s = u ++ x :: v := by
+  induction s with
+  | nil =>
+      simp at hx
+  | cons y ys ih =>
+      simp only [List.mem_cons] at hx
+      rcases hx with hxy | hx
+      · subst y
+        exact ⟨[], ys, rfl⟩
+      · obtain ⟨u, v, huv⟩ := ih hx
+        refine ⟨y :: u, v, ?_⟩
+        simp [huv]
+
+/-- Word-map endpoints are monotone under word-prefix. -/
+theorem wordMap_le_of_prefix
+    (H : SMTree S) {n : Nat}
+    {u v : List (OneLevelLetter H n)}
+    (huv : u <+: v)
+    (a : T) (ha : LevelTree.lev a = n) :
+    wordMap H n u a ≤ wordMap H n v a := by
+  rcases huv with ⟨t, rfl⟩
+  exact H.wordMap_le_append u t a ha
+
 /-- Restriction to the finite initial segment T(<=n). -/
 abbrev RestrictedMap (T : Type u) [PartialOrder T] [LevelTree T] (n : Nat) :=
   {a : T // LevelTree.lev a ≤ n} → T
