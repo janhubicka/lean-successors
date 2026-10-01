@@ -116,6 +116,8 @@ theorem exists_reduce_next
   obtain ⟨F1, F2, hF1mem, hF2mem, hF2skip, hcomp⟩ :=
     H.m2 (n + 1) F hFmem a ha htpos (by
       simpa [hFaLevel] using hskip)
+  have hF2skipT : F2.SkipsOnly (t - 1) := by
+    simpa [hFaLevel] using hF2skip
 
   have hF1Next :
       H.levelMap F1 (n + 1) = t - 1 := by
@@ -133,7 +135,7 @@ theorem exists_reduce_next
               H.levelMap_eq F2 (a := F1 a)
         _ = LevelTree.lev (F a) := congrArg LevelTree.lev hcompa
         _ = t := hFaLevel
-    rw [H.levelMap_of_skipsOnly F2 (t - 1) hF2skip] at hlevelComp
+    rw [H.levelMap_of_skipsOnly F2 (t - 1) hF2skipT] at hlevelComp
     by_cases hq : q < t - 1
     · simp [hq] at hlevelComp
       omega
@@ -164,12 +166,12 @@ theorem exists_reduce_next
     have hqx : qx < t - 1 := by
       by_contra hnot
       have hge : t - 1 ≤ qx := Nat.le_of_not_gt hnot
-      rw [H.levelMap_of_skipsOnly F2 (t - 1) hF2skip] at hlevelComp
+      rw [H.levelMap_of_skipsOnly F2 (t - 1) hF2skipT] at hlevelComp
       simp [Nat.not_lt.mpr hge] at hlevelComp
       dsimp [qx] at hlevelComp
       omega
     have hfix : F2 (F1 x) = F1 x :=
-      H.eq_id_below_skip F2 (t - 1) hF2skip hqx
+      H.eq_id_below_skip F2 (t - 1) hF2skipT hqx
     exact hfix.symm.trans hcompx
 
   refine ⟨F1, hF1mem, hAgree, ?_⟩
@@ -183,6 +185,7 @@ theorem exists_tight_next
       G ∈ H.M ∧
       G.AgreesThrough F n ∧
       H.levelMap G (n + 1) = H.levelMap G n + 1 := by
+  classical
   let P : Nat → Prop := fun t =>
     ∃ G : ShapeMap S,
       G ∈ H.M ∧
