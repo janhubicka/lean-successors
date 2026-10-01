@@ -294,17 +294,6 @@ private theorem list_map_eq_self_of_fixed
       simp only [List.map_cons]
       rw [hx, ih]
 
-private theorem list_map_eq_of_fixed
-    {α : Type u} {β : Type w} (p : List α) (f g : α → β)
-    (h : ∀ x ∈ p, f x = g x) :
-    p.map f = p.map g := by
-  induction p with
-  | nil => rfl
-  | cons x xs ih =>
-      have hx : f x = g x := h x (List.mem_cons_self)
-      simp only [List.map_cons]
-      rw [hx, ih]
-
 /-- Every word map fixes the parameter list of a one-level letter edge. -/
 theorem map_letterCode_params_eq
     (H : SMTree S) {n : Nat}
@@ -333,43 +322,28 @@ theorem wordMap_append_letter_succ
         (H.letterCode e a ha).char =
       some (wordMap H n (w ++ [e]) a) := by
   have hedge := (H.letterCode e a ha).succ_eq
-  have hlev : n < LevelTree.lev (e a) := by
-    rw [e.level_succ_at H ha]
+  obtain ⟨d, hd, hdb⟩ := (wordMap H n w).map.weak_succ' hedge
+  have hparams := H.map_letterCode_params_eq w e a ha
+  rw [hparams] at hd
+  have hbase :
+      LevelTree.lev (wordMap H n w a) = n + w.length :=
+    H.level_wordMap_at n w ha
+  have hdlev :
+      LevelTree.lev d = LevelTree.lev (wordMap H n w a) + 1 :=
+    LevelTree.covBy_level_eq (S.covBy_of_succ_eq_some hd)
+  have healvl : LevelTree.lev (e a) = n + 1 :=
+    e.level_succ_at H ha
+  have htarget :
+      LevelTree.lev (wordMap H n w (e a)) =
+        LevelTree.lev (e a) + w.length :=
+    H.level_wordMap_of_ge n w (a := e a) (by omega)
+  have hsame :
+      LevelTree.lev d = LevelTree.lev (wordMap H n w (e a)) := by
     omega
-  have hexact :
-      S.succ (wordMap H n w a)
-          ((H.letterCode e a ha).params.map (wordMap H n w))
-          (H.letterCode e a ha).char =
-        some (wordMap H n w (e a)) := by
-    induction w with
-    | nil =>
-        rw [H.map_letterCode_params_eq ([] : List (OneLevelLetter H n)) e a ha]
-        simpa using hedge
-    | cons d w ih =>
-        have htailLevel :
-            n < LevelTree.lev (wordMap H n w (e a)) := by
-          have hbase : LevelTree.lev (e a) = n + 1 :=
-            e.level_succ_at H ha
-          have hw :=
-            level_wordMap_of_ge H n w
-              (a := e a) (by omega)
-          omega
-        have hd :=
-          H.succ_eq_above_skip d.toMMap.map n d.skips ih htailLevel
-        rw [List.map_map] at hd
-        have hmaps :
-            (H.letterCode e a ha).params.map
-                (d ∘ wordMap H n w) =
-              (H.letterCode e a ha).params.map
-                (wordMap H n (d :: w)) := by
-          apply list_map_eq_of_fixed
-          intro x hx
-          rfl
-        rw [hmaps] at hd
-        exact hd
-  rw [H.map_letterCode_params_eq w e a ha] at hexact
-  rw [wordMap_append_singleton_apply] 
-  exact hexact
+  have heq : d = wordMap H n w (e a) :=
+    LevelTree.same_level_of_le hdb hsame
+  rw [wordMap_append_singleton_apply]
+  simpa [heq] using hd
 
 /-- Consecutive word prefixes form a cover on every level-n node. -/
 theorem wordMap_covBy_append_letter
