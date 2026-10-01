@@ -32,3 +32,7 @@ import SuccessorTree.NonPrecompact.ResidueAlgebra
 import SuccessorTree.NonPrecompact.BilinearResidue
 import SuccessorTree.BANANA.PairingCompletion
 import SuccessorTree.BANANA.EPPA
+import SuccessorTree.BANANA.StrongAmalgamation
+import SuccessorTree.BANANA.Coherence
+import SuccessorTree.BANANA.TupleInvariant
+import SuccessorTree.BANANA.GeneratedPairing
