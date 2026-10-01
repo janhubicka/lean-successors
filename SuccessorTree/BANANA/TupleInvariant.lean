@@ -107,9 +107,18 @@ theorem generatedSpanEquivOfRelationPatternEq_apply_tupleLinearMap
     generatedSpanEquivOfRelationPatternEq x x' h
         ⟨tupleLinearMap x c, ⟨c, rfl⟩⟩ =
       ⟨tupleLinearMap x' c, ⟨c, rfl⟩⟩ := by
+  let v : LinearMap.range (tupleLinearMap x) :=
+    ⟨tupleLinearMap x c, ⟨c, rfl⟩⟩
+  let v' : LinearMap.range (tupleLinearMap x') :=
+    ⟨tupleLinearMap x' c, ⟨c, rfl⟩⟩
+  change generatedSpanEquivOfRelationPatternEq x x' h v = v'
   apply Subtype.ext
   simp only [generatedSpanEquivOfRelationPatternEq, LinearEquiv.trans_apply]
-  rw [LinearMap.quotKerEquivRange_symm_apply_image]
+  have hv :
+      (tupleLinearMap x).quotKerEquivRange.symm v =
+        (LinearMap.ker (tupleLinearMap x)).mkQ c :=
+    LinearMap.quotKerEquivRange_symm_apply_image c v.property
+  rw [hv]
   simp only [Submodule.quotEquivOfEq_mk, LinearMap.quotKerEquivRange_apply_mk]
 
 /-- The canonical span equivalence sends every distinguished generator to
