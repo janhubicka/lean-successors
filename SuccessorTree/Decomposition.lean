@@ -25,8 +25,16 @@ noncomputable def succDataOfNonroot
     (hx : 0 < S.tree.level x) :
     SuccData S x := by
   classical
-  obtain ⟨a, ha⟩ := S.tree.exists_immediate_predecessor x hx
-  obtain ⟨ps, c, hsucc⟩ := S.succ_constructive ha
+  let hexPred := S.tree.exists_immediate_predecessor x hx
+  let a : Node := Classical.choose hexPred
+  have ha : S.tree.IsImmediateSuccessor a x :=
+    Classical.choose_spec hexPred
+  let hexSucc := S.succ_constructive ha
+  let ps : List Node := Classical.choose hexSucc
+  let hexChar := Classical.choose_spec hexSucc
+  let c : Char := Classical.choose hexChar
+  have hsucc : S.succ a ps c = some x :=
+    Classical.choose_spec hexChar
   exact ⟨a, ps, c, hsucc⟩
 
 theorem succData_unique
