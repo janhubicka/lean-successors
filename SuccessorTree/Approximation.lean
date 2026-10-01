@@ -271,6 +271,34 @@ theorem letterCode_params_below
   have h := S.parameter_level_lt (H.letterCode e a ha).succ_eq hx
   simpa [ha] using h
 
+private theorem list_map_eq_self_of_fixed
+    {α : Type u} (p : List α) (f : α → α)
+    (h : ∀ x ∈ p, f x = x) :
+    p.map f = p := by
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : f x = x := h x (by simp)
+      have hxs : ∀ y ∈ xs, f y = y := by
+        intro y hy
+        exact h y (by simp [hy])
+      simp only [List.map_cons]
+      rw [hx, ih hxs]
+
+private theorem list_map_eq_of_fixed
+    {α : Type u} {β : Type w} (p : List α) (f g : α → β)
+    (h : ∀ x ∈ p, f x = g x) :
+    p.map f = p.map g := by
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : f x = g x := h x (by simp)
+      have hxs : ∀ y ∈ xs, f y = g y := by
+        intro y hy
+        exact h y (by simp [hy])
+      simp only [List.map_cons]
+      rw [hx, ih hxs]
+
 /-- Every word map fixes the parameter list of a one-level letter edge. -/
 theorem map_letterCode_params_eq
     (H : SMTree S) {n : Nat}
@@ -285,16 +313,7 @@ theorem map_letterCode_params_eq
     apply wordMap_eq_id_below H n w
     exact H.letterCode_params_below e a ha hx
   change p.map (wordMap H n w) = p
-  induction p with
-  | nil => rfl
-  | cons x xs ih =>
-      have hx : wordMap H n w x = x :=
-        hfix x (by simp)
-      have hxs : ∀ y ∈ xs, wordMap H n w y = y := by
-        intro y hy
-        exact hfix y (by simp [hy])
-      simp only [List.map_cons]
-      rw [hx, ih hxs]
+  exact list_map_eq_self_of_fixed p (wordMap H n w) hfix
 
 /-- Appending one letter gives exactly the corresponding successor edge after
 the preceding word has been applied. -/
@@ -318,6 +337,7 @@ theorem wordMap_append_letter_succ
         some (wordMap H n w (e a)) := by
     induction w with
     | nil =>
+        rw [H.map_letterCode_params_eq ([] : List (OneLevelLetter H n)) e a ha]
         simpa using hedge
     | cons d w ih =>
         have htailLevel :
@@ -330,7 +350,17 @@ theorem wordMap_append_letter_succ
           omega
         have hd :=
           H.succ_eq_above_skip d.toMMap.map n d.skips ih htailLevel
-        simpa [wordMap_cons_apply, List.map_map, Function.comp_def] using hd
+        rw [List.map_map] at hd
+        have hmaps :
+            (H.letterCode e a ha).params.map
+                (d ∘ wordMap H n w) =
+              (H.letterCode e a ha).params.map
+                (wordMap H n (d :: w)) := by
+          apply list_map_eq_of_fixed
+          intro x hx
+          rfl
+        rw [hmaps] at hd
+        exact hd
   rw [H.map_letterCode_params_eq w e a ha] at hexact
   rw [wordMap_append_singleton_apply] 
   exact hexact
