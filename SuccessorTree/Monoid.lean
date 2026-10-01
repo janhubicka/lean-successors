@@ -10,6 +10,8 @@ predicate on shape-preserving maps together with witnesses for M1--M3.
 
 namespace SuccessorTree
 
+variable {Node : Type u} {Char : Type v} [PartialOrder Node]
+
 def AgreesThrough
     (S : STree Node Char)
     (F G : ShapeMap S) (n : Nat) : Prop :=
