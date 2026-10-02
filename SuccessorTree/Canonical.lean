@@ -146,5 +146,223 @@ theorem exists_lower_gap_once
         split at hlev <;> omega
       rw [hFa1, htarget, hFa]
 
+
+/-- Repeatedly apply the one-step M2 operation until the gap after level m
+is completely closed. -/
+theorem exists_close_gap
+    (H : SMTree S) (F : MMap H) (m : Nat) :
+    ∃ F' : MMap H,
+      (∀ x : T, LevelTree.lev x ≤ m → F' x = F x) ∧
+      H.levelMap F'.map (m + 1) =
+        H.levelMap F.map m + 1 := by
+  generalize hN : H.levelMap F.map (m + 1) = N
+  induction N using Nat.strong_induction_on generalizing F with
+  | h N ih =>
+      have hmono :
+          H.levelMap F.map m <
+            H.levelMap F.map (m + 1) :=
+        H.levelMap_strictMono F.map (Nat.lt_succ_self m)
+      by_cases heq :
+          H.levelMap F.map (m + 1) =
+            H.levelMap F.map m + 1
+      · refine ⟨F, ?_, heq⟩
+        intro x hx
+        rfl
+      · have hgap :
+            H.levelMap F.map m + 1 <
+              H.levelMap F.map (m + 1) := by
+          omega
+        obtain ⟨G, hGagree, hGnext⟩ :=
+          H.exists_lower_gap_once F m hgap
+        have hGm :
+            H.levelMap G.map m =
+              H.levelMap F.map m := by
+          obtain ⟨x, hx⟩ := H.level_nonempty m
+          calc
+            H.levelMap G.map m = LevelTree.lev (G x) := by
+              simpa [hx] using H.levelMap_eq G.map (a := x)
+            _ = LevelTree.lev (F x) := by
+              rw [hGagree x (by omega)]
+            _ = H.levelMap F.map m := by
+              simpa [hx] using (H.levelMap_eq F.map (a := x)).symm
+        have hlt :
+            H.levelMap G.map (m + 1) < N := by
+          rw [hGnext, hN]
+          omega
+        obtain ⟨K, hKagree, hKnext⟩ :=
+          ih (H.levelMap G.map (m + 1)) hlt G rfl
+        refine ⟨K, ?_, ?_⟩
+        · intro x hx
+          exact (hKagree x hx).trans (hGagree x hx)
+        · calc
+            H.levelMap K.map (m + 1) =
+                H.levelMap G.map m + 1 := hKnext
+            _ = H.levelMap F.map m + 1 := by rw [hGm]
+
+/-- A chosen gap-closing refinement. -/
+noncomputable def closeGap
+    (H : SMTree S) (F : MMap H) (m : Nat) : MMap H :=
+  Classical.choose (H.exists_close_gap F m)
+
+theorem closeGap_agrees
+    (H : SMTree S) (F : MMap H) (m : Nat)
+    (x : T) (hx : LevelTree.lev x ≤ m) :
+    H.closeGap F m x = F x :=
+  (Classical.choose_spec (H.exists_close_gap F m)).1 x hx
+
+theorem closeGap_level_succ
+    (H : SMTree S) (F : MMap H) (m : Nat) :
+    H.levelMap (H.closeGap F m).map (m + 1) =
+      H.levelMap F.map m + 1 :=
+  (Classical.choose_spec (H.exists_close_gap F m)).2
+
+/-- Stages of the canonical-extension fusion.  Before level n the original
+map is unchanged; thereafter stage i+1 closes exactly the gap after i. -/
+noncomputable def canonicalStage
+    (H : SMTree S) (F : MMap H) (n : Nat) : Nat → MMap H
+  | 0 => F
+  | i + 1 =>
+      if n ≤ i then
+        H.closeGap (H.canonicalStage F n i) i
+      else
+        H.canonicalStage F n i
+
+theorem canonicalStage_succ_agrees
+    (H : SMTree S) (F : MMap H) (n i : Nat)
+    (x : T) (hx : LevelTree.lev x ≤ i) :
+    H.canonicalStage F n (i + 1) x =
+      H.canonicalStage F n i x := by
+  rw [canonicalStage]
+  by_cases hni : n ≤ i
+  · simp only [hni, if_true]
+    exact H.closeGap_agrees (H.canonicalStage F n i) i x hx
+  · simp only [hni, if_false]
+
+theorem canonicalStage_eq_initial_of_le
+    (H : SMTree S) (F : MMap H) (n : Nat) :
+    ∀ i : Nat, i ≤ n → H.canonicalStage F n i = F := by
+  intro i hi
+  induction i with
+  | zero => rfl
+  | succ i ih =>
+      have hnot : ¬ n ≤ i := by omega
+      rw [canonicalStage]
+      simp only [hnot, if_false]
+      exact ih (by omega)
+
+theorem canonicalStage_level_succ
+    (H : SMTree S) (F : MMap H) (n i : Nat)
+    (hni : n ≤ i) :
+    H.levelMap (H.canonicalStage F n (i + 1)).map (i + 1) =
+      H.levelMap (H.canonicalStage F n i).map i + 1 := by
+  rw [canonicalStage]
+  simp only [hni, if_true]
+  exact H.closeGap_level_succ (H.canonicalStage F n i) i
+
+theorem canonicalStage_fusionStable
+    (H : SMTree S) (F : MMap H) (n : Nat) :
+    ShapeMap.FusionStable
+      (fun i => (H.canonicalStage F n i).map) := by
+  intro i x hx
+  exact (H.canonicalStage_succ_agrees F n i x hx).symm
+
+/-- Canonical extension of the restriction of F through input level n. -/
+noncomputable def canonicalExtension
+    (H : SMTree S) (F : MMap H) (n : Nat) : MMap H where
+  map :=
+    ShapeMap.fusionLimit
+      (fun i => (H.canonicalStage F n i).map)
+      (H.canonicalStage_fusionStable F n)
+  mem :=
+    H.fusion_mem
+      (fun i => (H.canonicalStage F n i).map)
+      (fun i => (H.canonicalStage F n i).mem)
+      (H.canonicalStage_fusionStable F n)
+
+theorem canonicalExtension_apply
+    (H : SMTree S) (F : MMap H) (n : Nat) (x : T) :
+    H.canonicalExtension F n x =
+      H.canonicalStage F n (LevelTree.lev x) x := rfl
+
+/-- The canonical extension really extends the prescribed finite prefix. -/
+theorem canonicalExtension_agrees
+    (H : SMTree S) (F : MMap H) (n : Nat)
+    (x : T) (hx : LevelTree.lev x ≤ n) :
+    H.canonicalExtension F n x = F x := by
+  rw [H.canonicalExtension_apply F n x]
+  rw [H.canonicalStage_eq_initial_of_le F n
+    (LevelTree.lev x) hx]
+
+/-- The level map of the fusion limit at i is already visible at stage i. -/
+theorem canonicalExtension_levelMap_eq_stage
+    (H : SMTree S) (F : MMap H) (n i : Nat) :
+    H.levelMap (H.canonicalExtension F n).map i =
+      H.levelMap (H.canonicalStage F n i).map i := by
+  obtain ⟨x, hx⟩ := H.level_nonempty i
+  calc
+    H.levelMap (H.canonicalExtension F n).map i =
+        LevelTree.lev (H.canonicalExtension F n x) := by
+      simpa [hx] using
+        H.levelMap_eq (H.canonicalExtension F n).map (a := x)
+    _ = LevelTree.lev (H.canonicalStage F n i x) := by
+      rw [H.canonicalExtension_apply F n x, hx]
+    _ = H.levelMap (H.canonicalStage F n i).map i := by
+      simpa [hx] using
+        (H.levelMap_eq (H.canonicalStage F n i).map
+          (a := x)).symm
+
+/-- From the end of the prescribed prefix onward, canonical-extension image
+levels are consecutive. -/
+theorem canonicalExtension_level_succ
+    (H : SMTree S) (F : MMap H) (n i : Nat)
+    (hni : n ≤ i) :
+    H.levelMap (H.canonicalExtension F n).map (i + 1) =
+      H.levelMap (H.canonicalExtension F n).map i + 1 := by
+  rw [H.canonicalExtension_levelMap_eq_stage F n (i + 1)]
+  rw [H.canonicalExtension_levelMap_eq_stage F n i]
+  exact H.canonicalStage_level_succ F n i hni
+
+theorem canonicalExtension_level_at_prefix
+    (H : SMTree S) (F : MMap H) (n : Nat) :
+    H.levelMap (H.canonicalExtension F n).map n =
+      H.levelMap F.map n := by
+  rw [H.canonicalExtension_levelMap_eq_stage F n n]
+  rw [H.canonicalStage_eq_initial_of_le F n n le_rfl]
+
+/-- Explicit affine formula for every tail image level. -/
+theorem canonicalExtension_level_tail
+    (H : SMTree S) (F : MMap H) (n : Nat) :
+    ∀ k : Nat,
+      H.levelMap (H.canonicalExtension F n).map (n + k) =
+        H.levelMap F.map n + k := by
+  intro k
+  induction k with
+  | zero =>
+      simpa using H.canonicalExtension_level_at_prefix F n
+  | succ k ih =>
+      calc
+        H.levelMap (H.canonicalExtension F n).map (n + (k + 1)) =
+            H.levelMap (H.canonicalExtension F n).map
+              ((n + k) + 1) := by congr 1 <;> omega
+        _ = H.levelMap (H.canonicalExtension F n).map (n + k) + 1 :=
+          H.canonicalExtension_level_succ F n (n + k) (by omega)
+        _ = H.levelMap F.map n + (k + 1) := by
+          rw [ih]
+          omega
+
+/-- Every target level at or above the last prescribed image level occurs in
+the canonical extension. -/
+theorem canonicalExtension_tail_mem_levelRange
+    (H : SMTree S) (F : MMap H) (n ell : Nat)
+    (hell : H.levelMap F.map n ≤ ell) :
+    ell ∈ (H.canonicalExtension F n).map.levelRange := by
+  obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le hell
+  have hlev :
+      H.levelMap (H.canonicalExtension F n).map (n + k) = ell := by
+    rw [H.canonicalExtension_level_tail F n k]
+    omega
+  rw [← H.range_levelMap (H.canonicalExtension F n).map]
+  exact ⟨n + k, hlev⟩
+
 end SMTree
 end SuccessorTree
