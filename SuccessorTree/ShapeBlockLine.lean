@@ -185,7 +185,7 @@ noncomputable def blockReplayColour
   classical
   by_cases hb :
       (ramseyApproximationSystem H).IsInitial
-        (n := n) (m := n + k + 2)
+        (n := n) (m := n + (k + 2))
         (ramseyApprox H n (MMap.id H)) b
   · let h' : AM H n (k + 2) := ⟨b, hb⟩
     exact fun g : AMBelow H n (n + k + 2) =>
@@ -230,26 +230,43 @@ theorem replayLine_of_maximal_avoidingBlock
   intro x
   have hxvalid :
       (ramseyApproximationSystem H).IsInitial
-        (n := n) (m := n + k + 2)
+        (n := n) (m := n + (k + 2))
         (ramseyApprox H n (MMap.id H))
         (H.prefixReplayApply hd R x) := by
     simpa [Nat.add_assoc] using (H.blockReplayExtension h R x).2
   have hbvalid :
       (ramseyApproximationSystem H).IsInitial
-        (n := n) (m := n + k + 2)
+        (n := n) (m := n + (k + 2))
         (ramseyApprox H n (MMap.id H))
         (H.prefixReplayApply hd R LineInput.base) := by
     simpa [Nat.add_assoc] using hb.2
+  have hbpack :
+      (⟨H.prefixReplayApply hd R LineInput.base, hbvalid⟩ :
+        AM H n (k + 2)) = hb := by
+    apply Subtype.ext
+    rfl
   have hbase :
       colour (H.prefixReplayApply hd R LineInput.base) g = true := by
     simp only [colour, blockReplayColour, hbvalid, dite_true]
-    exact of_decide_eq_true (by simpa [hb] using hgA)
+    rw [hbpack]
+    exact of_decide_eq_true hgA
   have hxcol := congrFun (hmono x) g
   have hxtrue :
       colour (H.prefixReplayApply hd R x) g = true :=
     hxcol.trans hbase
+  have hxpack :
+      (⟨H.prefixReplayApply hd R x, hxvalid⟩ :
+        AM H n (k + 2)) =
+        H.blockReplayExtension h R x := by
+    apply Subtype.ext
+    rfl
   simp only [colour, blockReplayColour, hxvalid, dite_true] at hxtrue
-  exact of_decide_eq_true hxtrue
+  have hxmem :
+      H.blockEval
+          (⟨H.prefixReplayApply hd R x, hxvalid⟩ : AM H n (k + 2))
+          g.1 ∈ A :=
+    of_decide_eq_true hxtrue
+  simpa [hxpack] using hxmem
 
 /-- Every large set of one-level shape words contains a replay line. -/
 theorem largeSet_contains_replayLine
