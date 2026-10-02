@@ -98,10 +98,12 @@ noncomputable def toPerfectCopyMatrices : PerfectCopyMatrices d n where
   right := (LinearMap.toMatrix' E.right)ᵀ
   pairing := by
     ext i j
-    have h :=
-      E.pairing_apply (Pi.single i (1 : F2)) (Pi.single j (1 : F2))
-    simpa [Matrix.mul_apply, LinearMap.toMatrix'_apply,
-      Matrix.one_apply, single_dotProduct, Pi.single_apply] using h
+    change
+      E.left (Pi.single i (1 : F2)) ⬝ᵥ
+          E.right (Pi.single j (1 : F2)) =
+        (1 : Matrix (Fin d) (Fin d) F2) i j
+    rw [E.pairing_apply]
+    simp [single_dotProduct, Pi.single_apply, Matrix.one_apply, eq_comm]
 
 @[simp] theorem toPerfectCopyMatrices_leftMap_apply
     (x : Fin d → F2) :
@@ -138,7 +140,14 @@ theorem exists_linePair_intersectionColour
   }
   refine ⟨A, ?_⟩
   rw [M.intersectionCount_eq_ambientIntersectionCount x y] at hcolour
-  simpa [A, M] using hcolour
+  change
+    (PerfectCopyMatrices.ambientIntersectionCount
+        (E.toPerfectCopyMatrices.leftMap x)
+        (E.toPerfectCopyMatrices.rightMap y) :
+      ZMod (2 ^ (k + 1))) = r at hcolour
+  rw [E.toPerfectCopyMatrices_leftMap_apply,
+    E.toPerfectCopyMatrices_rightMap_apply] at hcolour
+  simpa [A] using hcolour
 
 /-- Arbitrary-embedding form of the sharper pairing-one obstruction:
 the target of dimension `q-1` already sees every odd residue. -/
@@ -164,7 +173,15 @@ theorem exists_pairingOne_intersectionColour
   }
   refine ⟨A, ?_⟩
   rw [M.intersectionCount_eq_ambientIntersectionCount x y] at hcolour
-  simpa [A, M] using hcolour
+  change
+    (PerfectCopyMatrices.ambientIntersectionCount
+        (E.toPerfectCopyMatrices.leftMap x)
+        (E.toPerfectCopyMatrices.rightMap y) :
+      ZMod (2 ^ (k + 1))) =
+        (r : ZMod (2 ^ (k + 1))) at hcolour
+  rw [E.toPerfectCopyMatrices_leftMap_apply,
+    E.toPerfectCopyMatrices_rightMap_apply] at hcolour
+  simpa [A] using hcolour
 
 end PerfectPairEmbedding
 
