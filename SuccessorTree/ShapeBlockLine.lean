@@ -29,19 +29,22 @@ private theorem isInitial_trans
     {a : RamseyApprox H i}
     {b : RamseyApprox H j}
     {c : RamseyApprox H k}
-    (hab : (ramseyApproximationSystem H).IsInitial a b)
-    (hbc : (ramseyApproximationSystem H).IsInitial b c) :
-    (ramseyApproximationSystem H).IsInitial a c := by
+    (hab : (ramseyApproximationSystem H).IsInitial (n := i) (m := j) a b)
+    (hbc : (ramseyApproximationSystem H).IsInitial (n := j) (m := k) b c) :
+    (ramseyApproximationSystem H).IsInitial (n := i) (m := k) a c := by
+  rcases hab with ⟨hij, X, hXa, hXb⟩
   rcases hbc with ⟨hjk, Y, hYb, hYc⟩
-  have hij := hab.1
-  have habY :
-      (ramseyApproximationSystem H).IsInitial
-        a (ramseyApprox H j Y) := by
-    simpa [hYb] using hab
-  have haY :
-      a = ramseyApprox H i Y :=
-    (ramseyApproximationSystem H).isInitial_left_eq_of_right_point habY
-  exact ⟨hij.trans hjk, Y, haY.symm, hYc⟩
+  have htop : ramseyApprox H j X = ramseyApprox H j Y :=
+    hXb.trans hYb.symm
+  have hpref : ramseyApprox H i X = ramseyApprox H i Y := by
+    by_cases hijEq : i = j
+    · subst j
+      exact htop
+    · exact (ramseyApproximationSystem H).coherent htop i
+        (lt_of_le_of_ne hij hijEq)
+  have hYa : ramseyApprox H i Y = a :=
+    hpref.symm.trans hXa
+  exact ⟨hij.trans hjk, Y, hYa, hYc⟩
 
 /-- Terminal target level of a finite block. -/
 noncomputable def AM.blockTopLevel
@@ -82,7 +85,13 @@ theorem AM.hasDepth_id
   · intro e he hfin
     cases e with
     | zero =>
-        have hle := ramseyLeFin_level_le H hfin
+        have hfin' :
+            RamseyLeFin H
+              (⟨n + k + 1, h.1⟩ :
+                (ramseyApproximationSystem H).FiniteApprox)
+              ((ramseyApproximationSystem H).finiteApprox 0 (MMap.id H)) := by
+          simpa [ramseyFinitization] using hfin
+        have hle := ramseyLeFin_level_le H hfin'
         omega
     | succ t =>
         change Nonempty
@@ -111,7 +120,7 @@ theorem AM.hasDepth_id
           exact hrepTop
         have hbound := fac.bound xx
         have htlt : t < d := by
-          dsimp [d] at he
+          have he' : t + 1 < d + 1 := by simpa [d] using he
           omega
         rw [hlevelFac] at hbound
         omega
@@ -134,9 +143,15 @@ noncomputable def blockReplayExtension
         (H.prefixReplayRefinement (MMap.id H) R) :=
     H.prefixReplayApply_mem_oneStep hd R x
   have hhb :
-      (ramseyApproximationSystem H).IsInitial h.1 b :=
+      (ramseyApproximationSystem H).IsInitial
+        (n := n + k + 1) (m := n + k + 2) h.1 b :=
     (ramseyApproximationSystem H).isInitial_oneStep hbStep
-  exact ⟨b, isInitial_trans H h.2 hhb⟩
+  have hprefix :
+      (ramseyApproximationSystem H).IsInitial
+        (n := n) (m := n + k + 1)
+        (ramseyApprox H n (MMap.id H)) h.1 := by
+    simpa [Nat.add_assoc] using h.2
+  exact ⟨b, isInitial_trans H hprefix hhb⟩
 
 theorem blockReplayExtension_extends
     (H : SMTree S)
@@ -153,14 +168,17 @@ theorem blockReplayExtension_extends
         (n := n + k + 1) h.1
         (H.prefixReplayRefinement (MMap.id H) R) :=
     H.prefixReplayApply_mem_oneStep hd R x
-  have hinit :
-      (ramseyApproximationSystem H).IsInitial h.1 b :=
-    (ramseyApproximationSystem H).isInitial_oneStep hbStep
+  rcases hbStep with ⟨X, hXold, hXnew⟩
   intro y
-  have happ :=
-    H.ramseyApprox_apply_of_initial
-      (n := n + k) (m := n + k + 1) hinit y
-  exact happ
+  have hold := congrArg Subtype.val hXold.2
+  have hnew := congrArg Subtype.val hXnew
+  change X.restrictLe H (n + k) = h.1.1 at hold
+  change X.restrictLe H (n + k + 1) = b.1 at hnew
+  calc
+    h.1.1 y = X y.1 := (congrFun hold y).symm
+    _ = b.1 ⟨y.1, y.2.trans (Nat.le_succ (n + k))⟩ := by
+      exact congrFun hnew
+        ⟨y.1, y.2.trans (Nat.le_succ (n + k))⟩
 
 /-- The product colour used at a maximal avoiding block. -/
 noncomputable def blockReplayColour
@@ -173,10 +191,12 @@ noncomputable def blockReplayColour
   classical
   by_cases hb :
       (ramseyApproximationSystem H).IsInitial
+        (n := n) (m := n + k + 2)
         (ramseyApprox H n (MMap.id H)) b
   · let h' : AM H n (k + 2) := ⟨b, hb⟩
-    exact fun g => decide (H.blockEval h' g.1 ∈ A)
-  · exact fun _ => false
+    exact fun g : AMBelow H n (n + k + 2) =>
+      decide (H.blockEval h' g.1 ∈ A)
+  · exact fun _ : AMBelow H n (n + k + 2) => false
 
 /-- A maximal avoiding finite block yields a whole M3 replay line in A at
 one common bounded input. -/
@@ -208,8 +228,11 @@ theorem replayLine_of_maximal_avoidingBlock
   have hbext : BlockExtends H h hb :=
     H.blockReplayExtension_extends h R LineInput.base
   have hbnot : ¬ BlockAvoids H A hb := hmax hb hbext
-  push Not at hbnot
-  obtain ⟨g, hgA⟩ := hbnot
+  have hexg :
+      ∃ g : AMBelow H n (n + k + 2),
+        H.blockEval hb g.1 ∈ A := by
+    simpa only [BlockAvoids, not_forall, not_not] using hbnot
+  obtain ⟨g, hgA⟩ := hexg
   refine ⟨R, g, ?_⟩
   intro x
   have hxvalid :
@@ -238,7 +261,7 @@ theorem largeSet_contains_replayLine
     (H : SMTree S) {n : Nat}
     (A : Set (AM H n 1))
     (hlarge : (H.shapeSubspaceAction n).Large A) :
-    ∃ k (h : AM H n (k + 1)),
+    ∃ k : Nat, ∃ h : AM H n (k + 1),
       ∃ R : ReplayBlock H (h.blockTopLevel H + 1),
       ∃ g : AMBelow H n (n + k + 2),
         ∀ x : LineInput
@@ -247,18 +270,17 @@ theorem largeSet_contains_replayLine
   classical
   by_cases hA : A = Set.univ
   · let h := AM.id1 H n
-    have h0 : h ∈ A := by simp [hA]
-    -- The universal case is discharged by applying the maximal argument to
-    -- the complement-free trivial situation after choosing any one-step
-    -- extension; the membership conclusion itself is automatic.
-    let h1 : AM H n 2 := H.blockCanonicalExtension h
+    let alpha := OneLevelLetter H (h.blockTopLevel H + 1)
+    let L0 : StarLine alpha :=
+      ⟨[LineSymbol.parameter], by simp⟩
+    let L : StarLine alpha :=
+      L0.prepend (fullSupport alpha)
+    have hLs : Supports L.star := by
+      intro e
+      exact support_mem_star_prepend
+        (fullSupport alpha) L0 (supports_fullSupport alpha) e
     let R : ReplayBlock H (h.blockTopLevel H + 1) :=
-      H.replayBlock
-        (⟨[LineSymbol.parameter], by simp⟩ :
-          StarLine (OneLevelLetter H (h.blockTopLevel H + 1)))
-        (by
-          intro e
-          simp)
+      H.replayBlock L hLs
     let g : AMBelow H n (n + 2) :=
       ⟨AM.id1 H n, by
         rw [AM.id1_topLevel]
