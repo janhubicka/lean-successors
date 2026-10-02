@@ -34,3 +34,4 @@ import SuccessorTree.RamseySpace.Basic
 import SuccessorTree.RamseySpace.Finitization
 import SuccessorTree.Canonical
 import SuccessorTree.ShapePigeonhole
+import SuccessorTree.ShapeFusion
