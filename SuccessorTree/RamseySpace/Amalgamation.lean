@@ -36,10 +36,11 @@ theorem ramseyAmalgamation_nonempty
   | succ n =>
       cases d with
       | zero =>
+          have hfin := hd.1
           change RamseyLeFin H
             ⟨n + 1, a⟩
-            ((ramseyApproximationSystem H).finiteApprox 0 B) at hd
-          change False at hd
+            ((ramseyApproximationSystem H).finiteApprox 0 B) at hfin
+          change False at hfin
           contradiction
       | succ d =>
           have hfin :
