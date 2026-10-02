@@ -90,6 +90,82 @@ def mapLinePair {b : F2} (A : LinePairCopy d b) : LinePairCopy n b where
 @[simp] theorem mapLinePair_right {b : F2} (A : LinePairCopy d b) :
     (E.mapLinePair A).right = E.right A.right := rfl
 
+/-- Recover the standard coordinate matrices of an arbitrary embedding of
+perfect pairs.  This is the converse direction to
+`PerfectCopyMatrices.toPerfectPairEmbedding`. -/
+noncomputable def toPerfectCopyMatrices : PerfectCopyMatrices d n where
+  left := (LinearMap.toMatrix' E.left)ᵀ
+  right := (LinearMap.toMatrix' E.right)ᵀ
+  pairing := by
+    ext i j
+    have h :=
+      E.pairing_apply (Pi.single i (1 : F2)) (Pi.single j (1 : F2))
+    simpa [Matrix.mul_apply, LinearMap.toMatrix'_apply, dotProduct,
+      Matrix.one_apply] using h
+
+@[simp] theorem toPerfectCopyMatrices_leftMap_apply
+    (x : Fin d → F2) :
+    E.toPerfectCopyMatrices.leftMap x = E.left x := by
+  simp [toPerfectCopyMatrices, PerfectCopyMatrices.leftMap]
+
+@[simp] theorem toPerfectCopyMatrices_rightMap_apply
+    (y : Fin d → F2) :
+    E.toPerfectCopyMatrices.rightMap y = E.right y := by
+  simp [toPerfectCopyMatrices, PerfectCopyMatrices.rightMap]
+
+/-- Arbitrary-embedding form of the full BANANA persistent-colouring
+witness.  No coordinate-matrix presentation of the target embedding is
+assumed by the caller. -/
+theorem exists_linePair_intersectionColour
+    (k : ℕ)
+    (E :
+      PerfectPairEmbedding ((2 ^ (k + 1) - 1) + 1) n)
+    (r : ZMod (2 ^ (k + 1))) :
+    ∃ A : LinePairCopy ((2 ^ (k + 1) - 1) + 1) (residueParityHom k r),
+      (ambientIntersectionCount
+          (E.mapLinePair A).left
+          (E.mapLinePair A).right :
+        ZMod (2 ^ (k + 1))) = r := by
+  let M := E.toPerfectCopyMatrices
+  obtain ⟨x, y, hline, hcolour⟩ := M.exists_intersectionColour k r
+  let A : LinePairCopy
+      ((2 ^ (k + 1) - 1) + 1) (residueParityHom k r) := {
+    left := x
+    right := y
+    left_ne_zero := hline.1
+    right_ne_zero := hline.2.1
+    pairing := hline.2.2
+  }
+  refine ⟨A, ?_⟩
+  rw [M.intersectionCount_eq_ambientIntersectionCount x y] at hcolour
+  simpa [A, M] using hcolour
+
+/-- Arbitrary-embedding form of the sharper pairing-one obstruction:
+the target of dimension `q-1` already sees every odd residue. -/
+theorem exists_pairingOne_intersectionColour
+    (k : ℕ)
+    (E : PerfectPairEmbedding (2 ^ (k + 1) - 1) n)
+    (r : ℕ) (hr : Odd r) :
+    ∃ A : LinePairCopy (2 ^ (k + 1) - 1) 1,
+      (ambientIntersectionCount
+          (E.mapLinePair A).left
+          (E.mapLinePair A).right :
+        ZMod (2 ^ (k + 1))) =
+          (r : ZMod (2 ^ (k + 1))) := by
+  let M := E.toPerfectCopyMatrices
+  obtain ⟨x, y, hline, hcolour⟩ :=
+    M.exists_pairingOne_intersectionColour k r hr
+  let A : LinePairCopy (2 ^ (k + 1) - 1) 1 := {
+    left := x
+    right := y
+    left_ne_zero := hline.1
+    right_ne_zero := hline.2.1
+    pairing := hline.2.2
+  }
+  refine ⟨A, ?_⟩
+  rw [M.intersectionCount_eq_ambientIntersectionCount x y] at hcolour
+  simpa [A, M] using hcolour
+
 end PerfectPairEmbedding
 
 namespace PerfectCopyMatrices
