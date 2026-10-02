@@ -82,12 +82,14 @@ theorem residueParityPalette_card (k : ℕ) (b : F2) :
         (Finset.univ.filter (fun z : ZMod (2 ^ (k + 1)) => h z = c)).card =
           (Finset.univ.filter (fun z : ZMod (2 ^ (k + 1)) => h z = b)).card := by
     intro c
+    obtain ⟨zc, hzc⟩ := hsurj c
+    obtain ⟨zb, hzb⟩ := hsurj b
     exact AddMonoidHom.card_fiber_eq_of_mem_range h.toAddMonoidHom
-      ⟨(hsurj c), rfl⟩ ⟨(hsurj b), rfl⟩
+      ⟨zc, hzc⟩ ⟨zb, hzb⟩
   have htotal :=
     Finset.card_eq_sum_card_fiberwise
-      (s := Finset.univ : Finset (ZMod (2 ^ (k + 1))))
-      (t := Finset.univ : Finset F2)
+      (s := (Finset.univ : Finset (ZMod (2 ^ (k + 1)))))
+      (t := (Finset.univ : Finset F2))
       (f := h)
       (by intro z hz; simp)
   simp_rw [hsame] at htotal
