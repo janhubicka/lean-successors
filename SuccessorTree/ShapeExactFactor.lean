@@ -242,11 +242,12 @@ theorem oneStep_exactDepth_factorization
     funext y
     have hXbVal := congrArg Subtype.val hXb
     change X.restrictLe H (n + 1) = b.1 at hXbVal
-    have hyX : X y.1 = b.1 y := congrFun hXbVal y
+    have hyX : (show MMap H from X) y.1 = b.1 y :=
+      congrFun hXbVal y
     change b.1 y =
       B (Q (H.canonicalExtension K n y.1))
     calc
-      b.1 y = X y.1 := hyX.symm
+      b.1 y = (show MMap H from X) y.1 := hyX.symm
       _ = B (K y.1) := hK y.1
       _ = B (Q (H.canonicalExtension K n y.1)) := by
         rw [hQK y.1 y.2]
