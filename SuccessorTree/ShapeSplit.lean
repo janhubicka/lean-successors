@@ -275,7 +275,7 @@ theorem shapeSplit_top_le_level
       _ = m := by simpa [hx] using hPtop
   have hle : P x ≤ F x := by
     rw [← hQP x (by simpa [hx])]
-    exact H.MMap.le_apply_at_cut Q m hQfix hPx
+    exact MMap.le_apply_at_cut H Q m hQfix hPx
   exact ⟨hle, hPx⟩
 
 /-- Concrete ancestor form of the preceding theorem. -/
