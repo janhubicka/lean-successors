@@ -363,8 +363,7 @@ theorem replayTail_letter
       wordMap H n (w ++ evalWord e xs) a := by
   induction xs generalizing k B w with
   | nil =>
-      change B (e a) = wordMap H n w a
-      simpa using hB
+      simpa [replayTail, evalWord] using hB
   | cons x xs ih =>
       let d := LineSymbol.eval e x
       let D := H.replayDup s hs k x
