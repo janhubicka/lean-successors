@@ -1,6 +1,7 @@
 import SuccessorTree.ShapeLargeLine
 import SuccessorTree.HalesJewett.Forcing
 import Mathlib.Tactic
+import Mathlib.Data.Fintype.Pi
 
 /-!
 # The substitution action of M^n on AM^n_1
@@ -85,8 +86,8 @@ theorem shapeAct_id
   change
     (g.representative H).restrictLe H n = g.1.1 at hval
   have hx := congrFun hval x
-  change (MMap.id H) (g.representative H x.1) = g.1.1 x
-  simpa using hx
+  change (g.representative H).restrictLe H n x = g.1.1 x
+  exact hx
 
 theorem shapeAct_comp
     (H : SMTree S) (n : Nat)
@@ -176,6 +177,20 @@ theorem AM.id1_topLevel (H : SMTree S) (n : Nat) :
       exact congrArg LevelTree.lev hx'
     _ = n := hx
 
+private theorem shapeAction_list_map_eq_self
+    (p : List T) (F : T → T)
+    (h : ∀ x ∈ p, F x = x) :
+    p.map F = p := by
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : F x = x := h x (by simp)
+      have hxs : ∀ y ∈ xs, F y = y := by
+        intro y hy
+        exact h y (by simp [hy])
+      simp only [List.map_cons]
+      rw [hx, ih hxs]
+
 /-- There is only one one-level word whose terminal image level has not moved
 past the source level: the identity restriction. -/
 theorem AM.eq_id1_of_topLevel_le
@@ -206,7 +221,7 @@ theorem AM.eq_id1_of_topLevel_le
               _ = LevelTree.lev (g.representative H x) := by
                 simpa [hxlev] using
                   H.levelMap_eq (g.representative H).map (a := x)
-          exact LevelTree.same_level_of_le hle hsame
+          exact (LevelTree.same_level_of_le hle hsame).symm
       | succ p =>
           let y := LevelTree.ancestor x p (by omega)
           have hylev : LevelTree.lev y = p :=
@@ -221,7 +236,7 @@ theorem AM.eq_id1_of_topLevel_le
             g.representative_fixesBelow H y (by omega)
           have hpfix :
               params.map (g.representative H) = params := by
-            apply List.map_eq_self.mpr
+            apply shapeAction_list_map_eq_self
             intro z hz
             exact g.representative_fixesBelow H z
               (lt_trans (S.parameter_level_lt hs hz) (by omega))
@@ -230,11 +245,10 @@ theorem AM.eq_id1_of_topLevel_le
           have hd' : S.succ y params ch = some d := by
             simpa [hyfix, hpfix] using hd
           have hdx0 : d = x := by
-            have hsameSucc := S.s2 hd' hs
-            exact Option.some.inj <| by
-              calc
-                some d = S.succ y params ch := hd'.symm
-                _ = some x := hs
+            apply Option.some.inj
+            calc
+              some d = S.succ y params ch := hd'.symm
+              _ = some x := hs
           subst d
           have hrepLev :
               LevelTree.lev (g.representative H x) = p + 1 := by
@@ -245,8 +259,11 @@ theorem AM.eq_id1_of_topLevel_le
                   (H.levelMap_eq (g.representative H).map (a := x)).symm
               _ = g.topLevel H := rfl
               _ = p + 1 := by simpa using htop
-          exact LevelTree.same_level_of_le hdx
-            (by simpa [hxlev] using hrepLev.symm)
+          have hsame :
+              LevelTree.lev x =
+                LevelTree.lev (g.representative H x) := by
+            exact hxlev.trans hrepLev.symm
+          exact (LevelTree.same_level_of_le hdx hsame).symm
   apply Subtype.ext
   apply Subtype.ext
   funext x
