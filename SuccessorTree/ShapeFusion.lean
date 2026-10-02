@@ -1,4 +1,5 @@
 import SuccessorTree.Canonical
+import SuccessorTree.RamseySpace.Basic
 
 /-!
 # Ordinary fusion of shape-preserving M-maps
@@ -71,6 +72,51 @@ theorem fusionStep_agrees
   rcases h with ⟨K, hK, rfl⟩
   change F (K a) = F a
   rw [hK a (by omega)]
+
+/-- A fusion step is exactly a refinement in the depth-(i+1)
+neighborhood: it refines by right composition and preserves the whole source
+segment through level i. -/
+theorem fusionStep_mem_levelNeighborhood
+    (H : SMTree S) {i : Nat} {F G : MMap H}
+    (h : FusionStep H i F G) :
+    G ∈ (ramseyApproximationSystem H).levelNeighborhood (i + 1) F := by
+  rcases h with ⟨K, hK, rfl⟩
+  constructor
+  · refine ⟨K, ?_⟩
+    intro a
+    rfl
+  · apply Subtype.ext
+    funext a
+    change F (K a.1) = F a.1
+    rw [hK a.1 (by omega)]
+
+/-- Conversely, every depth-(i+1) neighborhood refinement is an ordinary
+fusion step.  Injectivity of the outer shape map forces the right factor to
+be the identity on the frozen source segment. -/
+theorem fusionStep_of_mem_levelNeighborhood
+    (H : SMTree S) {i : Nat} {F G : MMap H}
+    (hG :
+      G ∈ (ramseyApproximationSystem H).levelNeighborhood (i + 1) F) :
+    FusionStep H i F G := by
+  rcases hG.1 with ⟨K, hK⟩
+  refine ⟨K, ?_, ?_⟩
+  · intro a ha
+    apply F.map.injective
+    have hprefix := congrArg Subtype.val hG.2
+    change G.restrictLe H i = F.restrictLe H i at hprefix
+    have hGa : G a = F a := by
+      exact congrFun hprefix ⟨a, by omega⟩
+    exact (hK a).symm.trans hGa
+  · apply MMap.ext_apply
+    intro a
+    exact hK a
+
+theorem fusionStep_iff_mem_levelNeighborhood
+    (H : SMTree S) {i : Nat} {F G : MMap H} :
+    FusionStep H i F G ↔
+      G ∈ (ramseyApproximationSystem H).levelNeighborhood (i + 1) F :=
+  ⟨H.fusionStep_mem_levelNeighborhood,
+    H.fusionStep_of_mem_levelNeighborhood⟩
 
 /-- A sequence built by ordinary fusion steps satisfies the pointwise
 stability hypothesis of M1. -/
