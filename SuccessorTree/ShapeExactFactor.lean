@@ -253,5 +253,91 @@ theorem oneStep_exactDepth_factorization
         rw [hQK y.1 y.2]
 
 
+
+/-- Fixed-bridge exact-depth factorisation.
+
+For a fixed prefix a below A, the canonical bridge does not depend on the
+chosen one-step extension.  Every exact-depth one-step extension is obtained
+by inserting a single coordinate Q after that fixed bridge. -/
+theorem oneStep_exactDepth_fixedBridge
+    (H : SMTree S)
+    {n d q : Nat}
+    {a : RamseyApprox H (n + 1)}
+    {b : RamseyApprox H (n + 2)}
+    {A : MMap H}
+    (ha : (ramseyFinitization H).HasDepth (n := n + 1) a A (d + 1))
+    (hbmem :
+      b ∈ (ramseyApproximationSystem H).oneStepApproximations
+        (n := n + 1) a A)
+    (hb : (ramseyFinitization H).HasDepth (n := n + 2) b A (q + 1)) :
+    ∃ Q : MMap H,
+      Q.FixesBelow H (d + 1) ∧
+      H.levelMap Q.map (d + 1) = q ∧
+      b = ramseyApprox H (n + 2)
+        (MMap.comp H A
+          (MMap.comp H Q (H.prefixCanonical ha))) := by
+  let fac : RamseyFiniteFactor H a (ramseyApprox H (d + 1) A) :=
+    Classical.choice ha.1
+  rcases hbmem with ⟨X, hXaA, hXb⟩
+  rcases hXaA.1 with ⟨K, hK⟩
+  have hKn : H.levelMap K.map n = d :=
+    H.reductionFactor_level_eq_depthPred K hK hXaA.2 ha
+  have hKnext : H.levelMap K.map (n + 1) = q :=
+    H.reductionFactor_level_eq_depthPred
+      (n := n + 1) (d := q) K hK hXb hb
+  have hfacTop : H.levelMap fac.map.map n = d :=
+    H.ramseyFiniteFactor_topLevel_of_depth ha fac
+  have hKfac :
+      ∀ x : T, LevelTree.lev x ≤ n → K x = fac.map x := by
+    intro x hx
+    let xx : InitialNode T n := ⟨x, hx⟩
+    have hXaVal := congrArg Subtype.val hXaA.2
+    change (show MMap H from X).restrictLe H n = a.1 at hXaVal
+    have hXax : (show MMap H from X) x = a.1 xx :=
+      congrFun hXaVal xx
+    have hfacx : a.1 xx = A (fac.map x) :=
+      fac.agrees xx
+    apply A.map.injective
+    calc
+      A (K x) = (show MMap H from X) x := (hK x).symm
+      _ = a.1 xx := hXax
+      _ = A (fac.map x) := hfacx
+  have hcanon :
+      H.canonicalExtension fac.map n =
+        H.canonicalExtension K n := by
+    apply H.canonicalExtension_unique K (H.canonicalExtension fac.map n) n
+    · intro x hx
+      rw [H.canonicalExtension_agrees fac.map n x hx]
+      exact (hKfac x hx).symm
+    · intro ell hell
+      apply H.canonicalExtension_tail_mem_levelRange fac.map n ell
+      rw [hfacTop, ← hKn]
+      exact hell
+  obtain ⟨Q, hQfix, hQlevel, hQK⟩ :=
+    H.exists_factor_through_canonical_succ K n
+  refine ⟨Q, ?_, ?_, ?_⟩
+  · simpa [hKn] using hQfix
+  · simpa [hKn, hKnext] using hQlevel
+  · apply Subtype.ext
+    funext y
+    have hXbVal := congrArg Subtype.val hXb
+    change (show MMap H from X).restrictLe H (n + 1) = b.1 at hXbVal
+    have hyX : (show MMap H from X) y.1 = b.1 y :=
+      congrFun hXbVal y
+    change b.1 y =
+      A (Q (H.prefixCanonical ha y.1))
+    have hpref :
+        H.prefixCanonical ha y.1 =
+          H.canonicalExtension K n y.1 := by
+      change H.canonicalExtension fac.map n y.1 =
+        H.canonicalExtension K n y.1
+      exact congrArg (fun Z : MMap H => Z y.1) hcanon
+    rw [hpref]
+    calc
+      b.1 y = (show MMap H from X) y.1 := hyX.symm
+      _ = A (K y.1) := hK y.1
+      _ = A (Q (H.canonicalExtension K n y.1)) := by
+        rw [hQK y.1 y.2]
+
 end SMTree
 end SuccessorTree
