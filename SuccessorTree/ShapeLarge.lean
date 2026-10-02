@@ -111,14 +111,14 @@ theorem oneStepLarge_univ
     {n d : Nat}
     (a : RamseyApprox H (n + 1))
     (B : MMap H)
-    (ha : (ramseyFinitization H).HasDepth a B (d + 1)) :
+    (ha : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1)) :
     OneStepLarge H (d := d) a B Set.univ := by
   intro A hAB
   have haA :
       (ramseyFinitization H).HasDepth (n := n + 1) a A (d + 1) :=
     ((ramseyFinitization H).hasDepth_iff_of_mem_levelNeighborhood
       hAB).2 ha
-  rcases H.fusionNeighborhood_nonempty a A haA
+  rcases H.fusionNeighborhood_nonempty (n := n + 1) a A haA
       ((ramseyApproximationSystem H).self_mem_levelNeighborhood
         (d + 1) A) with
     ⟨X, hX⟩
