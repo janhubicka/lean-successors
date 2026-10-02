@@ -35,6 +35,8 @@ structure ShapeMap (S : STree Node Char) where
 
 namespace ShapeMap
 
+variable {S : STree Node Char}
+
 instance (S : STree Node Char) :
     CoeFun (ShapeMap S) (fun _ => Node → Node) :=
   ⟨ShapeMap.toFun⟩
