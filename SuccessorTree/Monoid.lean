@@ -28,8 +28,8 @@ structure SMTree (S : STree Node Char) where
     ∀ (F : Nat → ShapeMap S),
       (∀ i, mem (F i)) →
       (∀ i, AgreesThrough S (F i) (F (i + 1)) i) →
-      ∃ F∞ : ShapeMap S,
-        mem F∞ ∧ ∀ i, AgreesThrough S F∞ (F i) i
+      ∃ Flim : ShapeMap S,
+        mem Flim ∧ ∀ i, AgreesThrough S Flim (F i) i
 
   -- M2: one-level decomposition.
   decompose :
