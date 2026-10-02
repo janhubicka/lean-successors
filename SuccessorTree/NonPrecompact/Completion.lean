@@ -22,24 +22,34 @@ def completionLeft (A : BananaMatrixStructure l r) :
     (Fin l → F2) →ₗ[F2] (Fin (l + r) → F2) where
   toFun x := Fin.append x 0
   map_add' x y := by
-    ext i
-    apply Fin.addCases <;> intro j <;> simp [Fin.append, Pi.add_apply]
+    funext i
+    simpa [Fin.append, Pi.add_apply] using
+      (Fin.addCases_castAdd_natAdd
+        (v := fun j : Fin (l + r) =>
+          Fin.append x 0 j + Fin.append y 0 j) i)
   map_smul' c x := by
-    ext i
-    apply Fin.addCases <;> intro j <;> simp [Fin.append, Pi.smul_apply]
+    funext i
+    simpa [Fin.append, Pi.smul_apply] using
+      (Fin.addCases_castAdd_natAdd
+        (v := fun j : Fin (l + r) => c • Fin.append x 0 j) i)
 
 /-- Right map of the explicit perfect completion. -/
 def completionRight (A : BananaMatrixStructure l r) :
     (Fin r → F2) →ₗ[F2] (Fin (l + r) → F2) where
   toFun y := Fin.append (A.pairing *ᵥ y) y
   map_add' x y := by
-    ext i
-    apply Fin.addCases <;> intro j <;>
-      simp [Fin.append, Pi.add_apply, Matrix.mulVec_add]
+    funext i
+    simpa [Fin.append, Pi.add_apply, Matrix.mulVec_add] using
+      (Fin.addCases_castAdd_natAdd
+        (v := fun j : Fin (l + r) =>
+          Fin.append (A.pairing *ᵥ x) x j +
+            Fin.append (A.pairing *ᵥ y) y j) i)
   map_smul' c x := by
-    ext i
-    apply Fin.addCases <;> intro j <;>
-      simp [Fin.append, Pi.smul_apply, Matrix.mulVec_smul]
+    funext i
+    simpa [Fin.append, Pi.smul_apply, Matrix.mulVec_smul] using
+      (Fin.addCases_castAdd_natAdd
+        (v := fun j : Fin (l + r) =>
+          c • Fin.append (A.pairing *ᵥ x) x j) i)
 
 theorem completionLeft_injective :
     Function.Injective A.completionLeft := by
