@@ -24,20 +24,21 @@ def completionLeft (A : BananaMatrixStructure l r) :
   map_add' x y := by
     funext i
     change
-      Fin.append (fun j => x j + y j) 0 i =
-        Fin.append x 0 i + Fin.append y 0 i
-    simpa [Fin.append] using
-      (Fin.addCases_castAdd_natAdd
+      Fin.addCases (fun j => x j + y j) (fun _ : Fin r => 0) i =
+        Fin.addCases x (fun _ : Fin r => 0) i +
+          Fin.addCases y (fun _ : Fin r => 0) i
+    exact
+      Fin.addCases_castAdd_natAdd
         (v := fun j : Fin (l + r) =>
-          Fin.append x 0 j + Fin.append y 0 j) i)
+          Fin.append x 0 j + Fin.append y 0 j) i
   map_smul' c x := by
     funext i
     change
-      Fin.append (fun j => c * x j) 0 i =
-        c * Fin.append x 0 i
-    simpa [Fin.append] using
-      (Fin.addCases_castAdd_natAdd
-        (v := fun j : Fin (l + r) => c * Fin.append x 0 j) i)
+      Fin.addCases (fun j => c * x j) (fun _ : Fin r => 0) i =
+        c * Fin.addCases x (fun _ : Fin r => 0) i
+    exact
+      Fin.addCases_castAdd_natAdd
+        (v := fun j : Fin (l + r) => c * Fin.append x 0 j) i
 
 /-- Right map of the explicit perfect completion. -/
 def completionRight (A : BananaMatrixStructure l r) :
@@ -45,28 +46,30 @@ def completionRight (A : BananaMatrixStructure l r) :
   toFun y := Fin.append (A.pairing *ᵥ y) y
   map_add' x y := by
     funext i
+    rw [Matrix.mulVec_add]
     change
-      Fin.append
+      Fin.addCases
           (fun j => (A.pairing *ᵥ x) j + (A.pairing *ᵥ y) j)
           (fun j => x j + y j) i =
-        Fin.append (A.pairing *ᵥ x) x i +
-          Fin.append (A.pairing *ᵥ y) y i
-    simpa [Fin.append] using
-      (Fin.addCases_castAdd_natAdd
+        Fin.addCases (A.pairing *ᵥ x) x i +
+          Fin.addCases (A.pairing *ᵥ y) y i
+    exact
+      Fin.addCases_castAdd_natAdd
         (v := fun j : Fin (l + r) =>
           Fin.append (A.pairing *ᵥ x) x j +
-            Fin.append (A.pairing *ᵥ y) y j) i)
+            Fin.append (A.pairing *ᵥ y) y j) i
   map_smul' c x := by
     funext i
+    rw [Matrix.mulVec_smul]
     change
-      Fin.append
+      Fin.addCases
           (fun j => c * (A.pairing *ᵥ x) j)
           (fun j => c * x j) i =
-        c * Fin.append (A.pairing *ᵥ x) x i
-    simpa [Fin.append] using
-      (Fin.addCases_castAdd_natAdd
+        c * Fin.addCases (A.pairing *ᵥ x) x i
+    exact
+      Fin.addCases_castAdd_natAdd
         (v := fun j : Fin (l + r) =>
-          c * Fin.append (A.pairing *ᵥ x) x j) i)
+          c * Fin.append (A.pairing *ᵥ x) x j) i
 
 theorem completionLeft_injective :
     Function.Injective A.completionLeft := by
