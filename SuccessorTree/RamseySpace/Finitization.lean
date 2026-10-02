@@ -169,5 +169,124 @@ theorem ramseyLeFin_level_le (H : SMTree S)
           have hid := H.levelMap_id_le f.map.map na
           omega
 
+/-- A genuine right-composition reduction induces finite reductions at every
+approximation level. -/
+theorem ramseyLeFin_of_reduction (H : SMTree S) {F G : MMap H}
+    (hFG : RamseyReduction H F G) (n : Nat) :
+    ∃ m,
+      RamseyLeFin H
+        ((ramseyApproximationSystem H).finiteApprox n F)
+        ((ramseyApproximationSystem H).finiteApprox m G) := by
+  rcases hFG with ⟨K, hK⟩
+  cases n with
+  | zero =>
+      refine ⟨0, ?_⟩
+      trivial
+  | succ n =>
+      let m := H.levelMap K.map n
+      refine ⟨m + 1, ?_⟩
+      change Nonempty
+        (RamseyFiniteFactor H
+          (ramseyApprox H (n + 1) F)
+          (ramseyApprox H (m + 1) G))
+      refine ⟨{
+        map := K
+        bound := ?_
+        agrees := ?_
+      }⟩
+      · intro x
+        calc
+          LevelTree.lev (K x.1) =
+              H.levelMap K.map (LevelTree.lev x.1) :=
+            (H.levelMap_eq K.map (a := x.1)).symm
+          _ ≤ H.levelMap K.map n :=
+            (H.levelMap_strictMono K.map).monotone x.2
+          _ = m := rfl
+      · intro x
+        change F x.1 = G (K x.1)
+        exact hK x.1
+
+/-- Local finite factors through a fixed outer map agree on overlaps. This is
+the compactness mechanism behind the converse direction of A.2. -/
+theorem exists_local_factor_of_ramseyLeFin
+    (H : SMTree S) {F G : MMap H}
+    (hlocal :
+      ∀ n, ∃ m,
+        RamseyLeFin H
+          ((ramseyApproximationSystem H).finiteApprox n F)
+          ((ramseyApproximationSystem H).finiteApprox m G))
+    (i : Nat) :
+    ∃ K : MMap H, ∀ x : T, LevelTree.lev x ≤ i → F x = G (K x) := by
+  rcases hlocal (i + 1) with ⟨m, hm⟩
+  cases m with
+  | zero =>
+      change False at hm
+      contradiction
+  | succ m =>
+      change Nonempty
+        (RamseyFiniteFactor H
+          (ramseyApprox H (i + 1) F)
+          (ramseyApprox H (m + 1) G)) at hm
+      rcases hm with ⟨fac⟩
+      refine ⟨fac.map, ?_⟩
+      intro x hx
+      have h := fac.agrees (⟨x, hx⟩ : InitialNode T i)
+      change F x = G (fac.map x) at h
+      exact h
+
+/-- If every finite approximation of F factors through some finite
+approximation of G, the factor maps fuse to a single M-map K with F = G ∘ K. -/
+theorem reduction_of_ramseyLeFin_all
+    (H : SMTree S) {F G : MMap H}
+    (hlocal :
+      ∀ n, ∃ m,
+        RamseyLeFin H
+          ((ramseyApproximationSystem H).finiteApprox n F)
+          ((ramseyApproximationSystem H).finiteApprox m G)) :
+    RamseyReduction H F G := by
+  classical
+  have hex :
+      ∀ i : Nat, ∃ K : MMap H,
+        ∀ x : T, LevelTree.lev x ≤ i → F x = G (K x) :=
+    fun i => H.exists_local_factor_of_ramseyLeFin hlocal i
+  let K : Nat → MMap H := fun i => Classical.choose (hex i)
+  have hK :
+      ∀ i x, LevelTree.lev x ≤ i → F x = G (K i x) := by
+    intro i x hx
+    exact (Classical.choose_spec (hex i)) x hx
+  have hstable : ShapeMap.FusionStable (fun i => (K i).map) := by
+    intro i x hx
+    apply G.map.injective
+    exact (hK i x hx).symm.trans
+      (hK (i + 1) x (hx.trans (Nat.le_succ i)))
+  let Lmap : ShapeMap S :=
+    ShapeMap.fusionLimit (fun i => (K i).map) hstable
+  have hLmem : Lmap ∈ H.M :=
+    H.fusion_mem (fun i => (K i).map) (fun i => (K i).mem) hstable
+  let L : MMap H := ⟨Lmap, hLmem⟩
+  refine ⟨L, ?_⟩
+  intro x
+  calc
+    F x = G (K (LevelTree.lev x) x) :=
+      hK (LevelTree.lev x) x le_rfl
+    _ = G (L x) := by
+      congr 1
+      rfl
+
+/-- A.2's order clause for the proposed finite reduction relation. -/
+theorem ramseyReduction_iff_ramseyLeFin
+    (H : SMTree S) (F G : MMap H) :
+    RamseyReduction H F G ↔
+      ∀ n, ∃ m,
+        RamseyLeFin H
+          ((ramseyApproximationSystem H).finiteApprox n F)
+          ((ramseyApproximationSystem H).finiteApprox m G) := by
+  constructor
+  · intro h n
+    exact H.ramseyLeFin_of_reduction h n
+  · intro h
+    exact H.reduction_of_ramseyLeFin_all h
+
+
 end SMTree
 end SuccessorTree
