@@ -288,5 +288,80 @@ theorem ramseyReduction_iff_ramseyLeFin
     exact H.reduction_of_ramseyLeFin_all h
 
 
+/-- An initial finite approximation is literally the restriction of the longer
+one on its smaller source segment. -/
+theorem ramseyApprox_apply_of_initial {n m : Nat}
+    (H : SMTree S) {a : RamseyApprox H (n + 1)}
+    {b : RamseyApprox H (m + 1)}
+    (hab : (ramseyApproximationSystem H).IsInitial a b)
+    (x : InitialNode T n) :
+    a.1 x =
+      b.1 ⟨x.1, x.2.trans (by omega : n ≤ m)⟩ := by
+  rcases hab with ⟨hnm, X, hXa, hXb⟩
+  have hnm' : n ≤ m := by omega
+  have hna := congrArg Subtype.val hXa
+  have hmb := congrArg Subtype.val hXb
+  change X.restrictLe H n = a.1 at hna
+  change X.restrictLe H m = b.1 at hmb
+  calc
+    a.1 x = X x.1 := by
+      simpa [MMap.restrictLe] using (congrFun hna x).symm
+    _ = b.1 ⟨x.1, x.2.trans hnm'⟩ := by
+      simpa [MMap.restrictLe] using
+        congrFun hmb ⟨x.1, x.2.trans hnm'⟩
+
+/-- A.2(3): a prefix of a finite factor again factors through the same
+right-hand approximation. -/
+theorem ramseyLeFin_prefix
+    (H : SMTree S)
+    {n m k : Nat}
+    {a : (ramseyApproximationSystem H).Approx n}
+    {b : (ramseyApproximationSystem H).Approx m}
+    {c : (ramseyApproximationSystem H).Approx k}
+    (hab : (ramseyApproximationSystem H).IsInitial a b)
+    (hbc : RamseyLeFin H ⟨m, b⟩ ⟨k, c⟩) :
+    ∃ (j : Nat) (d : (ramseyApproximationSystem H).Approx j),
+      (ramseyApproximationSystem H).IsInitial d c ∧
+        RamseyLeFin H ⟨n, a⟩ ⟨j, d⟩ := by
+  refine ⟨k, c, (ramseyApproximationSystem H).isInitial_refl c, ?_⟩
+  cases n with
+  | zero =>
+      trivial
+  | succ n =>
+      cases m with
+      | zero =>
+          exfalso
+          exact (Nat.not_succ_le_zero n) hab.1
+      | succ m =>
+          cases k with
+          | zero =>
+              contradiction
+          | succ k =>
+              rcases hbc with ⟨fac⟩
+              have hnm : n ≤ m := by omega
+              refine ⟨{
+                map := fac.map
+                bound := ?_
+                agrees := ?_
+              }⟩
+              · intro x
+                let y : InitialNode T m :=
+                  ⟨x.1, x.2.trans hnm⟩
+                exact fac.bound y
+              · intro x
+                let y : InitialNode T m :=
+                  ⟨x.1, x.2.trans hnm⟩
+                calc
+                  a.1 x = b.1 y :=
+                    H.ramseyApprox_apply_of_initial hab x
+                  _ = c.1 ⟨fac.map y.1, fac.bound y⟩ :=
+                    fac.agrees y
+                  _ = c.1
+                      ⟨fac.map x.1,
+                        by
+                          exact fac.bound y⟩ := by
+                        rfl
+
+
 end SMTree
 end SuccessorTree
