@@ -36,3 +36,4 @@ import SuccessorTree.ShapeFrontPigeonhole
 import SuccessorTree.ShapeReplayFusion
 import SuccessorTree.ShapeLarge
 import SuccessorTree.ShapeLargeFusion
+import SuccessorTree.ShapeExactFactor
