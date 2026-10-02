@@ -34,3 +34,4 @@ import SuccessorTree.NonPrecompact.ColouringWrappers
 import SuccessorTree.NonPrecompact.PerfectCopy
 import SuccessorTree.RamseySpace.Basic
 import SuccessorTree.RamseySpace.Finitization
+import SuccessorTree.NonPrecompact.BananaStructure
