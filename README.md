@@ -52,6 +52,7 @@ BANANA project:
 * arbitrary perfect-pair embeddings converted back to coordinate matrices, so persistence is not restricted to a chosen matrix presentation;
 * a fixed-completion persistence theorem with the manuscript's quantifier order: the ambient coordinate realisation is fixed before the target copy;
 * the fixed-parity palette has exactly `2^k=q/2` colours, and every one occurs inside each embedded `B_q` target.
+* the palette is enumerated by the manuscript's `Fin r` colour convention, giving the fixed-ambient persistent colouring itself, the sharper `A₁` target of dimension `q-1`, and the deduction that both four-element line-pair sources have infinite copy Ramsey degree.
 
 These results live under `SuccessorTree/NonPrecompact/`.
 
