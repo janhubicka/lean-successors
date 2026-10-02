@@ -119,7 +119,7 @@ theorem exists_lower_gap_once
         (LevelTree.lev (F a) - 1) hF2skip hF1lt
     exact hfix.symm.trans hcomp
   · have hcomp : F2 (F1 a) = F a :=
-      hagree a le_rfl
+      hagree a (Nat.le_of_eq ha)
     have hFa1 :
         LevelTree.lev (F1 a) =
           H.levelMap F'.map (m + 1) := by
