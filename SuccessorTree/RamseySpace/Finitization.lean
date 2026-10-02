@@ -32,13 +32,15 @@ theorem levelLe_finite (n : Nat) :
     ext a
     constructor
     · intro ha
-      have hlt : LevelTree.lev a < n + 1 := by omega
+      have hlt : LevelTree.lev a < n + 1 :=
+        Nat.lt_succ_of_le ha
       refine Set.mem_iUnion.2 ⟨⟨LevelTree.lev a, hlt⟩, ?_⟩
       rfl
     · intro ha
       rcases Set.mem_iUnion.1 ha with ⟨i, hi⟩
       change LevelTree.lev a = i.1 at hi
-      omega
+      rw [hi]
+      exact Nat.le_of_lt_succ i.2
   rw [hEq]
   exact Set.finite_iUnion (fun i : Fin (n + 1) =>
     LevelTree.level_finite i.1)
@@ -60,7 +62,7 @@ theorem levelMap_id_le (H : SMTree S) (F : ShapeMap S) (n : Nat) :
   | succ n ih =>
       have hstep :=
         H.levelMap_strictMono F (Nat.lt_succ_self n)
-      omega
+      exact Nat.succ_le_of_lt (lt_of_le_of_lt ih hstep)
 
 /-- A finite composition witness between two nonempty approximations. -/
 structure RamseyFiniteFactor (H : SMTree S) {n m : Nat}
@@ -152,7 +154,7 @@ theorem ramseyLeFin_level_le (H : SMTree S)
   rcases b with ⟨nb, b⟩
   cases na with
   | zero =>
-      omega
+      exact Nat.zero_le _
   | succ na =>
       cases nb with
       | zero =>
@@ -167,7 +169,9 @@ theorem ramseyLeFin_level_le (H : SMTree S)
                 LevelTree.lev (f.map x) := by
             simpa [hx] using H.levelMap_eq f.map.map (a := x)
           have hid := H.levelMap_id_le f.map.map na
-          omega
+          have hna_nb : na ≤ nb :=
+            hid.trans (hmap.le.trans hbound)
+          exact Nat.succ_le_succ hna_nb
 
 /-- A genuine right-composition reduction induces finite reductions at every
 approximation level. -/
@@ -269,9 +273,7 @@ theorem reduction_of_ramseyLeFin_all
   calc
     F x = G (K (LevelTree.lev x) x) :=
       hK (LevelTree.lev x) x le_rfl
-    _ = G (L x) := by
-      congr 1
-      rfl
+    _ = G (L x) := rfl
 
 /-- A.2's order clause for the proposed finite reduction relation. -/
 theorem ramseyReduction_iff_ramseyLeFin
@@ -293,12 +295,13 @@ one on its smaller source segment. -/
 theorem ramseyApprox_apply_of_initial {n m : Nat}
     (H : SMTree S) {a : RamseyApprox H (n + 1)}
     {b : RamseyApprox H (m + 1)}
-    (hab : (ramseyApproximationSystem H).IsInitial a b)
+    (hab : (ramseyApproximationSystem H).IsInitial
+      (n := n + 1) (m := m + 1) a b)
     (x : InitialNode T n) :
     a.1 x =
-      b.1 ⟨x.1, x.2.trans (by omega : n ≤ m)⟩ := by
+      b.1 ⟨x.1, x.2.trans (Nat.le_of_succ_le_succ hab.1)⟩ := by
   rcases hab with ⟨hnm, X, hXa, hXb⟩
-  have hnm' : n ≤ m := by omega
+  have hnm' : n ≤ m := Nat.le_of_succ_le_succ hnm
   have hna := congrArg Subtype.val hXa
   have hmb := congrArg Subtype.val hXb
   change X.restrictLe H n = a.1 at hna
@@ -338,7 +341,8 @@ theorem ramseyLeFin_prefix
               contradiction
           | succ k =>
               rcases hbc with ⟨fac⟩
-              have hnm : n ≤ m := by omega
+              have hnm : n ≤ m :=
+                Nat.le_of_succ_le_succ hab.1
               refine ⟨{
                 map := fac.map
                 bound := ?_
@@ -380,7 +384,7 @@ noncomputable def finiteFactorCode
 
 theorem finiteFactorCode_injective
     (H : SMTree S) {n m : Nat} (b : RamseyApprox H (m + 1)) :
-    Function.Injective (finiteFactorCode H b) := by
+    Function.Injective (finiteFactorCode (n := n) (m := m) H b) := by
   classical
   intro a d had
   apply Subtype.ext
@@ -391,11 +395,11 @@ theorem finiteFactorCode_injective
   have ha := fa.agrees x
   have hd := fd.agrees x
   have hcode :
-      finiteFactorCode H b a x =
-        finiteFactorCode H b d x :=
+      finiteFactorCode (n := n) (m := m) H b a x =
+        finiteFactorCode (n := n) (m := m) H b d x :=
     congrFun had x
-  change a.1.1 x = b.1 (finiteFactorCode H b a x) at ha
-  change d.1.1 x = b.1 (finiteFactorCode H b d x) at hd
+  change a.1.1 x = b.1 (finiteFactorCode (n := n) (m := m) H b a x) at ha
+  change d.1.1 x = b.1 (finiteFactorCode (n := n) (m := m) H b d x) at hd
   exact ha.trans ((congrArg b.1 hcode).trans hd.symm)
 
 /-- At fixed source and target levels there are only finitely many lower
@@ -412,8 +416,8 @@ theorem ramseyLeFin_fixedLevel_finite
   classical
   rw [← Set.finite_coe_iff]
   exact Finite.of_injective
-    (finiteFactorCode H b)
-    (finiteFactorCode_injective H b)
+    (finiteFactorCode (n := n) (m := m) H b)
+    (finiteFactorCode_injective (n := n) (m := m) H b)
 
 /-- Insert a fixed-level approximation into the sigma type of all finite
 approximations. -/
@@ -473,6 +477,11 @@ theorem ramseyLeFin_lowerFinite
           apply Set.mem_union_left
           simp [empty]
       | succ n =>
+          change RamseyLeFin H
+            (⟨n + 1, a⟩ :
+              (ramseyApproximationSystem H).FiniteApprox)
+            (⟨m + 1, b⟩ :
+              (ramseyApproximationSystem H).FiniteApprox) at ha
           have hle :
               n + 1 ≤ m + 1 :=
             ramseyLeFin_level_le H ha
