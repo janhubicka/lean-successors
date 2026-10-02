@@ -183,7 +183,8 @@ noncomputable def ExactPredecessor.predWord
     H.levelMap (p.representative H).map n =
         LevelTree.lev (p.representative H x) := by
       simpa [hx] using H.levelMap_eq (p.representative H).map (a := x)
-    _ = LevelTree.lev (D.pred x) := by rw [hpoint]
+    _ = LevelTree.lev (D.pred x) := by
+      simpa [MMap.restrictLe] using congrArg LevelTree.lev hpoint
     _ = H.levelMap D.pred.map n := by
       simpa [hx] using (H.levelMap_eq D.pred.map (a := x)).symm
     _ = m := D.pred_top
