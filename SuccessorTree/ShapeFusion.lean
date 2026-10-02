@@ -128,6 +128,28 @@ theorem fusionStable_of_steps
   intro i a ha
   exact (H.fusionStep_agrees (hstep i) a ha).symm
 
+/-- Package the ordinary fusion limit from its stepwise construction. -/
+noncomputable def fusionOfSteps
+    (H : SMTree S) (F : Nat → MMap H)
+    (hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1))) :
+    MMap H :=
+  MMap.fusionLimit H F (H.fusionStable_of_steps F hstep)
+
+@[simp] theorem fusionOfSteps_apply
+    (H : SMTree S) (F : Nat → MMap H)
+    (hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1)))
+    (a : T) :
+    H.fusionOfSteps F hstep a =
+      F (LevelTree.lev a) a := rfl
+
+theorem fusionOfSteps_eq_stage
+    (H : SMTree S) (F : Nat → MMap H)
+    (hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1)))
+    {i : Nat} {a : T} (ha : LevelTree.lev a ≤ i) :
+    H.fusionOfSteps F hstep a = F i a := by
+  exact MMap.fusionLimit_eq_stage H F
+    (H.fusionStable_of_steps F hstep) ha
+
 /-- Every fusion step is a genuine Ramsey reduction. -/
 theorem fusionStep_reduction
     (H : SMTree S) {i : Nat} {F G : MMap H}
@@ -152,7 +174,7 @@ theorem fusionSteps_reduction_of_le
       have hs :
           RamseyReduction H (F (i + d + 1)) (F (i + d)) := by
         convert H.fusionStep_reduction (hstep (i + d)) using 1 <;> omega
-      exact H.ramseyReduction_trans hs ih
+      exact H.ramseyReduction_trans hs (ih (by omega))
 
 /-- The diagonal fusion limit has the same nth finite approximation as every
 sufficiently late stage. -/
@@ -209,28 +231,6 @@ theorem fusionOfSteps_mem_levelNeighborhood
   constructor
   · exact H.fusionOfSteps_reduction_stage F hstep i
   · exact H.fusionOfSteps_ramseyApprox_eq_stage F hstep le_rfl
-
-/-- Package the ordinary fusion limit from its stepwise construction. -/
-noncomputable def fusionOfSteps
-    (H : SMTree S) (F : Nat → MMap H)
-    (hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1))) :
-    MMap H :=
-  MMap.fusionLimit H F (H.fusionStable_of_steps F hstep)
-
-@[simp] theorem fusionOfSteps_apply
-    (H : SMTree S) (F : Nat → MMap H)
-    (hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1)))
-    (a : T) :
-    H.fusionOfSteps F hstep a =
-      F (LevelTree.lev a) a := rfl
-
-theorem fusionOfSteps_eq_stage
-    (H : SMTree S) (F : Nat → MMap H)
-    (hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1)))
-    {i : Nat} {a : T} (ha : LevelTree.lev a ≤ i) :
-    H.fusionOfSteps F hstep a = F i a := by
-  exact MMap.fusionLimit_eq_stage H F
-    (H.fusionStable_of_steps F hstep) ha
 
 end SMTree
 end SuccessorTree
