@@ -80,7 +80,6 @@ equivalence rather than remain an interface observation.
 ## Verification status
 
 The mathematical implication and all quantifier boundaries above have been
-checked in two deliberately separate adversarial proof passes.  The branch intentionally uses
-`[skip ci]` because project runners are unavailable.  Do not mark the
-circulation theorem as machine-checked until this new file has been compiled
+checked in two deliberately separate adversarial proof passes.  CI is enabled for PR #20.  The circulation theorem should be marked as
+machine-checked only after the GitHub Lean workflow has compiled this file
 against the pinned Lean/mathlib toolchain.
