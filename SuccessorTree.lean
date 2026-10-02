@@ -1,3 +1,4 @@
+import SuccessorTree.Canonical
 import SuccessorTree.Replay
 import SuccessorTree.Approximation
 import SuccessorTree.ShapePreserving
@@ -33,3 +34,4 @@ import SuccessorTree.NonPrecompact.BilinearResidue
 import SuccessorTree.NonPrecompact.ColouringWrappers
 import SuccessorTree.RamseySpace.Basic
 import SuccessorTree.RamseySpace.Finitization
+import SuccessorTree.RamseySpace.Amalgamation
