@@ -52,3 +52,4 @@ import SuccessorTree.ShapeBlockLine
 import SuccessorTree.ShapeSplit
 import SuccessorTree.ShapeTransport
 import SuccessorTree.ShapeTransportAlphabet
+import SuccessorTree.ShapeWordFactor
