@@ -56,6 +56,44 @@ namespace BananaMatrixStructure
 
 variable {l r : ℕ} (A : BananaMatrixStructure l r)
 
+/-- The palette of residues whose parity is the fixed source pairing `b`. -/
+def residueParityPalette (k : ℕ) (b : F2) :
+    Finset (ZMod (2 ^ (k + 1))) :=
+  Finset.univ.filter (fun z => residueParityHom k z = b)
+
+/-- Reduction modulo two is onto. -/
+theorem residueParityHom_surjective (k : ℕ) :
+    Function.Surjective (residueParityHom k) := by
+  intro b
+  refine ⟨(b.val : ZMod (2 ^ (k + 1))), ?_⟩
+  simp [residueParityHom]
+
+/-- Exactly half of the residues modulo `2^(k+1)` have either prescribed
+parity.  Thus the manuscript's fixed-`b` palette has `2^k=q/2`
+colours. -/
+theorem residueParityPalette_card (k : ℕ) (b : F2) :
+    (residueParityPalette k b).card = 2 ^ k := by
+  classical
+  let h := residueParityHom k
+  have hsurj : Function.Surjective h :=
+    residueParityHom_surjective k
+  have hsame :
+      ∀ c : F2,
+        (Finset.univ.filter (fun z : ZMod (2 ^ (k + 1)) => h z = c)).card =
+          (Finset.univ.filter (fun z : ZMod (2 ^ (k + 1)) => h z = b)).card := by
+    intro c
+    exact AddMonoidHom.card_fiber_eq_of_mem_range h.toAddMonoidHom
+      ⟨(hsurj c), rfl⟩ ⟨(hsurj b), rfl⟩
+  have htotal :=
+    Finset.card_eq_sum_card_fiberwise
+      (s := Finset.univ : Finset (ZMod (2 ^ (k + 1))))
+      (t := Finset.univ : Finset F2)
+      (f := h)
+      (by intro z hz; simp)
+  simp_rw [hsame] at htotal
+  simp [residueParityPalette, h, ZMod.card, pow_succ] at htotal ⊢
+  omega
+
 /-- The fixed ordinary support-intersection count obtained from the explicit
 perfect completion of the ambient BANANA structure. -/
 noncomputable def completionIntersectionCount
