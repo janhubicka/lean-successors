@@ -143,7 +143,11 @@ theorem exists_lower_gap_once
               (LevelTree.lev (F a) - 1) hF2skip _
       rw [hcomp] at hlev
       split at hlev <;> omega
-    rw [hFa1, htarget, hFa]
+    calc
+      H.levelMap F'.map (m + 1) =
+          LevelTree.lev (F1 a) := hFa1.symm
+      _ = LevelTree.lev (F a) - 1 := htarget
+      _ = H.levelMap F.map (m + 1) - 1 := by rw [hFa]
 
 
 /-- Repeatedly apply the one-step M2 operation until the gap after level m
