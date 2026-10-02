@@ -73,6 +73,37 @@ theorem edge_iff (x : Fin l → F2) (y : Fin r → F2) :
   unfold BananaMatrixStructure.edge
   rw [f.pairing_apply x y]
 
+/-- Composition of BANANA embeddings. -/
+def comp
+    {l'' r'' : ℕ}
+    {C : BananaMatrixStructure l'' r''}
+    (g : BananaMatrixEmbedding B C)
+    (f : BananaMatrixEmbedding A B) :
+    BananaMatrixEmbedding A C where
+  left := g.left.comp f.left
+  right := g.right.comp f.right
+  left_injective := g.left_injective.comp f.left_injective
+  right_injective := g.right_injective.comp f.right_injective
+  pairing_apply := by
+    intro x y
+    exact (g.pairing_apply (f.left x) (f.right y)).trans
+      (f.pairing_apply x y)
+
+/-- A BANANA embedding between standard perfect pairings is exactly a
+`PerfectPairEmbedding`. -/
+def toPerfectPairEmbedding
+    {d n : ℕ}
+    (f :
+      BananaMatrixEmbedding (perfectBanana d) (perfectBanana n)) :
+    PerfectPairEmbedding d n where
+  left := f.left
+  right := f.right
+  left_injective := f.left_injective
+  right_injective := f.right_injective
+  pairing_apply := by
+    intro x y
+    simpa only [perfectBanana_eval] using f.pairing_apply x y
+
 end BananaMatrixEmbedding
 
 /-- The standard perfect pairing `B_d`. -/
