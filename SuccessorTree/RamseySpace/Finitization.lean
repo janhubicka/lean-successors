@@ -499,6 +499,123 @@ def ramseyFinitization (H : SMTree S) :
   prefix_leFin := by
     intro n m k a b c hab hbc
     exact H.ramseyLeFin_prefix hab hbc
+/-- At one fixed nonempty source level, a fixed upper approximation has only
+finitely many finitary predecessors. -/
+theorem ramseyLeFin_fixedLevel_finite
+    (H : SMTree S) {m : Nat} (b : RamseyApprox H (m + 1))
+    (n : Nat) :
+    Set.Finite
+      {a : RamseyApprox H (n + 1) |
+        RamseyLeFin H ⟨n + 1, a⟩ ⟨m + 1, b⟩} := by
+  letI : Fintype (InitialNode T n) := initialNodeFintype T n
+  letI : Fintype (InitialNode T m) := initialNodeFintype T m
+  have hrange : (Set.range b.1).Finite := Set.finite_range b.1
+  have hfuns :
+      Set.Finite
+        {g : RestrictedMap T n | ∀ x, g x ∈ Set.range b.1} :=
+    Set.Finite.pi' (fun _ => hrange)
+  have hinj :
+      Function.Injective
+        (fun a : RamseyApprox H (n + 1) => a.1) :=
+    Subtype.val_injective
+  have hpre :
+      Set.Finite
+        ((fun a : RamseyApprox H (n + 1) => a.1) ⁻¹'
+          {g : RestrictedMap T n | ∀ x, g x ∈ Set.range b.1}) :=
+    hfuns.preimage hinj.injOn
+  refine hpre.subset ?_
+  intro a ha
+  change ∀ x, a.1 x ∈ Set.range b.1
+  intro x
+  change Nonempty (RamseyFiniteFactor H a b) at ha
+  rcases ha with ⟨fac⟩
+  let y : InitialNode T m := ⟨fac.map x.1, fac.bound x⟩
+  exact ⟨y, (fac.agrees x).symm⟩
+
+/-- A.2(2): the lower cone of every finite approximation is finite. -/
+theorem ramseyLeFin_lowerFinite
+    (H : SMTree S)
+    (b : (ramseyApproximationSystem H).FiniteApprox) :
+    Set.Finite {a | RamseyLeFin H a b} := by
+  rcases b with ⟨nb, b⟩
+  cases nb with
+  | zero =>
+      let z :
+          (ramseyApproximationSystem H).FiniteApprox :=
+        ⟨0, PUnit.unit⟩
+      have hsub :
+          {a : (ramseyApproximationSystem H).FiniteApprox |
+              RamseyLeFin H a ⟨0, b⟩} ⊆ {z} := by
+        intro a ha
+        rcases a with ⟨na, a⟩
+        cases na with
+        | zero =>
+            have ha0 : a = PUnit.unit := Subsingleton.elim _ _
+            subst a
+            exact Set.mem_singleton z
+        | succ na =>
+            change False at ha
+            contradiction
+      exact (Set.finite_singleton z).subset hsub
+  | succ m =>
+      let z :
+          (ramseyApproximationSystem H).FiniteApprox :=
+        ⟨0, PUnit.unit⟩
+      let lowerAt (n : Nat) :
+          Set (ramseyApproximationSystem H).FiniteApprox :=
+        (fun a : RamseyApprox H (n + 1) =>
+            (⟨n + 1, a⟩ :
+              (ramseyApproximationSystem H).FiniteApprox)) ''
+          {a | RamseyLeFin H ⟨n + 1, a⟩ ⟨m + 1, b⟩}
+      have hlowerAt : ∀ n, (lowerAt n).Finite := by
+        intro n
+        exact
+          (H.ramseyLeFin_fixedLevel_finite b n).image
+            (fun a : RamseyApprox H (n + 1) =>
+              (⟨n + 1, a⟩ :
+                (ramseyApproximationSystem H).FiniteApprox))
+      have hlevels : (Set.Iic m).Finite := Set.finite_Iic m
+      have hunion :
+          (⋃ n ∈ Set.Iic m, lowerAt n).Finite :=
+        hlevels.biUnion (fun n _ => hlowerAt n)
+      have hbound :
+          ({z} ∪ ⋃ n ∈ Set.Iic m, lowerAt n).Finite :=
+        (Set.finite_singleton z).union hunion
+      refine hbound.subset ?_
+      intro a ha
+      rcases a with ⟨na, a⟩
+      cases na with
+      | zero =>
+          left
+          have ha0 : a = PUnit.unit := Subsingleton.elim _ _
+          subst a
+          exact Set.mem_singleton z
+      | succ n =>
+          right
+          have hlevel :
+              n + 1 ≤ m + 1 :=
+            H.ramseyLeFin_level_le ha
+          have hnm : n ≤ m := by omega
+          refine Set.mem_iUnion.2 ⟨n, ?_⟩
+          refine Set.mem_iUnion.2 ⟨hnm, ?_⟩
+          exact ⟨a, ha, rfl⟩
+
+/-- The complete Todorčević A.2 finitization for successor-tree M-maps. -/
+def ramseyFinitization (H : SMTree S) :
+    RamseySpace.Finitization (ramseyApproximationSystem H) where
+  leFin := RamseyLeFin H
+  leFin_refl := H.ramseyLeFin_refl
+  leFin_trans := by
+    intro a b c hab hbc
+    exact H.ramseyLeFin_trans hab hbc
+  lowerFinite := H.ramseyLeFin_lowerFinite
+  realizesOrder := by
+    intro F G
+    exact H.ramseyReduction_iff_ramseyLeFin F G
+  prefix_leFin := by
+    intro n m k a b c hab hbc
+    exact H.ramseyLeFin_prefix hab hbc
+
 
 end SMTree
 end SuccessorTree
