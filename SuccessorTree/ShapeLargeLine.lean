@@ -53,17 +53,7 @@ def OneStepBridgeValid
   ∃ K : MMap H,
     ramseyApprox H (n + 1) (MMap.comp H A K) = a ∧
     H.levelMap K.map (n + 1) = q ∧
-    ∀ x : InitialNode T (n + 1), c x = ⟨K x.1, by
-      calc
-        LevelTree.lev (K x.1) =
-            H.levelMap K.map (LevelTree.lev x.1) :=
-          (H.levelMap_eq K.map (a := x.1)).symm
-        _ ≤ H.levelMap K.map (n + 1) :=
-          (H.levelMap_strictMono K.map).monotone x.2
-        _ = q := by
-          exact Classical.choose_spec
-            (show ∃ z, H.levelMap K.map (n + 1) = z from
-              ⟨_, rfl⟩)⟩
+    ∀ x : InitialNode T (n + 1), (c x).1 = K x.1
 
 /-
 The proof field in the preceding subtype value is irrelevant by proof
@@ -121,16 +111,8 @@ theorem OneStepBridge.code_eq
     {A : MMap H}
     (c : OneStepBridge H a A)
     (x : InitialNode T (n + 1)) :
-    c.1 x =
-      ⟨c.toMMap H x.1, by
-        calc
-          LevelTree.lev (c.toMMap H x.1) =
-              H.levelMap (c.toMMap H).map (LevelTree.lev x.1) :=
-            (H.levelMap_eq (c.toMMap H).map (a := x.1)).symm
-          _ ≤ H.levelMap (c.toMMap H).map (n + 1) :=
-            (H.levelMap_strictMono (c.toMMap H).map).monotone x.2
-          _ = q := c.topLevel H⟩ := by
-  exact (Classical.choose_spec c.2).2.2 x
+    (c.1 x).1 = c.toMMap H x.1 :=
+  (Classical.choose_spec c.2).2.2 x
 
 /-- Bundle an actual bridge map into its finite-code type. -/
 noncomputable def oneStepBridgeOfMap
@@ -147,7 +129,6 @@ noncomputable def oneStepBridgeOfMap
   refine ⟨c, ?_⟩
   refine ⟨K, hprefix, htop, ?_⟩
   intro x
-  apply Subtype.ext
   rfl
 
 /-- The chosen representative of the code of K agrees with K throughout the
@@ -167,9 +148,7 @@ theorem oneStepBridgeOfMap_agrees
   have hchosen :=
     OneStepBridge.code_eq H (H.oneStepBridgeOfMap K hprefix htop) xx
   change
-    (H.oneStepBridgeCodeOf K n q htop xx).1 =
-      (H.oneStepBridgeOfMap K hprefix htop).toMMap H x at hchosen
-  change K x =
+    K x =
       (H.oneStepBridgeOfMap K hprefix htop).toMMap H x at hchosen
   exact hchosen.symm
 
