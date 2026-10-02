@@ -80,7 +80,7 @@ equivalence rather than remain an interface observation.
 ## Verification status
 
 The mathematical implication and all quantifier boundaries above have been
-checked twice independently as proof reviews.  The branch intentionally uses
+checked in two deliberately separate adversarial proof passes.  The branch intentionally uses
 `[skip ci]` because project runners are unavailable.  Do not mark the
 circulation theorem as machine-checked until this new file has been compiled
 against the pinned Lean/mathlib toolchain.
