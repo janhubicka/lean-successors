@@ -117,11 +117,10 @@ theorem exists_shapeSplit_factor
       have hmq : m ≤ q := by
         simpa [htop] using hcut.1
       by_cases heq : q = m
-      · subst q
-        refine ⟨F, MMap.id H, ?_, ?_, ?_, ?_⟩
+      · refine ⟨F, MMap.id H, ?_, ?_, ?_, ?_⟩
         · intro x hx
           rfl
-        · simpa [htop]
+        · exact htop.trans heq
         · exact MMap.id_fixesBelow H m
         · intro x hx
           rfl
@@ -138,9 +137,11 @@ theorem exists_shapeSplit_factor
               rw [hG0, htop]
               omega
             obtain ⟨P, Q, hPagree, hPtop, hQfix, hQP⟩ :=
-              ih (H.levelMap G.map 0) hGlt G rfl hcutG
+              ih (H.levelMap G.map 0) hGlt G hcutG
             let R : MMap H := MMap.comp H D Q
-            refine ⟨P, R, hPagree, hPtop, ?_, ?_⟩
+            refine ⟨P, R, ?_, hPtop, ?_, ?_⟩
+            · intro x hx
+              omega
             · intro x hx
               have hQx : Q x = x := hQfix x hx
               have hDcut : m ≤ H.levelMap F.map 0 - 1 := by
@@ -184,11 +185,11 @@ theorem exists_shapeSplit_factor
                 omega
               · simpa [hGj] using hlowF
             obtain ⟨P, Q, hPagree, hPtop, hQfix, hQP⟩ :=
-              ih (H.levelMap G.map (j + 1)) hGlt G rfl hcutG
+              ih (H.levelMap G.map (j + 1)) hGlt G hcutG
             let R : MMap H := MMap.comp H D Q
             refine ⟨P, R, ?_, hPtop, ?_, ?_⟩
             · intro x hx
-              exact (hPagree x hx).trans (hGagree x (Nat.le_of_lt hx))
+              exact (hPagree x hx).trans (hGagree x (by omega))
             · intro x hx
               have hQx : Q x = x := hQfix x hx
               have hDcut :
