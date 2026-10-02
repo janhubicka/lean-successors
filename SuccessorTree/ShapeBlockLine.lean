@@ -85,14 +85,8 @@ theorem AM.hasDepth_id
   · intro e he hfin
     cases e with
     | zero =>
-        have hfin' :
-            RamseyLeFin H
-              (⟨n + k + 1, h.1⟩ :
-                (ramseyApproximationSystem H).FiniteApprox)
-              ((ramseyApproximationSystem H).finiteApprox 0 (MMap.id H)) := by
-          simpa [ramseyFinitization] using hfin
-        have hle := ramseyLeFin_level_le H hfin'
-        omega
+        change False at hfin
+        exact hfin.elim
     | succ t =>
         change Nonempty
           (RamseyFiniteFactor H h.1
@@ -175,7 +169,7 @@ theorem blockReplayExtension_extends
   change X.restrictLe H (n + k) = h.1.1 at hold
   change X.restrictLe H (n + k + 1) = b.1 at hnew
   calc
-    h.1.1 y = X y.1 := (congrFun hold y).symm
+    h.1.1 y = (show MMap H from X) y.1 := (congrFun hold y).symm
     _ = b.1 ⟨y.1, y.2.trans (Nat.le_succ (n + k))⟩ := by
       exact congrFun hnew
         ⟨y.1, y.2.trans (Nat.le_succ (n + k))⟩
@@ -228,23 +222,24 @@ theorem replayLine_of_maximal_avoidingBlock
   have hbext : BlockExtends H h hb :=
     H.blockReplayExtension_extends h R LineInput.base
   have hbnot : ¬ BlockAvoids H A hb := hmax hb hbext
-  have hexg :
-      ∃ g : AMBelow H n (n + k + 2),
-        H.blockEval hb g.1 ∈ A := by
-    simpa only [BlockAvoids, not_forall, not_not] using hbnot
-  obtain ⟨g, hgA⟩ := hexg
+  unfold BlockAvoids at hbnot
+  obtain ⟨g, hg⟩ := Classical.not_forall.mp hbnot
+  have hgA : H.blockEval hb g.1 ∈ A :=
+    Classical.not_not.mp hg
   refine ⟨R, g, ?_⟩
   intro x
   have hxvalid :
       (ramseyApproximationSystem H).IsInitial
+        (n := n) (m := n + k + 2)
         (ramseyApprox H n (MMap.id H))
-        (H.prefixReplayApply hd R x) :=
-    (H.blockReplayExtension h R x).2
+        (H.prefixReplayApply hd R x) := by
+    simpa [Nat.add_assoc] using (H.blockReplayExtension h R x).2
   have hbvalid :
       (ramseyApproximationSystem H).IsInitial
+        (n := n) (m := n + k + 2)
         (ramseyApprox H n (MMap.id H))
-        (H.prefixReplayApply hd R LineInput.base) :=
-    hb.2
+        (H.prefixReplayApply hd R LineInput.base) := by
+    simpa [Nat.add_assoc] using hb.2
   have hbase :
       colour (H.prefixReplayApply hd R LineInput.base) g = true := by
     simp only [colour, blockReplayColour, hbvalid, dite_true]
