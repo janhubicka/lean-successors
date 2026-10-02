@@ -137,7 +137,7 @@ theorem exists_shapeSplit_factor
               rw [hG0, htop]
               omega
             obtain ⟨P, Q, hPagree, hPtop, hQfix, hQP⟩ :=
-              ih (H.levelMap G.map 0) hGlt G hcutG
+              ih (H.levelMap G.map 0) hGlt G hcutG rfl
             let R : MMap H := MMap.comp H D Q
             refine ⟨P, R, ?_, hPtop, ?_, ?_⟩
             · intro x hx
@@ -185,7 +185,7 @@ theorem exists_shapeSplit_factor
                 omega
               · simpa [hGj] using hlowF
             obtain ⟨P, Q, hPagree, hPtop, hQfix, hQP⟩ :=
-              ih (H.levelMap G.map (j + 1)) hGlt G hcutG
+              ih (H.levelMap G.map (j + 1)) hGlt G hcutG rfl
             let R : MMap H := MMap.comp H D Q
             refine ⟨P, R, ?_, hPtop, ?_, ?_⟩
             · intro x hx
