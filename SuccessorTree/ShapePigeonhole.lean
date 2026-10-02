@@ -118,7 +118,7 @@ theorem ramseyFiniteFactor_topLevel_of_depth
     {n d : Nat}
     {a : RamseyApprox H (n + 1)}
     {B : MMap H}
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1))
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1))
     (fac : RamseyFiniteFactor H a (ramseyApprox H (d + 1) B)) :
     H.levelMap fac.map.map n = d := by
   obtain ⟨x, hx⟩ := H.level_nonempty n
