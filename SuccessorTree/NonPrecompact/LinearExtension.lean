@@ -122,8 +122,8 @@ theorem exists_linearEquiv_extends_of_surjective
   have hKdim : finrank F2 K = finrank F2 K' := by
     have hqdim := q.finrank_range_add_finrank_ker
     have hq'dim := q'.finrank_range_add_finrank_ker
-    rw [LinearMap.range_eq_top.mpr hq, Submodule.finrank_top] at hqdim
-    rw [LinearMap.range_eq_top.mpr hq', Submodule.finrank_top] at hq'dim
+    rw [LinearMap.range_eq_top.mpr hq, finrank_top] at hqdim
+    rw [LinearMap.range_eq_top.mpr hq', finrank_top] at hq'dim
     omega
 
   obtain ⟨T, hT⟩ :=
