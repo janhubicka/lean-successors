@@ -31,7 +31,7 @@ def BlockExtends
     (h : AM H n (k + 1)) (h' : AM H n (k + 2)) : Prop :=
   ∀ x : InitialNode T (n + k),
     h.1.1 x =
-      h'.1.1 ⟨x.1, x.2.trans (by omega)⟩
+      h'.1.1 ⟨x.1, x.2.trans (Nat.le_succ (n + k))⟩
 
 /-- Representatives of two extending blocks agree throughout the shorter
 finite source segment. -/
@@ -160,10 +160,8 @@ theorem blockCanonicalExtension_extends
     (h.representative H).restrictLe H (n + k) = h.1.1 at hv
   have hx := congrFun hv x
   change
-    h.1.1 x =
-      (h.representative H).restrictLe H (n + k + 1)
-        ⟨x.1, x.2.trans (Nat.le_succ (n + k))⟩
-  simpa using hx.symm
+    h.1.1 x = h.representative H x.1
+  exact hx.symm
 
 /-- An avoiding block bundled with its dimension. -/
 structure AvoidingBlock
@@ -266,22 +264,22 @@ theorem avoidingFusionStage_stable
   intro i x hx
   by_cases hin : i < n
   · have hi0 : i - n = 0 := Nat.sub_eq_zero_of_le (Nat.le_of_lt hin)
-    have hisucc0 : (i + 1) - n = 0 := by
-      omega
-    simp only [avoidingFusionStage, hi0, hisucc0]
+    have hisucc0 : (i + 1) - n = 0 := by omega
+    unfold avoidingFusionStage
+    rw [hi0, hisucc0]
   · have hni : n ≤ i := Nat.le_of_not_gt hin
     let k := i - n
     have hik : i = n + k := by
       dsimp [k]
       omega
+    have hiIndex : i - n = k := rfl
     have hisucc : (i + 1) - n = k + 1 := by
       dsimp [k]
       omega
     have hext :=
       H.avoidingBlockSeq_extends A X0 extendable k
-    change
-      (H.avoidingBlockSeq A X0 extendable k).word.representative H x =
-        (H.avoidingBlockSeq A X0 extendable (k + 1)).word.representative H x
+    unfold avoidingFusionStage
+    rw [hiIndex, hisucc]
     apply H.blockExtends_representative_agrees hext
     rw [← hik]
     exact hx
@@ -322,7 +320,8 @@ theorem avoidingFusionLimit_fixesBelow
   change
     H.avoidingFusionStage A X0 extendable (LevelTree.lev x) x = x
   have hi0 : LevelTree.lev x - n = 0 := by omega
-  simp only [avoidingFusionStage, hi0]
+  unfold avoidingFusionStage
+  rw [hi0]
   exact
     (H.avoidingBlockSeq A X0 extendable 0).word.representative_fixesBelow
       H x hx
@@ -352,7 +351,8 @@ theorem avoidingFusionLimit_agrees_block
         stages (n + k) x :=
       ShapeMap.fusionLimit_eq_stage stages hstable hx
     _ = (H.avoidingBlockSeq A X0 extendable k).word.representative H x := by
-      simp [stages, avoidingFusionStage]
+      have hidx : n + k - n = k := by omega
+      simp [stages, avoidingFusionStage, hidx]
 
 /-- If every avoiding block extended, the fusion limit would avoid A on every
 one-level word. -/
