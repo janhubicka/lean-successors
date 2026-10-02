@@ -45,3 +45,4 @@ import SuccessorTree.ShapeLargeFusion
 import SuccessorTree.ShapeExactFactor
 import SuccessorTree.ShapeLargeLine
 import SuccessorTree.ShapeAction
+import SuccessorTree.ShapeBlockForcing
