@@ -29,7 +29,7 @@ noncomputable def prefixCanonical
     {n d : Nat}
     {a : RamseyApprox H (n + 1)}
     {B : MMap H}
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1)) :
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1)) :
     MMap H := by
   let fac : RamseyFiniteFactor H a (ramseyApprox H (d + 1) B) :=
     Classical.choice hd.1
@@ -41,7 +41,7 @@ theorem prefixCanonical_level
     {n d : Nat}
     {a : RamseyApprox H (n + 1)}
     {B : MMap H}
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1)) :
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1)) :
     H.levelMap (H.prefixCanonical hd).map n = d := by
   let fac : RamseyFiniteFactor H a (ramseyApprox H (d + 1) B) :=
     Classical.choice hd.1
@@ -57,7 +57,7 @@ theorem prefixCanonical_level_succ
     {n d : Nat}
     {a : RamseyApprox H (n + 1)}
     {B : MMap H}
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1)) :
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1)) :
     H.levelMap (H.prefixCanonical hd).map (n + 1) = d + 1 := by
   rw [H.canonicalExtension_level_succ]
   · rw [H.prefixCanonical_level hd]
@@ -70,7 +70,7 @@ theorem prefixCanonical_bound_succ
     {n d : Nat}
     {a : RamseyApprox H (n + 1)}
     {B : MMap H}
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1))
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1))
     (x : T) (hx : LevelTree.lev x ≤ n + 1) :
     LevelTree.lev (H.prefixCanonical hd x) ≤ d + 1 := by
   calc
@@ -88,7 +88,7 @@ theorem prefixCanonical_bound_prefix
     {n d : Nat}
     {a : RamseyApprox H (n + 1)}
     {B : MMap H}
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1))
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1))
     (x : T) (hx : LevelTree.lev x ≤ n) :
     LevelTree.lev (H.prefixCanonical hd x) < d + 1 := by
   calc
@@ -126,7 +126,7 @@ noncomputable def prefixWordApprox
     {n d : Nat}
     {a : RamseyApprox H (n + 1)}
     {B : MMap H}
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1))
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1))
     (w : List (OneLevelLetter H (d + 1))) :
     RamseyApprox H (n + 2) :=
   ramseyApprox H (n + 2)
@@ -140,7 +140,7 @@ noncomputable def prefixReplayApply
     {n d : Nat}
     {a : RamseyApprox H (n + 1)}
     {B : MMap H}
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1))
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1))
     (R : ReplayBlock H (d + 1))
     (x : LineInput (OneLevelLetter H (d + 1))) :
     RamseyApprox H (n + 2) :=
@@ -156,7 +156,7 @@ noncomputable def prefixReplaySystem
     {n d : Nat}
     {a : RamseyApprox H (n + 1)}
     {B : MMap H}
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1)) :
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1)) :
     ReplaySystem
       (OneLevelLetter H (d + 1))
       (RamseyApprox H (n + 2))
@@ -217,7 +217,7 @@ theorem prefixCanonical_realizes
     {n d : Nat}
     {a : RamseyApprox H (n + 1)}
     {B : MMap H}
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1)) :
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1)) :
     ramseyApprox H (n + 1)
       (MMap.comp H B (H.prefixCanonical hd)) = a := by
   let fac : RamseyFiniteFactor H a (ramseyApprox H (d + 1) B) :=
@@ -239,7 +239,7 @@ theorem prefixReplayApply_mem_oneStep
     {n d : Nat}
     {a : RamseyApprox H (n + 1)}
     {B : MMap H}
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1))
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1))
     (R : ReplayBlock H (d + 1))
     (x : LineInput (OneLevelLetter H (d + 1))) :
     H.prefixReplayApply hd R x ∈
@@ -281,7 +281,7 @@ theorem prefixLinePigeonhole
     {n d : Nat}
     (a : RamseyApprox H (n + 1))
     (B : MMap H)
-    (hd : (ramseyFinitization H).HasDepth a B (d + 1))
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1))
     (colour : RamseyApprox H (n + 2) → κ) :
     ∃ R : ReplayBlock H (d + 1),
       H.prefixReplayRefinement B R ∈
