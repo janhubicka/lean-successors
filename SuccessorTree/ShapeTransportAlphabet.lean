@@ -31,6 +31,7 @@ theorem canonicalExtension_skipsOnly_of_oneStep
     (hfix : F.FixesBelow H m)
     (htop : H.levelMap F.map m = m + 1) :
     (H.canonicalExtension F m).map.SkipsOnly m := by
+  unfold ShapeMap.SkipsOnly
   rw [← H.range_levelMap (H.canonicalExtension F m).map]
   ext q
   constructor
@@ -99,10 +100,16 @@ theorem transportedMap_spec
   have hs : e.toMMap.FixesBelow H n := by
     intro x hx
     exact e.eq_id_below H hx
-  have h :=
-    Classical.choose_spec
-      (H.exists_transport_across_canonical K e.toMMap n hs)
-  simpa [OneLevelLetter.level_apply] using h
+  rcases Classical.choose_spec
+      (H.exists_transport_across_canonical K e.toMMap n hs) with
+    ⟨hfix, hlev, hcomm⟩
+  refine ⟨hfix, ?_, hcomm⟩
+  have he :
+      H.levelMap e.toMMap.map n = n + 1 := by
+    rw [H.levelMap_of_skipsOnly e.toMMap.map n e.skips]
+    simp
+  rw [he] at hlev
+  simpa using hlev
 
 /-- Transport a source-cut letter to a genuine one-level letter at the
 terminal target cut of K. -/
