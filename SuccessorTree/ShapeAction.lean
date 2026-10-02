@@ -324,6 +324,11 @@ theorem amBelowCode_injective
 noncomputable instance amBelowFintype
     (H : SMTree S) (n m : Nat) :
     Fintype (AMBelow H n m) := by
+  classical
+  letI : Fintype (InitialNode T n) := initialNodeFintype T n
+  letI : Fintype (BelowNode T m) := belowNodeFintype T m
+  letI : DecidableEq (InitialNode T n) := Classical.decEq _
+  letI : Fintype (InitialNode T n → BelowNode T m) := inferInstance
   exact Fintype.ofInjective
     (H.amBelowCode n m)
     (H.amBelowCode_injective n m)
