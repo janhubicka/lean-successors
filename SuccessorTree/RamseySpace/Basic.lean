@@ -75,7 +75,8 @@ def ramseyApproximationSystem (H : SMTree S) :
     intro n q
     cases n with
     | zero =>
-        exact ⟨MMap.id H, Subsingleton.elim _ _⟩
+        cases q
+        exact ⟨MMap.id H, rfl⟩
     | succ n =>
         rcases q.2 with ⟨F, hF⟩
         refine ⟨F, ?_⟩
