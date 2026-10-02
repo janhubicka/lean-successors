@@ -48,4 +48,211 @@ theorem exists_linearEquiv_extends_submoduleEquiv
 
 end AmbientExtension
 
+section QuotientExtension
+
+variable {V W : Type*}
+variable [AddCommGroup V] [Module F2 V] [FiniteDimensional F2 V]
+variable [AddCommGroup W] [Module F2 W] [FiniteDimensional F2 W]
+
+/-- Manuscript Lemma `extendlinearmap`, in a slightly more general form.
+
+Two surjections from the same finite-dimensional vector space to a common
+quotient are intertwined by a global automorphism whenever a prescribed
+partial linear equivalence already intertwines them on its domain. -/
+theorem exists_linearEquiv_extends_of_surjective
+    (q q' : V →ₗ[F2] W)
+    (hq : Function.Surjective q)
+    (hq' : Function.Surjective q')
+    {A A' : Submodule F2 V}
+    (f : A ≃ₗ[F2] A')
+    (hf : ∀ x : A, q' (f x) = q x) :
+    ∃ h : V ≃ₗ[F2] V,
+      (∀ x : A, h x = f x) ∧
+      q'.comp h.toLinearMap = q := by
+  let qA : A →ₗ[F2] W := q.comp A.subtype
+  let qA' : A' →ₗ[F2] W := q'.comp A'.subtype
+  have hfA (x : A) : qA' (f x) = qA x := by
+    simpa [qA, qA'] using hf x
+
+  have hkerMap :
+      Submodule.map f.toLinearMap qA.ker = qA'.ker := by
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      rw [LinearMap.mem_ker]
+      rw [hfA x]
+      simpa only [LinearMap.mem_ker] using hx
+    · intro hy
+      refine ⟨f.symm y, ?_, ?_⟩
+      · rw [LinearMap.mem_ker]
+        rw [← hfA (f.symm y), f.apply_symm_apply]
+        simpa only [LinearMap.mem_ker] using hy
+      · simp
+
+  let fKer : qA.ker ≃ₗ[F2] qA'.ker :=
+    LinearEquiv.ofSubmodules f qA.ker qA'.ker hkerMap
+
+  let K := q.ker
+  let K' := q'.ker
+  let i : qA.ker →ₗ[F2] K :=
+    (A.subtype.comp qA.ker.subtype).codRestrict K (fun x => by
+      change q x.1.1 = 0
+      simpa [qA, LinearMap.mem_ker] using x.2)
+  let i' : qA'.ker →ₗ[F2] K' :=
+    (A'.subtype.comp qA'.ker.subtype).codRestrict K' (fun x => by
+      change q' x.1.1 = 0
+      simpa [qA', LinearMap.mem_ker] using x.2)
+  have hi : Function.Injective i := by
+    intro x y hxy
+    apply Subtype.ext
+    apply Subtype.ext
+    exact congrArg Subtype.val hxy
+  have hi' : Function.Injective i' := by
+    intro x y hxy
+    apply Subtype.ext
+    apply Subtype.ext
+    exact congrArg Subtype.val hxy
+
+  let I := LinearMap.range i
+  let I' := LinearMap.range i'
+  let ei : qA.ker ≃ₗ[F2] I := LinearEquiv.ofInjective i hi
+  let ei' : qA'.ker ≃ₗ[F2] I' := LinearEquiv.ofInjective i' hi'
+  let fI : I ≃ₗ[F2] I' := ei.symm ≪≫ₗ fKer ≪≫ₗ ei'
+
+  have hKdim : finrank F2 K = finrank F2 K' := by
+    have hqdim := q.finrank_range_add_finrank_ker
+    have hq'dim := q'.finrank_range_add_finrank_ker
+    rw [LinearMap.range_eq_top.mpr hq, Submodule.finrank_top] at hqdim
+    rw [LinearMap.range_eq_top.mpr hq', Submodule.finrank_top] at hq'dim
+    omega
+
+  obtain ⟨T, hT⟩ :=
+    exists_linearEquiv_extends_submoduleEquiv fI hKdim
+
+  have hTker (x : qA.ker) : T (i x) = i' (fKer x) := by
+    let z : I := ⟨i x, ⟨x, rfl⟩⟩
+    have hz := hT z
+    simpa [z, fI, ei, ei'] using hz
+
+  obtain ⟨s, hs⟩ :=
+    q.exists_rightInverse_of_surjective (LinearMap.range_eq_top.mpr hq)
+  obtain ⟨s', hs'⟩ :=
+    q'.exists_rightInverse_of_surjective (LinearMap.range_eq_top.mpr hq')
+  have hs_apply (y : W) : q (s y) = y := by
+    exact LinearMap.congr_fun hs y
+  have hs'_apply (y : W) : q' (s' y) = y := by
+    exact LinearMap.congr_fun hs' y
+
+  let pV : V →ₗ[F2] V := LinearMap.id - s.comp q
+  have hp_mem (x : V) : pV x ∈ K := by
+    change q (pV x) = 0
+    simp [pV, hs_apply]
+  let p : V →ₗ[F2] K := pV.codRestrict K hp_mem
+
+  let pV' : V →ₗ[F2] V := LinearMap.id - s'.comp q'
+  have hp'_mem (x : V) : pV' x ∈ K' := by
+    change q' (pV' x) = 0
+    simp [pV', hs'_apply]
+  let p' : V →ₗ[F2] K' := pV'.codRestrict K' hp'_mem
+
+  let leftCoord : A →ₗ[F2] K := p.comp A.subtype
+  let rightCoord : A →ₗ[F2] K' :=
+    p'.comp (A'.subtype.comp f.toLinearMap)
+  let delta : A →ₗ[F2] K' :=
+    rightCoord - T.toLinearMap.comp leftCoord
+
+  have hdeltaKer : qA.ker ≤ delta.ker := by
+    intro x hx
+    rw [LinearMap.mem_ker]
+    let xKer : qA.ker := ⟨x, hx⟩
+    have hqx : qA x = 0 := by
+      simpa only [LinearMap.mem_ker] using hx
+    have hleft : leftCoord x = i xKer := by
+      apply Subtype.ext
+      simp [leftCoord, p, pV, i, qA, hqx]
+    have hright : rightCoord x = i' (fKer xKer) := by
+      apply Subtype.ext
+      have hqfx : q' (f x) = 0 := by
+        rw [hf x]
+        simpa [qA] using hqx
+      simp [rightCoord, p', pV', i', fKer, xKer, hqfx]
+    simp [delta, hleft, hright, hTker xKer]
+
+  let deltaQ : A ⧸ qA.ker →ₗ[F2] K' :=
+    qA.ker.liftQ delta hdeltaKer
+  let deltaRange : qA.range →ₗ[F2] K' :=
+    deltaQ.comp qA.quotKerEquivRange.symm.toLinearMap
+  obtain ⟨L, hL⟩ := LinearMap.exists_extend deltaRange
+
+  have hL_on (x : A) : L (qA x) = delta x := by
+    let y : qA.range := ⟨qA x, ⟨x, rfl⟩⟩
+    have hy := LinearMap.congr_fun hL y
+    calc
+      L (qA x) = deltaRange y := by
+        simpa [y] using hy
+      _ = delta x := by
+        simp [deltaRange, deltaQ, y]
+
+  let kernelPart : V →ₗ[F2] K' :=
+    T.toLinearMap.comp p + L.comp q
+  let hlin : V →ₗ[F2] V :=
+    K'.subtype.comp kernelPart + s'.comp q
+
+  have hq_hlin (x : V) : q' (hlin x) = q x := by
+    change
+      q' ((kernelPart x : K') : V) + q' (s' (q x)) = q x
+    rw [hs'_apply]
+    have hk : q' ((kernelPart x : K') : V) = 0 :=
+      (kernelPart x).2
+    rw [hk, zero_add]
+
+  have hlin_injective : Function.Injective hlin := by
+    intro x y hxy
+    let z := x - y
+    have hz : hlin z = 0 := by
+      change hlin (x - y) = 0
+      rw [map_sub, hxy, sub_self]
+    have hqz : q z = 0 := by
+      rw [← hq_hlin z, hz, map_zero]
+    have hkernel : kernelPart z = T (p z) := by
+      simp [kernelPart, hqz]
+    have hTz : T (p z) = 0 := by
+      apply K'.subtype_injective
+      have hh : (((kernelPart z : K') : V)) = 0 := by
+        have hz' := hz
+        change (((kernelPart z : K') : V)) + s' (q z) = 0 at hz'
+        simpa [hqz] using hz'
+      simpa [hkernel] using hh
+    have hpz : p z = 0 := T.injective (by simpa using hTz)
+    have hz0 : z = 0 := by
+      have hpz' := congrArg Subtype.val hpz
+      simpa [p, pV, z, hqz] using hpz'
+    exact sub_eq_zero.mp hz0
+
+  let h : V ≃ₗ[F2] V :=
+    LinearEquiv.ofInjectiveOfFinrankEq hlin hlin_injective rfl
+
+  have hext (x : A) : hlin x = f x := by
+    have hdelta : L (q x) = delta x := by
+      simpa [qA] using hL_on x
+    change
+      (((T (p x) + L (q x) : K') : V) + s' (q x)) = (f x : V)
+    rw [hdelta]
+    have hcoord :
+        T (p x) + delta x = rightCoord x := by
+      simp [delta, leftCoord]
+    rw [hcoord]
+    change (((p' (f x) : K') : V) + s' (q x)) = (f x : V)
+    change (f x : V) - s' (q' (f x)) + s' (q x) = (f x : V)
+    rw [hf x]
+    abel
+
+  refine ⟨h, ?_, ?_⟩
+  · intro x
+    simpa [h] using hext x
+  · ext x
+    simpa [h] using hq_hlin x
+
+end QuotientExtension
+
 end SuccessorTree.NonPrecompact
