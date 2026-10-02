@@ -77,74 +77,76 @@ theorem exists_lower_gap_once
     H.m2 (m + 1) F.map F.mem a ha hpos hskip
   let F' : MMap H := ⟨F1, hF1⟩
   refine ⟨F', ?_, ?_⟩
-  · constructor
-    · intro x hx
-      have hcomp : F2 (F1 x) = F x :=
-        hagree x (by omega)
-      have hFxLev :
-          LevelTree.lev (F x) ≤ H.levelMap F.map m := by
+  · intro x hx
+    have hcomp : F2 (F1 x) = F x :=
+      hagree x (Nat.le_trans hx (Nat.le_succ m))
+    have hFxLev :
+        LevelTree.lev (F x) ≤ H.levelMap F.map m := by
+      calc
+        LevelTree.lev (F x) =
+            H.levelMap F.map (LevelTree.lev x) :=
+          (H.levelMap_eq F.map (a := x)).symm
+        _ ≤ H.levelMap F.map m :=
+          (H.levelMap_strictMono F.map).monotone hx
+    have ht :
+        H.levelMap F.map m <
+          LevelTree.lev (F a) - 1 := by
+      rw [hFa]
+      omega
+    have hF1lt :
+        LevelTree.lev (F1 x) <
+          LevelTree.lev (F a) - 1 := by
+      by_contra hnot
+      have hge :
+          LevelTree.lev (F a) - 1 ≤ LevelTree.lev (F1 x) :=
+        Nat.le_of_not_gt hnot
+      have hlevF2 :
+          LevelTree.lev (F2 (F1 x)) =
+            LevelTree.lev (F1 x) + 1 := by
         calc
-          LevelTree.lev (F x) =
-              H.levelMap F.map (LevelTree.lev x) :=
-            (H.levelMap_eq F.map (a := x)).symm
-          _ ≤ H.levelMap F.map m :=
-            (H.levelMap_strictMono F.map).monotone hx
-      have ht :
-          H.levelMap F.map m <
-            LevelTree.lev (F a) - 1 := by
-        rw [hFa]
-        omega
-      have hF1lt :
-          LevelTree.lev (F1 x) <
-            LevelTree.lev (F a) - 1 := by
-        by_contra hnot
-        have hge :
-            LevelTree.lev (F a) - 1 ≤ LevelTree.lev (F1 x) := by
-          omega
-        have hlevF2 :
-            LevelTree.lev (F2 (F1 x)) =
-              LevelTree.lev (F1 x) + 1 := by
-          calc
-            LevelTree.lev (F2 (F1 x)) =
-                H.levelMap F2 (LevelTree.lev (F1 x)) :=
-              (H.levelMap_eq F2 (a := F1 x)).symm
-            _ = LevelTree.lev (F1 x) + 1 := by
-              rw [H.levelMap_of_skipsOnly F2
-                (LevelTree.lev (F a) - 1) hF2skip]
-              simp [Nat.not_lt.mpr hge]
-        rw [hcomp] at hlevF2
-        omega
-      have hfix :
-          F2 (F1 x) = F1 x :=
-        H.eq_id_below_skip F2
-          (LevelTree.lev (F a) - 1) hF2skip hF1lt
-      exact hfix.symm.trans hcomp
-    · have hcomp : F2 (F1 a) = F a :=
-        hagree a (by omega)
-      have hFa1 :
-          LevelTree.lev (F1 a) =
-            H.levelMap F'.map (m + 1) := by
-        have h := H.levelMap_eq F1 (a := a)
-        simpa [F', ha] using h.symm
-      have htarget :
-          LevelTree.lev (F1 a) =
-            LevelTree.lev (F a) - 1 := by
-        have hlev :
-            LevelTree.lev (F2 (F1 a)) =
-              if LevelTree.lev (F1 a) <
-                    LevelTree.lev (F a) - 1
-              then LevelTree.lev (F1 a)
-              else LevelTree.lev (F1 a) + 1 := by
-          calc
-            LevelTree.lev (F2 (F1 a)) =
-                H.levelMap F2 (LevelTree.lev (F1 a)) :=
-              (H.levelMap_eq F2 (a := F1 a)).symm
-            _ = _ :=
-              H.levelMap_of_skipsOnly F2
-                (LevelTree.lev (F a) - 1) hF2skip _
-        rw [hcomp] at hlev
-        split at hlev <;> omega
-      rw [hFa1, htarget, hFa]
+          LevelTree.lev (F2 (F1 x)) =
+              H.levelMap F2 (LevelTree.lev (F1 x)) :=
+            (H.levelMap_eq F2 (a := F1 x)).symm
+          _ = LevelTree.lev (F1 x) + 1 := by
+            rw [H.levelMap_of_skipsOnly F2
+              (LevelTree.lev (F a) - 1) hF2skip]
+            simp [Nat.not_lt.mpr hge]
+      rw [hcomp] at hlevF2
+      omega
+    have hfix :
+        F2 (F1 x) = F1 x :=
+      H.eq_id_below_skip F2
+        (LevelTree.lev (F a) - 1) hF2skip hF1lt
+    exact hfix.symm.trans hcomp
+  · have hcomp : F2 (F1 a) = F a :=
+      hagree a le_rfl
+    have hFa1 :
+        LevelTree.lev (F1 a) =
+          H.levelMap F'.map (m + 1) := by
+      have h := H.levelMap_eq F1 (a := a)
+      simpa [F', ha] using h.symm
+    have htarget :
+        LevelTree.lev (F1 a) =
+          LevelTree.lev (F a) - 1 := by
+      have hlev :
+          LevelTree.lev (F2 (F1 a)) =
+            if LevelTree.lev (F1 a) <
+                  LevelTree.lev (F a) - 1
+            then LevelTree.lev (F1 a)
+            else LevelTree.lev (F1 a) + 1 := by
+        calc
+          LevelTree.lev (F2 (F1 a)) =
+              H.levelMap F2 (LevelTree.lev (F1 a)) :=
+            (H.levelMap_eq F2 (a := F1 a)).symm
+          _ = _ :=
+            H.levelMap_of_skipsOnly F2
+              (LevelTree.lev (F a) - 1) hF2skip _
+      rw [hcomp] at hlev
+      split at hlev <;> omega
+    calc
+      H.levelMap F'.map (m + 1) = LevelTree.lev (F1 a) := hFa1.symm
+      _ = LevelTree.lev (F a) - 1 := htarget
+      _ = H.levelMap F.map (m + 1) - 1 := by rw [hFa]
 
 
 /-- An M-map fixes every node strictly below a cut level. -/
@@ -268,7 +270,10 @@ theorem exists_lower_gap_once_factor
               (LevelTree.lev (F a) - 1) hF2skip _
       rw [hcomp] at hlev
       split at hlev <;> omega
-    rw [hFa1, htarget, hFa]
+    calc
+      H.levelMap G.map (m + 1) = LevelTree.lev (F1 a) := hFa1.symm
+      _ = LevelTree.lev (F a) - 1 := htarget
+      _ = H.levelMap F.map (m + 1) - 1 := by rw [hFa]
   refine ⟨G, D, hGagree, ?_, ?_, hGnext⟩
   · simpa [D, hFa] using hF2skip
   · intro x hx
@@ -330,8 +335,7 @@ theorem exists_close_gap_factor
           exact (hPagree x hx).trans (hGagree x hx)
         · intro x hx
           have hQx : Q x = x := hQfix x (by
-            rw [hGm] at hx ⊢
-            exact hx)
+            simpa only [hGm] using hx)
           have hcut :
               H.levelMap F.map m + 1 ≤
                 H.levelMap F.map (m + 1) - 1 := by
