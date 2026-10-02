@@ -35,3 +35,4 @@ import SuccessorTree.ShapePrefixPigeonhole
 import SuccessorTree.ShapeFrontPigeonhole
 import SuccessorTree.ShapeReplayFusion
 import SuccessorTree.ShapeLarge
+import SuccessorTree.ShapeLargeFusion
