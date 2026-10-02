@@ -124,6 +124,39 @@ theorem exists_completionIntersectionColour
     BananaMatrixEmbedding.toPerfectPairEmbedding,
     BananaMatrixStructure.completionEmbedding] using hP
 
+/-- Fixed-source form of the persistent-colouring theorem.
+
+For a fixed pairing value `b`, every residue of parity `b` occurs on a
+line-pair copy inside the same target embedding.  This packages the
+one-residue-at-a-time theorem in the quantifier order used in the
+manuscript: the ambient completion and target copy are fixed before the
+colour is chosen. -/
+theorem completionIntersectionColours_cover_parity
+    (k : ℕ) (b : F2)
+    (f :
+      BananaMatrixEmbedding
+        (perfectBanana ((2 ^ (k + 1) - 1) + 1)) A) :
+    ∀ z : ZMod (2 ^ (k + 1)),
+      residueParityHom k z = b →
+      ∃ P :
+          LinePairCopy
+            ((2 ^ (k + 1) - 1) + 1) b,
+        (A.completionIntersectionCount
+            (f.left P.left) (f.right P.right) :
+          ZMod (2 ^ (k + 1))) = z := by
+  intro z hz
+  obtain ⟨P, hP⟩ := A.exists_completionIntersectionColour k f z
+  let P' :
+      LinePairCopy ((2 ^ (k + 1) - 1) + 1) b := {
+    left := P.left
+    right := P.right
+    left_ne_zero := P.left_ne_zero
+    right_ne_zero := P.right_ne_zero
+    pairing := P.pairing.trans hz
+  }
+  refine ⟨P', ?_⟩
+  simpa [P'] using hP
+
 /-- Sharper pairing-one form: dimension `2^(k+1)-1` already forces
 every odd residue. -/
 theorem exists_pairingOne_completionIntersectionColour
