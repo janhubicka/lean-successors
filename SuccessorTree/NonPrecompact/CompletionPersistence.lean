@@ -197,6 +197,31 @@ theorem completionIntersectionColours_cover_parity
   refine ⟨P', ?_⟩
   simpa [P'] using hP
 
+/-- Finite-palette form of the BANANA persistent colouring.
+
+For one fixed ambient completion and one fixed embedded perfect target,
+the full parity-`b` palette is realised.  Its cardinality is exactly
+`2^k`, i.e. `q/2` for `q = 2^(k+1)`. -/
+theorem exists_completionIntersectionPalette
+    (k : ℕ) (b : F2)
+    (f :
+      BananaMatrixEmbedding
+        (perfectBanana ((2 ^ (k + 1) - 1) + 1)) A) :
+    ∃ s : Finset (ZMod (2 ^ (k + 1))),
+      s.card = 2 ^ k ∧
+      ∀ z ∈ s,
+        ∃ P :
+            LinePairCopy
+              ((2 ^ (k + 1) - 1) + 1) b,
+          (A.completionIntersectionCount
+              (f.left P.left) (f.right P.right) :
+            ZMod (2 ^ (k + 1))) = z := by
+  refine ⟨residueParityPalette k b, residueParityPalette_card k b, ?_⟩
+  intro z hz
+  have hzparity : residueParityHom k z = b :=
+    (Finset.mem_filter.mp hz).2
+  exact A.completionIntersectionColours_cover_parity k b f z hzparity
+
 /-- Sharper pairing-one form: dimension `2^(k+1)-1` already forces
 every odd residue. -/
 theorem exists_pairingOne_completionIntersectionColour
