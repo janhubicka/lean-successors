@@ -223,7 +223,7 @@ theorem frontFusionStage_depth_homogeneous
   simp only [show N ≤ i + 1 by exact hNd, dif_pos]
   exact (Classical.choose_spec
     (H.exists_depthFront_refinement colour hpig
-      (frontFusionStage H colour hpig N B i) (i + 1))).2 p hp
+      (frontFusionStage H colour hpig N B i) (i + 1) (by omega))).2 p hp
 
 /-- Every finite approximation whose depth is at least N is one-step
 homogeneous in the final fusion. -/
