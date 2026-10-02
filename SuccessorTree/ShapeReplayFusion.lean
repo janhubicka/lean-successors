@@ -33,7 +33,7 @@ theorem mem_depthFrontFinset
   classical
   rcases p with ⟨n, a⟩
   simpa [depthFrontFinset] using
-    (Finitization.mem_depthApproximations
+    (RamseySpace.Finitization.mem_depthApproximations
       (F := ramseyFinitization H) (n := n) (d := d) (a := a) (B := B))
 
 /-- Common replay block selected for the full depth-(e+1) front. -/
