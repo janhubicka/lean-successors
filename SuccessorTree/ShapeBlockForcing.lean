@@ -29,7 +29,9 @@ variable {S : STree T Label}
 def BlockExtends
     (H : SMTree S) {n k : Nat}
     (h : AM H n (k + 1)) (h' : AM H n (k + 2)) : Prop :=
-  (ramseyApproximationSystem H).IsInitial h.1 h'.1
+  ∀ x : InitialNode T (n + k),
+    h.1.1 x =
+      h'.1.1 ⟨x.1, x.2.trans (by omega)⟩
 
 /-- Representatives of two extending blocks agree throughout the shorter
 finite source segment. -/
@@ -40,9 +42,6 @@ theorem blockExtends_representative_agrees
     (x : T) (hx : LevelTree.lev x ≤ n + k) :
     h.representative H x = h'.representative H x := by
   let xx : InitialNode T (n + k) := ⟨x, hx⟩
-  have hfin :=
-    H.ramseyApprox_apply_of_initial
-      (n := n + k) (m := n + k + 1) hext xx
   have htop := h.representative_top H
   have htop' := h'.representative_top H
   have hv := congrArg Subtype.val htop
@@ -54,7 +53,7 @@ theorem blockExtends_representative_agrees
   calc
     h.representative H x = h.1.1 xx := congrFun hv xx
     _ = h'.1.1
-        ⟨x, hx.trans (Nat.le_succ (n + k))⟩ := hfin
+        ⟨x, hx.trans (Nat.le_succ (n + k))⟩ := hext xx
     _ = h'.representative H x := by
       exact (congrFun hv'
         ⟨x, hx.trans (Nat.le_succ (n + k))⟩).symm
@@ -154,8 +153,17 @@ theorem blockCanonicalExtension_extends
     (H : SMTree S) {n k : Nat}
     (h : AM H n (k + 1)) :
     BlockExtends H h (H.blockCanonicalExtension h) := by
-  refine ⟨by omega, h.representative H, ?_, rfl⟩
-  exact h.representative_top H
+  intro x
+  have htop := h.representative_top H
+  have hv := congrArg Subtype.val htop
+  change
+    (h.representative H).restrictLe H (n + k) = h.1.1 at hv
+  have hx := congrFun hv x
+  change
+    h.1.1 x =
+      (h.representative H).restrictLe H (n + k + 1)
+        ⟨x.1, x.2.trans (Nat.le_succ (n + k))⟩
+  simpa using hx.symm
 
 /-- An avoiding block bundled with its dimension. -/
 structure AvoidingBlock
@@ -203,7 +211,7 @@ noncomputable def avoidingBlockSeq
         ∃ h' : AM H n (k + 2),
           BlockExtends H X.word h' ∧
           BlockAvoids H A h') :
-    Nat → AvoidingBlock H A
+    (k : Nat) → AvoidingBlock H A k
   | 0 => X0
   | k + 1 =>
       H.avoidingBlockNext A extendable
@@ -397,7 +405,7 @@ theorem exists_maximal_avoidingBlock_of_large
     (A : Set (AM H n 1))
     (hlarge : (H.shapeSubspaceAction n).Large A)
     (h0 : AM H n 1) (hh0 : h0 ∉ A) :
-    ∃ k (h : AM H n (k + 1)),
+    ∃ k : Nat, ∃ h : AM H n (k + 1),
       BlockAvoids H A h ∧
       ∀ h' : AM H n (k + 2),
         BlockExtends H h h' →
