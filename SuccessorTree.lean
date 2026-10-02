@@ -1,3 +1,4 @@
+import SuccessorTree.Canonical
 import SuccessorTree.Replay
 import SuccessorTree.Approximation
 import SuccessorTree.ShapePreserving
