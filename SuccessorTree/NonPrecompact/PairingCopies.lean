@@ -100,8 +100,8 @@ noncomputable def toPerfectCopyMatrices : PerfectCopyMatrices d n where
     ext i j
     have h :=
       E.pairing_apply (Pi.single i (1 : F2)) (Pi.single j (1 : F2))
-    simpa [Matrix.mul_apply, LinearMap.toMatrix'_apply, dotProduct,
-      Matrix.one_apply] using h
+    simpa [Matrix.mul_apply, LinearMap.toMatrix'_apply,
+      Matrix.one_apply, single_dotProduct, Pi.single_apply] using h
 
 @[simp] theorem toPerfectCopyMatrices_leftMap_apply
     (x : Fin d → F2) :
@@ -122,7 +122,7 @@ theorem exists_linePair_intersectionColour
       PerfectPairEmbedding ((2 ^ (k + 1) - 1) + 1) n)
     (r : ZMod (2 ^ (k + 1))) :
     ∃ A : LinePairCopy ((2 ^ (k + 1) - 1) + 1) (residueParityHom k r),
-      (ambientIntersectionCount
+      (PerfectCopyMatrices.ambientIntersectionCount
           (E.mapLinePair A).left
           (E.mapLinePair A).right :
         ZMod (2 ^ (k + 1))) = r := by
@@ -147,7 +147,7 @@ theorem exists_pairingOne_intersectionColour
     (E : PerfectPairEmbedding (2 ^ (k + 1) - 1) n)
     (r : ℕ) (hr : Odd r) :
     ∃ A : LinePairCopy (2 ^ (k + 1) - 1) 1,
-      (ambientIntersectionCount
+      (PerfectCopyMatrices.ambientIntersectionCount
           (E.mapLinePair A).left
           (E.mapLinePair A).right :
         ZMod (2 ^ (k + 1))) =
