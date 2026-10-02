@@ -31,11 +31,11 @@ import SuccessorTree.NonPrecompact.MatrixAffineParity
 import SuccessorTree.NonPrecompact.ResidueAlgebra
 import SuccessorTree.NonPrecompact.BilinearResidue
 import SuccessorTree.NonPrecompact.ColouringWrappers
+import SuccessorTree.NonPrecompact.BananaPersistence
 import SuccessorTree.NonPrecompact.PerfectCopy
 import SuccessorTree.NonPrecompact.PairingCopies
 import SuccessorTree.NonPrecompact.BananaStructure
 import SuccessorTree.NonPrecompact.Completion
 import SuccessorTree.RamseySpace.Basic
 import SuccessorTree.RamseySpace.Finitization
-
 import SuccessorTree.NonPrecompact.CompletionPersistence
