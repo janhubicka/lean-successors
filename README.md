@@ -41,7 +41,11 @@ BANANA project:
 * the residue group algebra and the full bilinear residue-count theorem;
 * target-copy wrappers showing that the selected pre-BANANA blocks are
   legitimate, the Folkman witness has odd ordinary count, and the BANANA
-  affine slice produces nonzero vectors with the required pairing parity.
+  affine slice produces nonzero vectors with the required pairing parity;
+* coordinate perfect-copy interfaces turning the BANANA matrix data into
+  injective left/right linear maps preserving the pairing, and identifying
+  the matrix weight with the ordinary support-intersection count of the
+  ambient image vectors.
 
 These results live under `SuccessorTree/NonPrecompact/`.
 
