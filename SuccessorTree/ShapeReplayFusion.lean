@@ -32,11 +32,9 @@ theorem mem_depthFrontFinset
       (ramseyFinitization H).HasDepth p.2 B d := by
   classical
   rcases p with ⟨n, a⟩
-  change
-    (⟨n, a⟩ : (ramseyApproximationSystem H).FiniteApprox) ∈
-        (ramseyFinitization H).depthApproximations B d ↔
-      (ramseyFinitization H).HasDepth a B d
-  exact Finitization.mem_depthApproximations
+  simpa [depthFrontFinset] using
+    (Finitization.mem_depthApproximations
+      (F := ramseyFinitization H) (n := n) (d := d) (a := a) (B := B))
 
 /-- Common replay block selected for the full depth-(e+1) front. -/
 noncomputable def depthFrontReplayBlock
