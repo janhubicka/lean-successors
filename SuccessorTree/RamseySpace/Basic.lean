@@ -87,7 +87,7 @@ def ramseyApproximationSystem (H : SMTree S) :
     rfl
   separated := by
     intro F G h
-    apply MMap.ext_apply H
+    apply MMap.ext_apply
     intro a
     let n := LevelTree.lev a
     have heq := h (n + 1)
