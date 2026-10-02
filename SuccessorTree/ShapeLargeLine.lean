@@ -74,44 +74,44 @@ noncomputable instance oneStepBridgeFintype
     {n q : Nat}
     (a : RamseyApprox H (n + 1))
     (A : MMap H) :
-    Fintype (OneStepBridge H a A) :=
+    Fintype (OneStepBridge H (q := q) a A) :=
   Fintype.ofFinite _
 
 /-- A chosen total representative of a valid bridge code. -/
-noncomputable def OneStepBridge.toMMap
+noncomputable def oneStepBridgeMap
     (H : SMTree S)
     {n q : Nat}
     {a : RamseyApprox H (n + 1)}
     {A : MMap H}
-    (c : OneStepBridge H a A) : MMap H :=
+    (c : OneStepBridge H (q := q) a A) : MMap H :=
   Classical.choose c.2
 
-theorem OneStepBridge.prefix
+theorem oneStepBridge_prefix
     (H : SMTree S)
     {n q : Nat}
     {a : RamseyApprox H (n + 1)}
     {A : MMap H}
-    (c : OneStepBridge H a A) :
-    ramseyApprox H (n + 1) (MMap.comp H A (c.toMMap H)) = a :=
+    (c : OneStepBridge H (q := q) a A) :
+    ramseyApprox H (n + 1) (MMap.comp H A (H.oneStepBridgeMap c)) = a :=
   (Classical.choose_spec c.2).1
 
-theorem OneStepBridge.topLevel
+theorem oneStepBridge_topLevel
     (H : SMTree S)
     {n q : Nat}
     {a : RamseyApprox H (n + 1)}
     {A : MMap H}
-    (c : OneStepBridge H a A) :
-    H.levelMap (c.toMMap H).map (n + 1) = q :=
+    (c : OneStepBridge H (q := q) a A) :
+    H.levelMap (H.oneStepBridgeMap c).map (n + 1) = q :=
   (Classical.choose_spec c.2).2.1
 
-theorem OneStepBridge.code_eq
+theorem oneStepBridge_code_eq
     (H : SMTree S)
     {n q : Nat}
     {a : RamseyApprox H (n + 1)}
     {A : MMap H}
-    (c : OneStepBridge H a A)
+    (c : OneStepBridge H (q := q) a A)
     (x : InitialNode T (n + 1)) :
-    (c.1 x).1 = c.toMMap H x.1 :=
+    (c.1 x).1 = H.oneStepBridgeMap c x.1 :=
   (Classical.choose_spec c.2).2.2 x
 
 /-- Bundle an actual bridge map into its finite-code type. -/
@@ -124,7 +124,7 @@ noncomputable def oneStepBridgeOfMap
     (hprefix :
       ramseyApprox H (n + 1) (MMap.comp H A K) = a)
     (htop : H.levelMap K.map (n + 1) = q) :
-    OneStepBridge H a A := by
+    OneStepBridge H (q := q) a A := by
   let c := H.oneStepBridgeCodeOf K n q htop
   refine ⟨c, ?_⟩
   refine ⟨K, hprefix, htop, ?_⟩
@@ -143,13 +143,13 @@ theorem oneStepBridgeOfMap_agrees
       ramseyApprox H (n + 1) (MMap.comp H A K) = a)
     (htop : H.levelMap K.map (n + 1) = q)
     (x : T) (hx : LevelTree.lev x ≤ n + 1) :
-    (H.oneStepBridgeOfMap K hprefix htop).toMMap H x = K x := by
+    H.oneStepBridgeMap (H.oneStepBridgeOfMap K hprefix htop) x = K x := by
   let xx : InitialNode T (n + 1) := ⟨x, hx⟩
   have hchosen :=
-    OneStepBridge.code_eq H (H.oneStepBridgeOfMap K hprefix htop) xx
+    H.oneStepBridge_code_eq (H.oneStepBridgeOfMap K hprefix htop) xx
   change
     K x =
-      (H.oneStepBridgeOfMap K hprefix htop).toMMap H x at hchosen
+      H.oneStepBridgeMap (H.oneStepBridgeOfMap K hprefix htop) x at hchosen
   exact hchosen.symm
 
 /-- Compose a high-level finite one-step map with a finite bridge. -/
@@ -159,11 +159,11 @@ noncomputable def bridgeApplyApprox
     {a : RamseyApprox H (n + 1)}
     (A : MMap H)
     (g : AM H q 1)
-    (c : OneStepBridge H a A) :
+    (c : OneStepBridge H (q := q) a A) :
     RamseyApprox H (n + 2) :=
   ramseyApprox H (n + 2)
     (MMap.comp H A
-      (MMap.comp H (g.representative H) (c.toMMap H)))
+      (MMap.comp H (g.representative H) (H.oneStepBridgeMap c)))
 
 /-- A replay block at q gives a refinement in the q-neighborhood. -/
 theorem replayBlock_refinement_mem
@@ -213,12 +213,12 @@ theorem exactPersistent_replayLine
     (O : Set (RamseyApprox H (n + 2)))
     (hpersist : OneStepExactPersistent H a A O q) :
     ∃ R : ReplayBlock H q,
-      ∃ c : OneStepBridge H a A,
+      ∃ c : OneStepBridge H (q := q) a A,
         ∀ x : LineInput (OneLevelLetter H q),
           H.bridgeApplyApprox A (replayApplyAM H q R x) c ∈ O := by
   classical
   let colour :
-      AM H q 1 → (OneStepBridge H a A → Bool) :=
+      AM H q 1 → (OneStepBridge H (q := q) a A → Bool) :=
     fun g c => decide (H.bridgeApplyApprox A g c ∈ O)
   obtain ⟨R, hR⟩ :=
     H.oneDimensionalPigeonhole_shape q colour
@@ -266,7 +266,7 @@ theorem exactPersistent_replayLine
       _ = A1 (K y.1) := rfl
       _ = (show MMap H from X) y.1 := (hK y.1).symm
       _ = a.1 y := hyX
-  let c : OneStepBridge H a A :=
+  let c : OneStepBridge H (q := q) a A :=
     H.oneStepBridgeOfMap K hprefixA hKtop
   have hbaseApprox :
       H.bridgeApplyApprox A
@@ -279,7 +279,7 @@ theorem exactPersistent_replayLine
         (show MMap H from X) y.1 = b.1 y :=
       congrFun hXbVal y
     have hcK :
-        c.toMMap H y.1 = K y.1 :=
+        H.oneStepBridgeMap c y.1 = K y.1 :=
       H.oneStepBridgeOfMap_agrees K hprefixA hKtop y.1 y.2
     have hKlev : LevelTree.lev (K y.1) ≤ q := by
       calc
@@ -292,7 +292,7 @@ theorem exactPersistent_replayLine
     change
       A
         ((replayApplyAM H q R LineInput.base).representative H
-          (c.toMMap H y.1)) = b.1 y
+          (H.oneStepBridgeMap c y.1)) = b.1 y
     rw [hcK]
     rw [H.replayApplyAM_base_representative_agrees q R (K y.1) hKlev]
     calc
