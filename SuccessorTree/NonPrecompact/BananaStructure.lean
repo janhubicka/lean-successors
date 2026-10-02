@@ -89,6 +89,19 @@ def comp
     exact (g.pairing_apply (f.left x) (f.right y)).trans
       (f.pairing_apply x y)
 
+end BananaMatrixEmbedding
+
+/-- The standard perfect pairing `B_d`. -/
+def perfectBanana (d : ℕ) : BananaMatrixStructure d d where
+  pairing := 1
+
+@[simp] theorem perfectBanana_eval
+    {d : ℕ} (x y : Fin d → F2) :
+    (perfectBanana d).eval x y = x ⬝ᵥ y := by
+  simp [BananaMatrixStructure.eval, perfectBanana]
+
+namespace BananaMatrixEmbedding
+
 /-- A BANANA embedding between standard perfect pairings is exactly a
 `PerfectPairEmbedding`. -/
 def toPerfectPairEmbedding
@@ -105,15 +118,6 @@ def toPerfectPairEmbedding
     simpa only [perfectBanana_eval] using f.pairing_apply x y
 
 end BananaMatrixEmbedding
-
-/-- The standard perfect pairing `B_d`. -/
-def perfectBanana (d : ℕ) : BananaMatrixStructure d d where
-  pairing := 1
-
-@[simp] theorem perfectBanana_eval
-    {d : ℕ} (x y : Fin d → F2) :
-    (perfectBanana d).eval x y = x ⬝ᵥ y := by
-  simp [BananaMatrixStructure.eval, perfectBanana]
 
 namespace PerfectPairEmbedding
 
