@@ -14,10 +14,8 @@ structure is exactly a pair of nonzero vectors, one in each sort, whose
 pairing is `b`.  Since `A_b` is rigid over `F₂`, this is the manuscript's
 copy notion, not merely an embedding surrogate.
 
-The definition of `linePairCopyRamseyDegreeLE` quantifies over arbitrary
-finite colour types rather than `Fin r`.  This is equivalent to the usual
-finite-colour formulation and avoids choosing an irrelevant enumeration of
-the parity palette.
+The Ramsey-degree definition below deliberately uses colourings into
+`Fin r`, with `r > 0`, exactly as in the circulation manuscript.
 -/
 
 namespace SuccessorTree.NonPrecompact
@@ -109,7 +107,17 @@ abbrev ResidueParityColour (k : ℕ) (b : F2) :=
 /-- The parity palette has exactly `2^k` elements. -/
 theorem residueParityColour_card (k : ℕ) (b : F2) :
     Fintype.card (ResidueParityColour k b) = 2 ^ k := by
-  simpa using BananaMatrixStructure.residueParityPalette_card k b
+  change
+    Fintype.card ↥(BananaMatrixStructure.residueParityPalette k b) =
+      2 ^ k
+  rw [Fintype.card_coe]
+  exact BananaMatrixStructure.residueParityPalette_card k b
+
+/-- A fixed enumeration of the parity-`b` palette by the manuscript's
+ordinary colour type `Fin (2^k)`. -/
+noncomputable def residueParityColourEquivFin (k : ℕ) (b : F2) :
+    ResidueParityColour k b ≃ Fin (2 ^ k) :=
+  Fintype.equivFinOfCardEq (residueParityColour_card k b)
 
 /-- Reduction of a natural-number residue modulo `2^(k+1)` and then modulo
 two agrees with direct reduction modulo two. -/
@@ -137,21 +145,145 @@ noncomputable def completionResidueColour
   exact
     (A.completionIntersectionCount_parity P.left P.right).trans P.pairing
 
+/-- The same colouring, enumerated by `Fin (2^k)` to match the Ramsey-degree
+definition used in the manuscript. -/
+noncomputable def completionResidueFinColour
+    (P : BananaLinePairCopy A b) (k : ℕ) :
+    Fin (2 ^ k) :=
+  residueParityColourEquivFin k b (P.completionResidueColour k)
+
 end BananaLinePairCopy
 
+/-- The fixed ambient completion gives a `2^k`-colouring for which every
+embedded perfect target of dimension `2^(k+1)` sees every colour.
+
+This is the finite persistent-colouring assertion in the manuscript with
+`q = 2^(k+1)`. -/
+theorem exists_completionResiduePersistentColouring
+    {l r : ℕ}
+    (A : BananaMatrixStructure l r)
+    (k : ℕ) (b : F2) :
+    ∃ colouring : BananaLinePairCopy A b → Fin (2 ^ k),
+      ∀ f :
+          BananaMatrixEmbedding
+            (perfectBanana ((2 ^ (k + 1) - 1) + 1)) A,
+        ∀ c : Fin (2 ^ k),
+          ∃ P :
+              BananaLinePairCopy
+                (perfectBanana ((2 ^ (k + 1) - 1) + 1)) b,
+            colouring (f.mapLinePairCopy P) = c := by
+  let colouring : BananaLinePairCopy A b → Fin (2 ^ k) :=
+    fun P => P.completionResidueFinColour k
+  refine ⟨colouring, ?_⟩
+  intro f c
+  let z : ResidueParityColour k b :=
+    (residueParityColourEquivFin k b).symm c
+  have hz : residueParityHom k z.1 = b :=
+    (Finset.mem_filter.mp z.2).2
+  obtain ⟨P, hP⟩ :=
+    A.completionIntersectionColours_cover_parity k b f z.1 hz
+  let P' :
+      BananaLinePairCopy
+        (perfectBanana ((2 ^ (k + 1) - 1) + 1)) b :=
+    P.toBananaLinePairCopy
+  refine ⟨P', ?_⟩
+  have hsub :
+      (f.mapLinePairCopy P').completionResidueColour k = z := by
+    apply Subtype.ext
+    simpa [BananaLinePairCopy.completionResidueColour, P'] using hP
+  change
+    residueParityColourEquivFin k b
+      ((f.mapLinePairCopy P').completionResidueColour k) = c
+  rw [hsub]
+  simpa [z] using (residueParityColourEquivFin k b).apply_symm_apply c
+
+/-- Every parity-one residue is already forced by a perfect target of
+dimension `2^(k+1)-1`. -/
+theorem completionIntersectionColours_cover_one_sharp
+    {l r : ℕ}
+    (A : BananaMatrixStructure l r)
+    (k : ℕ)
+    (f :
+      BananaMatrixEmbedding
+        (perfectBanana (2 ^ (k + 1) - 1)) A) :
+    ∀ z : ZMod (2 ^ (k + 1)),
+      residueParityHom k z = 1 →
+      ∃ P : LinePairCopy (2 ^ (k + 1) - 1) 1,
+        (A.completionIntersectionCount
+            (f.left P.left) (f.right P.right) :
+          ZMod (2 ^ (k + 1))) = z := by
+  intro z hz
+  have hval : (z.val : F2) = 1 := by
+    calc
+      (z.val : F2) =
+          residueParityHom k
+            (z.val : ZMod (2 ^ (k + 1))) :=
+        (residueParityHom_natCast k z.val).symm
+      _ = residueParityHom k z := by
+        rw [ZMod.natCast_zmod_val]
+      _ = 1 := hz
+  have hodd : Odd z.val :=
+    ZMod.natCast_eq_one_iff_odd.mp hval
+  obtain ⟨P, hP⟩ :=
+    A.exists_pairingOne_completionIntersectionColour
+      k f z.val hodd
+  refine ⟨P, ?_⟩
+  simpa only [ZMod.natCast_zmod_val] using hP
+
+/-- Sharper persistent colouring for the pairing-one source: the same
+`2^k` colours are already all present in every perfect target of dimension
+`2^(k+1)-1`. -/
+theorem exists_pairingOne_completionResiduePersistentColouring
+    {l r : ℕ}
+    (A : BananaMatrixStructure l r)
+    (k : ℕ) :
+    ∃ colouring : BananaLinePairCopy A 1 → Fin (2 ^ k),
+      ∀ f :
+          BananaMatrixEmbedding
+            (perfectBanana (2 ^ (k + 1) - 1)) A,
+        ∀ c : Fin (2 ^ k),
+          ∃ P :
+              BananaLinePairCopy
+                (perfectBanana (2 ^ (k + 1) - 1)) 1,
+            colouring (f.mapLinePairCopy P) = c := by
+  let colouring : BananaLinePairCopy A 1 → Fin (2 ^ k) :=
+    fun P => P.completionResidueFinColour k
+  refine ⟨colouring, ?_⟩
+  intro f c
+  let z : ResidueParityColour k 1 :=
+    (residueParityColourEquivFin k 1).symm c
+  have hz : residueParityHom k z.1 = 1 :=
+    (Finset.mem_filter.mp z.2).2
+  obtain ⟨P, hP⟩ :=
+    completionIntersectionColours_cover_one_sharp A k f z.1 hz
+  let P' :
+      BananaLinePairCopy
+        (perfectBanana (2 ^ (k + 1) - 1)) 1 :=
+    P.toBananaLinePairCopy
+  refine ⟨P', ?_⟩
+  have hsub :
+      (f.mapLinePairCopy P').completionResidueColour k = z := by
+    apply Subtype.ext
+    simpa [BananaLinePairCopy.completionResidueColour, P'] using hP
+  change
+    residueParityColourEquivFin k 1
+      ((f.mapLinePairCopy P').completionResidueColour k) = c
+  rw [hsub]
+  simpa [z] using (residueParityColourEquivFin k 1).apply_symm_apply c
+
 /-- The copy Ramsey degree of the rigid line-pair source `A_b` is at most
-`t`.
+`t`, stated with exactly the finite-colour convention from the manuscript.
 
 A target copy is represented by a BANANA embedding `f : B → C`.  The last
 line says that all colours on source copies lying inside that target range
 belong to one finite set of size at most `t`. -/
 def linePairCopyRamseyDegreeLE (b : F2) (t : ℕ) : Prop :=
   ∀ (lB rB : ℕ) (B : BananaMatrixStructure lB rB)
-      (ι : Type) [Fintype ι] [DecidableEq ι],
+      (numColours : ℕ), 0 < numColours →
     ∃ (lC rC : ℕ) (C : BananaMatrixStructure lC rC),
-      ∀ colouring : BananaLinePairCopy C b → ι,
+      ∀ colouring : BananaLinePairCopy C b → Fin numColours,
         ∃ f : BananaMatrixEmbedding B C,
-          ∃ colours : Finset ι,
+          ∃ colours : Finset (Fin numColours),
             colours.card ≤ t ∧
             ∀ P : BananaLinePairCopy B b,
               colouring (f.mapLinePairCopy P) ∈ colours
@@ -161,7 +293,7 @@ finite degree bound. -/
 def linePairCopyRamseyDegreeInfinite (b : F2) : Prop :=
   ∀ t : ℕ, ¬ linePairCopyRamseyDegreeLE b t
 
-/-- If `t < 2^k`, the persistent parity palette rules out copy Ramsey
+/-- If `t < 2^k`, the persistent `2^k`-colouring rules out copy Ramsey
 degree at most `t`. -/
 theorem not_linePairCopyRamseyDegreeLE_of_lt_pow
     (k t : ℕ) (b : F2) (ht : t < 2 ^ k) :
@@ -172,31 +304,20 @@ theorem not_linePairCopyRamseyDegreeLE_of_lt_pow
       ((2 ^ (k + 1) - 1) + 1)
       ((2 ^ (k + 1) - 1) + 1)
       (perfectBanana ((2 ^ (k + 1) - 1) + 1))
-      (ResidueParityColour k b)
-  let colouring :
-      BananaLinePairCopy C b → ResidueParityColour k b :=
-    fun P => P.completionResidueColour k
+      (2 ^ k) (by positivity)
+  obtain ⟨colouring, hpersistent⟩ :=
+    exists_completionResiduePersistentColouring C k b
   obtain ⟨f, colours, hcard, hcolours⟩ := hC colouring
   have huniv : colours = Finset.univ := by
-    ext z
+    ext c
     simp only [Finset.mem_univ, iff_true]
-    have hz : residueParityHom k z.1 = b :=
-      (Finset.mem_filter.mp z.2).2
-    obtain ⟨P, hP⟩ :=
-      C.completionIntersectionColours_cover_parity k b f z.1 hz
-    let P' :
-        BananaLinePairCopy
-          (perfectBanana ((2 ^ (k + 1) - 1) + 1)) b :=
-      P.toBananaLinePairCopy
-    have hmem := hcolours P'
-    have hcolour : colouring (f.mapLinePairCopy P') = z := by
-      apply Subtype.ext
-      simpa [colouring, BananaLinePairCopy.completionResidueColour, P'] using hP
-    rw [hcolour] at hmem
+    obtain ⟨P, hP⟩ := hpersistent f c
+    have hmem := hcolours P
+    rw [hP] at hmem
     exact hmem
   have hle : 2 ^ k ≤ t := by
     rw [huniv] at hcard
-    simpa only [Finset.card_univ, residueParityColour_card] using hcard
+    simpa using hcard
   exact (Nat.not_le_of_gt ht) hle
 
 private theorem nat_lt_two_pow (n : ℕ) : n < 2 ^ n := by
