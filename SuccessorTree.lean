@@ -31,3 +31,4 @@ import SuccessorTree.ShapePigeonhole
 import SuccessorTree.ShapeFusion
 import SuccessorTree.RamseySpace.Nonempty
 import SuccessorTree.ShapeFrontFusion
+import SuccessorTree.ShapePrefixPigeonhole
