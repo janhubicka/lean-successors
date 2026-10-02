@@ -233,13 +233,22 @@ theorem replayLine_of_maximal_avoidingBlock
         (n := n) (m := n + (k + 2))
         (ramseyApprox H n (MMap.id H))
         (H.prefixReplayApply hd R x) := by
-    simpa [Nat.add_assoc] using (H.blockReplayExtension h R x).2
+    have hh := (H.blockReplayExtension h R x).2
+    have hval :
+        (H.blockReplayExtension h R x).1 =
+          H.prefixReplayApply hd R x := rfl
+    rw [hval] at hh
+    exact hh
   have hbvalid :
       (ramseyApproximationSystem H).IsInitial
         (n := n) (m := n + (k + 2))
         (ramseyApprox H n (MMap.id H))
         (H.prefixReplayApply hd R LineInput.base) := by
-    simpa [Nat.add_assoc] using hb.2
+    have hh := hb.2
+    have hval :
+        hb.1 = H.prefixReplayApply hd R LineInput.base := rfl
+    rw [hval] at hh
+    exact hh
   have hbpack :
       (⟨H.prefixReplayApply hd R LineInput.base, hbvalid⟩ :
         AM H n (k + 2)) = hb := by
@@ -249,7 +258,7 @@ theorem replayLine_of_maximal_avoidingBlock
       colour (H.prefixReplayApply hd R LineInput.base) g = true := by
     simp only [colour, blockReplayColour, hbvalid, dite_true]
     rw [hbpack]
-    exact of_decide_eq_true hgA
+    simp [hgA]
   have hxcol := congrFun (hmono x) g
   have hxtrue :
       colour (H.prefixReplayApply hd R x) g = true :=
