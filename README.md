@@ -1,4 +1,4 @@
-# lean-sucessors
+# lean-successors
 
 Lean 4 verification project for **Ramsey theorem for trees with successor operation**
 (Balko–Chodounský–Dobrinen–Hubička–Konečný–Nešetřil–Zucker).
@@ -30,6 +30,20 @@ The following layers are checked by Lean/CI on branch
    once the large-set proposition is available, the binary and finite-colour
    omega-dimensional statements, and hence the starred line needed by the
    successor pigeonhole, follow formally.
+
+## Non-precompact colourings
+
+The library also contains the formalised lower-bound arguments used by the
+BANANA project:
+
+* odd subset-sum surjectivity for pre-BANANA and Folkman--BANANA;
+* affine-fibre parity over `F₂` and the determinant/Cauchy--Binet step;
+* the residue group algebra and the full bilinear residue-count theorem;
+* target-copy wrappers showing that the selected pre-BANANA blocks are
+  legitimate, the Folkman witness has odd ordinary count, and the BANANA
+  affine slice produces nonzero vectors with the required pairing parity.
+
+These results live under `SuccessorTree/NonPrecompact/`.
 
 ## Hales--Jewett dependency
 

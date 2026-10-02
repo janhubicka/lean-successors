@@ -30,5 +30,6 @@ import SuccessorTree.NonPrecompact.CauchyBinet
 import SuccessorTree.NonPrecompact.MatrixAffineParity
 import SuccessorTree.NonPrecompact.ResidueAlgebra
 import SuccessorTree.NonPrecompact.BilinearResidue
+import SuccessorTree.NonPrecompact.ColouringWrappers
 import SuccessorTree.RamseySpace.Basic
 import SuccessorTree.RamseySpace.Finitization
