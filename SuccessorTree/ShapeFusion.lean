@@ -218,7 +218,15 @@ theorem fusionOfSteps_reduction_stage
     apply H.fusionOfSteps_ramseyApprox_eq_stage F hstep
     dsimp [j]
     omega
-  simpa [RamseySpace.ApproximationSystem.finiteApprox, heq] using hm
+  have heqFin :
+      (ramseyApproximationSystem H).finiteApprox n
+          (H.fusionOfSteps F hstep) =
+        (ramseyApproximationSystem H).finiteApprox n (F j) := by
+    exact congrArg
+      (fun a => (⟨n, a⟩ :
+        (ramseyApproximationSystem H).FiniteApprox)) heq
+  rw [heqFin]
+  exact hm
 
 /-- In particular the fusion limit lies in the frozen neighborhood of every
 stage. -/
