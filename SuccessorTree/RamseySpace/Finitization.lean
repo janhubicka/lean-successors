@@ -39,6 +39,7 @@ theorem levelLe_finite (n : Nat) :
     · intro ha
       rcases Set.mem_iUnion.1 ha with ⟨i, hi⟩
       change LevelTree.lev a = i.1 at hi
+      change LevelTree.lev a ≤ n
       rw [hi]
       exact Nat.le_of_lt_succ i.2
   rw [hEq]
@@ -307,11 +308,10 @@ theorem ramseyApprox_apply_of_initial {n m : Nat}
   change X.restrictLe H n = a.1 at hna
   change X.restrictLe H m = b.1 at hmb
   calc
-    a.1 x = X x.1 := by
-      simpa [MMap.restrictLe] using (congrFun hna x).symm
-    _ = b.1 ⟨x.1, x.2.trans hnm'⟩ := by
-      simpa [MMap.restrictLe] using
-        congrFun hmb ⟨x.1, x.2.trans hnm'⟩
+    a.1 x = X.restrictLe H n x := (congrFun hna x).symm
+    _ = X.restrictLe H m ⟨x.1, x.2.trans hnm'⟩ := rfl
+    _ = b.1 ⟨x.1, x.2.trans hnm'⟩ :=
+      congrFun hmb ⟨x.1, x.2.trans hnm'⟩
 
 /-- A.2(3): a prefix of a finite factor again factors through the same
 right-hand approximation. -/
@@ -494,6 +494,10 @@ theorem ramseyLeFin_lowerFinite
             liftRamseyApprox H n a ∈
               piece (⟨n, hn⟩ : Fin (m + 1))
           refine ⟨a, ?_, rfl⟩
+          change
+            RamseyLeFin H
+              (liftRamseyApprox H n a)
+              target
           simpa [target, liftRamseyApprox] using ha
 
 /-- The full A.2 finitization structure for successor-tree M-maps. -/
