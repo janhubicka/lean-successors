@@ -320,17 +320,8 @@ theorem not_linePairCopyRamseyDegreeLE_of_lt_pow
     simpa using hcard
   exact (Nat.not_le_of_gt ht) hle
 
-private theorem nat_lt_two_pow (n : ℕ) : n < 2 ^ n := by
-  induction n with
-  | zero =>
-      norm_num
-  | succ n ih =>
-      calc
-        n + 1 < 2 ^ n + 1 := by omega
-        _ ≤ 2 ^ n + 2 ^ n := by omega
-        _ = 2 ^ (n + 1) := by
-          rw [pow_succ]
-          omega
+private theorem nat_lt_two_pow (n : ℕ) : n < 2 ^ n :=
+  n.lt_two_pow_self
 
 /-- Both four-element BANANA sources have infinite copy Ramsey degree.  The
 argument is uniform in the pairing value `b`. -/
