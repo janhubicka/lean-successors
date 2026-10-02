@@ -98,10 +98,12 @@ structure SuccCode (S : STree T Label) (a b : T) where
 
 /-- S3 supplies successor code for every cover. -/
 noncomputable def succCodeOfCovBy (S : STree T Label)
-    {a b : T} (h : a ⋖ b) : SuccCode S a b := by
-  classical
-  obtain ⟨p, c, hc⟩ := S.s3 h
-  exact ⟨p, c, hc⟩
+    {a b : T} (h : a ⋖ b) : SuccCode S a b :=
+  let p : List T := Classical.choose (S.s3 h)
+  let hp : ∃ c : Label, S.succ a p c = some b :=
+    Classical.choose_spec (S.s3 h)
+  let c : Label := Classical.choose hp
+  ⟨p, c, Classical.choose_spec hp⟩
 
 @[simp] theorem succCodeOfCovBy_eq (S : STree T Label)
     {a b : T} (h : a ⋖ b) :
@@ -191,9 +193,13 @@ theorem OneLevelLetter.levelImage_injective
 /-- The Hales--Jewett alphabet at a fixed level is finite. -/
 noncomputable instance oneLevelLetterFintype
     (H : SMTree S) (n : Nat) :
-    Fintype (OneLevelLetter H n) :=
-  Fintype.ofInjective
-    (fun e : OneLevelLetter H n => e.levelImage H)
+    Fintype (OneLevelLetter H n) := by
+  classical
+  letI : Fintype (LevelNode T n) := levelNodeFintype T n
+  letI : Fintype (LevelNode T (n + 1)) := levelNodeFintype T (n + 1)
+  exact Fintype.ofInjective
+    (fun e : OneLevelLetter H n =>
+      (e.levelImage H : LevelNode T n → LevelNode T (n + 1)))
     (OneLevelLetter.levelImage_injective H n)
 
 /-- Interpretation of a finite word as the canonical total extension g_w^+.
@@ -285,6 +291,7 @@ theorem map_letterCode_params_eq
     (H.letterCode e a ha).params.map (wordMap H n w) =
       (H.letterCode e a ha).params := by
   let p := (H.letterCode e a ha).params
+  change p.map (wordMap H n w) = p
   have hfix : ∀ x ∈ p, wordMap H n w x = x := by
     intro x hx
     apply wordMap_eq_id_below H n w
@@ -317,7 +324,7 @@ theorem wordMap_append_letter_succ
     omega
   have hexact :
       S.succ (wordMap H n w a)
-          ((H.letterCode e a ha).params.map (wordMap H n w))
+          (H.letterCode e a ha).params
           (H.letterCode e a ha).char =
         some (wordMap H n w (e a)) := by
     induction w with
@@ -334,9 +341,16 @@ theorem wordMap_append_letter_succ
           omega
         have hd :=
           H.succ_eq_above_skip d.toMMap.map n d.skips ih htailLevel
-        simpa [wordMap_cons_apply, List.map_map, Function.comp_def] using hd
-  rw [H.map_letterCode_params_eq w e a ha] at hexact
-  rw [wordMap_append_singleton_apply] 
+        have hparams :
+            (H.letterCode e a ha).params.map d.toMMap.map =
+              (H.letterCode e a ha).params := by
+          have h :=
+            H.map_letterCode_params_eq ([d] : List (OneLevelLetter H n))
+              e a ha
+          simpa [wordMap] using h
+        rw [hparams] at hd
+        simpa [wordMap_cons_apply] using hd
+  rw [wordMap_append_singleton_apply]
   exact hexact
 
 /-- Consecutive word prefixes form a cover on every level-n node. -/
