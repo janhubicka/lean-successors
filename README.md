@@ -48,7 +48,10 @@ BANANA project:
   ambient image vectors.
 * structure-level perfect-pair embeddings and line-pair copies, so the final BANANA witness is stated as an embedded finite source copy rather than raw vectors.
 * standard-coordinate BANANA structures with arbitrary bilinear pairing matrices and injective pairing-preserving embeddings, matching the manuscript's finite structure definition.
-* an explicit perfect-completion embedding for every finite pairing, formalising the manuscript's completion lemma in coordinates.
+* an explicit perfect-completion embedding for every finite pairing, formalising the manuscript's completion lemma in coordinates;
+* arbitrary perfect-pair embeddings converted back to coordinate matrices, so persistence is not restricted to a chosen matrix presentation;
+* a fixed-completion persistence theorem with the manuscript's quantifier order: the ambient coordinate realisation is fixed before the target copy;
+* the fixed-parity palette has exactly `2^k=q/2` colours, and every one occurs inside each embedded `B_q` target.
 
 These results live under `SuccessorTree/NonPrecompact/`.
 
