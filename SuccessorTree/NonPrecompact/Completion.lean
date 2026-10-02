@@ -18,42 +18,26 @@ namespace BananaMatrixStructure
 variable {l r : ℕ} (A : BananaMatrixStructure l r)
 
 /-- Left map of the explicit perfect completion. -/
-def completionLeft :
+def completionLeft (A : BananaMatrixStructure l r) :
     (Fin l → F2) →ₗ[F2] (Fin (l + r) → F2) where
   toFun x := Fin.append x 0
   map_add' x y := by
     ext i
-    by_cases hi : i.1 < l
-    · rw [← Fin.castAdd_castLT r i hi, Fin.append_left, Fin.append_left, Fin.append_left]
-      rfl
-    · rw [← Fin.natAdd_subNat_cast hi, Fin.append_right, Fin.append_right, Fin.append_right]
-      simp
+    simp [Fin.append, Pi.add_apply]
   map_smul' c x := by
     ext i
-    by_cases hi : i.1 < l
-    · rw [← Fin.castAdd_castLT r i hi, Fin.append_left, Fin.append_left]
-      rfl
-    · rw [← Fin.natAdd_subNat_cast hi, Fin.append_right, Fin.append_right]
-      simp
+    simp [Fin.append, Pi.smul_apply]
 
 /-- Right map of the explicit perfect completion. -/
-def completionRight :
+def completionRight (A : BananaMatrixStructure l r) :
     (Fin r → F2) →ₗ[F2] (Fin (l + r) → F2) where
   toFun y := Fin.append (A.pairing *ᵥ y) y
   map_add' x y := by
     ext i
-    by_cases hi : i.1 < l
-    · rw [← Fin.castAdd_castLT r i hi, Fin.append_left, Fin.append_left, Fin.append_left]
-      simp
-    · rw [← Fin.natAdd_subNat_cast hi, Fin.append_right, Fin.append_right, Fin.append_right]
-      rfl
+    simp [Fin.append, Pi.add_apply, Matrix.mulVec_add]
   map_smul' c x := by
     ext i
-    by_cases hi : i.1 < l
-    · rw [← Fin.castAdd_castLT r i hi, Fin.append_left, Fin.append_left]
-      simp
-    · rw [← Fin.natAdd_subNat_cast hi, Fin.append_right, Fin.append_right]
-      rfl
+    simp [Fin.append, Pi.smul_apply, Matrix.mulVec_smul]
 
 theorem completionLeft_injective :
     Function.Injective A.completionLeft := by
