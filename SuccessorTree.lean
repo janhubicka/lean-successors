@@ -29,3 +29,4 @@ import SuccessorTree.CopyRamsey
 import SuccessorTree.Canonical
 import SuccessorTree.ShapePigeonhole
 import SuccessorTree.ShapeFusion
+import SuccessorTree.RamseySpace.Nonempty
