@@ -207,5 +207,72 @@ theorem exists_shapeSplit_factor
               rw [hQP x hx]
               exact hDG x hx
 
+
+/-- A map fixing every lower level sends a node on the cut level above itself.
+This is the multi-gap analogue of le_apply_at_skip. -/
+theorem MMap.le_apply_at_cut
+    (H : SMTree S) (F : MMap H) (m : Nat)
+    (hfix : F.FixesBelow H m)
+    {a : T} (ha : LevelTree.lev a = m) :
+    a ≤ F a := by
+  cases m with
+  | zero =>
+      exact F.map.root_le' ha
+  | succ j =>
+      have hjle : j ≤ LevelTree.lev a := by omega
+      let x := LevelTree.ancestor a j hjle
+      have hxa : x ≤ a := LevelTree.ancestor_le a j hjle
+      have hxlev : LevelTree.lev x = j :=
+        LevelTree.level_ancestor a j hjle
+      have hcov : x ⋖ a := by
+        apply LevelTree.covBy_of_le_level_succ hxa
+        omega
+      obtain ⟨p, ch, hs⟩ := S.s3 hcov
+      have hxfix : F x = x := hfix x (by omega)
+      have hpfix : p.map F = p := by
+        apply shapeAction_list_map_eq_self
+        intro y hy
+        exact hfix y (lt_trans (S.parameter_level_lt hs hy) (by omega))
+      obtain ⟨d, hd, hda⟩ := F.map.weak_succ' hs
+      have hd' : S.succ x p ch = some d := by
+        simpa [hxfix, hpfix] using hd
+      have hdeq : d = a := by
+        apply Option.some.inj
+        calc
+          some d = S.succ x p ch := hd'.symm
+          _ = some a := hs
+      simpa [hdeq] using hda
+
+/-- The top value of the split map is the level-m ancestor of the original
+top value. -/
+theorem shapeSplit_top_ancestor
+    (H : SMTree S) (F P Q : MMap H) (n m : Nat)
+    (hPtop : H.levelMap P.map n = m)
+    (hQfix : Q.FixesBelow H m)
+    (hQP : ∀ x : T, LevelTree.lev x ≤ n → Q (P x) = F x)
+    {x : T} (hx : LevelTree.lev x = n) :
+    P x = LevelTree.ancestor (F x) m (by
+      have hPx : LevelTree.lev (P x) = m := by
+        calc
+          LevelTree.lev (P x) =
+              H.levelMap P.map (LevelTree.lev x) :=
+            (H.levelMap_eq P.map (a := x)).symm
+          _ = m := by simpa [hx] using hPtop
+      have hle : P x ≤ F x := by
+        rw [← hQP x (by simpa [hx])]
+        exact H.MMap.le_apply_at_cut Q m hQfix hPx
+      rw [← hPx]
+      exact LevelTree.level_le_of_le hle) := by
+  have hPx : LevelTree.lev (P x) = m := by
+    calc
+      LevelTree.lev (P x) =
+          H.levelMap P.map (LevelTree.lev x) :=
+        (H.levelMap_eq P.map (a := x)).symm
+      _ = m := by simpa [hx] using hPtop
+  have hle : P x ≤ F x := by
+    rw [← hQP x (by simpa [hx])]
+    exact H.MMap.le_apply_at_cut Q m hQfix hPx
+  exact LevelTree.eq_ancestor_of_le hle hPx
+
 end SMTree
 end SuccessorTree
