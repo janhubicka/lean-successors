@@ -730,5 +730,22 @@ theorem ramseyLeFin_lower_finite (H : SMTree S)
           simpa [lowerCandidate, i, hcand]
 
 
+/-- Todorčević A.2 for successor-tree M-maps. -/
+def ramseyFinitization (H : SMTree S) :
+    RamseySpace.Finitization (ramseyApproximationSystem H) where
+  leFin := RamseyLeFin H
+  leFin_refl := ramseyLeFin_refl H
+  leFin_trans := by
+    intro a b c hab hbc
+    exact ramseyLeFin_trans H hab hbc
+  lowerFinite := ramseyLeFin_lower_finite H
+  realizesOrder := by
+    intro F G
+    exact ramseyReduction_iff_ramseyLeFin H F G
+  prefix_leFin := by
+    intro n m k a b c hab hbc
+    exact ramseyLeFin_prefix H hab hbc
+
+
 end SMTree
 end SuccessorTree
