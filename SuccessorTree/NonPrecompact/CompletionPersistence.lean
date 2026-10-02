@@ -76,7 +76,7 @@ theorem completionIntersectionCount_parity
   simp_rw [ZMod.natCast_zmod_val]
   change
     A.completionLeft x ⬝ᵥ A.completionRight y = A.eval x y
-  exact A.completion_pairing_apply x y
+  simpa only [perfectBanana_eval] using A.completion_pairing_apply x y
 
 /-- On the image of a standard perfect target, the parity of the fixed
 ambient colour is the standard dot-product pairing of the source vectors. -/
