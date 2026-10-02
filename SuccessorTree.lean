@@ -33,3 +33,4 @@ import SuccessorTree.NonPrecompact.BilinearResidue
 import SuccessorTree.NonPrecompact.ColouringWrappers
 import SuccessorTree.RamseySpace.Basic
 import SuccessorTree.RamseySpace.Finitization
+import SuccessorTree.NonPrecompact.BananaPersistence
