@@ -22,55 +22,6 @@ variable {T : Type u} {Label : Type v}
 variable [PartialOrder T] [LevelTree T]
 variable {S : STree T Label}
 
-/-- Successor decomposition data for a fixed edge a <. b. -/
-structure SuccCode (S : STree T Label) (a b : T) where
-  params : List T
-  char : Label
-  succ_eq : S.succ a params char = some b
-
-/-- S3 supplies successor code for every cover. -/
-noncomputable def succCodeOfCovBy (S : STree T Label)
-    {a b : T} (h : a ⋖ b) : SuccCode S a b := by
-  classical
-  obtain ⟨p, c, hc⟩ := S.s3 h
-  exact ⟨p, c, hc⟩
-
-@[simp] theorem succCodeOfCovBy_eq (S : STree T Label)
-    {a b : T} (h : a ⋖ b) :
-    S.succ a (succCodeOfCovBy S h).params
-      (succCodeOfCovBy S h).char = some b :=
-  (succCodeOfCovBy S h).succ_eq
-
-/-- The skipped-level image of a letter is an immediate successor of the
-original node. -/
-theorem letter_covBy (H : SMTree S) {n : Nat}
-    (e : OneLevelLetter H n) {a : T}
-    (ha : LevelTree.lev a = n) :
-    a ⋖ e a := by
-  have hle : a ≤ e a :=
-    H.le_apply_at_skip e.toMMap.map n e.skips ha
-  have hlev : LevelTree.lev (e a) = LevelTree.lev a + 1 := by
-    rw [e.level_succ_at H ha, ha]
-  exact LevelTree.covBy_of_le_level_succ hle hlev
-
-/-- Dp/Dc for the node e(a), where e is a one-level Hales--Jewett letter. -/
-noncomputable def letterCode (H : SMTree S) {n : Nat}
-    (e : OneLevelLetter H n) (a : T)
-    (ha : LevelTree.lev a = n) : SuccCode S a (e a) :=
-  succCodeOfCovBy S (H.letter_covBy e ha)
-
-/-- A node on level n+1, decomposed over its level-n predecessor. -/
-noncomputable def topCode (H : SMTree S) (n : Nat)
-    (b : T) (hb : LevelTree.lev b = n + 1) :
-    SuccCode S (LevelTree.ancestor b n (by omega)) b := by
-  let a := LevelTree.ancestor b n (by omega : n ≤ LevelTree.lev b)
-  have hab : a ≤ b := LevelTree.ancestor_le b n (by omega)
-  have halev : LevelTree.lev a = n := LevelTree.level_ancestor b n (by omega)
-  have hcov : a ⋖ b := by
-    apply LevelTree.covBy_of_le_level_succ hab
-    omega
-  exact succCodeOfCovBy S hcov
-
 /-- A chosen M3 duplication map F_m^n. -/
 noncomputable def duplicate (H : SMTree S)
     (n m : Nat) (hnm : n < m) : MMap H where
