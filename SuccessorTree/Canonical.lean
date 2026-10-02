@@ -79,7 +79,7 @@ theorem exists_lower_gap_once
   refine ⟨F', ?_, ?_⟩
   · intro x hx
     have hcomp : F2 (F1 x) = F x :=
-    hagree x (by omega)
+      hagree x (by omega)
     have hFxLev :
         LevelTree.lev (F x) ≤ H.levelMap F.map m := by
       calc
