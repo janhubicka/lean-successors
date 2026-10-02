@@ -99,7 +99,7 @@ theorem supportOccurrence_before_lt
   let occ := supportOccurrence s hs e
   have hspec : s = occ.before ++ e :: occ.after := occ.eq_word
   have hlen := congrArg List.length hspec
-  dsimp [occ] at hlen ⊢
+  change occ.before.length < s.length
   simp only [List.length_append, List.length_cons] at hlen
   omega
 
@@ -140,7 +140,7 @@ noncomputable def replayDup
   H.duplicate
     (H.replaySource n s hs x)
     (n + s.length + 1 + k)
-    (H.replaySource_lt s hs k x)
+    (SMTree.replaySource_lt H s hs k x)
 
 /-- Fold the M3 replay duplications through the raw tail after the first
 parameter. -/
@@ -181,13 +181,13 @@ theorem replayTail_apply_of_level_lt
           H.duplicate
               (H.replaySource n s hs x)
               (n + s.length + 1 + k)
-              (H.replaySource_lt s hs k x)
+              (SMTree.replaySource_lt H s hs k x)
               (B a) =
             B a
         exact H.duplicate_eq_id_below
           (H.replaySource n s hs x)
           (n + s.length + 1 + k)
-          (H.replaySource_lt s hs k x)
+          (SMTree.replaySource_lt H s hs k x)
           ha
       change
         replayTail H s hs (k + 1) xs
