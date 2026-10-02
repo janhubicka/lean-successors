@@ -46,6 +46,7 @@ BANANA project:
   injective left/right linear maps preserving the pairing, and identifying
   the matrix weight with the ordinary support-intersection count of the
   ambient image vectors.
+* structure-level perfect-pair embeddings and line-pair copies, so the final BANANA witness is stated as an embedded finite source copy rather than raw vectors.
 
 These results live under `SuccessorTree/NonPrecompact/`.
 

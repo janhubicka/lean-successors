@@ -32,5 +32,6 @@ import SuccessorTree.NonPrecompact.ResidueAlgebra
 import SuccessorTree.NonPrecompact.BilinearResidue
 import SuccessorTree.NonPrecompact.ColouringWrappers
 import SuccessorTree.NonPrecompact.PerfectCopy
+import SuccessorTree.NonPrecompact.PairingCopies
 import SuccessorTree.RamseySpace.Basic
 import SuccessorTree.RamseySpace.Finitization
