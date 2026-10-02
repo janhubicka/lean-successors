@@ -617,5 +617,118 @@ def ramseyFinitization (H : SMTree S) :
     exact H.ramseyLeFin_prefix hab hbc
 
 
+/-- Compose a realized finite approximation with an arbitrary finite map into
+its source segment. -/
+def finiteCompose {n m : Nat} (b : RamseyApprox H (m + 1))
+    (f : InitialNode T n → InitialNode T m) :
+    RestrictedMap T n :=
+  fun x => b.1 (f x)
+
+/-- If the finite composite is itself realized by an M-map, choose that
+realized approximation; otherwise choose the identity approximation. This is
+used only to produce a finite over-approximation of the lower cone. -/
+noncomputable def factorCandidate {n m : Nat} (H : SMTree S)
+    (b : RamseyApprox H (m + 1))
+    (f : InitialNode T n → InitialNode T m) :
+    RamseyApprox H (n + 1) := by
+  classical
+  exact if h :
+      ∃ a : RamseyApprox H (n + 1), a.1 = finiteCompose b f
+    then Classical.choose h
+    else ramseyApprox H (n + 1) (MMap.id H)
+
+theorem factorCandidate_eq {n m : Nat} (H : SMTree S)
+    (b : RamseyApprox H (m + 1))
+    (f : InitialNode T n → InitialNode T m)
+    (a : RamseyApprox H (n + 1))
+    (ha : a.1 = finiteCompose b f) :
+    factorCandidate H b f = a := by
+  classical
+  unfold factorCandidate
+  split
+  next h =>
+    apply Subtype.ext
+    exact (Classical.choose_spec h).trans ha.symm
+  next h =>
+    exact False.elim (h ⟨a, ha⟩)
+
+/-- Package a candidate nonempty approximation with its level. -/
+noncomputable def lowerCandidate {m : Nat} (H : SMTree S)
+    (b : RamseyApprox H (m + 1))
+    (i : Fin (m + 1))
+    (f : InitialNode T i.1 → InitialNode T m) :
+    (ramseyApproximationSystem H).FiniteApprox :=
+  ⟨i.1 + 1, factorCandidate H b f⟩
+
+/-- A.2(2): only finitely many finite approximations lie below a fixed finite
+approximation. -/
+theorem ramseyLeFin_lower_finite (H : SMTree S)
+    (b : (ramseyApproximationSystem H).FiniteApprox) :
+    Set.Finite {a | RamseyLeFin H a b} := by
+  classical
+  rcases b with ⟨nb, b⟩
+  cases nb with
+  | zero =>
+      let z : (ramseyApproximationSystem H).FiniteApprox :=
+        (ramseyApproximationSystem H).finiteApprox 0 (MMap.id H)
+      apply (Set.finite_singleton z).subset
+      intro a ha
+      rcases a with ⟨na, a⟩
+      cases na with
+      | zero =>
+          have heq : (⟨0, a⟩ :
+              (ramseyApproximationSystem H).FiniteApprox) = z := by
+            apply Sigma.ext
+            · rfl
+            · exact Subsingleton.elim _ _
+          simpa only [Set.mem_singleton_iff] using heq
+      | succ na =>
+          contradiction
+  | succ m =>
+      let z : (ramseyApproximationSystem H).FiniteApprox :=
+        (ramseyApproximationSystem H).finiteApprox 0 (MMap.id H)
+      let C : Set (ramseyApproximationSystem H).FiniteApprox :=
+        {z} ∪ ⋃ i : Fin (m + 1), Set.range (lowerCandidate H b i)
+      have hCfin : C.Finite := by
+        apply (Set.finite_singleton z).union
+        exact Set.finite_iUnion fun i : Fin (m + 1) =>
+          Set.finite_range (lowerCandidate H b i)
+      apply hCfin.subset
+      intro a ha
+      rcases a with ⟨na, a⟩
+      cases na with
+      | zero =>
+          have heq : (⟨0, a⟩ :
+              (ramseyApproximationSystem H).FiniteApprox) = z := by
+            apply Sigma.ext
+            · rfl
+            · exact Subsingleton.elim _ _
+          change (⟨0, a⟩ :
+            (ramseyApproximationSystem H).FiniteApprox) ∈ C
+          exact Set.mem_union_left _ (by
+            simpa only [Set.mem_singleton_iff] using heq)
+      | succ n =>
+          have hlevel :
+              n + 1 ≤ m + 1 :=
+            H.ramseyLeFin_level_le ha
+          have hnm : n ≤ m := by omega
+          change Nonempty (RamseyFiniteFactor H a b) at ha
+          rcases ha with ⟨fac⟩
+          let i : Fin (m + 1) := ⟨n, by omega⟩
+          let f : InitialNode T n → InitialNode T m :=
+            fun x => ⟨fac.map x.1, fac.bound x⟩
+          have hagree : a.1 = finiteCompose b f := by
+            funext x
+            exact fac.agrees x
+          have hcand : factorCandidate H b f = a :=
+            H.factorCandidate_eq b f a hagree
+          change (⟨n + 1, a⟩ :
+            (ramseyApproximationSystem H).FiniteApprox) ∈ C
+          apply Set.mem_union_right
+          refine Set.mem_iUnion.2 ⟨i, ?_⟩
+          refine ⟨f, ?_⟩
+          simpa [lowerCandidate, i, hcand]
+
+
 end SMTree
 end SuccessorTree
