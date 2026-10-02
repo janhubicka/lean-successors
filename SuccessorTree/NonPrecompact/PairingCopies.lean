@@ -35,9 +35,37 @@ structure PerfectPairEmbedding (d n : ℕ) where
   pairing_apply :
     ∀ x y : Fin d → F2, left x ⬝ᵥ right y = x ⬝ᵥ y
 
+/-- The binary relation of the BANANA language on a standard perfect
+pairing: an edge means that the pairing is one. -/
+def pairingEdge {d : ℕ} (x y : Fin d → F2) : Prop :=
+  x ⬝ᵥ y = 1
+
 namespace PerfectPairEmbedding
 
 variable {d n : ℕ} (E : PerfectPairEmbedding d n)
+
+/-- The linear maps preserve the named zero constants. -/
+@[simp] theorem left_zero : E.left 0 = 0 := by
+  exact E.left.map_zero
+
+@[simp] theorem right_zero : E.right 0 = 0 := by
+  exact E.right.map_zero
+
+/-- The linear maps preserve the addition functions in the two sorts. -/
+@[simp] theorem left_add (x y : Fin d → F2) :
+    E.left (x + y) = E.left x + E.left y := by
+  exact E.left.map_add x y
+
+@[simp] theorem right_add (x y : Fin d → F2) :
+    E.right (x + y) = E.right x + E.right y := by
+  exact E.right.map_add x y
+
+/-- Pairing preservation is exactly preservation and reflection of the
+binary relation `E(x,y) ↔ β(x,y)=1` from the BANANA language. -/
+theorem pairingEdge_iff (x y : Fin d → F2) :
+    pairingEdge (E.left x) (E.right y) ↔ pairingEdge x y := by
+  unfold pairingEdge
+  rw [E.pairing_apply x y]
 
 /-- An embedding of perfect pairs sends an `A_b`-copy to an
 `A_b`-copy. -/
