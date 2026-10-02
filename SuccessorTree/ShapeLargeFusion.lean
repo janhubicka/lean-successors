@@ -36,7 +36,7 @@ def OneStepExactPersistent
         b ∈ (ramseyApproximationSystem H).oneStepApproximations
           (n := n + 1) a C ∧
         b ∈ O ∧
-        (ramseyFinitization H).HasDepth b C (q + 1)
+        (ramseyFinitization H).HasDepth (n := n + 2) b C (q + 1)
 
 theorem exists_exact_avoidance
     (H : SMTree S)
@@ -51,7 +51,7 @@ theorem exists_exact_avoidance
         b ∈ (ramseyApproximationSystem H).oneStepApproximations
           (n := n + 1) a C ∧
         b ∈ O ∧
-        (ramseyFinitization H).HasDepth b C (q + 1) := by
+        (ramseyFinitization H).HasDepth (n := n + 2) b C (q + 1) := by
   classical
   by_contra hnone
   apply hnot
@@ -149,7 +149,7 @@ theorem oneStepAvoidNext_avoids
       b ∈ (ramseyApproximationSystem H).oneStepApproximations
         (n := n + 1) a (H.oneStepAvoidNext a B O hbad i A).1 ∧
       b ∈ O ∧
-      (ramseyFinitization H).HasDepth b
+      (ramseyFinitization H).HasDepth (n := n + 2) b
         (H.oneStepAvoidNext a B O hbad i A).1 (i + 2) := by
   classical
   simp only [oneStepAvoidNext, hi, dite_true]
@@ -217,7 +217,7 @@ theorem oneStepAvoidStage_avoids
       b ∈ (ramseyApproximationSystem H).oneStepApproximations
         (n := n + 1) a (H.oneStepAvoidStage a B O hbad (i + 1)).1 ∧
       b ∈ O ∧
-      (ramseyFinitization H).HasDepth b
+      (ramseyFinitization H).HasDepth (n := n + 2) b
         (H.oneStepAvoidStage a B O hbad (i + 1)).1 (i + 2) := by
   change
     ¬ ∃ b : RamseyApprox H (n + 2),
@@ -226,7 +226,7 @@ theorem oneStepAvoidStage_avoids
           (H.oneStepAvoidNext a B O hbad i
             (H.oneStepAvoidStage a B O hbad i)).1 ∧
       b ∈ O ∧
-      (ramseyFinitization H).HasDepth b
+      (ramseyFinitization H).HasDepth (n := n + 2) b
         (H.oneStepAvoidNext a B O hbad i
           (H.oneStepAvoidStage a B O hbad i)).1 (i + 2)
   exact H.oneStepAvoidNext_avoids a B O hbad hi
@@ -237,7 +237,7 @@ theorem oneStepLarge_exact_persistent
     {n d : Nat}
     (a : RamseyApprox H (n + 1))
     (B : MMap H)
-    (ha : (ramseyFinitization H).HasDepth a B (d + 1))
+    (ha : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1))
     (O : Set (RamseyApprox H (n + 2)))
     (hlarge : OneStepLarge H (d := d) a B O) :
     ∃ A : MMap H,
@@ -276,7 +276,7 @@ theorem oneStepLarge_exact_persistent
   obtain ⟨e, hbe⟩ :=
     (ramseyFinitization H).exists_hasDepth_of_mem_neighborhood hXbL
   have haL :
-      (ramseyFinitization H).HasDepth a L (d + 1) :=
+      (ramseyFinitization H).HasDepth (n := n + 1) a L (d + 1) :=
     ((ramseyFinitization H).hasDepth_iff_of_mem_levelNeighborhood hLB).2 ha
   have hbL' :
       b ∈ (ramseyApproximationSystem H).oneStepApproximations
@@ -307,10 +307,10 @@ theorem oneStepLarge_exact_persistent
     simpa [L, F, hstep] using
       H.fusionOfSteps_mem_levelNeighborhood F hstep (i + 1)
   have hbeL :
-      (ramseyFinitization H).HasDepth b L (i + 2) := by
+      (ramseyFinitization H).HasDepth (n := n + 2) b L (i + 2) := by
     simpa [hie] using hbe
   have hbeStage :
-      (ramseyFinitization H).HasDepth b (F (i + 1)) (i + 2) :=
+      (ramseyFinitization H).HasDepth (n := n + 2) b (F (i + 1)) (i + 2) :=
     ((ramseyFinitization H).hasDepth_iff_of_mem_levelNeighborhood
       hLStage).1 hbeL
   exact havoid ⟨b, hbStage, hbO, hbeStage⟩
