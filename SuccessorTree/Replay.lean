@@ -22,43 +22,6 @@ variable {T : Type u} {Label : Type v}
 variable [PartialOrder T] [LevelTree T]
 variable {S : STree T Label}
 
-/-- Successor decomposition data for a fixed edge a <. b. -/
-structure SuccCode (S : STree T Label) (a b : T) where
-  params : List T
-  char : Label
-  succ_eq : S.succ a params char = some b
-
-/-- S3 supplies successor code for every cover. -/
-noncomputable def succCodeOfCovBy (S : STree T Label)
-    {a b : T} (h : a ⋖ b) : SuccCode S a b := by
-  classical
-  obtain ⟨p, c, hc⟩ := S.s3 h
-  exact ⟨p, c, hc⟩
-
-@[simp] theorem succCodeOfCovBy_eq (S : STree T Label)
-    {a b : T} (h : a ⋖ b) :
-    S.succ a (succCodeOfCovBy S h).params
-      (succCodeOfCovBy S h).char = some b :=
-  (succCodeOfCovBy S h).succ_eq
-
-/-- The skipped-level image of a letter is an immediate successor of the
-original node. -/
-theorem letter_covBy (H : SMTree S) {n : Nat}
-    (e : OneLevelLetter H n) {a : T}
-    (ha : LevelTree.lev a = n) :
-    a ⋖ e a := by
-  have hle : a ≤ e a :=
-    H.le_apply_at_skip e.toMMap.map n e.skips ha
-  have hlev : LevelTree.lev (e a) = LevelTree.lev a + 1 := by
-    rw [e.level_succ_at H ha, ha]
-  exact LevelTree.covBy_of_le_level_succ hle hlev
-
-/-- Dp/Dc for the node e(a), where e is a one-level Hales--Jewett letter. -/
-noncomputable def letterCode (H : SMTree S) {n : Nat}
-    (e : OneLevelLetter H n) (a : T)
-    (ha : LevelTree.lev a = n) : SuccCode S a (e a) :=
-  succCodeOfCovBy S (H.letter_covBy e ha)
-
 /-- A node on level n+1, decomposed over its level-n predecessor. -/
 noncomputable def topCode (H : SMTree S) (n : Nat)
     (b : T) (hb : LevelTree.lev b = n + 1) :
@@ -124,17 +87,20 @@ structure SupportOccurrence (s : List α) (e : α) where
 
 noncomputable def supportOccurrence
     (s : List α) (hs : Supports s) (e : α) :
-    SupportOccurrence s e := by
-  classical
-  obtain ⟨u, v, huv⟩ := exists_split_of_mem (hs e)
-  exact ⟨u, v, huv⟩
+    SupportOccurrence s e :=
+  let u := Classical.choose (exists_split_of_mem (hs e))
+  let hu := Classical.choose_spec (exists_split_of_mem (hs e))
+  let v := Classical.choose hu
+  ⟨u, v, Classical.choose_spec hu⟩
 
 theorem supportOccurrence_before_lt
     (s : List α) (hs : Supports s) (e : α) :
     (supportOccurrence s hs e).before.length < s.length := by
-  have hspec := (supportOccurrence s hs e).eq_word
-  rw [hspec]
-  simp
+  let occ := supportOccurrence s hs e
+  have hspec : s = occ.before ++ e :: occ.after := occ.eq_word
+  have hlen := congrArg List.length hspec
+  change occ.before.length < s.length
+  simp only [List.length_append, List.length_cons] at hlen
   omega
 
 /-- Source base level of the edge represented by a raw line symbol.
@@ -143,7 +109,7 @@ A parameter reuses the first parameter edge, whose base comes after the whole
 star prefix. A constant reuses its chosen earlier support occurrence.
 -/
 noncomputable def replaySource
-    (n : Nat) (s : List (OneLevelLetter H n))
+    (H : SMTree S) (n : Nat) (s : List (OneLevelLetter H n))
     (hs : Supports s) :
     LineSymbol (OneLevelLetter H n) → Nat
   | .parameter => n + s.length
@@ -154,14 +120,14 @@ theorem replaySource_lt
     (s : List (OneLevelLetter H n))
     (hs : Supports s)
     (k : Nat) (x : LineSymbol (OneLevelLetter H n)) :
-    replaySource n s hs x < n + s.length + 1 + k := by
+    H.replaySource n s hs x < n + s.length + 1 + k := by
   cases x with
   | parameter =>
-      simp [replaySource]
+      simp [SMTree.replaySource]
       omega
   | const e =>
       have hlt := supportOccurrence_before_lt s hs e
-      simp [replaySource]
+      simp [SMTree.replaySource]
       omega
 
 /-- M3 duplication used for the k-th symbol after the first parameter. -/
@@ -172,9 +138,9 @@ noncomputable def replayDup
     (k : Nat) (x : LineSymbol (OneLevelLetter H n)) :
     MMap H :=
   H.duplicate
-    (replaySource n s hs x)
+    (H.replaySource n s hs x)
     (n + s.length + 1 + k)
-    (H.replaySource_lt s hs k x)
+    (SMTree.replaySource_lt H s hs k x)
 
 /-- Fold the M3 replay duplications through the raw tail after the first
 parameter. -/
@@ -211,8 +177,18 @@ theorem replayTail_apply_of_level_lt
   | cons x xs ih =>
       let D := H.replayDup s hs k x
       have hD : D (B a) = B a := by
-        apply H.duplicate_eq_id_below
-        exact ha
+        change
+          H.duplicate
+              (H.replaySource n s hs x)
+              (n + s.length + 1 + k)
+              (SMTree.replaySource_lt H s hs k x)
+              (B a) =
+            B a
+        exact H.duplicate_eq_id_below
+          (H.replaySource n s hs x)
+          (n + s.length + 1 + k)
+          (SMTree.replaySource_lt H s hs k x)
+          ha
       change
         replayTail H s hs (k + 1) xs
             (MMap.comp H D B) a =
@@ -293,10 +269,13 @@ theorem duplicate_occurrence_at_word_endpoint
           (n + (u ++ e :: v).length)
           hlt
           (wordMap H n (u ++ e :: v) a)) := by
-  apply H.duplicate_word_occurrence u v e a
-  · exact H.level_wordMap_at n (u ++ e :: v) ha
-  · exact hlt
-  · exact H.wordMap_append_letter_le u v e a ha
+  exact H.duplicate_word_occurrence
+    (m := n + (u ++ e :: v).length)
+    u v e a (wordMap H n (u ++ e :: v) a)
+    ha
+    (H.level_wordMap_at n (u ++ e :: v) ha)
+    hlt
+    (H.wordMap_append_letter_le u v e a ha)
 
 /-- One M3 replay step reproduces the next evaluated line symbol.
 
@@ -338,7 +317,7 @@ theorem replayDup_step
         H.duplicate_word_occurrence
           s ([] : List (OneLevelLetter H n)) e a
           (wordMap H n w a) ha hb hlt hbelow
-      simpa [replayDup, replaySource] using hdup
+      simpa [replayDup, SMTree.replaySource] using hdup
   | const d =>
       let occ := supportOccurrence s hs d
       have hspec : s = occ.before ++ d :: occ.after :=
@@ -357,13 +336,14 @@ theorem replayDup_step
         hocc.trans hstar
       have hlt :
           n + occ.before.length < n + s.length + 1 + k := by
-        have ho := supportOccurrence_before_lt s hs d
+        have ho : occ.before.length < s.length := by
+          simpa [occ] using supportOccurrence_before_lt s hs d
         omega
       have hdup :=
         H.duplicate_word_occurrence
           occ.before occ.after d a
           (wordMap H n w a) ha hb hlt hbelow
-      simpa [replayDup, replaySource, occ] using hdup
+      simpa [replayDup, SMTree.replaySource, occ] using hdup
 
 /-- Inductive correctness of the tail replay on a genuine letter input. -/
 theorem replayTail_letter
@@ -383,7 +363,7 @@ theorem replayTail_letter
       wordMap H n (w ++ evalWord e xs) a := by
   induction xs generalizing k B w with
   | nil =>
-      simpa using hB
+      simpa [replayTail, evalWord] using hB
   | cons x xs ih =>
       let d := LineSymbol.eval e x
       let D := H.replayDup s hs k x

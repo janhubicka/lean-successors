@@ -1,4 +1,5 @@
 import SuccessorTree.Monoid
+import Mathlib.Data.Fintype.Pi
 import Mathlib.Tactic
 
 /-!
@@ -46,6 +47,18 @@ def comp (H : SMTree S) (F G : MMap H) : MMap H where
 @[simp] theorem comp_apply (H : SMTree S) (F G : MMap H) (a : T) :
     MMap.comp H F G a = F (G a) := rfl
 
+/-- M-maps are determined by their underlying shape maps. -/
+theorem ext_map {H : SMTree S} {F G : MMap H} (h : F.map = G.map) : F = G := by
+  cases F
+  cases G
+  cases h
+  rfl
+
+/-- Pointwise extensionality for M-maps. -/
+theorem ext_apply {H : SMTree S} {F G : MMap H}
+    (h : ∀ a : T, F a = G a) : F = G :=
+  ext_map (ShapeMap.ext_apply h)
+
 end MMap
 
 /-- A letter of the Hales--Jewett alphabet at level n.
@@ -85,7 +98,53 @@ theorem level_succ_at (H : SMTree S) {n : Nat}
   rw [e.level_apply H, ha]
   simp
 
+/-- One-level letters are determined by their underlying M-maps. -/
+theorem ext_toMMap {H : SMTree S} {n : Nat} {e f : OneLevelLetter H n}
+    (h : e.toMMap = f.toMMap) : e = f := by
+  cases e
+  cases f
+  cases h
+  rfl
+
 end OneLevelLetter
+
+/-- Successor decomposition data for a fixed edge a <. b. -/
+structure SuccCode (S : STree T Label) (a b : T) where
+  params : List T
+  char : Label
+  succ_eq : S.succ a params char = some b
+
+/-- S3 supplies successor code for every cover. -/
+noncomputable def succCodeOfCovBy (S : STree T Label)
+    {a b : T} (h : a ⋖ b) : SuccCode S a b :=
+  let p := Classical.choose (S.s3 h)
+  let hc := Classical.choose_spec (S.s3 h)
+  let c := Classical.choose hc
+  ⟨p, c, Classical.choose_spec hc⟩
+
+@[simp] theorem succCodeOfCovBy_eq (S : STree T Label)
+    {a b : T} (h : a ⋖ b) :
+    S.succ a (succCodeOfCovBy S h).params
+      (succCodeOfCovBy S h).char = some b :=
+  (succCodeOfCovBy S h).succ_eq
+
+/-- The skipped-level image of a letter is an immediate successor of the
+original node. -/
+theorem letter_covBy (H : SMTree S) {n : Nat}
+    (e : OneLevelLetter H n) {a : T}
+    (ha : LevelTree.lev a = n) :
+    a ⋖ e a := by
+  have hle : a ≤ e a :=
+    H.le_apply_at_skip e.toMMap.map n e.skips ha
+  have hlev : LevelTree.lev (e a) = LevelTree.lev a + 1 := by
+    rw [e.level_succ_at H ha, ha]
+  exact LevelTree.covBy_of_le_level_succ hle hlev
+
+/-- Dp/Dc for the node e(a), where e is a one-level Hales--Jewett letter. -/
+noncomputable def letterCode (H : SMTree S) {n : Nat}
+    (e : OneLevelLetter H n) (a : T)
+    (ha : LevelTree.lev a = n) : SuccCode S a (e a) :=
+  succCodeOfCovBy S (H.letter_covBy e ha)
 
 /-- Nodes on one fixed level, packaged as a finite type. -/
 abbrev LevelNode (T : Type u) [PartialOrder T] [LevelTree T] (n : Nat) :=
@@ -128,18 +187,21 @@ theorem OneLevelLetter.levelImage_injective
       e.toMMap.map.toFun = f.toMMap.map.toFun :=
     H.eq_of_skipsOnly_levelImage
       e.toMMap.map f.toMMap.map n e.skips f.skips himage
-  apply OneLevelLetter.ext
-  apply MMap.ext
-  apply ShapeMap.ext
-  exact hfun
+  apply OneLevelLetter.ext_toMMap
+  apply MMap.ext_map
+  exact ShapeMap.ext_toFun hfun
 
 /-- The Hales--Jewett alphabet at a fixed level is finite. -/
 noncomputable instance oneLevelLetterFintype
     (H : SMTree S) (n : Nat) :
-    Fintype (OneLevelLetter H n) :=
-  Fintype.ofInjective
+    Fintype (OneLevelLetter H n) := by
+  letI : Fintype (LevelNode T n) := levelNodeFintype T n
+  letI : Fintype (LevelNode T (n + 1)) := levelNodeFintype T (n + 1)
+  letI : DecidableEq (LevelNode T n) := Classical.decEq _
+  letI : DecidableEq (LevelNode T (n + 1)) := Classical.decEq _
+  exact Fintype.ofInjective
     (fun e : OneLevelLetter H n => e.levelImage H)
-    (H.levelImage_injective n)
+    (OneLevelLetter.levelImage_injective H n)
 
 /-- Interpretation of a finite word as the canonical total extension g_w^+.
 
@@ -206,7 +268,7 @@ theorem level_wordMap_of_ge (H : SMTree S) (n : Nat)
   induction w with
   | nil => simp
   | cons e w ih =>
-      rw [wordMap_cons_apply, e.level_apply H, ih ha]
+      rw [wordMap_cons_apply, e.level_apply H, ih]
       have hnot : ¬ LevelTree.lev a + w.length < n := by omega
       simp [hnot]
       omega
@@ -221,6 +283,20 @@ theorem letterCode_params_below
   have h := S.parameter_level_lt (H.letterCode e a ha).succ_eq hx
   simpa [ha] using h
 
+private theorem list_map_eq_self_of_fixed
+    {α : Type u} (p : List α) (f : α → α)
+    (h : ∀ x ∈ p, f x = x) :
+    p.map f = p := by
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : f x = x := h x (List.mem_cons_self)
+      have hxs : ∀ y ∈ xs, f y = y := by
+        intro y hy
+        exact h y (List.mem_cons_of_mem x hy)
+      simp only [List.map_cons]
+      rw [hx, ih hxs]
+
 /-- Every word map fixes the parameter list of a one-level letter edge. -/
 theorem map_letterCode_params_eq
     (H : SMTree S) {n : Nat}
@@ -234,16 +310,8 @@ theorem map_letterCode_params_eq
     intro x hx
     apply wordMap_eq_id_below H n w
     exact H.letterCode_params_below e a ha hx
-  induction p with
-  | nil => rfl
-  | cons x xs ih =>
-      have hx : wordMap H n w x = x :=
-        hfix x (by simp)
-      have hxs : ∀ y ∈ xs, wordMap H n w y = y := by
-        intro y hy
-        exact hfix y (by simp [hy])
-      simp only [List.map_cons]
-      rw [hx, ih hxs]
+  change p.map (wordMap H n w) = p
+  exact list_map_eq_self_of_fixed p (wordMap H n w) hfix
 
 /-- Appending one letter gives exactly the corresponding successor edge after
 the preceding word has been applied. -/
@@ -257,32 +325,28 @@ theorem wordMap_append_letter_succ
         (H.letterCode e a ha).char =
       some (wordMap H n (w ++ [e]) a) := by
   have hedge := (H.letterCode e a ha).succ_eq
-  have hlev : n < LevelTree.lev (e a) := by
-    rw [e.level_succ_at H ha]
+  obtain ⟨d, hd, hdb⟩ := (wordMap H n w).map.weak_succ' hedge
+  have hparams := H.map_letterCode_params_eq w e a ha
+  rw [hparams] at hd
+  have hbase :
+      LevelTree.lev (wordMap H n w a) = n + w.length :=
+    H.level_wordMap_at n w ha
+  have hdlev :
+      LevelTree.lev d = LevelTree.lev (wordMap H n w a) + 1 :=
+    LevelTree.covBy_level_eq (S.covBy_of_succ_eq_some hd)
+  have healvl : LevelTree.lev (e a) = n + 1 :=
+    e.level_succ_at H ha
+  have htarget :
+      LevelTree.lev (wordMap H n w (e a)) =
+        LevelTree.lev (e a) + w.length :=
+    H.level_wordMap_of_ge n w (a := e a) (by omega)
+  have hsame :
+      LevelTree.lev d = LevelTree.lev (wordMap H n w (e a)) := by
     omega
-  have hexact :
-      S.succ (wordMap H n w a)
-          ((H.letterCode e a ha).params.map (wordMap H n w))
-          (H.letterCode e a ha).char =
-        some (wordMap H n w (e a)) := by
-    induction w with
-    | nil =>
-        simpa using hedge
-    | cons d w ih =>
-        have htailLevel :
-            n < LevelTree.lev (wordMap H n w (e a)) := by
-          have hbase : LevelTree.lev (e a) = n + 1 :=
-            e.level_succ_at H ha
-          have hw :=
-            level_wordMap_of_ge H n w
-              (a := e a) (by omega)
-          omega
-        have hd :=
-          H.succ_eq_above_skip d.toMMap.map n d.skips ih htailLevel
-        simpa [wordMap_cons_apply, List.map_map, Function.comp_def] using hd
-  rw [H.map_letterCode_params_eq w e a ha] at hexact
-  rw [wordMap_append_singleton_apply] 
-  exact hexact
+  have heq : d = wordMap H n w (e a) :=
+    LevelTree.same_level_of_le hdb hsame
+  rw [wordMap_append_singleton_apply]
+  simpa [heq] using hd
 
 /-- Consecutive word prefixes form a cover on every level-n node. -/
 theorem wordMap_covBy_append_letter
@@ -304,7 +368,7 @@ theorem wordMap_le_append
   | nil =>
       simp
   | append_singleton v e ih =>
-      rw [List.append_assoc]
+      rw [← List.append_assoc]
       exact ih.trans
         (H.wordMap_covBy_append_letter (u ++ v) e a ha).le
 
