@@ -33,3 +33,11 @@ import SuccessorTree.NonPrecompact.BilinearResidue
 import SuccessorTree.NonPrecompact.ColouringWrappers
 import SuccessorTree.RamseySpace.Basic
 import SuccessorTree.RamseySpace.Finitization
+import SuccessorTree.Canonical
+import SuccessorTree.ShapePigeonhole
+import SuccessorTree.ShapeFusion
+import SuccessorTree.RamseySpace.Nonempty
+import SuccessorTree.ShapeFrontFusion
+import SuccessorTree.ShapePrefixPigeonhole
+import SuccessorTree.ShapeFrontPigeonhole
+import SuccessorTree.ShapeReplayFusion
