@@ -28,7 +28,7 @@ def FusionStable (H : SMTree S) (F : Nat → MMap H) : Prop :=
 /-- The M1 fusion limit of a stable sequence of M-maps. -/
 noncomputable def fusionLimit
     (H : SMTree S) (F : Nat → MMap H)
-    (hF : F.FusionStable H) : MMap H where
+    (hF : MMap.FusionStable H F) : MMap H where
   map := ShapeMap.fusionLimit (fun i => (F i).map) hF
   mem := H.fusion_mem
     (fun i => (F i).map)
@@ -37,14 +37,14 @@ noncomputable def fusionLimit
 
 @[simp] theorem fusionLimit_apply
     (H : SMTree S) (F : Nat → MMap H)
-    (hF : F.FusionStable H) (a : T) :
+    (hF : MMap.FusionStable H F) (a : T) :
     MMap.fusionLimit H F hF a =
       F (LevelTree.lev a) a := rfl
 
 /-- The M-map fusion limit agrees with any sufficiently late frozen stage. -/
 theorem fusionLimit_eq_stage
     (H : SMTree S) (F : Nat → MMap H)
-    (hF : F.FusionStable H)
+    (hF : MMap.FusionStable H F)
     {i : Nat} {a : T} (ha : LevelTree.lev a ≤ i) :
     MMap.fusionLimit H F hF a = F i a := by
   exact ShapeMap.fusionLimit_eq_stage
@@ -77,7 +77,7 @@ stability hypothesis of M1. -/
 theorem fusionStable_of_steps
     (H : SMTree S) (F : Nat → MMap H)
     (hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1))) :
-    F.FusionStable H := by
+    MMap.FusionStable H F := by
   intro i a ha
   exact (H.fusionStep_agrees (hstep i) a ha).symm
 
