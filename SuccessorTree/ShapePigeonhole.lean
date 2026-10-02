@@ -1,6 +1,7 @@
 import SuccessorTree.Canonical
 import SuccessorTree.Replay
 import SuccessorTree.RamseySpace.Basic
+import SuccessorTree.RamseySpace.Finitization
 
 /-!
 # Finite shape approximations and the one-dimensional pigeonhole lemma
@@ -64,6 +65,96 @@ def toAM
     (F.toAM H n k hF).1 = ramseyApprox H (n + k) F := rfl
 
 end MMap
+
+/-- Conversely, equality of the finite prefix with the identity forces
+pointwise fixing below the cut. -/
+theorem MMap.fixesBelow_of_ramseyApprox_eq_id
+    (H : SMTree S) (F : MMap H) (n : Nat)
+    (hF : ramseyApprox H n F = ramseyApprox H n (MMap.id H)) :
+    F.FixesBelow H n := by
+  cases n with
+  | zero =>
+      intro a ha
+      omega
+  | succ n =>
+      intro a ha
+      have hval := congrArg Subtype.val hF
+      change F.restrictLe H n = (MMap.id H).restrictLe H n at hval
+      have ha' : LevelTree.lev a ≤ n := by omega
+      have happ := congrFun hval ⟨a, ha'⟩
+      exact happ
+
+namespace AM
+
+/-- A deterministic representative is not needed for the finite map itself,
+but choosing one is convenient when composing finite approximations. -/
+noncomputable def representative
+    (H : SMTree S) {n k : Nat} (a : AM H n k) : MMap H :=
+  Classical.choose a.2.2
+
+theorem representative_prefix
+    (H : SMTree S) {n k : Nat} (a : AM H n k) :
+    ramseyApprox H n (a.representative H) =
+      ramseyApprox H n (MMap.id H) :=
+  (Classical.choose_spec a.2.2).1
+
+theorem representative_top
+    (H : SMTree S) {n k : Nat} (a : AM H n k) :
+    ramseyApprox H (n + k) (a.representative H) = a.1 :=
+  (Classical.choose_spec a.2.2).2
+
+theorem representative_fixesBelow
+    (H : SMTree S) {n k : Nat} (a : AM H n k) :
+    (a.representative H).FixesBelow H n :=
+  MMap.fixesBelow_of_ramseyApprox_eq_id H _ n (a.representative_prefix H)
+
+end AM
+
+/-- Minimality of depth forces a finite factor to reach the top level of the
+target approximation.  This is the finite-level bridge used when moving the
+one-dimensional pigeonhole to an arbitrary prefix. -/
+theorem ramseyFiniteFactor_topLevel_of_depth
+    (H : SMTree S)
+    {n d : Nat}
+    {a : RamseyApprox H (n + 1)}
+    {B : MMap H}
+    (hd : (ramseyFinitization H).HasDepth a B (d + 1))
+    (fac : RamseyFiniteFactor H a (ramseyApprox H (d + 1) B)) :
+    H.levelMap fac.map.map n = d := by
+  obtain ⟨x, hx⟩ := H.level_nonempty n
+  have hupper : H.levelMap fac.map.map n ≤ d := by
+    calc
+      H.levelMap fac.map.map n = LevelTree.lev (fac.map x) := by
+        simpa [hx] using H.levelMap_eq fac.map.map (a := x)
+      _ ≤ d := fac.bound ⟨x, by simpa [hx]⟩
+  apply le_antisymm hupper
+  by_contra hnot
+  have hlt : H.levelMap fac.map.map n < d := by omega
+  let t : Nat := H.levelMap fac.map.map n
+  have hsmall : t + 1 < d + 1 := by
+    dsimp [t]
+    omega
+  apply hd.2 (t + 1) hsmall
+  change Nonempty
+    (RamseyFiniteFactor H a (ramseyApprox H (t + 1) B))
+  refine ⟨{
+    map := fac.map
+    bound := ?_
+    agrees := ?_
+  }⟩
+  · intro y
+    calc
+      LevelTree.lev (fac.map y.1) =
+          H.levelMap fac.map.map (LevelTree.lev y.1) := by
+        exact (H.levelMap_eq fac.map.map (a := y.1)).symm
+      _ ≤ H.levelMap fac.map.map n :=
+        (H.levelMap_strictMono fac.map.map).monotone y.2
+      _ = t := rfl
+  · intro y
+    have hy := fac.agrees y
+    change a.1 y = B (fac.map y.1) at hy
+    change a.1 y = B (fac.map y.1)
+    exact hy
 
 /-- Every word in the one-level Hales--Jewett alphabet fixes the frozen
 prefix. -/
