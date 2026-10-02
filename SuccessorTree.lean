@@ -39,3 +39,4 @@ import SuccessorTree.NonPrecompact.Completion
 import SuccessorTree.RamseySpace.Basic
 import SuccessorTree.RamseySpace.Finitization
 import SuccessorTree.NonPrecompact.CompletionPersistence
+import SuccessorTree.NonPrecompact.CopyRamseyDegree
