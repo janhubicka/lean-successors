@@ -58,7 +58,7 @@ noncomputable instance initialNodeFintype
 theorem levelMap_id_le (H : SMTree S) (F : ShapeMap S) (n : Nat) :
     n ≤ H.levelMap F n := by
   induction n with
-  | zero => omega
+  | zero => exact Nat.zero_le _
   | succ n ih =>
       have hstep :=
         H.levelMap_strictMono F (Nat.lt_succ_self n)
@@ -162,7 +162,7 @@ theorem ramseyLeFin_level_le (H : SMTree S)
       | succ nb =>
           rcases hab with ⟨f⟩
           obtain ⟨x, hx⟩ := H.level_nonempty na
-          let xx : InitialNode T na := ⟨x, by omega⟩
+          let xx : InitialNode T na := ⟨x, Nat.le_of_eq hx⟩
           have hbound := f.bound xx
           have hmap :
               H.levelMap f.map.map na =
@@ -485,7 +485,8 @@ theorem ramseyLeFin_lowerFinite
           have hle :
               n + 1 ≤ m + 1 :=
             ramseyLeFin_level_le H ha
-          have hn : n < m + 1 := by omega
+          have hn : n < m + 1 :=
+            Nat.lt_succ_of_le (Nat.le_of_succ_le_succ hle)
           apply Set.mem_union_right
           apply Set.mem_iUnion.2
           refine ⟨(⟨n, hn⟩ : Fin (m + 1)), ?_⟩
