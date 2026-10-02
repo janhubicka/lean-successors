@@ -36,8 +36,13 @@ theorem ramseyAmalgamation_nonempty
   | succ n =>
       cases d with
       | zero =>
+          have hfin :
+              RamseyLeFin H
+                ⟨n + 1, a⟩
+                ((ramseyApproximationSystem H).finiteApprox 0 B) := by
+            simpa [ramseyFinitization] using hd.1
           have hle : n + 1 ≤ 0 :=
-            ramseyLeFin_level_le H hd.1
+            ramseyLeFin_level_le H hfin
           omega
       | succ d =>
           have hfin :
