@@ -1,4 +1,4 @@
-import SuccessorTree.ShapePigeonhole
+import SuccessorTree.ShapePrefixPigeonhole
 import Mathlib.Tactic
 
 /-!
