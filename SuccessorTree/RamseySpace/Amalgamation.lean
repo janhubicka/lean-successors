@@ -65,5 +65,70 @@ theorem ramseyAmalgamation_nonempty
             change A (fac.map x.1) = a.1 x
             exact hABx.trans hagree.symm
 
+/-- The extra Ellentuck-amalgamation hypothesis (EA) from the successor-tree
+paper.
+
+For a finite approximation `a` of depth `d` in `B`, every nonempty
+basic neighborhood `[a,A]` below `B` can be absorbed into a refinement
+`A' ∈ [d,B]`.  Equivalently, the entire neighborhood `[a,A']` lies inside
+`[a,A]`.
+
+This is exactly Todorčević's A.3(2).  It is deliberately *not* a consequence
+of M1--M3 in this development: the pointwise/Borel successor theorem does not
+need it, while the full Ellentuck conclusion does. -/
+def EA (H : SMTree S) : Prop :=
+  ∀ {n : Nat}
+    (a : (ramseyApproximationSystem H).Approx n)
+    (B : MMap H) {d : Nat},
+    (ramseyFinitization H).HasDepth a B d →
+    ∀ {A : MMap H},
+      A ∈ (ramseyApproximationSystem H).neighborhood a B →
+      ∃ A',
+        A' ∈ (ramseyApproximationSystem H).levelNeighborhood d B ∧
+          (ramseyApproximationSystem H).neighborhood a A' ⊆
+            (ramseyApproximationSystem H).neighborhood a A
+
+/-- Under EA, successor-tree M-maps satisfy the textbook second
+amalgamation axiom verbatim. -/
+theorem ramseyAmalgamation_refine_standard
+    (H : SMTree S) (hEA : EA H)
+    {n : Nat} (a : (ramseyApproximationSystem H).Approx n)
+    (B : MMap H) {d : Nat}
+    (hd : (ramseyFinitization H).HasDepth a B d)
+    {A : MMap H}
+    (hA : A ∈ (ramseyApproximationSystem H).neighborhood a B) :
+    ∃ A',
+      A' ∈ (ramseyApproximationSystem H).levelNeighborhood d B ∧
+        (ramseyApproximationSystem H).neighborhood a A' ⊆
+          (ramseyApproximationSystem H).neighborhood a A :=
+  hEA a B hd hA
+
+/-- The two Todorčević amalgamation clauses for successor trees: A.3(1)
+is automatic from finite factorization, while A.3(2) is precisely EA. -/
+theorem ramseyA3_of_EA (H : SMTree S) (hEA : EA H) :
+    (∀ {n : Nat}
+        (a : (ramseyApproximationSystem H).Approx n)
+        (B : MMap H) {d : Nat},
+        (ramseyFinitization H).HasDepth a B d →
+        ∀ ⦃A : MMap H⦄,
+          A ∈ (ramseyApproximationSystem H).levelNeighborhood d B →
+            ((ramseyApproximationSystem H).neighborhood a A).Nonempty) ∧
+      (∀ {n : Nat}
+        (a : (ramseyApproximationSystem H).Approx n)
+        (B : MMap H) {d : Nat},
+        (ramseyFinitization H).HasDepth a B d →
+        ∀ {A : MMap H},
+          A ∈ (ramseyApproximationSystem H).neighborhood a B →
+          ∃ A',
+            A' ∈ (ramseyApproximationSystem H).levelNeighborhood d B ∧
+              (ramseyApproximationSystem H).neighborhood a A' ⊆
+                (ramseyApproximationSystem H).neighborhood a A) := by
+  constructor
+  · intro n a B d hd A hA
+    exact H.ramseyAmalgamation_nonempty a B hd hA
+  · intro n a B d hd A hA
+    exact H.ramseyAmalgamation_refine_standard hEA a B hd hA
+
+
 end SMTree
 end SuccessorTree
