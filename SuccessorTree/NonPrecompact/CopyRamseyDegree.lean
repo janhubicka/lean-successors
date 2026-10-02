@@ -328,7 +328,9 @@ private theorem nat_lt_two_pow (n : ℕ) : n < 2 ^ n := by
       calc
         n + 1 < 2 ^ n + 1 := by omega
         _ ≤ 2 ^ n + 2 ^ n := by omega
-        _ = 2 ^ (n + 1) := by ring
+        _ = 2 ^ (n + 1) := by
+          rw [pow_succ]
+          omega
 
 /-- Both four-element BANANA sources have infinite copy Ramsey degree.  The
 argument is uniform in the pairing value `b`. -/
