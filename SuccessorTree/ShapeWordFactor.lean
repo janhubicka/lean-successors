@@ -37,8 +37,11 @@ theorem amExactToBelow_injective
     (H : SMTree S) (n m : Nat) :
     Function.Injective (H.amExactToBelow n m) := by
   intro g h hgh
-  apply Subtype.ext
-  exact congrArg Subtype.val hgh
+  have hv :
+      (H.amExactToBelow n m g).1 =
+        (H.amExactToBelow n m h).1 :=
+    congrArg (fun z : AMBelow H n (m + 1) => z.1) hgh
+  exact Subtype.ext hv
 
 noncomputable instance amExactFintype
     (H : SMTree S) (n m : Nat) :
@@ -91,10 +94,15 @@ noncomputable def exactPredecessor
           have hKj : H.levelMap K.map j = j := by
             apply H.levelMap_eq_of_fixesBelow K (j + 1) hKfix
             omega
+          change H.levelMap K.map j < m
           rw [hKj]
           omega
-  obtain ⟨P, Q, hPagree, hPtop, hQfix, hQP⟩ :=
-    H.exists_shapeSplit_factor K n m hcut
+  let hsplit := H.exists_shapeSplit_factor K n m hcut
+  let P : MMap H := Classical.choose hsplit
+  let hsplitP := Classical.choose_spec hsplit
+  let Q : MMap H := Classical.choose hsplitP
+  have hsplitSpec := Classical.choose_spec hsplitP
+  rcases hsplitSpec with ⟨hPagree, hPtop, hQfix, hQP⟩
   have hPfix : P.FixesBelow H n := by
     intro x hx
     calc
@@ -162,8 +170,23 @@ noncomputable def ExactPredecessor.predWord
     {n m : Nat} {g : AMExact H n (m + 1)}
     (D : ExactPredecessor H n m g) :
     AMExact H n m := by
-  refine ⟨D.pred.toAM H n 1 D.pred_fixes, ?_⟩
-  exact D.pred_top
+  let p : AM H n 1 := D.pred.toAM H n 1 D.pred_fixes
+  refine ⟨p, ?_⟩
+  unfold AM.topLevel
+  have htop := AM.representative_top H p
+  have hval := congrArg Subtype.val htop
+  change (p.representative H).restrictLe H n =
+    D.pred.restrictLe H n at hval
+  obtain ⟨x, hx⟩ := H.level_nonempty n
+  have hpoint := congrFun hval ⟨x, by simpa [hx]⟩
+  calc
+    H.levelMap (p.representative H).map n =
+        LevelTree.lev (p.representative H x) := by
+      simpa [hx] using H.levelMap_eq (p.representative H).map (a := x)
+    _ = LevelTree.lev (D.pred x) := by rw [hpoint]
+    _ = H.levelMap D.pred.map n := by
+      simpa [hx] using (H.levelMap_eq D.pred.map (a := x)).symm
+    _ = m := D.pred_top
 
 end SMTree
 end SuccessorTree
