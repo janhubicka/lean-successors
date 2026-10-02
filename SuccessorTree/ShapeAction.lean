@@ -78,13 +78,15 @@ theorem shapeAct_id
     (H : SMTree S) (n : Nat) (g : AM H n 1) :
     H.shapeAct n (ShapeSubspace.id H n) g = g := by
   apply Subtype.ext
-  rw [shapeAct_val]
-  have htop := g.representative_top H
   apply Subtype.ext
+  funext x
+  have htop := g.representative_top H
   have hval := congrArg Subtype.val htop
   change
     (g.representative H).restrictLe H n = g.1.1 at hval
-  simpa using hval
+  have hx := congrFun hval x
+  change (MMap.id H) (g.representative H x.1) = g.1.1 x
+  simpa using hx
 
 theorem shapeAct_comp
     (H : SMTree S) (n : Nat)
