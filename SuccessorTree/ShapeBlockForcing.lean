@@ -265,7 +265,9 @@ theorem avoidingFusionStage_stable
   by_cases hin : i < n
   · have hi0 : i - n = 0 := Nat.sub_eq_zero_of_le (Nat.le_of_lt hin)
     have hisucc0 : (i + 1) - n = 0 := by omega
-    unfold avoidingFusionStage
+    change
+      (H.avoidingBlockSeq A X0 extendable (i - n)).word.representative H x =
+        (H.avoidingBlockSeq A X0 extendable ((i + 1) - n)).word.representative H x
     rw [hi0, hisucc0]
   · have hni : n ≤ i := Nat.le_of_not_gt hin
     let k := i - n
@@ -278,7 +280,9 @@ theorem avoidingFusionStage_stable
       omega
     have hext :=
       H.avoidingBlockSeq_extends A X0 extendable k
-    unfold avoidingFusionStage
+    change
+      (H.avoidingBlockSeq A X0 extendable (i - n)).word.representative H x =
+        (H.avoidingBlockSeq A X0 extendable ((i + 1) - n)).word.representative H x
     rw [hiIndex, hisucc]
     apply H.blockExtends_representative_agrees hext
     rw [← hik]
@@ -352,7 +356,10 @@ theorem avoidingFusionLimit_agrees_block
       ShapeMap.fusionLimit_eq_stage stages hstable hx
     _ = (H.avoidingBlockSeq A X0 extendable k).word.representative H x := by
       have hidx : n + k - n = k := by omega
-      simp [stages, avoidingFusionStage, hidx]
+      change
+        (H.avoidingBlockSeq A X0 extendable (n + k - n)).word.representative H x =
+          (H.avoidingBlockSeq A X0 extendable k).word.representative H x
+      rw [hidx]
 
 /-- If every avoiding block extended, the fusion limit would avoid A on every
 one-level word. -/
