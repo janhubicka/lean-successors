@@ -438,8 +438,8 @@ theorem ramseyLeFin_lowerFinite
       rcases a with ⟨na, a⟩
       cases na with
       | zero =>
-          have ha0 : a = PUnit.unit := Subsingleton.elim _ _
-          simp [ha0]
+          cases a
+          simp
       | succ na =>
           contradiction
   | succ m =>
@@ -469,9 +469,9 @@ theorem ramseyLeFin_lowerFinite
       rcases a with ⟨na, a⟩
       cases na with
       | zero =>
-          have ha0 : a = PUnit.unit := Subsingleton.elim _ _
+          cases a
           apply Set.mem_union_left
-          simpa [empty, ha0]
+          simp [empty]
       | succ n =>
           have hle :
               n + 1 ≤ m + 1 :=
