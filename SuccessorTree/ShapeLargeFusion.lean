@@ -271,7 +271,7 @@ theorem oneStepLarge_exact_persistent
   obtain ⟨b, hbL, hbO⟩ := hlarge L hLB
   rcases hbL with ⟨X, hXaL, hXb⟩
   have hXbL :
-      X ∈ (ramseyApproximationSystem H).neighborhood b L :=
+      X ∈ (ramseyApproximationSystem H).neighborhood (n := n + 2) b L :=
     ⟨hXaL.1, hXb⟩
   obtain ⟨e, hbe⟩ :=
     (ramseyFinitization H).exists_hasDepth_of_mem_neighborhood hXbL
