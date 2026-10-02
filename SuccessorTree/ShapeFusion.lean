@@ -1,5 +1,6 @@
 import SuccessorTree.Canonical
 import SuccessorTree.RamseySpace.Basic
+import SuccessorTree.RamseySpace.Finitization
 
 /-!
 # Ordinary fusion of shape-preserving M-maps
@@ -126,6 +127,88 @@ theorem fusionStable_of_steps
     MMap.FusionStable H F := by
   intro i a ha
   exact (H.fusionStep_agrees (hstep i) a ha).symm
+
+/-- Every fusion step is a genuine Ramsey reduction. -/
+theorem fusionStep_reduction
+    (H : SMTree S) {i : Nat} {F G : MMap H}
+    (h : FusionStep H i F G) :
+    RamseyReduction H G F := by
+  rcases h with ⟨K, hK, rfl⟩
+  refine ⟨K, ?_⟩
+  intro a
+  rfl
+
+/-- Later stages of an ordinary fusion sequence refine all earlier stages. -/
+theorem fusionSteps_reduction_of_le
+    (H : SMTree S) (F : Nat → MMap H)
+    (hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1)))
+    {i j : Nat} (hij : i ≤ j) :
+    RamseyReduction H (F j) (F i) := by
+  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hij
+  induction d with
+  | zero =>
+      simpa using H.ramseyReduction_refl (F i)
+  | succ d ih =>
+      have hs :
+          RamseyReduction H (F (i + d + 1)) (F (i + d)) := by
+        convert H.fusionStep_reduction (hstep (i + d)) using 1 <;> omega
+      exact H.ramseyReduction_trans hs ih
+
+/-- The diagonal fusion limit has the same nth finite approximation as every
+sufficiently late stage. -/
+theorem fusionOfSteps_ramseyApprox_eq_stage
+    (H : SMTree S) (F : Nat → MMap H)
+    (hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1)))
+    {n i : Nat} (hni : n ≤ i + 1) :
+    ramseyApprox H n (H.fusionOfSteps F hstep) =
+      ramseyApprox H n (F i) := by
+  cases n with
+  | zero =>
+      rfl
+  | succ n =>
+      apply Subtype.ext
+      funext a
+      change H.fusionOfSteps F hstep a.1 = F i a.1
+      apply H.fusionOfSteps_eq_stage F hstep
+      omega
+
+/-- The ordinary fusion limit is a Ramsey refinement of every stage.  This is
+proved purely from A2: each finite approximation of the limit is already a
+finite approximation of a sufficiently late stage, and late stages refine
+the chosen earlier stage. -/
+theorem fusionOfSteps_reduction_stage
+    (H : SMTree S) (F : Nat → MMap H)
+    (hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1)))
+    (i : Nat) :
+    RamseyReduction H (H.fusionOfSteps F hstep) (F i) := by
+  apply H.reduction_of_ramseyLeFin_all
+  intro n
+  let j : Nat := i + n
+  have hred : RamseyReduction H (F j) (F i) := by
+    apply H.fusionSteps_reduction_of_le F hstep
+    dsimp [j]
+    omega
+  obtain ⟨m, hm⟩ := H.ramseyLeFin_of_reduction hred n
+  refine ⟨m, ?_⟩
+  have heq :
+      ramseyApprox H n (H.fusionOfSteps F hstep) =
+        ramseyApprox H n (F j) := by
+    apply H.fusionOfSteps_ramseyApprox_eq_stage F hstep
+    dsimp [j]
+    omega
+  simpa [RamseySpace.ApproximationSystem.finiteApprox, heq] using hm
+
+/-- In particular the fusion limit lies in the frozen neighborhood of every
+stage. -/
+theorem fusionOfSteps_mem_levelNeighborhood
+    (H : SMTree S) (F : Nat → MMap H)
+    (hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1)))
+    (i : Nat) :
+    H.fusionOfSteps F hstep ∈
+      (ramseyApproximationSystem H).levelNeighborhood (i + 1) (F i) := by
+  constructor
+  · exact H.fusionOfSteps_reduction_stage F hstep i
+  · exact H.fusionOfSteps_ramseyApprox_eq_stage F hstep le_rfl
 
 /-- Package the ordinary fusion limit from its stepwise construction. -/
 noncomputable def fusionOfSteps
