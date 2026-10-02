@@ -130,5 +130,37 @@ theorem ramseyA3_of_EA (H : SMTree S) (hEA : EA H) :
     exact H.ramseyAmalgamation_refine_standard hEA a B hd hA
 
 
+/-- Extra Ellentuck amalgamation for a successor-tree Ramsey space.
+
+This is exactly the second amalgamation clause needed by Todorčević A.3.
+Keeping it separate from `SMTree` records the important fact that M1--M3
+already prove A.3(1), while the full Ellentuck topology needs this additional
+tail-splicing property. -/
+def EllentuckAmalgamation (H : SMTree S) : Prop :=
+  ∀ {n : Nat} (a : (ramseyApproximationSystem H).Approx n)
+      (B : MMap H) {d : Nat},
+    (ramseyFinitization H).HasDepth a B d →
+      ∀ {A : MMap H},
+        A ∈ (ramseyApproximationSystem H).neighborhood a B →
+          ∃ A',
+            A' ∈ (ramseyApproximationSystem H).levelNeighborhood d B ∧
+              (ramseyApproximationSystem H).neighborhood a A' ⊆
+                (ramseyApproximationSystem H).neighborhood a A
+
+/-- Under the extra Ellentuck amalgamation hypothesis, the source-facing
+A.3(2) clause is available verbatim. -/
+theorem ramseyAmalgamation_refine_standard
+    (H : SMTree S) (hEA : EllentuckAmalgamation H)
+    {n : Nat} (a : (ramseyApproximationSystem H).Approx n)
+    (B : MMap H) {d : Nat}
+    (hd : (ramseyFinitization H).HasDepth a B d)
+    {A : MMap H}
+    (hA : A ∈ (ramseyApproximationSystem H).neighborhood a B) :
+    ∃ A',
+      A' ∈ (ramseyApproximationSystem H).levelNeighborhood d B ∧
+        (ramseyApproximationSystem H).neighborhood a A' ⊆
+          (ramseyApproximationSystem H).neighborhood a A :=
+  hEA a B hd hA
+
 end SMTree
 end SuccessorTree
