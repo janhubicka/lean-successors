@@ -23,10 +23,10 @@ def completionLeft (A : BananaMatrixStructure l r) :
   toFun x := Fin.append x 0
   map_add' x y := by
     ext i
-    simp [Fin.append, Pi.add_apply]
+    apply Fin.addCases <;> intro j <;> simp [Fin.append, Pi.add_apply]
   map_smul' c x := by
     ext i
-    simp [Fin.append, Pi.smul_apply]
+    apply Fin.addCases <;> intro j <;> simp [Fin.append, Pi.smul_apply]
 
 /-- Right map of the explicit perfect completion. -/
 def completionRight (A : BananaMatrixStructure l r) :
@@ -34,10 +34,12 @@ def completionRight (A : BananaMatrixStructure l r) :
   toFun y := Fin.append (A.pairing *ᵥ y) y
   map_add' x y := by
     ext i
-    simp [Fin.append, Pi.add_apply, Matrix.mulVec_add]
+    apply Fin.addCases <;> intro j <;>
+      simp [Fin.append, Pi.add_apply, Matrix.mulVec_add]
   map_smul' c x := by
     ext i
-    simp [Fin.append, Pi.smul_apply, Matrix.mulVec_smul]
+    apply Fin.addCases <;> intro j <;>
+      simp [Fin.append, Pi.smul_apply, Matrix.mulVec_smul]
 
 theorem completionLeft_injective :
     Function.Injective A.completionLeft := by
