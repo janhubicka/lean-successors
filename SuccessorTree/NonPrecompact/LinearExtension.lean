@@ -42,9 +42,7 @@ theorem exists_linearEquiv_extends_submoduleEquiv
     omega
   let fQ : Q ≃ₗ[K] Q' := LinearEquiv.ofFinrankEq Q Q' hQdim
   refine ⟨eQ.symm ≪≫ₗ LinearEquiv.prodCongr f fQ ≪≫ₗ eQ', ?_⟩
-  intro x
-  change eQ' (f x, fQ 0) = f x
-  simp [eQ', fQ]
+  aesop
 
 end AmbientExtension
 
@@ -79,14 +77,15 @@ theorem exists_linearEquiv_extends_of_surjective
     ext y
     constructor
     · rintro ⟨x, hx, rfl⟩
-      rw [LinearMap.mem_ker]
+      apply LinearMap.mem_ker.mpr
+      change qA' (f x) = 0
       rw [hfA x]
-      simpa only [LinearMap.mem_ker] using hx
+      exact LinearMap.mem_ker.mp hx
     · intro hy
       refine ⟨f.symm y, ?_, ?_⟩
-      · rw [LinearMap.mem_ker]
+      · apply LinearMap.mem_ker.mpr
         rw [← hfA (f.symm y), f.apply_symm_apply]
-        simpa only [LinearMap.mem_ker] using hy
+        exact LinearMap.mem_ker.mp hy
       · simp
 
   let fKer : qA.ker ≃ₗ[F2] qA'.ker :=
@@ -96,22 +95,24 @@ theorem exists_linearEquiv_extends_of_surjective
   let K' := q'.ker
   let i : qA.ker →ₗ[F2] K :=
     (A.subtype.comp qA.ker.subtype).codRestrict K (fun x => by
+      have hx0 : qA x.1 = 0 := LinearMap.mem_ker.mp x.2
       change q x.1.1 = 0
-      simpa [qA, LinearMap.mem_ker] using x.2)
+      simpa [qA] using hx0)
   let i' : qA'.ker →ₗ[F2] K' :=
     (A'.subtype.comp qA'.ker.subtype).codRestrict K' (fun x => by
+      have hx0 : qA' x.1 = 0 := LinearMap.mem_ker.mp x.2
       change q' x.1.1 = 0
-      simpa [qA', LinearMap.mem_ker] using x.2)
+      simpa [qA'] using hx0)
   have hi : Function.Injective i := by
     intro x y hxy
     apply Subtype.ext
     apply Subtype.ext
-    exact congrArg Subtype.val hxy
+    exact congrArg (fun z : K => (z : V)) hxy
   have hi' : Function.Injective i' := by
     intro x y hxy
     apply Subtype.ext
     apply Subtype.ext
-    exact congrArg Subtype.val hxy
+    exact congrArg (fun z : K' => (z : V)) hxy
 
   let I := LinearMap.range i
   let I' := LinearMap.range i'
@@ -124,6 +125,10 @@ theorem exists_linearEquiv_extends_of_surjective
     have hq'dim := q'.finrank_range_add_finrank_ker
     rw [LinearMap.range_eq_top.mpr hq, finrank_top] at hqdim
     rw [LinearMap.range_eq_top.mpr hq', finrank_top] at hq'dim
+    have hqdimK : finrank F2 W + finrank F2 K = finrank F2 V := by
+      simpa [K] using hqdim
+    have hq'dimK : finrank F2 W + finrank F2 K' = finrank F2 V := by
+      simpa [K'] using hq'dim
     omega
 
   obtain ⟨T, hT⟩ :=
@@ -131,8 +136,11 @@ theorem exists_linearEquiv_extends_of_surjective
 
   have hTker (x : qA.ker) : T (i x) = i' (fKer x) := by
     let z : I := ⟨i x, ⟨x, rfl⟩⟩
+    have heix : ei.symm z = x := by
+      apply ei.injective
+      simp [z, ei]
     have hz := hT z
-    simpa [z, fI, ei, ei'] using hz
+    simpa [z, fI, ei', heix] using hz
 
   obtain ⟨s, hs⟩ :=
     q.exists_rightInverse_of_surjective (LinearMap.range_eq_top.mpr hq)
@@ -165,16 +173,17 @@ theorem exists_linearEquiv_extends_of_surjective
     intro x hx
     rw [LinearMap.mem_ker]
     let xKer : qA.ker := ⟨x, hx⟩
-    have hqx : qA x = 0 := by
-      simpa only [LinearMap.mem_ker] using hx
+    have hqx : qA x = 0 := LinearMap.mem_ker.mp hx
+    have hqxV : q (x : V) = 0 := by
+      simpa [qA] using hqx
     have hleft : leftCoord x = i xKer := by
       apply Subtype.ext
-      simp [leftCoord, p, pV, i, qA, hqx]
+      simp [leftCoord, p, pV, i, xKer, hqxV]
     have hright : rightCoord x = i' (fKer xKer) := by
       apply Subtype.ext
-      have hqfx : q' (f x) = 0 := by
+      have hqfx : q' (f x : V) = 0 := by
         rw [hf x]
-        simpa [qA] using hqx
+        exact hqxV
       simp [rightCoord, p', pV', i', fKer, xKer, hqfx]
     simp [delta, hleft, hright, hTker xKer]
 
@@ -191,7 +200,12 @@ theorem exists_linearEquiv_extends_of_surjective
       L (qA x) = deltaRange y := by
         simpa [y] using hy
       _ = delta x := by
-        simp [deltaRange, deltaQ, y]
+        have hyq :
+            qA.quotKerEquivRange.symm y = qA.ker.mkQ x := by
+          exact qA.quotKerEquivRange_symm_apply_image x _
+        rw [show deltaRange y =
+            deltaQ (qA.quotKerEquivRange.symm y) by rfl, hyq]
+        rfl
 
   let kernelPart : V →ₗ[F2] K' :=
     T.toLinearMap.comp p + L.comp q
@@ -199,11 +213,11 @@ theorem exists_linearEquiv_extends_of_surjective
     K'.subtype.comp kernelPart + s'.comp q
 
   have hq_hlin (x : V) : q' (hlin x) = q x := by
-    change
-      q' ((kernelPart x : K') : V) + q' (s' (q x)) = q x
-    rw [hs'_apply]
-    have hk : q' ((kernelPart x : K') : V) = 0 :=
-      (kernelPart x).2
+    have hh :
+        hlin x = ((kernelPart x : K') : V) + s' (q x) := rfl
+    rw [hh, map_add, hs'_apply]
+    have hk := (kernelPart x).2
+    change q' (((kernelPart x : K') : V)) = 0 at hk
     rw [hk, zero_add]
 
   have hlin_injective : Function.Injective hlin := by
@@ -226,7 +240,8 @@ theorem exists_linearEquiv_extends_of_surjective
     have hpz : p z = 0 := T.injective (by simpa using hTz)
     have hz0 : z = 0 := by
       have hpz' := congrArg Subtype.val hpz
-      simpa [p, pV, z, hqz] using hpz'
+      change z - s (q z) = 0 at hpz'
+      simpa [hqz] using hpz'
     exact sub_eq_zero.mp hz0
 
   let h : V ≃ₗ[F2] V :=
@@ -249,9 +264,12 @@ theorem exists_linearEquiv_extends_of_surjective
 
   refine ⟨h, ?_, ?_⟩
   · intro x
-    simpa [h] using hext x
-  · ext x
-    simpa [h] using hq_hlin x
+    change h.toLinearMap (x : V) = (f x : V)
+    rw [show h.toLinearMap = hlin by simp [h]]
+    exact hext x
+  · rw [show h.toLinearMap = hlin by simp [h]]
+    ext x
+    exact hq_hlin x
 
 end QuotientExtension
 
