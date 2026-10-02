@@ -572,5 +572,213 @@ theorem canonicalExtension_tail_mem_levelRange
   rw [← H.range_levelMap (H.canonicalExtension F n).map]
   exact ⟨n + k, hlev⟩
 
+
+/-- Tail-fullness forces a shape map to advance by exactly one target level
+at every subsequent source level. -/
+theorem levelMap_succ_of_tailFull
+    (H : SMTree S) (G : ShapeMap S) (base k : Nat)
+    (hfull : ∀ ell : Nat, base ≤ ell → ell ∈ G.levelRange)
+    (hbase : base ≤ H.levelMap G k) :
+    H.levelMap G (k + 1) = H.levelMap G k + 1 := by
+  have hmem :
+      H.levelMap G k + 1 ∈ Set.range (H.levelMap G) := by
+    rw [H.range_levelMap G]
+    exact hfull _ (by omega)
+  rcases hmem with ⟨j, hj⟩
+  have hstrict := H.levelMap_strictMono G
+  have hlow := hstrict (Nat.lt_succ_self k)
+  have hkj : k + 1 ≤ j := by
+    by_contra h
+    have hjk : j ≤ k := by omega
+    have hle := hstrict.monotone hjk
+    rw [hj] at hle
+    omega
+  have hup := hstrict.monotone hkj
+  rw [hj] at hup
+  exact le_antisymm hup (Nat.succ_le_of_lt hlow)
+
+/-- When adjacent source levels map to adjacent target levels, weak successor
+preservation is automatically exact on that edge. -/
+theorem succ_eq_of_consecutive_levels
+    (H : SMTree S) (G : ShapeMap S)
+    {a b : T} {p : List T} {c : Label}
+    (hsucc : S.succ a p c = some b)
+    (hlevels :
+      H.levelMap G (LevelTree.lev b) =
+        H.levelMap G (LevelTree.lev a) + 1) :
+    S.succ (G a) (p.map G) c = some (G b) := by
+  obtain ⟨d, hd, hdb⟩ := G.weak_succ' hsucc
+  have hcover : G a ⋖ d := S.covBy_of_succ_eq_some hd
+  have hdlev :
+      LevelTree.lev d = LevelTree.lev (G a) + 1 :=
+    LevelTree.covBy_level_eq hcover
+  have hsame :
+      LevelTree.lev d = LevelTree.lev (G b) := by
+    calc
+      LevelTree.lev d = LevelTree.lev (G a) + 1 := hdlev
+      _ = H.levelMap G (LevelTree.lev a) + 1 := by
+        rw [← H.levelMap_eq G (a := a)]
+      _ = H.levelMap G (LevelTree.lev b) := hlevels.symm
+      _ = LevelTree.lev (G b) := H.levelMap_eq G (a := b)
+  have hdeq : d = G b :=
+    LevelTree.same_level_of_le hdb hsame
+  simpa [hdeq] using hd
+
+private theorem canonical_list_map_eq
+    (p : List T) (F G : ShapeMap S)
+    (h : ∀ x ∈ p, F x = G x) :
+    p.map F = p.map G := by
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : F x = G x := h x (by simp)
+      have hxs : ∀ y ∈ xs, F y = G y := by
+        intro y hy
+        exact h y (by simp [hy])
+      simp only [List.map_cons]
+      rw [hx, ih hxs]
+
+/-- Uniqueness principle behind Proposition 1.12.  Two shape maps which agree
+on the prescribed source prefix and meet every target level above the common
+top image are identical. -/
+theorem shapeMap_unique_of_prefix_tailFull
+    (H : SMTree S) (F G K : ShapeMap S) (n : Nat)
+    (hGagree : ∀ a : T, LevelTree.lev a ≤ n → G a = F a)
+    (hKagree : ∀ a : T, LevelTree.lev a ≤ n → K a = F a)
+    (hGfull :
+      ∀ ell : Nat, H.levelMap F n ≤ ell → ell ∈ G.levelRange)
+    (hKfull :
+      ∀ ell : Nat, H.levelMap F n ≤ ell → ell ∈ K.levelRange) :
+    G.toFun = K.toFun := by
+  have hGn :
+      H.levelMap G n = H.levelMap F n := by
+    obtain ⟨a, ha⟩ := H.level_nonempty n
+    calc
+      H.levelMap G n = LevelTree.lev (G a) := by
+        simpa [ha] using H.levelMap_eq G (a := a)
+      _ = LevelTree.lev (F a) := by
+        rw [hGagree a (Nat.le_of_eq ha)]
+      _ = H.levelMap F n := by
+        simpa [ha] using (H.levelMap_eq F (a := a)).symm
+  have hKn :
+      H.levelMap K n = H.levelMap F n := by
+    obtain ⟨a, ha⟩ := H.level_nonempty n
+    calc
+      H.levelMap K n = LevelTree.lev (K a) := by
+        simpa [ha] using H.levelMap_eq K (a := a)
+      _ = LevelTree.lev (F a) := by
+        rw [hKagree a (Nat.le_of_eq ha)]
+      _ = H.levelMap F n := by
+        simpa [ha] using (H.levelMap_eq F (a := a)).symm
+
+  have hpoint :
+      ∀ k : Nat, ∀ a : T, LevelTree.lev a = k → G a = K a := by
+    intro k
+    induction k using Nat.strong_induction_on with
+    | h k ih =>
+        intro a ha
+        by_cases hkn : k ≤ n
+        · have hale : LevelTree.lev a ≤ n := by
+            simpa [ha] using hkn
+          exact (hGagree a hale).trans (hKagree a hale).symm
+        · have hnk : n < k := Nat.lt_of_not_ge hkn
+          have hkpos : 0 < k := by omega
+          let j := k - 1
+          have hjlt : j < k := by
+            dsimp [j]
+            omega
+          have hjle : j ≤ LevelTree.lev a := by
+            rw [ha]
+            dsimp [j]
+            omega
+          let x := LevelTree.ancestor a j hjle
+          have hxa : x ≤ a :=
+            LevelTree.ancestor_le a j hjle
+          have hxlev : LevelTree.lev x = j :=
+            LevelTree.level_ancestor a j hjle
+          have hcover : x ⋖ a := by
+            apply LevelTree.covBy_of_le_level_succ hxa
+            rw [ha, hxlev]
+            dsimp [j]
+            omega
+          obtain ⟨p, c, hsucc⟩ := S.s3 hcover
+          have hxEq : G x = K x :=
+            ih j hjlt x hxlev
+          have hpEq : ∀ y ∈ p, G y = K y := by
+            intro y hy
+            have hyltx := S.parameter_level_lt hsucc hy
+            have hyltk : LevelTree.lev y < k := by
+              rw [hxlev] at hyltx
+              exact hyltx.trans hjlt
+            exact ih (LevelTree.lev y) hyltk y rfl
+          have hpmap : p.map G = p.map K :=
+            canonical_list_map_eq p G K hpEq
+          have hnj : n ≤ j := by
+            dsimp [j]
+            omega
+          have hGbase :
+              H.levelMap F n ≤ H.levelMap G j := by
+            calc
+              H.levelMap F n = H.levelMap G n := hGn.symm
+              _ ≤ H.levelMap G j :=
+                (H.levelMap_strictMono G).monotone hnj
+          have hKbase :
+              H.levelMap F n ≤ H.levelMap K j := by
+            calc
+              H.levelMap F n = H.levelMap K n := hKn.symm
+              _ ≤ H.levelMap K j :=
+                (H.levelMap_strictMono K).monotone hnj
+          have hGstep :=
+            H.levelMap_succ_of_tailFull G
+              (H.levelMap F n) j hGfull hGbase
+          have hKstep :=
+            H.levelMap_succ_of_tailFull K
+              (H.levelMap F n) j hKfull hKbase
+          have hka : k = j + 1 := by
+            dsimp [j]
+            omega
+          have hGlevels :
+              H.levelMap G (LevelTree.lev a) =
+                H.levelMap G (LevelTree.lev x) + 1 := by
+            rw [ha, hxlev, hka]
+            exact hGstep
+          have hKlevels :
+              H.levelMap K (LevelTree.lev a) =
+                H.levelMap K (LevelTree.lev x) + 1 := by
+            rw [ha, hxlev, hka]
+            exact hKstep
+          have hGsucc :=
+            H.succ_eq_of_consecutive_levels G hsucc hGlevels
+          have hKsucc :=
+            H.succ_eq_of_consecutive_levels K hsucc hKlevels
+          have hsome : (some (G a) : Option T) = some (K a) := by
+            calc
+              some (G a) =
+                  S.succ (G x) (p.map G) c := hGsucc.symm
+              _ = S.succ (K x) (p.map K) c := by
+                rw [hxEq, hpmap]
+              _ = some (K a) := hKsucc
+          exact Option.some.inj hsome
+  funext a
+  exact hpoint (LevelTree.lev a) a rfl
+
+/-- Uniqueness clause of Proposition 1.12 for the current M-map
+representation. -/
+theorem canonicalExtension_unique
+    (H : SMTree S) (F G : MMap H) (n : Nat)
+    (hGagree : ∀ a : T, LevelTree.lev a ≤ n → G a = F a)
+    (hGfull :
+      ∀ ell : Nat, H.levelMap F.map n ≤ ell →
+        ell ∈ G.map.levelRange) :
+    G = H.canonicalExtension F n := by
+  apply MMap.ext_map
+  apply ShapeMap.ext_toFun
+  exact H.shapeMap_unique_of_prefix_tailFull
+    F.map G.map (H.canonicalExtension F n).map n
+    hGagree
+    (H.canonicalExtension_agrees F n)
+    hGfull
+    (H.canonicalExtension_tail_mem_levelRange F n)
+
 end SMTree
 end SuccessorTree
