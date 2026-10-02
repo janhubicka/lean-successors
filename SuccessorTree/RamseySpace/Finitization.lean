@@ -363,5 +363,142 @@ theorem ramseyLeFin_prefix
                         rfl
 
 
+
+/-- A finite factor is encoded by its action on the finite source initial
+segment. The target is again a finite initial segment. -/
+noncomputable def finiteFactorCode
+    (H : SMTree S) {n m : Nat} (b : RamseyApprox H (m + 1))
+    (a : {a : RamseyApprox H (n + 1) //
+      RamseyLeFin H
+        (⟨n + 1, a⟩ :
+          (ramseyApproximationSystem H).FiniteApprox)
+        (⟨m + 1, b⟩ :
+          (ramseyApproximationSystem H).FiniteApprox)}) :
+    InitialNode T n → InitialNode T m :=
+  let fac := Classical.choice a.2
+  fun x => ⟨fac.map x.1, fac.bound x⟩
+
+theorem finiteFactorCode_injective
+    (H : SMTree S) {n m : Nat} (b : RamseyApprox H (m + 1)) :
+    Function.Injective (finiteFactorCode H b) := by
+  classical
+  intro a d had
+  apply Subtype.ext
+  apply Subtype.ext
+  funext x
+  let fa := Classical.choice a.2
+  let fd := Classical.choice d.2
+  have ha := fa.agrees x
+  have hd := fd.agrees x
+  have hcode :
+      finiteFactorCode H b a x =
+        finiteFactorCode H b d x :=
+    congrFun had x
+  change a.1.1 x = b.1 (finiteFactorCode H b a x) at ha
+  change d.1.1 x = b.1 (finiteFactorCode H b d x) at hd
+  exact ha.trans ((congrArg b.1 hcode).trans hd.symm)
+
+/-- At fixed source and target levels there are only finitely many lower
+approximations: each is determined by a function between two finite initial
+tree segments. -/
+theorem ramseyLeFin_fixedLevel_finite
+    (H : SMTree S) {n m : Nat} (b : RamseyApprox H (m + 1)) :
+    Set.Finite {a : RamseyApprox H (n + 1) |
+      RamseyLeFin H
+        (⟨n + 1, a⟩ :
+          (ramseyApproximationSystem H).FiniteApprox)
+        (⟨m + 1, b⟩ :
+          (ramseyApproximationSystem H).FiniteApprox)} := by
+  classical
+  rw [← Set.finite_coe_iff]
+  exact Finite.of_injective
+    (finiteFactorCode H b)
+    (finiteFactorCode_injective H b)
+
+/-- Insert a fixed-level approximation into the sigma type of all finite
+approximations. -/
+def liftRamseyApprox (H : SMTree S) (n : Nat)
+    (a : RamseyApprox H (n + 1)) :
+    (ramseyApproximationSystem H).FiniteApprox :=
+  ⟨n + 1, a⟩
+
+/-- A.2(2): every lower cone for the finitary order is finite. -/
+theorem ramseyLeFin_lowerFinite
+    (H : SMTree S)
+    (b : (ramseyApproximationSystem H).FiniteApprox) :
+    Set.Finite {a | RamseyLeFin H a b} := by
+  classical
+  rcases b with ⟨nb, b⟩
+  cases nb with
+  | zero =>
+      apply (Set.finite_singleton
+        (⟨0, PUnit.unit⟩ :
+          (ramseyApproximationSystem H).FiniteApprox)).subset
+      intro a ha
+      rcases a with ⟨na, a⟩
+      cases na with
+      | zero =>
+          have ha0 : a = PUnit.unit := Subsingleton.elim _ _
+          simp [ha0]
+      | succ na =>
+          contradiction
+  | succ m =>
+      let target :
+          (ramseyApproximationSystem H).FiniteApprox :=
+        ⟨m + 1, b⟩
+      let empty :
+          (ramseyApproximationSystem H).FiniteApprox :=
+        ⟨0, PUnit.unit⟩
+      let piece :
+          Fin (m + 1) →
+            Set ((ramseyApproximationSystem H).FiniteApprox) :=
+        fun i =>
+          liftRamseyApprox H i.1 ''
+            {a : RamseyApprox H (i.1 + 1) |
+              RamseyLeFin H
+                (liftRamseyApprox H i.1 a) target}
+      have hpiece : ∀ i : Fin (m + 1), (piece i).Finite := by
+        intro i
+        apply Set.Finite.image
+        simpa [piece, target, liftRamseyApprox] using
+          (ramseyLeFin_fixedLevel_finite H (n := i.1) (m := m) b)
+      have hunion : (⋃ i : Fin (m + 1), piece i).Finite :=
+        Set.finite_iUnion hpiece
+      apply ((Set.finite_singleton empty).union hunion).subset
+      intro a ha
+      rcases a with ⟨na, a⟩
+      cases na with
+      | zero =>
+          have ha0 : a = PUnit.unit := Subsingleton.elim _ _
+          apply Set.mem_union_left
+          simpa [empty, ha0]
+      | succ n =>
+          have hle :
+              n + 1 ≤ m + 1 :=
+            ramseyLeFin_level_le H ha
+          have hn : n < m + 1 := by omega
+          apply Set.mem_union_right
+          apply Set.mem_iUnion.2
+          refine ⟨(⟨n, hn⟩ : Fin (m + 1)), ?_⟩
+          change
+            liftRamseyApprox H n a ∈
+              piece (⟨n, hn⟩ : Fin (m + 1))
+          refine ⟨a, ?_, rfl⟩
+          simpa [target, liftRamseyApprox] using ha
+
+/-- The full A.2 finitization structure for successor-tree M-maps. -/
+def ramseyFinitization (H : SMTree S) :
+    RamseySpace.Finitization (ramseyApproximationSystem H) where
+  leFin := RamseyLeFin H
+  leFin_refl := ramseyLeFin_refl H
+  leFin_trans := by
+    intro a b c hab hbc
+    exact ramseyLeFin_trans H hab hbc
+  lowerFinite := ramseyLeFin_lowerFinite H
+  realizesOrder := ramseyReduction_iff_ramseyLeFin H
+  prefix_leFin := by
+    intro n m k a b c hab hbc
+    exact H.ramseyLeFin_prefix hab hbc
+
 end SMTree
 end SuccessorTree
