@@ -163,5 +163,94 @@ theorem exists_factor_through_canonical_succ
       _ = H.levelMap K.map (n + 1) := hKlev
   exact ⟨Q, hQfix, hQlevel, hQC⟩
 
+
+/-- The right-composition factor of a realization has its top source level
+exactly at the (minimal) depth of that finite approximation. -/
+theorem reductionFactor_level_eq_depthPred
+    (H : SMTree S)
+    {n d : Nat}
+    {a : RamseyApprox H (n + 1)}
+    {X B : MMap H}
+    (K : MMap H)
+    (hK : ∀ x : T, X x = B (K x))
+    (hXa : ramseyApprox H (n + 1) X = a)
+    (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1)) :
+    H.levelMap K.map n = d := by
+  let fac : RamseyFiniteFactor H a (ramseyApprox H (d + 1) B) :=
+    Classical.choice hd.1
+  have htop : H.levelMap fac.map.map n = d :=
+    H.ramseyFiniteFactor_topLevel_of_depth hd fac
+  obtain ⟨x, hx⟩ := H.level_nonempty n
+  let xx : InitialNode T n := ⟨x, by simpa [hx]⟩
+  have hXaVal := congrArg Subtype.val hXa
+  change X.restrictLe H n = a.1 at hXaVal
+  have hXax : X x = a.1 xx := by
+    exact congrFun hXaVal xx
+  have hfacx : a.1 xx = B (fac.map x) := by
+    exact fac.agrees xx
+  have hKfac : K x = fac.map x := by
+    apply B.map.injective
+    calc
+      B (K x) = X x := (hK x).symm
+      _ = a.1 xx := hXax
+      _ = B (fac.map x) := hfacx
+  calc
+    H.levelMap K.map n = LevelTree.lev (K x) := by
+      simpa [hx] using H.levelMap_eq K.map (a := x)
+    _ = LevelTree.lev (fac.map x) := by rw [hKfac]
+    _ = H.levelMap fac.map.map n := by
+      simpa [hx] using (H.levelMap_eq fac.map.map (a := x)).symm
+    _ = d := htop
+
+/-- Exact-depth factorisation of a one-step approximation.
+
+If a has depth d+1 in B and a one-step extension b has depth q+1, then b is
+obtained by first taking the canonical extension of the reduction factor for
+a and then applying an outer M-map Q which fixes every level below d+1 and
+sends level d+1 exactly to q. -/
+theorem oneStep_exactDepth_factorization
+    (H : SMTree S)
+    {n d q : Nat}
+    {a : RamseyApprox H (n + 1)}
+    {b : RamseyApprox H (n + 2)}
+    {B : MMap H}
+    (ha : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1))
+    (hbmem :
+      b ∈ (ramseyApproximationSystem H).oneStepApproximations
+        (n := n + 1) a B)
+    (hb : (ramseyFinitization H).HasDepth (n := n + 2) b B (q + 1)) :
+    ∃ K Q : MMap H,
+      H.levelMap K.map n = d ∧
+      Q.FixesBelow H (d + 1) ∧
+      H.levelMap Q.map (d + 1) = q ∧
+      b = ramseyApprox H (n + 2)
+        (MMap.comp H B
+          (MMap.comp H Q (H.canonicalExtension K n))) := by
+  rcases hbmem with ⟨X, hXaB, hXb⟩
+  rcases hXaB.1 with ⟨K, hK⟩
+  have hKn : H.levelMap K.map n = d :=
+    H.reductionFactor_level_eq_depthPred K hK hXaB.2 ha
+  have hKnext : H.levelMap K.map (n + 1) = q :=
+    H.reductionFactor_level_eq_depthPred
+      (n := n + 1) (d := q) K hK hXb hb
+  obtain ⟨Q, hQfix, hQlevel, hQK⟩ :=
+    H.exists_factor_through_canonical_succ K n
+  refine ⟨K, Q, hKn, ?_, ?_, ?_⟩
+  · simpa [hKn] using hQfix
+  · simpa [hKn, hKnext] using hQlevel
+  · apply Subtype.ext
+    funext y
+    have hXbVal := congrArg Subtype.val hXb
+    change X.restrictLe H (n + 1) = b.1 at hXbVal
+    have hyX : X y.1 = b.1 y := congrFun hXbVal y
+    change b.1 y =
+      B (Q (H.canonicalExtension K n y.1))
+    calc
+      b.1 y = X y.1 := hyX.symm
+      _ = B (K y.1) := hK y.1
+      _ = B (Q (H.canonicalExtension K n y.1)) := by
+        rw [hQK y.1 y.2]
+
+
 end SMTree
 end SuccessorTree
