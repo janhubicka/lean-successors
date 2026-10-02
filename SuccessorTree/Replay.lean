@@ -120,7 +120,7 @@ theorem replaySource_lt
     (s : List (OneLevelLetter H n))
     (hs : Supports s)
     (k : Nat) (x : LineSymbol (OneLevelLetter H n)) :
-    H.replaySource H n s hs x < n + s.length + 1 + k := by
+    H.replaySource n s hs x < n + s.length + 1 + k := by
   cases x with
   | parameter =>
       simp [SMTree.replaySource]
@@ -138,7 +138,7 @@ noncomputable def replayDup
     (k : Nat) (x : LineSymbol (OneLevelLetter H n)) :
     MMap H :=
   H.duplicate
-    (H.replaySource H n s hs x)
+    (H.replaySource n s hs x)
     (n + s.length + 1 + k)
     (H.replaySource_lt s hs k x)
 
@@ -179,13 +179,13 @@ theorem replayTail_apply_of_level_lt
       have hD : D (B a) = B a := by
         change
           H.duplicate
-              (H.replaySource H n s hs x)
+              (H.replaySource n s hs x)
               (n + s.length + 1 + k)
               (H.replaySource_lt s hs k x)
               (B a) =
             B a
         exact H.duplicate_eq_id_below
-          (H.replaySource H n s hs x)
+          (H.replaySource n s hs x)
           (n + s.length + 1 + k)
           (H.replaySource_lt s hs k x)
           ha
