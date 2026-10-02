@@ -45,6 +45,7 @@ def LocalPigeonhole
     (colour : StepColouring H κ) : Prop :=
   ∀ (p : (ramseyApproximationSystem H).FiniteApprox)
     (B : MMap H) (d : Nat),
+    0 < d →
     (ramseyFinitization H).HasDepth p.2 B d →
     ∃ A : MMap H,
       A ∈ (ramseyApproximationSystem H).levelNeighborhood d B ∧
@@ -72,6 +73,7 @@ private theorem refineFiniteFront
     (colour : StepColouring H κ)
     (hpig : LocalPigeonhole H colour)
     (B : MMap H) (d : Nat)
+    (hdpos : 0 < d)
     (P : Finset (ramseyApproximationSystem H).FiniteApprox)
     (hdepth :
       ∀ p ∈ P, (ramseyFinitization H).HasDepth p.2 B d) :
@@ -95,7 +97,7 @@ private theorem refineFiniteFront
       have hpA : (ramseyFinitization H).HasDepth p.2 A d := by
         exact ((ramseyFinitization H).hasDepth_iff_of_mem_levelNeighborhood
           hAB).2 hpB
-      obtain ⟨A', hA'A, hpHom⟩ := hpig p A d hpA
+      obtain ⟨A', hA'A, hpHom⟩ := hpig p A d hdpos hpA
       have hA'B :
           A' ∈ (ramseyApproximationSystem H).levelNeighborhood d B :=
         (ramseyApproximationSystem H).levelNeighborhood_mono hAB hA'A
@@ -114,7 +116,8 @@ theorem exists_depthFront_refinement
     (H : SMTree S)
     (colour : StepColouring H κ)
     (hpig : LocalPigeonhole H colour)
-    (B : MMap H) (d : Nat) :
+    (B : MMap H) (d : Nat)
+    (hdpos : 0 < d) :
     ∃ A : MMap H,
       A ∈ (ramseyApproximationSystem H).levelNeighborhood d B ∧
       ∀ p,
@@ -131,7 +134,7 @@ theorem exists_depthFront_refinement
       simpa [P] using hp
     exact hp'
   obtain ⟨A, hAB, hhom⟩ :=
-    refineFiniteFront H colour hpig B d P hdepth
+    refineFiniteFront H colour hpig B d hdpos P hdepth
   refine ⟨A, hAB, ?_⟩
   intro p hp
   apply hhom p
@@ -151,7 +154,7 @@ noncomputable def frontFusionStage
       if h : N ≤ i + 1 then
         Classical.choose
           (H.exists_depthFront_refinement colour hpig
-            (frontFusionStage H colour hpig N B i) (i + 1))
+            (frontFusionStage H colour hpig N B i) (i + 1) (by omega))
       else
         frontFusionStage H colour hpig N B i
 
@@ -170,7 +173,7 @@ theorem frontFusionStage_succ_mem
   · simp only [h, dif_pos]
     exact (Classical.choose_spec
       (H.exists_depthFront_refinement colour hpig
-        (frontFusionStage H colour hpig N B i) (i + 1))).1
+        (frontFusionStage H colour hpig N B i) (i + 1) (by omega))).1
   · simp only [h, dif_neg]
     exact (ramseyApproximationSystem H).self_mem_levelNeighborhood
       (i + 1) (frontFusionStage H colour hpig N B i)
