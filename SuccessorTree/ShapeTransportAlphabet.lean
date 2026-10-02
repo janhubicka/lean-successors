@@ -72,11 +72,12 @@ theorem canonicalExtension_skipsOnly_of_oneStep
         _ = LevelTree.lev x := by
           rw [hfix x (by simpa [hx] using hqm')]
         _ = q := hx
-    · have hmq : m < q := by omega
+    · have hmqle : m ≤ q := Nat.le_of_not_gt hqm'
+      have hmq : m < q :=
+        lt_of_le_of_ne hmqle (Ne.symm hqm)
       obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le (Nat.succ_le_of_lt hmq)
       refine ⟨m + k, ?_⟩
       rw [H.canonicalExtension_level_tail F m k, htop, hk]
-      omega
 
 /-- The chosen transported map for a lower one-level letter. -/
 noncomputable def transportedMap
