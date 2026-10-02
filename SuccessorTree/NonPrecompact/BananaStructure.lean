@@ -46,7 +46,7 @@ def linePair (b : F2) : CoordinateBanana 1 1 where
 @[simp] theorem linePair_pair (b : F2)
     (a c : Fin 1 → F2) :
     (linePair b).pair a c = a 0 * b * c 0 := by
-  simp [pair, linePair, Matrix.mulVec, dotProduct]
+  simp [pair, linePair, Matrix.mulVec, dotProduct, mul_assoc]
 
 /-- The distinguished nonzero generator of the one-dimensional sort. -/
 def lineGenerator : Fin 1 → F2 := fun _ => 1
@@ -163,7 +163,9 @@ theorem exists_linePairEmbedding_of_isLinePair
     ∃ e : Embedding (linePair b) (perfect d),
       e.left lineGenerator = x ∧ e.right lineGenerator = y := by
   let e := linePairEmbedding b x y h.1 h.2.1 h.2.2
-  exact ⟨e, by simp [e, linePairEmbedding], by simp [e, linePairEmbedding]⟩
+  exact ⟨e,
+    by simp [e, linePairEmbedding, lineGenerator],
+    by simp [e, linePairEmbedding, lineGenerator]⟩
 
 /-- Conversely, the images of the distinguished generators under a
 line-pair embedding satisfy exactly the existing `IsLinePair` predicate. -/
