@@ -1,4 +1,5 @@
 import SuccessorTree.ShapeSplit
+import SuccessorTree.RamseySpace.Finitization
 import Mathlib.Tactic
 
 /-!
@@ -145,7 +146,7 @@ theorem exists_transport_across_canonical
               (H.levelMap_eq C.map (a := x)).symm
           _ = m := H.canonicalExtension_topLevel K n
       have hxs : x ≤ s x :=
-        H.MMap.le_apply_at_cut s n hs hxlev
+        MMap.le_apply_at_cut H s n hs hxlev
       have hCbelow : C x ≤ C (s x) :=
         C.map.map_le_of_le hxs
       have hF : F x = C (s x) := rfl
