@@ -59,9 +59,18 @@ theorem prefixCanonical_level_succ
     {B : MMap H}
     (hd : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1)) :
     H.levelMap (H.prefixCanonical hd).map (n + 1) = d + 1 := by
-  rw [H.canonicalExtension_level_succ]
-  · rw [H.prefixCanonical_level hd]
-  · exact le_rfl
+  let fac : RamseyFiniteFactor H a (ramseyApprox H (d + 1) B) :=
+    Classical.choice hd.1
+  change
+    H.levelMap (H.canonicalExtension fac.map n).map (n + 1) = d + 1
+  calc
+    H.levelMap (H.canonicalExtension fac.map n).map (n + 1) =
+        H.levelMap (H.canonicalExtension fac.map n).map n + 1 :=
+      H.canonicalExtension_level_succ fac.map n n le_rfl
+    _ = H.levelMap fac.map.map n + 1 := by
+      rw [H.canonicalExtension_level_at_prefix]
+    _ = d + 1 := by
+      rw [H.ramseyFiniteFactor_topLevel_of_depth hd fac]
 
 /-- Every point in the one-step source domain is sent inside the local replay
 domain through level d+1. -/
@@ -243,7 +252,7 @@ theorem prefixReplayApply_mem_oneStep
     (R : ReplayBlock H (d + 1))
     (x : LineInput (OneLevelLetter H (d + 1))) :
     H.prefixReplayApply hd R x ∈
-      (ramseyApproximationSystem H).oneStepApproximations a
+      (ramseyApproximationSystem H).oneStepApproximations (n := n + 1) a
         (H.prefixReplayRefinement B R) := by
   let G : MMap H := localInputMMap H (d + 1) x
   let C : MMap H := H.prefixCanonical hd
@@ -288,7 +297,7 @@ theorem prefixLinePigeonhole
         (ramseyApproximationSystem H).levelNeighborhood (d + 1) B ∧
       (∀ x : LineInput (OneLevelLetter H (d + 1)),
         H.prefixReplayApply hd R x ∈
-          (ramseyApproximationSystem H).oneStepApproximations a
+          (ramseyApproximationSystem H).oneStepApproximations (n := n + 1) a
             (H.prefixReplayRefinement B R)) ∧
       (∀ x : LineInput (OneLevelLetter H (d + 1)),
         colour (H.prefixReplayApply hd R x) =
