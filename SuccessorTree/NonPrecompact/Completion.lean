@@ -22,54 +22,28 @@ def completionLeft (A : BananaMatrixStructure l r) :
     (Fin l → F2) →ₗ[F2] (Fin (l + r) → F2) where
   toFun x := Fin.append x 0
   map_add' x y := by
-    funext i
-    change
-      Fin.addCases (fun j => x j + y j) (fun _ : Fin r => 0) i =
-        Fin.addCases x (fun _ : Fin r => 0) i +
-          Fin.addCases y (fun _ : Fin r => 0) i
-    exact
-      Fin.addCases_castAdd_natAdd
-        (v := fun j : Fin (l + r) =>
-          Fin.append x 0 j + Fin.append y 0 j) i
+    apply funext
+    rw [Fin.forall_fin_add]
+    constructor <;> intro i <;> simp
   map_smul' c x := by
-    funext i
-    change
-      Fin.addCases (fun j => c * x j) (fun _ : Fin r => 0) i =
-        c * Fin.addCases x (fun _ : Fin r => 0) i
-    exact
-      Fin.addCases_castAdd_natAdd
-        (v := fun j : Fin (l + r) => c * Fin.append x 0 j) i
+    apply funext
+    rw [Fin.forall_fin_add]
+    constructor <;> intro i <;> simp
 
 /-- Right map of the explicit perfect completion. -/
 def completionRight (A : BananaMatrixStructure l r) :
     (Fin r → F2) →ₗ[F2] (Fin (l + r) → F2) where
   toFun y := Fin.append (A.pairing *ᵥ y) y
   map_add' x y := by
-    funext i
-    rw [Matrix.mulVec_add]
-    change
-      Fin.addCases
-          (fun j => (A.pairing *ᵥ x) j + (A.pairing *ᵥ y) j)
-          (fun j => x j + y j) i =
-        Fin.addCases (A.pairing *ᵥ x) x i +
-          Fin.addCases (A.pairing *ᵥ y) y i
-    exact
-      Fin.addCases_castAdd_natAdd
-        (v := fun j : Fin (l + r) =>
-          Fin.append (A.pairing *ᵥ x) x j +
-            Fin.append (A.pairing *ᵥ y) y j) i
+    apply funext
+    rw [Fin.forall_fin_add]
+    constructor <;> intro i <;>
+      simp [Matrix.mulVec_add]
   map_smul' c x := by
-    funext i
-    rw [Matrix.mulVec_smul]
-    change
-      Fin.addCases
-          (fun j => c * (A.pairing *ᵥ x) j)
-          (fun j => c * x j) i =
-        c * Fin.addCases (A.pairing *ᵥ x) x i
-    exact
-      Fin.addCases_castAdd_natAdd
-        (v := fun j : Fin (l + r) =>
-          c * Fin.append (A.pairing *ᵥ x) x j) i
+    apply funext
+    rw [Fin.forall_fin_add]
+    constructor <;> intro i <;>
+      simp [Matrix.mulVec_smul]
 
 theorem completionLeft_injective :
     Function.Injective A.completionLeft := by
