@@ -1,4 +1,5 @@
 import SuccessorTree.ShapeReplayFusion
+import SuccessorTree.RamseySpace.Nonempty
 import Mathlib.Tactic
 
 /-!
@@ -26,14 +27,14 @@ theorem oneStep_hasDepth_strict
     {a : RamseyApprox H (n + 1)}
     {b : RamseyApprox H (n + 2)}
     {B : MMap H}
-    (ha : (ramseyFinitization H).HasDepth a B (d + 1))
+    (ha : (ramseyFinitization H).HasDepth (n := n + 1) a B (d + 1))
     (hbmem :
       b ∈ (ramseyApproximationSystem H).oneStepApproximations
         (n := n + 1) a B)
-    (hb : (ramseyFinitization H).HasDepth b B e) :
+    (hb : (ramseyFinitization H).HasDepth (n := n + 2) b B e) :
     d + 1 < e := by
   have hab :
-      (ramseyApproximationSystem H).IsInitial a b :=
+      (ramseyApproximationSystem H).IsInitial (n := n + 1) (m := n + 2) a b :=
     (ramseyApproximationSystem H).isInitial_oneStep hbmem
   have hle : d + 1 ≤ e :=
     (ramseyFinitization H).hasDepth_le_of_initial hab ha hb
@@ -114,7 +115,7 @@ theorem oneStepLarge_univ
     OneStepLarge H (d := d) a B Set.univ := by
   intro A hAB
   have haA :
-      (ramseyFinitization H).HasDepth a A (d + 1) :=
+      (ramseyFinitization H).HasDepth (n := n + 1) a A (d + 1) :=
     ((ramseyFinitization H).hasDepth_iff_of_mem_levelNeighborhood
       hAB).2 ha
   rcases H.fusionNeighborhood_nonempty a A haA
