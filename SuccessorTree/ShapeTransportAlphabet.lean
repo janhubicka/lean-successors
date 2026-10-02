@@ -37,7 +37,7 @@ theorem canonicalExtension_skipsOnly_of_oneStep
   constructor
   · rintro ⟨j, hj⟩
     intro hqm
-    subst q
+    rw [hqm] at hj
     by_cases hjm : j < m
     · have hlev :
           H.levelMap (H.canonicalExtension F m).map j = j := by
@@ -75,7 +75,7 @@ theorem canonicalExtension_skipsOnly_of_oneStep
     · have hmq : m < q := by omega
       obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le (Nat.succ_le_of_lt hmq)
       refine ⟨m + k, ?_⟩
-      rw [H.canonicalExtension_level_tail F m k, htop]
+      rw [H.canonicalExtension_level_tail F m k, htop, hk]
       omega
 
 /-- The chosen transported map for a lower one-level letter. -/
@@ -108,8 +108,15 @@ theorem transportedMap_spec
       H.levelMap e.toMMap.map n = n + 1 := by
     rw [H.levelMap_of_skipsOnly e.toMMap.map n e.skips]
     simp
-  rw [he] at hlev
-  simpa using hlev
+  have hdiff :
+      H.levelMap e.toMMap.map n - n = 1 := by
+    rw [he]
+    omega
+  calc
+    H.levelMap (H.transportedMap K n e).map (H.levelMap K.map n) =
+        H.levelMap K.map n +
+          (H.levelMap e.toMMap.map n - n) := hlev
+    _ = H.levelMap K.map n + 1 := by rw [hdiff]
 
 /-- Transport a source-cut letter to a genuine one-level letter at the
 terminal target cut of K. -/
