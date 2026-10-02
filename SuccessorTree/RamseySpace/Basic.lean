@@ -21,20 +21,6 @@ variable {T : Type u} {Label : Type v}
 variable [PartialOrder T] [LevelTree T]
 variable {S : STree T Label}
 
-/-- Two M-maps are equal when they agree pointwise. -/
-theorem MMap.ext_apply (H : SMTree S) {F G : MMap H}
-    (h : ∀ a : T, F a = G a) : F = G := by
-  cases F with
-  | mk F hF =>
-      cases G with
-      | mk G hG =>
-          have hFG : F = G := by
-            apply ShapeMap.ext
-            funext a
-            exact h a
-          cases hFG
-          rfl
-
 /-- Ramsey reduction: F is a refinement of G when F = G ∘ K extensionally
 for some M-map K. -/
 def RamseyReduction (H : SMTree S) (F G : MMap H) : Prop :=
