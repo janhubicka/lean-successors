@@ -48,3 +48,4 @@ import SuccessorTree.ShapeExactFactor
 import SuccessorTree.ShapeLargeLine
 import SuccessorTree.ShapeAction
 import SuccessorTree.ShapeBlockForcing
+import SuccessorTree.ShapeBlockLine
