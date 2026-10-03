@@ -165,5 +165,21 @@ theorem transportLetter_commutes
   rw [H.canonicalExtension_agrees t (H.levelMap K.map n) (C x) hClev]
   exact ht.symm
 
+
+/-- Transported-letter commutation after changing the target-level index by
+an explicit equality.  Keeping this cast local avoids dependent elimination
+of unrelated data such as replay blocks indexed by the target level. -/
+theorem transportLetter_commutes_at_level
+    (H : SMTree S) (K : MMap H) (n m : Nat)
+    (hm : H.levelMap K.map n = m)
+    (e : OneLevelLetter H n)
+    (x : T) (hx : LevelTree.lev x ≤ n) :
+    let et : OneLevelLetter H m :=
+      hm ▸ H.transportLetter K n e
+    et.toMMap (H.canonicalExtension K n x) =
+      H.canonicalExtension K n (e.toMMap x) := by
+  subst m
+  exact H.transportLetter_commutes K n e x hx
+
 end SMTree
 end SuccessorTree
