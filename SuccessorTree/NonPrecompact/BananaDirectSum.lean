@@ -48,7 +48,7 @@ theorem directSum_mulVec_inl (y : Fin r₁ → F2) :
   apply funext
   intro i
   induction i using Fin.addCases <;>
-    simp [bananaDirectSum, Matrix.mulVec, Fin.sum_univ_add]
+    simp [bananaDirectSum, Matrix.mulVec, dotProduct, Fin.sum_univ_add]
 
 /-- The analogous statement for the second right summand. -/
 theorem directSum_mulVec_inr (y : Fin r₂ → F2) :
@@ -57,10 +57,10 @@ theorem directSum_mulVec_inr (y : Fin r₂ → F2) :
   apply funext
   intro i
   induction i using Fin.addCases <;>
-    simp [bananaDirectSum, Matrix.mulVec, Fin.sum_univ_add]
+    simp [bananaDirectSum, Matrix.mulVec, dotProduct, Fin.sum_univ_add]
 
 /-- Inclusion of the first left summand. -/
-def directSumLeftInl :
+def directSumLeftInl {l₁ l₂ : ℕ} :
     (Fin l₁ → F2) →ₗ[F2] (Fin (l₁ + l₂) → F2) where
   toFun x := Fin.append x 0
   map_add' x y := by
@@ -73,7 +73,7 @@ def directSumLeftInl :
     constructor <;> intro i <;> simp
 
 /-- Inclusion of the first right summand. -/
-def directSumRightInl :
+def directSumRightInl {r₁ r₂ : ℕ} :
     (Fin r₁ → F2) →ₗ[F2] (Fin (r₁ + r₂) → F2) where
   toFun y := Fin.append y 0
   map_add' x y := by
@@ -86,7 +86,7 @@ def directSumRightInl :
     constructor <;> intro i <;> simp
 
 /-- Inclusion of the second left summand. -/
-def directSumLeftInr :
+def directSumLeftInr {l₁ l₂ : ℕ} :
     (Fin l₂ → F2) →ₗ[F2] (Fin (l₁ + l₂) → F2) where
   toFun x := Fin.append 0 x
   map_add' x y := by
@@ -99,7 +99,7 @@ def directSumLeftInr :
     constructor <;> intro i <;> simp
 
 /-- Inclusion of the second right summand. -/
-def directSumRightInr :
+def directSumRightInr {r₁ r₂ : ℕ} :
     (Fin r₂ → F2) →ₗ[F2] (Fin (r₁ + r₂) → F2) where
   toFun y := Fin.append 0 y
   map_add' x y := by
@@ -111,29 +111,29 @@ def directSumRightInr :
     rw [Fin.forall_fin_add]
     constructor <;> intro i <;> simp
 
-theorem directSumLeftInl_injective :
-    Function.Injective (A.directSumLeftInl B) := by
+theorem directSumLeftInl_injective {l₁ l₂ : ℕ} :
+    Function.Injective (directSumLeftInl (l₁ := l₁) (l₂ := l₂)) := by
   intro x y h
   funext i
   have hi := congrFun h (Fin.castAdd l₂ i)
   simpa [directSumLeftInl] using hi
 
-theorem directSumRightInl_injective :
-    Function.Injective (A.directSumRightInl B) := by
+theorem directSumRightInl_injective {r₁ r₂ : ℕ} :
+    Function.Injective (directSumRightInl (r₁ := r₁) (r₂ := r₂)) := by
   intro x y h
   funext i
   have hi := congrFun h (Fin.castAdd r₂ i)
   simpa [directSumRightInl] using hi
 
-theorem directSumLeftInr_injective :
-    Function.Injective (A.directSumLeftInr B) := by
+theorem directSumLeftInr_injective {l₁ l₂ : ℕ} :
+    Function.Injective (directSumLeftInr (l₁ := l₁) (l₂ := l₂)) := by
   intro x y h
   funext i
   have hi := congrFun h (Fin.natAdd l₁ i)
   simpa [directSumLeftInr] using hi
 
-theorem directSumRightInr_injective :
-    Function.Injective (A.directSumRightInr B) := by
+theorem directSumRightInr_injective {r₁ r₂ : ℕ} :
+    Function.Injective (directSumRightInr (r₁ := r₁) (r₂ := r₂)) := by
   intro x y h
   funext i
   have hi := congrFun h (Fin.natAdd r₁ i)
@@ -142,8 +142,8 @@ theorem directSumRightInr_injective :
 theorem directSum_inl_pairing_apply
     (x : Fin l₁ → F2) (y : Fin r₁ → F2) :
     (bananaDirectSum A B).eval
-        (A.directSumLeftInl B x)
-        (A.directSumRightInl B y) =
+        (directSumLeftInl (l₁ := l₁) (l₂ := l₂) x)
+        (directSumRightInl (r₁ := r₁) (r₂ := r₂) y) =
       A.eval x y := by
   unfold eval
   rw [directSum_mulVec_inl]
@@ -157,8 +157,8 @@ theorem directSum_inl_pairing_apply
 theorem directSum_inr_pairing_apply
     (x : Fin l₂ → F2) (y : Fin r₂ → F2) :
     (bananaDirectSum A B).eval
-        (A.directSumLeftInr B x)
-        (A.directSumRightInr B y) =
+        (directSumLeftInr (l₁ := l₁) (l₂ := l₂) x)
+        (directSumRightInr (r₁ := r₁) (r₂ := r₂) y) =
       B.eval x y := by
   unfold eval
   rw [directSum_mulVec_inr]
@@ -172,27 +172,27 @@ theorem directSum_inr_pairing_apply
 /-- The first summand embeds canonically into the direct sum. -/
 def directSumInlEmbedding :
     BananaMatrixEmbedding A (bananaDirectSum A B) where
-  left := A.directSumLeftInl B
-  right := A.directSumRightInl B
-  left_injective := A.directSumLeftInl_injective B
-  right_injective := A.directSumRightInl_injective B
-  pairing_apply := A.directSum_inl_pairing_apply B
+  left := directSumLeftInl (l₁ := l₁) (l₂ := l₂)
+  right := directSumRightInl (r₁ := r₁) (r₂ := r₂)
+  left_injective := directSumLeftInl_injective
+  right_injective := directSumRightInl_injective
+  pairing_apply := directSum_inl_pairing_apply A B
 
 /-- The second summand embeds canonically into the direct sum. -/
 def directSumInrEmbedding :
     BananaMatrixEmbedding B (bananaDirectSum A B) where
-  left := A.directSumLeftInr B
-  right := A.directSumRightInr B
-  left_injective := A.directSumLeftInr_injective B
-  right_injective := A.directSumRightInr_injective B
-  pairing_apply := A.directSum_inr_pairing_apply B
+  left := directSumLeftInr (l₁ := l₁) (l₂ := l₂)
+  right := directSumRightInr (r₁ := r₁) (r₂ := r₂)
+  left_injective := directSumLeftInr_injective
+  right_injective := directSumRightInr_injective
+  pairing_apply := directSum_inr_pairing_apply A B
 
 /-- The two canonical summands have zero cross-pairing. -/
 theorem directSum_cross_pairing_left_right
     (x : Fin l₁ → F2) (y : Fin r₂ → F2) :
     (bananaDirectSum A B).eval
-        (A.directSumLeftInl B x)
-        (A.directSumRightInr B y) = 0 := by
+        (directSumLeftInl (l₁ := l₁) (l₂ := l₂) x)
+        (directSumRightInr (r₁ := r₁) (r₂ := r₂) y) = 0 := by
   unfold eval
   rw [directSum_mulVec_inr]
   change
@@ -205,8 +205,8 @@ theorem directSum_cross_pairing_left_right
 theorem directSum_cross_pairing_right_left
     (x : Fin l₂ → F2) (y : Fin r₁ → F2) :
     (bananaDirectSum A B).eval
-        (A.directSumLeftInr B x)
-        (A.directSumRightInl B y) = 0 := by
+        (directSumLeftInr (l₁ := l₁) (l₂ := l₂) x)
+        (directSumRightInl (r₁ := r₁) (r₂ := r₂) y) = 0 := by
   unfold eval
   rw [directSum_mulVec_inl]
   change
