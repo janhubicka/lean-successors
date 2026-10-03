@@ -152,20 +152,20 @@ theorem extend_list_copies
       · let a : S.Copy A D' := S.range j
         refine ⟨a, ?_⟩
         have hpbase :
-            S.mapCopy base head =
+            S.mapCopy base q =
               S.range (S.compEmb ep base) := by
           calc
-            S.mapCopy base head =
+            S.mapCopy base q =
                 S.mapCopy base (S.range ep) := by rw [hep]
             _ = S.range (S.compEmb ep base) :=
               (S.range_comp ep base).symm
         have hpmap :
-            S.mapCopy (S.compEmb base i) head =
+            S.mapCopy (S.compEmb base i) q =
               S.range (S.compEmb (S.compEmb ep base) i) := by
           calc
-            S.mapCopy (S.compEmb base i) head =
-                S.mapCopy i (S.mapCopy base head) :=
-              S.mapCopy_comp base i head
+            S.mapCopy (S.compEmb base i) q =
+                S.mapCopy i (S.mapCopy base q) :=
+              S.mapCopy_comp base i q
             _ = S.mapCopy i (S.range (S.compEmb ep base)) := by
               rw [hpbase]
             _ = S.range (S.compEmb (S.compEmb ep base) i) :=
