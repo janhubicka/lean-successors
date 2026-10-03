@@ -215,7 +215,7 @@ theorem firstMoveSplit_tail_excess
     (r : AM H c 1)
     (hmove : c < r.topLevel H) :
     H.levelMap (H.firstMoveSplit r hmove).tail.map (c + 1) - (c + 1) =
-      r.excess H - 1 := by
+      AM.excess H r - 1 := by
   unfold AM.excess
   rw [(H.firstMoveSplit r hmove).tail_top]
   omega
@@ -336,8 +336,8 @@ theorem exists_transport_after_head
     exact h
 
 /-- Direct evaluation of a right coordinate in the tail subspace. -/
-noncomputable def ShapeFusionData.eval
-    {n : Nat}
+noncomputable def shapeFusionEval
+    (H : SMTree S) {n : Nat}
     (D : ShapeFusionData H n)
     (i : Nat)
     (r : AM H (D.cut i) 1) :
@@ -345,10 +345,10 @@ noncomputable def ShapeFusionData.eval
   H.shapeAct (D.cut i) (D.tail i) r
 
 /-- The base (zero-excess) coordinate evaluates to the chosen head. -/
-theorem ShapeFusionData.eval_id_eq_head
+theorem shapeFusionEval_id_eq_head
     {n : Nat}
     (D : ShapeFusionData H n) (i : Nat) :
-    D.eval i (AM.id1 H (D.cut i)) = D.head i := by
+    H.shapeFusionEval D i (AM.id1 H (D.cut i)) = D.head i := by
   apply Subtype.ext
   apply Subtype.ext
   funext x
@@ -398,33 +398,33 @@ theorem ShapeFusionData.eval_id_eq_head
 
 
 /-- Transport an AM type along equality of its frozen cut. -/
-def AM.castCut
+def amCastCut
     (H : SMTree S) {c d : Nat}
     (h : c = d) (a : AM H c 1) : AM H d 1 := by
   subst d
   exact a
 
-@[simp] theorem AM.castCut_rfl
+@[simp] theorem amCastCut_rfl
     (H : SMTree S) {c : Nat}
     (a : AM H c 1) :
-    a.castCut H rfl = a := rfl
+    H.amCastCut rfl a = a := rfl
 
-theorem AM.castCut_representative
+theorem amCastCut_representative
     (H : SMTree S) {c d : Nat}
     (h : c = d) (a : AM H c 1) :
-    (a.castCut H h).representative H = a.representative H := by
+    (H.amCastCut h a).representative H = a.representative H := by
   subst d
   rfl
 
-theorem AM.castCut_topLevel
+theorem amCastCut_topLevel
     (H : SMTree S) {c d : Nat}
     (h : c = d) (a : AM H c 1) :
-    (a.castCut H h).topLevel H = a.topLevel H := by
+    (H.amCastCut h a).topLevel H = a.topLevel H := by
   subst d
   rfl
 
 /-- The line-closure field in a form using the explicit cut cast. -/
-theorem ShapeFusionData.line_closed_cast
+theorem shapeFusionLine_closed_cast
     {n : Nat}
     (D : ShapeFusionData H n)
     (i : Nat)
@@ -432,7 +432,7 @@ theorem ShapeFusionData.line_closed_cast
     (hq : q ∈ D.cell (i + 1))
     (p : LineInput (OneLevelLetter H (D.cut i))) :
     H.shapeLineApply (D.head i)
-        (q.castCut H (D.cut_succ i)) p ∈ D.cell i := by
+        (H.amCastCut (D.cut_succ i) q) p ∈ D.cell i := by
   exact D.line_closed i q hq p
 
 
@@ -440,17 +440,17 @@ theorem ShapeFusionData.line_closed_cast
 /-- One recursive excess step: split the first move of the explicit right
 coordinate, transport the remaining tail across the current canonical head,
 and obtain an algebraic line over a coordinate at the next cut. -/
-theorem ShapeFusionData.exists_eval_step
+theorem shapeFusionExists_eval_step
     {n : Nat}
     (D : ShapeFusionData H n)
     (i : Nat)
     (r : AM H (D.cut i) 1)
     (hmove : D.cut i < r.topLevel H) :
     ∃ q : AM H (D.cut (i + 1)) 1,
-      q.excess H = r.excess H - 1 ∧
-      D.eval i r =
+      AM.excess H q = AM.excess H r - 1 ∧
+      H.shapeFusionEval D i r =
         H.shapeLineApply (D.head i)
-          ((D.eval (i + 1) q).castCut H (D.cut_succ i))
+          ((H.shapeFusionEval D (i + 1) q).castCut H (D.cut_succ i))
           (.letter (H.firstMoveSplit r hmove).first) := by
   let R := H.firstMoveSplit r hmove
   obtain ⟨t, htfixHead, htlevHead, htcomm⟩ :=
@@ -468,7 +468,7 @@ theorem ShapeFusionData.exists_eval_step
     exact htlevHead
   let q : AM H (D.cut (i + 1)) 1 :=
     t.toAM H (D.cut (i + 1)) 1 htfix
-  have hqex : q.excess H = r.excess H - 1 := by
+  have hqex : AM.excess H q = AM.excess H r - 1 := by
     unfold AM.excess
     rw [show q.topLevel H = H.levelMap t.map (D.cut (i + 1)) by
       exact MMap.toAM_one_topLevel H t (D.cut (i + 1)) htfix]
@@ -483,12 +483,12 @@ theorem ShapeFusionData.exists_eval_step
     rw [Nat.add_sub_cancel_left]
     simpa [AM.excess] using htail
   refine ⟨q, hqex, ?_⟩
-  let qe : AM H (D.cut (i + 1)) 1 := D.eval (i + 1) q
+  let qe : AM H (D.cut (i + 1)) 1 := H.shapeFusionEval D (i + 1) q
   let qline : AM H ((D.head i).nextCut H) 1 :=
-    qe.castCut H hcut
+    H.amCastCut hcut qe
   have hqlineRep :
       qline.representative H = qe.representative H := by
-    exact AM.castCut_representative H hcut qe
+    exact amCastCut_representative H hcut qe
   apply Subtype.ext
   apply Subtype.ext
   funext x
@@ -566,46 +566,46 @@ theorem ShapeFusionData.exists_eval_step
 
 /-- The excess induction: every explicit right coordinate evaluates into the
 chosen large cell at its fusion stage. -/
-theorem ShapeFusionData.eval_mem
+theorem shapeFusionEval_mem
     {n : Nat}
     (D : ShapeFusionData H n) :
     ∀ i : Nat, ∀ r : AM H (D.cut i) 1,
-      D.eval i r ∈ D.cell i := by
+      H.shapeFusionEval D i r ∈ D.cell i := by
   intro i r
-  generalize hk : r.excess H = k
+  generalize hk : AM.excess H r = k
   induction k using Nat.strong_induction_on generalizing i r with
   | h k ih =>
       by_cases hk0 : k = 0
-      · have hexcess0 : r.excess H = 0 := hk.trans hk0
+      · have hexcess0 : AM.excess H r = 0 := hk.trans hk0
         have hex0 : r.topLevel H - D.cut i = 0 := by
           simpa [AM.excess] using hexcess0
         have htopLe : r.topLevel H ≤ D.cut i :=
           Nat.sub_eq_zero_iff_le.mp hex0
         have rid : r = AM.id1 H (D.cut i) := by
           exact AM.eq_id1_of_topLevel_le H r htopLe
-        rw [rid, D.eval_id_eq_head]
+        rw [rid, H.shapeFusionEval_id_eq_head D]
         exact D.head_mem i
       · have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
         have htopGe : D.cut i ≤ r.topLevel H := by
           have hge := H.levelMap_id_le (r.representative H).map (D.cut i)
           simpa [AM.topLevel] using hge
         have hmove : D.cut i < r.topLevel H := by
-          have hexpos : 0 < r.excess H := by
+          have hexpos : 0 < AM.excess H r := by
             rw [hk]
             exact hkpos
           unfold AM.excess at hexpos
           omega
         obtain ⟨q, hqex, heval⟩ :=
-          D.exists_eval_step i r hmove
-        have hqk : q.excess H = k - 1 := by
+          H.shapeFusionExists_eval_step D i r hmove
+        have hqk : AM.excess H q = k - 1 := by
           calc
-            q.excess H = r.excess H - 1 := hqex
+            AM.excess H q = AM.excess H r - 1 := hqex
             _ = k - 1 := by rw [hk]
         have hqmem :
-            D.eval (i + 1) q ∈ D.cell (i + 1) :=
+            H.shapeFusionEval D (i + 1) q ∈ D.cell (i + 1) :=
           ih (k - 1) (by omega) (i + 1) q hqk
         rw [heval]
-        exact D.line_closed_cast i (D.eval (i + 1) q) hqmem
+        exact H.shapeFusionLine_closed_cast D i (H.shapeFusionEval D (i + 1) q) hqmem
           (.letter (H.firstMoveSplit r hmove).first)
 
 end SMTree
