@@ -107,5 +107,170 @@ noncomputable def largeFiniteSubspace
     ShapeSubspace H X.cut :=
   ⟨H.largeFiniteTail X r, H.largeFiniteTail_fixesBelow X r⟩
 
+
+/-- A canonical head sends a source node lying before c+r+1 to a target node
+lying before the next cut plus r. -/
+theorem largeHeadCanonical_bound
+    (H : SMTree S)
+    (X : ShapeLargeStage H)
+    (r : Nat)
+    (x : T)
+    (hx : LevelTree.lev x < X.cut + r + 1) :
+    LevelTree.lev ((H.chooseLargeStage X).head.canonical H x) <
+      (H.nextLargeStage X).cut + r := by
+  let C := H.chooseLargeStage X
+  change LevelTree.lev (C.head.canonical H x) < C.head.nextCut H + r
+  by_cases hlow : LevelTree.lev x < X.cut
+  · have hcan :
+        C.head.canonical H x = x := by
+      rw [AM.canonical,
+        H.canonicalExtension_agrees
+          (C.head.representative H) X.cut x (Nat.le_of_lt hlow)]
+      exact C.head.representative_fixesBelow H x hlow
+    rw [hcan]
+    exact lt_of_lt_of_le hlow
+      (Nat.le_add_right X.cut (C.head.nextCut H - X.cut + r))
+  · have hge : X.cut ≤ LevelTree.lev x := Nat.le_of_not_gt hlow
+    obtain ⟨j, hj⟩ := Nat.exists_eq_add_of_le hge
+    have hjr : j ≤ r := by omega
+    calc
+      LevelTree.lev (C.head.canonical H x) =
+          H.levelMap (C.head.canonical H).map (LevelTree.lev x) :=
+        (H.levelMap_eq (C.head.canonical H).map (a := x)).symm
+      _ = H.levelMap (C.head.canonical H).map (X.cut + j) := by rw [hj]
+      _ = H.levelMap (C.head.representative H).map X.cut + j := by
+        rw [AM.canonical,
+          H.canonicalExtension_level_tail
+            (C.head.representative H) X.cut j]
+      _ = C.head.topLevel H + j := rfl
+      _ < C.head.topLevel H + 1 + r := by omega
+      _ = C.head.nextCut H + r := rfl
+
+/-- Adding one more large stage changes nothing below c+r. -/
+theorem largeFiniteTail_succ_agrees
+    (H : SMTree S) :
+    ∀ (X : ShapeLargeStage H) (r : Nat) (x : T),
+      LevelTree.lev x < X.cut + r →
+      H.largeFiniteTail X (r + 1) x =
+        H.largeFiniteTail X r x := by
+  intro X r
+  induction r generalizing X with
+  | zero =>
+      intro x hx
+      let C := H.chooseLargeStage X
+      change
+        C.refiner.1
+          ((H.largeFiniteTail (H.nextLargeStage X) 0)
+            (C.head.canonical H x)) = x
+      rw [largeFiniteTail]
+      rw [MMap.id_apply]
+      have hcan : C.head.canonical H x = x := by
+        rw [AM.canonical,
+          H.canonicalExtension_agrees
+            (C.head.representative H) X.cut x (Nat.le_of_lt hx)]
+        exact C.head.representative_fixesBelow H x hx
+      rw [hcan]
+      exact C.refiner.2 x hx
+  | succ r ih =>
+      intro x hx
+      let C := H.chooseLargeStage X
+      let Y := H.nextLargeStage X
+      change
+        C.refiner.1
+          ((H.largeFiniteTail Y (r + 1))
+            (C.head.canonical H x)) =
+        C.refiner.1
+          ((H.largeFiniteTail Y r)
+            (C.head.canonical H x))
+      apply congrArg C.refiner.1
+      apply ih Y
+      exact H.largeHeadCanonical_bound X r x (by omega)
+
+/-- Once a finite tail has length d, every longer finite tail has the same
+value below cut+d. -/
+theorem largeFiniteTail_stable_of_le
+    (H : SMTree S)
+    (X : ShapeLargeStage H)
+    {d e : Nat} (hde : d ≤ e)
+    (x : T) (hx : LevelTree.lev x < X.cut + d) :
+    H.largeFiniteTail X e x = H.largeFiniteTail X d x := by
+  induction e with
+  | zero =>
+      have hd : d = 0 := by omega
+      subst d
+      rfl
+  | succ e ih =>
+      by_cases hEq : d = e + 1
+      · subst d
+        rfl
+      · have hde' : d ≤ e := by omega
+        calc
+          H.largeFiniteTail X (e + 1) x =
+              H.largeFiniteTail X e x := by
+            apply H.largeFiniteTail_succ_agrees X e x
+            exact lt_of_lt_of_le hx (Nat.add_le_add_left hde' X.cut)
+          _ = H.largeFiniteTail X d x := ih hde'
+
+noncomputable def largeFusionStage
+    (H : SMTree S) (X : ShapeLargeStage H)
+    (i : Nat) : MMap H :=
+  H.largeFiniteTail X (i + 1)
+
+theorem largeFusionStage_stable
+    (H : SMTree S) (X : ShapeLargeStage H) :
+    ShapeMap.FusionStable
+      (fun i => (H.largeFusionStage X i).map) := by
+  intro i x hx
+  change
+    H.largeFiniteTail X (i + 1) x =
+      H.largeFiniteTail X (i + 2) x
+  symm
+  apply H.largeFiniteTail_succ_agrees X (i + 1) x
+  omega
+
+noncomputable def largeFusionLimit
+    (H : SMTree S) (X : ShapeLargeStage H) :
+    ShapeSubspace H X.cut := by
+  let F : Nat → MMap H := fun i => H.largeFusionStage X i
+  let hstable :
+      ShapeMap.FusionStable (fun i => (F i).map) :=
+    H.largeFusionStage_stable X
+  let L : MMap H := {
+    map := ShapeMap.fusionLimit (fun i => (F i).map) hstable
+    mem := H.fusion_mem
+      (fun i => (F i).map)
+      (fun i => (F i).mem)
+      hstable
+  }
+  refine ⟨L, ?_⟩
+  intro x hx
+  change H.largeFiniteTail X (LevelTree.lev x + 1) x = x
+  exact H.largeFiniteTail_fixesBelow X (LevelTree.lev x + 1) x hx
+
+/-- The diagonal limit agrees with the finite tail long enough to cover a
+prescribed source level. -/
+theorem largeFusionLimit_agrees_finite
+    (H : SMTree S)
+    (X : ShapeLargeStage H)
+    (d : Nat)
+    (x : T)
+    (hx : LevelTree.lev x < X.cut + d) :
+    (H.largeFusionLimit X).1 x =
+      H.largeFiniteTail X d x := by
+  let F : Nat → MMap H := fun i => H.largeFusionStage X i
+  let hstable :
+      ShapeMap.FusionStable (fun i => (F i).map) :=
+    H.largeFusionStage_stable X
+  change F (LevelTree.lev x) x = H.largeFiniteTail X d x
+  change
+    H.largeFiniteTail X (LevelTree.lev x + 1) x =
+      H.largeFiniteTail X d x
+  by_cases hle : LevelTree.lev x + 1 ≤ d
+  · exact H.largeFiniteTail_stable_of_le X hle x (by
+      omega)
+  · have hdl : d ≤ LevelTree.lev x + 1 := by omega
+    symm
+    exact H.largeFiniteTail_stable_of_le X hdl x hx
+
 end SMTree
 end SuccessorTree
