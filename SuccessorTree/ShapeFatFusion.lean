@@ -177,7 +177,6 @@ theorem FatBlockSeq.cumulative_level_tail
       rw [H.canonicalExtension_level_tail
         (U.seed i) (U.cut i) (j + 1)]
       have htop := U.seed_top i
-      unfold AM.topLevel at htop
       rw [htop]
       have hcut : U.cut i < U.cut (i + 1) :=
         U.cut_strict (Nat.lt_succ_self i)
