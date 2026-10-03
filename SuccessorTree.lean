@@ -52,3 +52,4 @@ import SuccessorTree.ShapeTwoBlock
 import SuccessorTree.ShapeMillikenFusion
 import SuccessorTree.ShapeLargeShapeLine
 import SuccessorTree.ShapeRamseyFusion
+import SuccessorTree.ShapeLocalPigeonhole
