@@ -369,9 +369,9 @@ theorem shapeFusionEval_id_eq_head
   have hxId :
       (AM.id1 H (D.cut i)).representative H x.1 = x.1 := by
     change
-      (AM.id1 H (D.cut i)).representative H x.1 =
-        (MMap.id H) x.1 at hxId0
-    simpa using hxId0
+      ((AM.id1 H (D.cut i)).representative H).restrictLe H (D.cut i) x =
+        (MMap.id H).restrictLe H (D.cut i) x
+    exact hxId0
   have hdec := congrArg
     (fun F : MMap H => F x.1) (D.decompose i)
   have hheadLev :
@@ -439,7 +439,7 @@ theorem shapeFusionLine_closed_cast
     (p : LineInput (OneLevelLetter H (D.cut i))) :
     H.shapeLineApply (D.head i)
         (H.amCastCut (D.cut_succ i) q) p ∈ D.cell i := by
-  exact D.line_closed i q hq p
+  simpa only using D.line_closed i q hq p
 
 
 
