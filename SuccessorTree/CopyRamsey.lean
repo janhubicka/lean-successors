@@ -132,48 +132,46 @@ theorem extend_finite_copies
         ∃ a : S.Copy A D,
           S.Subcopy (S.mapCopy base p) a := by
   classical
-  induction copies using Finset.induction_on with
-  | empty =>
-      refine ⟨B, S.idEmb B, ?_⟩
-      intro p hp
-      simp at hp
-  | insert p copies hp ih =>
-      obtain ⟨D, base, hbase⟩ := ih
-      obtain ⟨ep, hep⟩ := S.range_surjective p
-      obtain ⟨D', i, j, hij⟩ :=
-        M.amalgamate (S.compEmb ep base) pA
-      refine ⟨D', S.compEmb base i, ?_⟩
-      intro q hq
-      rw [Finset.mem_insert] at hq
-      rcases hq with rfl | hq
-      · let a : S.Copy A D' := S.range j
-        refine ⟨a, ?_⟩
-        have hpbase :
-            S.mapCopy base p = S.range (S.compEmb ep base) := by
-          calc
-            S.mapCopy base p =
-                S.mapCopy base (S.range ep) := by rw [hep]
-            _ = S.range (S.compEmb ep base) :=
-              (S.range_comp ep base).symm
-        have hpmap :
-            S.mapCopy (S.compEmb base i) p =
-              S.range (S.compEmb (S.compEmb ep base) i) := by
-          calc
-            S.mapCopy (S.compEmb base i) p =
-                S.mapCopy i (S.mapCopy base p) :=
-              S.mapCopy_comp base i p
-            _ = S.mapCopy i (S.range (S.compEmb ep base)) := by
-              rw [hpbase]
-            _ = S.range (S.compEmb (S.compEmb ep base) i) :=
-              (S.range_comp (S.compEmb ep base) i).symm
-        rw [hpmap, hij]
-        exact (S.subcopy_range_iff j
-          (S.range (S.compEmb pA j))).mpr
-            ⟨S.range pA, by rw [S.range_comp]⟩
-      · obtain ⟨a, ha⟩ := hbase q hq
-        refine ⟨S.mapCopy i a, ?_⟩
-        rw [S.mapCopy_comp]
-        exact subcopy_map (S := S) i ha
+  refine Finset.induction_on copies ?_ (fun p copies hp ih => ?_)
+  · refine ⟨B, S.idEmb B, ?_⟩
+    intro q hq
+    simp at hq
+  · obtain ⟨D, base, hbase⟩ := ih
+    obtain ⟨ep, hep⟩ := S.range_surjective p
+    obtain ⟨D', i, j, hij⟩ :=
+      M.amalgamate (S.compEmb ep base) pA
+    refine ⟨D', S.compEmb base i, ?_⟩
+    intro q hq
+    rw [Finset.mem_insert] at hq
+    rcases hq with rfl | hq
+    · let a : S.Copy A D' := S.range j
+      refine ⟨a, ?_⟩
+      have hpbase :
+          S.mapCopy base p = S.range (S.compEmb ep base) := by
+        calc
+          S.mapCopy base p =
+              S.mapCopy base (S.range ep) := by rw [hep]
+          _ = S.range (S.compEmb ep base) :=
+            (S.range_comp ep base).symm
+      have hpmap :
+          S.mapCopy (S.compEmb base i) p =
+            S.range (S.compEmb (S.compEmb ep base) i) := by
+        calc
+          S.mapCopy (S.compEmb base i) p =
+              S.mapCopy i (S.mapCopy base p) :=
+            S.mapCopy_comp base i p
+          _ = S.mapCopy i (S.range (S.compEmb ep base)) := by
+            rw [hpbase]
+          _ = S.range (S.compEmb (S.compEmb ep base) i) :=
+            (S.range_comp (S.compEmb ep base) i).symm
+      rw [hpmap, hij]
+      exact (S.subcopy_range_iff j
+        (S.range (S.compEmb pA j))).mpr
+          ⟨S.range pA, by rw [S.range_comp]⟩
+    · obtain ⟨a, ha⟩ := hbase q hq
+      refine ⟨S.mapCopy i a, ?_⟩
+      rw [S.mapCopy_comp]
+      exact subcopy_map (S := S) i ha
 
 /-- Attach an A-copy over every P-copy of B. -/
 theorem extend_all_copies
@@ -203,7 +201,7 @@ theorem subcopyColourSet_card_le
     {P A C : S.Obj} {r : ℕ}
     (colouring : S.Copy P C → Fin r)
     (a : S.Copy A C) :
-    (subcopyColourSet S colouring a).card ≤
+    (subcopyColourSet (S := S) colouring a).card ≤
       Fintype.card (S.Copy P A) := by
   classical
   obtain ⟨f, hf⟩ := S.range_surjective a
@@ -218,7 +216,7 @@ theorem subcopyColourSet_card_le
     obtain ⟨q, hq⟩ := (S.subcopy_range_iff f p).mp hsub
     exact Finset.mem_image.mpr ⟨q, Finset.mem_univ _, hq⟩
   calc
-    (subcopyColourSet S colouring a).card ≤
+    (subcopyColourSet (S := S) colouring a).card ≤
         (Finset.univ.filter fun p : S.Copy P C => S.Subcopy p a).card :=
       Finset.card_image_le
     _ ≤ transported.card := Finset.card_le_card hcopies
@@ -258,7 +256,7 @@ theorem copyRamseyDegreeLE_of_embedding
     Fintype.equivFin Palette
 
   let colouringA : S.Copy A C → Fin nPal :=
-    fun a => paletteEquiv (subcopyColourSet S colouringP a)
+    fun a => paletteEquiv (subcopyColourSet (S := S) colouringP a)
 
   obtain ⟨g, hg⟩ := hC colouringA
 
@@ -277,11 +275,11 @@ theorem copyRamseyDegreeLE_of_embedding
     rcases Finset.mem_image.mp hT with ⟨z, hz, hTz⟩
     rcases Finset.mem_image.mp hz with ⟨a, ha, hza⟩
     have hT_eq :
-        T = subcopyColourSet S colouringP (S.mapCopy g a) := by
+        T = subcopyColourSet (S := S) colouringP (S.mapCopy g a) := by
       rw [← hTz, ← hza]
       simp [colouringA, paletteEquiv]
     rw [hT_eq]
-    exact subcopyColourSet_card_le S colouringP (S.mapCopy g a)
+    exact subcopyColourSet_card_le (S := S) colouringP (S.mapCopy g a)
 
   let allColours : Finset (Fin r) :=
     palettes.biUnion id
@@ -315,14 +313,14 @@ theorem copyRamseyDegreeLE_of_embedding
 
   have hcolour_mem_set :
       colouringP (S.mapCopy g (S.mapCopy base p)) ∈
-        subcopyColourSet S colouringP (S.mapCopy g a) := by
+        subcopyColourSet (S := S) colouringP (S.mapCopy g a) := by
     unfold subcopyColourSet
     apply Finset.mem_image.mpr
     refine ⟨S.mapCopy g (S.mapCopy base p), ?_, rfl⟩
     exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hsub⟩
 
   have hpalette_mem :
-      subcopyColourSet S colouringP (S.mapCopy g a) ∈ palettes := by
+      subcopyColourSet (S := S) colouringP (S.mapCopy g a) ∈ palettes := by
     apply Finset.mem_image.mpr
     refine ⟨colouringA (S.mapCopy g a), ?_, ?_⟩
     · unfold FiniteCopySystem.coloursInside
@@ -333,7 +331,7 @@ theorem copyRamseyDegreeLE_of_embedding
   have hcolour_union :
       colouringP (S.mapCopy g (S.mapCopy base p)) ∈ allColours := by
     exact Finset.mem_biUnion.mpr
-      ⟨subcopyColourSet S colouringP (S.mapCopy g a),
+      ⟨subcopyColourSet (S := S) colouringP (S.mapCopy g a),
         hpalette_mem, hcolour_mem_set⟩
 
   rw [S.mapCopy_comp] at hcolour_union
