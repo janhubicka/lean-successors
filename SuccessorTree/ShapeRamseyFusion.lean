@@ -23,7 +23,7 @@ namespace SMTree
 
 open SuccessorTree.HalesJewett
 
-universe u v
+universe u v w
 
 variable {T : Type u} {Label : Type v}
 variable [PartialOrder T] [LevelTree T]
