@@ -84,4 +84,30 @@ theorem exists_nonempty_odd_subset_sum_two_pow
     refine ⟨t, Finset.nonempty_iff_ne_empty.mpr htne,
       htu.trans (Finset.erase_subset _ _), hsum⟩
 
+
+/-- Simultaneously choose a nonempty residue-correct subset from each
+power-of-two batch of odd weights. -/
+theorem exists_nonempty_odd_subset_sum_family
+    {k m : ℕ} {ι : Type*} [DecidableEq ι]
+    (batch : Fin m → Finset ι) (a : ι → ℕ)
+    (hcard : ∀ i, (batch i).card = 2 ^ k)
+    (ha : ∀ i x, x ∈ batch i → Odd (a x))
+    (r : Fin m → ZMod (2 ^ k)) :
+    ∃ chosen : Fin m → Finset ι,
+      ∀ i,
+        (chosen i).Nonempty ∧
+        chosen i ⊆ batch i ∧
+        (∑ x ∈ chosen i, (a x : ZMod (2 ^ k))) = r i := by
+  have hchoice :
+      ∀ i : Fin m,
+        ∃ t : Finset ι,
+          t.Nonempty ∧
+          t ⊆ batch i ∧
+          (∑ x ∈ t, (a x : ZMod (2 ^ k))) = r i := by
+    intro i
+    exact exists_nonempty_odd_subset_sum_two_pow
+      (batch i) a (hcard i) (fun x hx => ha i x hx) (r i)
+  choose chosen hchosen using hchoice
+  exact ⟨chosen, hchosen⟩
+
 end SuccessorTree.NonPrecompact
