@@ -238,11 +238,11 @@ theorem blockEval_replayTwoBlock_line
         (H.replayApplyAM_base_representative_agrees
           m R (p.1.representative H z.1)
           (by
-            exact p.1.level_le_topLevel H z.1 z.2 |>.trans_eq p.2))
+            exact p.1.level_le_topLevel H z.1 z.2 |>.trans_eq p.2)).symm
   | letter e =>
       have hpm : H.levelMap (p.1.representative H).map n = m := by
         simpa [AM.topLevel] using p.2
-      subst m
+      cases hpm
       let et : OneLevelLetter H
           (H.levelMap (p.1.representative H).map n) :=
         H.transportLetter (p.1.representative H) n e
