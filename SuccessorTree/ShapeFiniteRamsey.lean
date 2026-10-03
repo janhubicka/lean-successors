@@ -155,7 +155,9 @@ theorem shapePreservingRamsey
       colour ⟨p, hp⟩
     else default
   have hext (a : AM H n k) : extended a.1 = colour a := by
-    simp [extended, a.2]
+    dsimp only [extended]
+    rw [dif_pos a.2]
+    exact congrArg colour (Subtype.ext rfl)
   obtain ⟨W, _, hW⟩ :=
     H.shapeRamsey_approximations n k (ShapeSubspace.id H n) extended
   refine ⟨W, ?_⟩
