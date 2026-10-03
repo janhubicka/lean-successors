@@ -123,11 +123,13 @@ theorem FatBlockSeq.cumulative_level_tail
       rw [H.levelMap_comp
         (U.blockMap H i) (U.cumulative H i)
         (n + (i + 1) + j)]
+      have harg :
+          n + (i + 1) + j = n + i + (j + 1) := by omega
       have hinner :
           H.levelMap (U.cumulative H i).map (n + (i + 1) + j) =
             U.cut i + (j + 1) := by
-        have h := ih (j + 1)
-        convert h using 1 <;> omega
+        rw [harg]
+        exact ih (j + 1)
       rw [hinner]
       change
         H.levelMap
@@ -137,7 +139,9 @@ theorem FatBlockSeq.cumulative_level_tail
           U.cut (i + 1) + j
       rw [H.canonicalExtension_level_tail
         ((U.block i).1.representative H) (U.cut i) (j + 1)]
-      rw [(U.block i).2]
+      have htop := (U.block i).2
+      unfold AM.topLevel at htop
+      rw [htop]
       have hcut : U.cut i < U.cut (i + 1) :=
         U.cut_strict (Nat.lt_succ_self i)
       omega
