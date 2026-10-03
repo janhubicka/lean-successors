@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # GitHub-hosted runners are ephemeral. Cache the pinned Lean toolchain so
       # elan does not download and unpack it on every CI run.
@@ -24,8 +26,6 @@ jobs:
           key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
 
       # Keep dependency checkouts and compiled project artifacts between runs.
-      # Each commit gets a new cache, restored from the most recent compatible
-      # predecessor when there is no exact hit.
       - name: Cache Lake workspace
         uses: actions/cache@v5
         with:
@@ -46,4 +46,51 @@ jobs:
         run: lake exe cache get
 
       - name: Build
-        run: lake build
+        run: |
+          set -o pipefail
+          mkdir -p proof-audit
+          lake build 2>&1 | tee proof-audit/build.log
+
+      - name: Check shape Ramsey statement and axioms
+        run: |
+          set -o pipefail
+          lake env lean scripts/CheckShapeRamsey.lean 2>&1 | tee proof-audit/axioms.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text = Path('proof-audit/axioms.log').read_text()
+          entries = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
+          if len(entries) != 8:
+              raise SystemExit(f'Expected 8 complete axiom reports, received {len(entries)}')
+          allowed = {'propext', 'Classical.choice', 'Quot.sound'}
+          for entry in entries:
+              found = {x.strip() for x in entry.split(',') if x.strip()}
+              if found - allowed:
+                  raise SystemExit(f'Unexpected proof axioms: {found - allowed}')
+          if 'sorryAx' in text or re.search(r'\berror:', text):
+              raise SystemExit('Proof audit contains an error or an admitted proof')
+          print('PASS: all 8 transitive axiom reports use only standard Lean axioms')
+          PY
+
+      - name: Record reproducible proof snapshot
+        run: |
+          git rev-parse HEAD > proof-audit/COMMIT
+          cp lean-toolchain lakefile.toml lake-manifest.json proof-audit/
+          git diff --check
+          git diff ef5cce3d9dcfea768c69998515a7ded6bc03e603 HEAD -- \
+            SuccessorTree.lean SuccessorTree scripts .github/workflows/lean.yml \
+            > proof-audit/shape-ramsey-completion.patch
+          git diff "$(git merge-base origin/main HEAD)" HEAD -- \
+            SuccessorTree.lean SuccessorTree scripts .github/workflows/lean.yml \
+            > proof-audit/shape-ramsey-branch.patch
+          if test -d manuscript; then cp -R manuscript proof-audit/; fi
+          if test -f docs/shape-ramsey-audit.md; then cp docs/shape-ramsey-audit.md proof-audit/; fi
+          (cd proof-audit && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
+
+      - name: Upload proof audit and patches
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shape-ramsey-proof-audit
+          path: proof-audit/
+          retention-days: 30
