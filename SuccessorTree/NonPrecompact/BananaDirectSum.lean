@@ -229,6 +229,139 @@ theorem directSum_cross_pairing_right_left
   rw [Fin.sum_univ_add]
   simp
 
+
+/-- First coordinate block of a vector on a direct-sum coordinate space. -/
+def finLeftPart {m n : ℕ} (x : Fin (m + n) → F2) : Fin m → F2 :=
+  fun i => x (Fin.castAdd n i)
+
+/-- Second coordinate block of a vector on a direct-sum coordinate space. -/
+def finRightPart {m n : ℕ} (x : Fin (m + n) → F2) : Fin n → F2 :=
+  fun i => x (Fin.natAdd m i)
+
+/-- Direct sum of two linear maps between finite coordinate spaces. -/
+def directSumLinearMap
+    {m₁ m₂ n₁ n₂ : ℕ}
+    (f : (Fin m₁ → F2) →ₗ[F2] (Fin n₁ → F2))
+    (g : (Fin m₂ → F2) →ₗ[F2] (Fin n₂ → F2)) :
+    (Fin (m₁ + m₂) → F2) →ₗ[F2] (Fin (n₁ + n₂) → F2) where
+  toFun x := Fin.append (f (finLeftPart x)) (g (finRightPart x))
+  map_add' x y := by
+    apply funext
+    rw [Fin.forall_fin_add]
+    constructor <;> intro i <;>
+      simp [finLeftPart, finRightPart]
+  map_smul' a x := by
+    apply funext
+    rw [Fin.forall_fin_add]
+    constructor <;> intro i <;>
+      simp [finLeftPart, finRightPart]
+
+@[simp] theorem finLeftPart_directSumLinearMap
+    {m₁ m₂ n₁ n₂ : ℕ}
+    (f : (Fin m₁ → F2) →ₗ[F2] (Fin n₁ → F2))
+    (g : (Fin m₂ → F2) →ₗ[F2] (Fin n₂ → F2))
+    (x : Fin (m₁ + m₂) → F2) :
+    finLeftPart (directSumLinearMap f g x) = f (finLeftPart x) := by
+  funext i
+  simp [finLeftPart, directSumLinearMap]
+
+@[simp] theorem finRightPart_directSumLinearMap
+    {m₁ m₂ n₁ n₂ : ℕ}
+    (f : (Fin m₁ → F2) →ₗ[F2] (Fin n₁ → F2))
+    (g : (Fin m₂ → F2) →ₗ[F2] (Fin n₂ → F2))
+    (x : Fin (m₁ + m₂) → F2) :
+    finRightPart (directSumLinearMap f g x) = g (finRightPart x) := by
+  funext i
+  simp [finRightPart, directSumLinearMap]
+
+theorem directSumLinearMap_injective
+    {m₁ m₂ n₁ n₂ : ℕ}
+    {f : (Fin m₁ → F2) →ₗ[F2] (Fin n₁ → F2)}
+    {g : (Fin m₂ → F2) →ₗ[F2] (Fin n₂ → F2)}
+    (hf : Function.Injective f)
+    (hg : Function.Injective g) :
+    Function.Injective (directSumLinearMap f g) := by
+  intro x y h
+  have hleft :
+      f (finLeftPart x) = f (finLeftPart y) := by
+    funext i
+    have hi := congrFun h (Fin.castAdd n₂ i)
+    simpa [directSumLinearMap] using hi
+  have hright :
+      g (finRightPart x) = g (finRightPart y) := by
+    funext i
+    have hi := congrFun h (Fin.natAdd n₁ i)
+    simpa [directSumLinearMap] using hi
+  have hxleft := hf hleft
+  have hxright := hg hright
+  apply funext
+  intro i
+  induction i using Fin.addCases with
+  | left i =>
+      exact congrFun hxleft i
+  | right i =>
+      exact congrFun hxright i
+
+/-- The block-diagonal pairing acts independently on the two coordinate
+blocks. -/
+theorem directSum_mulVec
+    (y : Fin (r₁ + r₂) → F2) :
+    (bananaDirectSum A B).pairing *ᵥ y =
+      Fin.append
+        (A.pairing *ᵥ finLeftPart y)
+        (B.pairing *ᵥ finRightPart y) := by
+  apply funext
+  intro i
+  induction i using Fin.addCases <;>
+    simp [bananaDirectSum, Matrix.mulVec, dotProduct,
+      finLeftPart, finRightPart, Fin.sum_univ_add]
+
+/-- Evaluation of the direct-sum pairing splits into the sum of the two old
+pairings. -/
+theorem directSum_eval_eq
+    (x : Fin (l₁ + l₂) → F2)
+    (y : Fin (r₁ + r₂) → F2) :
+    (bananaDirectSum A B).eval x y =
+      A.eval (finLeftPart x) (finLeftPart y) +
+      B.eval (finRightPart x) (finRightPart y) := by
+  unfold eval
+  rw [directSum_mulVec]
+  change
+    (∑ i : Fin (l₁ + l₂),
+      x i *
+        Fin.append
+          (A.pairing *ᵥ finLeftPart y)
+          (B.pairing *ᵥ finRightPart y) i) =
+      (finLeftPart x ⬝ᵥ (A.pairing *ᵥ finLeftPart y)) +
+      (finRightPart x ⬝ᵥ (B.pairing *ᵥ finRightPart y))
+  rw [Fin.sum_univ_add]
+  simp [dotProduct, finLeftPart, finRightPart]
+
+/-- Direct sum of two BANANA embeddings.  This is the functorial map on
+morphisms for the zero-cross-pairing direct sum. -/
+def directSumEmbedding
+    {l₁' r₁' l₂' r₂' : ℕ}
+    {A' : BananaMatrixStructure l₁' r₁'}
+    {B' : BananaMatrixStructure l₂' r₂'}
+    (f : BananaMatrixEmbedding A A')
+    (g : BananaMatrixEmbedding B B') :
+    BananaMatrixEmbedding
+      (bananaDirectSum A B)
+      (bananaDirectSum A' B') where
+  left := directSumLinearMap f.left g.left
+  right := directSumLinearMap f.right g.right
+  left_injective :=
+    directSumLinearMap_injective f.left_injective g.left_injective
+  right_injective :=
+    directSumLinearMap_injective f.right_injective g.right_injective
+  pairing_apply := by
+    intro x y
+    rw [directSum_eval_eq, directSum_eval_eq]
+    simp only [finLeftPart_directSumLinearMap,
+      finRightPart_directSumLinearMap]
+    rw [f.pairing_apply, g.pairing_apply]
+
+
 end BananaMatrixStructure
 
 end SuccessorTree.NonPrecompact
