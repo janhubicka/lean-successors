@@ -34,23 +34,22 @@ theorem replayApplyAM_representative_agrees
       R.toMMap (localInputMMap H m x a) := by
   cases x with
   | base =>
-      change
-        (R.toMMap.toAM H m 1 R.fixesBelow).representative H a =
-          R.toMMap a
-      exact MMap.toAM_one_representative_agrees
-        H R.toMMap m R.fixesBelow a ha
+      have h :=
+        MMap.toAM_one_representative_agrees
+          H R.toMMap m R.fixesBelow a ha
+      simpa [replayApplyAM, localInputMMap] using h
   | letter e =>
-      change
-        ((MMap.comp H R.toMMap e.toMMap).toAM H m 1 _).representative H a =
-          R.toMMap (e.toMMap a)
-      exact MMap.toAM_one_representative_agrees
-        H (MMap.comp H R.toMMap e.toMMap) m
-          (MMap.comp_fixesBelow H R.toMMap e.toMMap m
-            R.fixesBelow
-            (by
-              intro z hz
-              exact e.eq_id_below H hz))
-          a ha
+      have hfix :
+          (MMap.comp H R.toMMap e.toMMap).FixesBelow H m :=
+        MMap.comp_fixesBelow H R.toMMap e.toMMap m
+          R.fixesBelow
+          (by
+            intro z hz
+            exact e.eq_id_below H hz)
+      have h :=
+        MMap.toAM_one_representative_agrees
+          H (MMap.comp H R.toMMap e.toMMap) m hfix a ha
+      simpa [replayApplyAM, localInputMMap] using h
 
 /-- In the maximal-avoider replay witness the common bounded input must use
 the last source level of the old block. -/
@@ -145,7 +144,13 @@ theorem maximalReplay_crossEval
   let G : MMap H := g.1.representative H
   let p := H.maximalReplayExactPrefix h g hg
   let q := replayApplyAM H (h.blockTopLevel H + 1) R x
+  change
+    H.shapeAct n
+        (H.blockSubspace (H.blockReplayExtension h R x)) g.1 =
+      H.shapeAct n (ShapeSubspace.id H n)
+        (H.composeAcross p q)
   apply Subtype.ext
+  rw [H.shapeAct_val, H.shapeAct_val]
   apply Subtype.ext
   funext z
   have hGlev :
@@ -208,7 +213,8 @@ theorem maximalReplay_crossEval
       (p.1.representative H z.1) hpLev
   change
     (H.blockReplayExtension h R x).representative H (G z.1) =
-      q.representative H (p.1.representative H z.1)
+      (H.composeAcross p q).representative H z.1
+  rw [H.composeAcross_representative_agrees p q z.1 z.2]
   rw [hblockLiteral, hqRep, hpRep]
 
 /-- An exact replay line immediately yields a genuine source-cut shape line. -/
