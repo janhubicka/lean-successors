@@ -274,12 +274,12 @@ def directSumLinearMap
     apply funext
     intro i
     induction i using Fin.addCases <;>
-      simp [directSumLinearMap]
+      simp
   map_smul' a x := by
     apply funext
     intro i
     induction i using Fin.addCases <;>
-      simp [directSumLinearMap]
+      simp
 
 @[simp] theorem finLeftPart_directSumLinearMap
     {m₁ m₂ n₁ n₂ : ℕ}
