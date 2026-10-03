@@ -35,7 +35,7 @@ structure FatBlockSeq (H : SMTree S) (n : Nat) where
 noncomputable def FatBlockSeq.blockMap
     (H : SMTree S) {n : Nat}
     (U : FatBlockSeq H n) (i : Nat) : MMap H :=
-  H.canonicalExtension (U.block i).1.representative H (U.cut i)
+  H.canonicalExtension ((U.block i).1.representative H) (U.cut i)
 
 theorem FatBlockSeq.blockMap_fixesBelow
     (H : SMTree S) {n : Nat}
@@ -67,8 +67,9 @@ theorem FatBlockSeq.blockMap_level_next
   calc
     H.levelMap (U.blockMap H i).map (U.cut i + 1) =
         H.levelMap (U.blockMap H i).map (U.cut i) + 1 := by
-      exact H.canonicalExtension_level_succ
-        ((U.block i).1.representative H) (U.cut i) (U.cut i) le_rfl
+      simpa [FatBlockSeq.blockMap] using
+        H.canonicalExtension_level_succ
+          ((U.block i).1.representative H) (U.cut i) (U.cut i) le_rfl
     _ = (U.cut (i + 1) - 1) + 1 := by
       rw [U.blockMap_level_cut H i]
     _ = U.cut (i + 1) := by omega
@@ -114,10 +115,14 @@ theorem FatBlockSeq.cumulative_level_tail
         _ = U.cut 0 + j := by rw [U.cut_zero]
   | succ i ih =>
       intro j
-      have hcomp :=
-        H.levelMap_comp (U.blockMap H i) (U.cumulative H i)
-          (n + (i + 1) + j)
-      rw [hcomp]
+      change
+        H.levelMap
+          (MMap.comp H (U.blockMap H i) (U.cumulative H i)).map
+          (n + (i + 1) + j) =
+            U.cut (i + 1) + j
+      rw [H.levelMap_comp
+        (U.blockMap H i) (U.cumulative H i)
+        (n + (i + 1) + j)]
       have hinner :
           H.levelMap (U.cumulative H i).map (n + (i + 1) + j) =
             U.cut i + (j + 1) := by
