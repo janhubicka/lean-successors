@@ -882,8 +882,8 @@ theorem largeFiniteEval_mem
                   (.letter (H.firstMoveSplit r hmove).first)) ∈ X.set := by
           exact hline
         rw [hk]
-        have heval' := heval
-        simpa [Y, C] using heval'.symm ▸ hout
+        rw [heval]
+        simpa [Y, C] using hout
 
 end SMTree
 end SuccessorTree
