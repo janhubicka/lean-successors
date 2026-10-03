@@ -72,7 +72,7 @@ theorem cut_injective (U : FatTree H) : Function.Injective U.cut :=
   (U.cut_strictMono H).injective
 
 /-- The first `n` rows of an infinite fat tree, with the terminal cut kept. -/
-def prefix (U : FatTree H) (n : Nat) : FiniteFatTree H where
+def initialSegment (U : FatTree H) (n : Nat) : FiniteFatTree H where
   height := n
   cut := fun i => U.cut i.1
   cut_zero := U.cut_zero
