@@ -45,7 +45,12 @@ noncomputable def rightPairingMap
     (e : BananaMatrixEmbedding A (perfectBanana n))
     (x : Fin n → F2) (y : Fin r → F2) :
     x ⬝ᵥ e.right y = rightPairingMap e x ⬝ᵥ y := by
-  simp [rightPairingMap, dotDualEquiv]
+  have h :=
+    (dotDualEquiv r).apply_symm_apply
+      (e.right.dualMap (dotDualEquiv n x))
+  have hy :=
+    congrArg (fun φ : Module.Dual F2 (Fin r → F2) => φ y) h
+  simpa [rightPairingMap, dotDualEquiv] using hy.symm
 
 theorem rightPairingMap_surjective
     {l r n : ℕ}
@@ -115,7 +120,9 @@ noncomputable def perfectPairAutomorphismOfLinearEquiv
   right_injective := (dotContragredient h).injective
   pairing_apply := by
     intro x y
-    simpa only [perfectBanana_eval] using dotContragredient_pairing h x y
+    simp only [perfectBanana_eval]
+    change h x ⬝ᵥ dotContragredient h y = x ⬝ᵥ y
+    exact dotContragredient_pairing h x y
 
 @[simp] theorem perfectPairAutomorphismOfLinearEquiv_left
     {n : ℕ}
@@ -163,9 +170,13 @@ theorem exists_perfectPairAutomorphism_extends
     let x : Fin l → F2 := u₁.symm z
     have hz₁ : (z : Fin n → F2) = e₁.left x := by
       simpa [x, u₁] using
-        (BananaMatrixEmbedding.leftRangeEquiv_coe e₁ x).symm
+        BananaMatrixEmbedding.leftRangeEquiv_coe e₁ x
     have hzf : (f z : Fin n → F2) = e₂.left x := by
-      simp [f, x, u₁, u₂]
+      change
+        ((u₂ (u₁.symm z) : A₂) : Fin n → F2) =
+          e₂.left x
+      simpa [x, u₂] using
+        BananaMatrixEmbedding.leftRangeEquiv_coe e₂ (u₁.symm z)
     rw [hz₁, hzf]
     simpa only [perfectBanana_eval] using
       (e₂.pairing_apply x y).trans (e₁.pairing_apply x y).symm
@@ -183,27 +194,42 @@ theorem exists_perfectPairAutomorphism_extends
       H.left (e₁.left x) = e₂.left x := by
     have hz := hleftRange (u₁ x)
     change h (e₁.left x) = e₂.left x
-    simpa [H, f, u₁, u₂] using hz
+    calc
+      h (e₁.left x) =
+          h (((u₁ x : A₁) : Fin n → F2)) := by
+            rw [BananaMatrixEmbedding.leftRangeEquiv_coe]
+      _ = ((f (u₁ x) : A₂) : Fin n → F2) := hz
+      _ = e₂.left x := by
+        change
+          ((u₂ (u₁.symm (u₁ x)) : A₂) : Fin n → F2) =
+            e₂.left x
+        rw [u₁.symm_apply_apply]
+        exact BananaMatrixEmbedding.leftRangeEquiv_coe e₂ x
 
   have hright (y : Fin r → F2) :
       H.right (e₁.right y) = e₂.right y := by
     apply dotProduct_eq
     intro w
     obtain ⟨x, rfl⟩ := h.surjective w
-    have hcontr :=
-      perfectPairAutomorphismOfLinearEquiv_right_pairing
-        h x (e₁.right y)
-    have hqy := LinearMap.congr_fun hq x
+    have hcontr :
+        h x ⬝ᵥ H.right (e₁.right y) =
+          x ⬝ᵥ e₁.right y := by
+      simpa [H] using
+        perfectPairAutomorphismOfLinearEquiv_right_pairing
+          h x (e₁.right y)
+    have hqy : q₂ (h x) = q₁ x := by
+      change (q₂.comp h.toLinearMap) x = q₁ x
+      exact LinearMap.congr_fun hq x
     have hpair₁ := rightPairingMap_pairing e₁ x y
     have hpair₂ := rightPairingMap_pairing e₂ (h x) y
+    change h x ⬝ᵥ e₂.right y = q₂ (h x) ⬝ᵥ y at hpair₂
     rw [hqy] at hpair₂
     change
       H.right (e₁.right y) ⬝ᵥ h x =
         e₂.right y ⬝ᵥ h x
     rw [dotProduct_comm (H.right (e₁.right y)),
       dotProduct_comm (e₂.right y)]
-    rw [hcontr]
-    exact hpair₁.trans hpair₂.symm
+    exact hcontr.trans (hpair₁.trans hpair₂.symm)
 
   exact ⟨H, hleft, hright⟩
 
