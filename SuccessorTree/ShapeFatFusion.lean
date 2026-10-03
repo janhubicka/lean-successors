@@ -24,18 +24,55 @@ variable {T : Type u} {Label : Type v}
 variable [PartialOrder T] [LevelTree T]
 variable {S : STree T Label}
 
-/-- Infinite sequence of one-moving blocks with strictly increasing cuts. -/
+/-- The terminal target level of a finite one-moving approximation built
+from a total M-map is the terminal level of that total map. -/
+theorem MMap.toAM_one_topLevel
+    (H : SMTree S) (F : MMap H) (n : Nat)
+    (hfix : F.FixesBelow H n) :
+    (F.toAM H n 1 hfix).topLevel H = H.levelMap F.map n := by
+  let a : AM H n 1 := F.toAM H n 1 hfix
+  have htop := a.representative_top H
+  have hval := congrArg Subtype.val htop
+  change (a.representative H).restrictLe H n = F.restrictLe H n at hval
+  obtain ⟨x, hx⟩ := H.level_nonempty n
+  have hpoint := congrFun hval ⟨x, by simpa [hx]⟩
+  unfold AM.topLevel
+  calc
+    H.levelMap (a.representative H).map n =
+        LevelTree.lev (a.representative H x) := by
+      simpa [hx] using H.levelMap_eq (a.representative H).map (a := x)
+    _ = LevelTree.lev (F x) := congrArg LevelTree.lev hpoint
+    _ = H.levelMap F.map n := by
+      simpa [hx] using (H.levelMap_eq F.map (a := x)).symm
+
+/-- Infinite sequence of one-moving blocks with strictly increasing cuts.
+
+We store total M-map representatives rather than dependent finite subtypes.
+This makes suffix reindexing literal; the finite exact block is derived only
+when a colouring needs it. -/
 structure FatBlockSeq (H : SMTree S) (n : Nat) where
   cut : Nat → Nat
   cut_zero : cut 0 = n
   cut_strict : StrictMono cut
-  block : ∀ i : Nat, AMExact H (cut i) (cut (i + 1) - 1)
+  seed : Nat → MMap H
+  seed_fixes : ∀ i : Nat, (seed i).FixesBelow H (cut i)
+  seed_top :
+    ∀ i : Nat, H.levelMap (seed i).map (cut i) = cut (i + 1) - 1
+
+/-- The finite one-moving block carried by a seed. -/
+noncomputable def FatBlockSeq.block
+    (H : SMTree S) {n : Nat}
+    (U : FatBlockSeq H n) (i : Nat) :
+    AMExact H (U.cut i) (U.cut (i + 1) - 1) := by
+  refine ⟨(U.seed i).toAM H (U.cut i) 1 (U.seed_fixes i), ?_⟩
+  rw [MMap.toAM_one_topLevel H]
+  exact U.seed_top i
 
 /-- The canonical total map represented by one fat block. -/
 noncomputable def FatBlockSeq.blockMap
     (H : SMTree S) {n : Nat}
     (U : FatBlockSeq H n) (i : Nat) : MMap H :=
-  H.canonicalExtension ((U.block i).1.representative H) (U.cut i)
+  H.canonicalExtension (U.seed i) (U.cut i)
 
 theorem FatBlockSeq.blockMap_fixesBelow
     (H : SMTree S) {n : Nat}
@@ -44,8 +81,8 @@ theorem FatBlockSeq.blockMap_fixesBelow
   intro x hx
   rw [FatBlockSeq.blockMap]
   rw [H.canonicalExtension_agrees
-    ((U.block i).1.representative H) (U.cut i) x (Nat.le_of_lt hx)]
-  exact (U.block i).1.representative_fixesBelow H x hx
+    (U.seed i) (U.cut i) x (Nat.le_of_lt hx)]
+  exact U.seed_fixes i x hx
 
 /-- A block map sends its source cut to one below the next cut. -/
 theorem FatBlockSeq.blockMap_level_cut
@@ -54,7 +91,7 @@ theorem FatBlockSeq.blockMap_level_cut
     H.levelMap (U.blockMap H i).map (U.cut i) =
       U.cut (i + 1) - 1 := by
   rw [FatBlockSeq.blockMap, H.canonicalExtension_level_at_prefix]
-  exact (U.block i).2
+  exact U.seed_top i
 
 /-- The canonical tail of a block hits the next cut on the next source level. -/
 theorem FatBlockSeq.blockMap_level_next
@@ -69,7 +106,7 @@ theorem FatBlockSeq.blockMap_level_next
         H.levelMap (U.blockMap H i).map (U.cut i) + 1 := by
       simpa [FatBlockSeq.blockMap] using
         H.canonicalExtension_level_succ
-          ((U.block i).1.representative H) (U.cut i) (U.cut i) le_rfl
+          (U.seed i) (U.cut i) (U.cut i) le_rfl
     _ = (U.cut (i + 1) - 1) + 1 := by
       rw [U.blockMap_level_cut H i]
     _ = U.cut (i + 1) := by omega
@@ -134,12 +171,12 @@ theorem FatBlockSeq.cumulative_level_tail
       change
         H.levelMap
             (H.canonicalExtension
-              ((U.block i).1.representative H) (U.cut i)).map
+              (U.seed i) (U.cut i)).map
             (U.cut i + (j + 1)) =
           U.cut (i + 1) + j
       rw [H.canonicalExtension_level_tail
-        ((U.block i).1.representative H) (U.cut i) (j + 1)]
-      have htop := (U.block i).2
+        (U.seed i) (U.cut i) (j + 1)]
+      have htop := U.seed_top i
       unfold AM.topLevel at htop
       rw [htop]
       have hcut : U.cut i < U.cut (i + 1) :=
