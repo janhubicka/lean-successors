@@ -42,3 +42,5 @@ import SuccessorTree.NonPrecompact.CompletionPersistence
 import SuccessorTree.NonPrecompact.CopyRamseyDegree
 
 import SuccessorTree.NonPrecompact.LinearExtension
+
+import SuccessorTree.NonPrecompact.PerfectHomogeneity
