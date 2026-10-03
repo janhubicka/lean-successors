@@ -1,3 +1,5 @@
+import Mathlib
+
 /-!
 # Finite expansion types bound copy Ramsey degrees
 
