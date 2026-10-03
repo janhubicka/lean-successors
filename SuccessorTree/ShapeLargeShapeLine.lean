@@ -166,34 +166,31 @@ theorem maximalReplay_crossEval
       (H.blockReplayExtension h R x).representative H (G z.1) =
         R.toMMap
           (localInputMMap H (h.blockTopLevel H + 1) x (C (G z.1))) := by
+    change
+      (H.blockReplayExtension h R x).representative H (G z.1) =
+        R.toMMap
+          (localInputMMap H (h.blockTopLevel H + 1) x (C (G z.1)))
+      at hblockAt
     exact hblockAt
   have hPfix :
       (MMap.comp H C G).FixesBelow H n := by
     intro a ha
-    have hp :=
-      (H.maximalReplayExactPrefix h g hg).1.representative_fixesBelow H a ha
-    have hrep :=
-      MMap.toAM_one_representative_agrees
-        H (MMap.comp H C G) n
-          (by
-            intro y hy
-            have hreal := H.prefixCanonical_realizes hd
-            have hrealVal := congrArg Subtype.val hreal
-            change C.restrictLe H (n + k) = h.1.1 at hrealVal
-            let yy : InitialNode T (n + k) := ⟨y, by omega⟩
-            have hCy : C y = h.1.1 yy := congrFun hrealVal yy
-            have hhtop := h.representative_top H
-            have hhval := congrArg Subtype.val hhtop
-            change (h.representative H).restrictLe H (n + k) = h.1.1 at hhval
-            have hhy : h.representative H y = h.1.1 yy :=
-              congrFun hhval yy
-            calc
-              C (G y) = C y := by rw [g.1.representative_fixesBelow H y hy]
-              _ = h.1.1 yy := hCy
-              _ = h.representative H y := hhy.symm
-              _ = y := h.representative_fixesBelow H y hy)
-        a ha
-    exact hp
+    have hreal := H.prefixCanonical_realizes hd
+    have hrealVal := congrArg Subtype.val hreal
+    change C.restrictLe H (n + k) = h.1.1 at hrealVal
+    let yy : InitialNode T (n + k) := ⟨a, by omega⟩
+    have hCa : C a = h.1.1 yy := congrFun hrealVal yy
+    have hhtop := h.representative_top H
+    have hhval := congrArg Subtype.val hhtop
+    change (h.representative H).restrictLe H (n + k) = h.1.1 at hhval
+    have hha : h.representative H a = h.1.1 yy :=
+      congrFun hhval yy
+    change C (G a) = a
+    rw [g.1.representative_fixesBelow H a ha]
+    calc
+      C a = h.1.1 yy := hCa
+      _ = h.representative H a := hha.symm
+      _ = a := h.representative_fixesBelow H a ha
   have hpRep :
       p.1.representative H z.1 = C (G z.1) := by
     exact MMap.toAM_one_representative_agrees
