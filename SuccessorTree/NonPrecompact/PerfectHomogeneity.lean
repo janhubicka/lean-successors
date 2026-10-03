@@ -27,7 +27,7 @@ open LinearMap Module
 linear dual. -/
 noncomputable abbrev dotDualEquiv (n : ℕ) :
     (Fin n → F2) ≃ₗ[F2] Module.Dual F2 (Fin n → F2) :=
-  Matrix.dotProductEquiv F2 (Fin n)
+  dotProductEquiv F2 (Fin n)
 
 /-- For an embedding into a standard perfect pair, record all pairings of an
 ambient left vector with the embedded right sort. -/
@@ -44,10 +44,7 @@ noncomputable def rightPairingMap
     {A : BananaMatrixStructure l r}
     (e : BananaMatrixEmbedding A (perfectBanana n))
     (x : Fin n → F2) (y : Fin r → F2) :
-    e.right y ⬝ᵥ x = rightPairingMap e x ⬝ᵥ y := by
-  change
-    (dotDualEquiv n x) (e.right y) =
-      (dotDualEquiv r (rightPairingMap e x)) y
+    x ⬝ᵥ e.right y = rightPairingMap e x ⬝ᵥ y := by
   simp [rightPairingMap, dotDualEquiv]
 
 theorem rightPairingMap_surjective
@@ -78,7 +75,33 @@ noncomputable def leftRangeEquiv
     (Fin l → F2) ≃ₗ[F2] LinearMap.range e.left :=
   LinearEquiv.ofInjective e.left e.left_injective
 
+@[simp] theorem leftRangeEquiv_coe
+    (e : BananaMatrixEmbedding A (perfectBanana n))
+    (x : Fin l → F2) :
+    ((e.leftRangeEquiv x : LinearMap.range e.left) : Fin n → F2) =
+      e.left x := rfl
+
 end BananaMatrixEmbedding
+
+/-- The contragredient of `h`, using the standard dot product to identify the
+ambient right space with the dual of the left space. -/
+noncomputable def dotContragredient
+    {n : ℕ}
+    (h : (Fin n → F2) ≃ₗ[F2] (Fin n → F2)) :
+    (Fin n → F2) ≃ₗ[F2] (Fin n → F2) :=
+  ((dotDualEquiv n).trans h.symm.dualMap).trans
+    (dotDualEquiv n).symm
+
+theorem dotContragredient_pairing
+    {n : ℕ}
+    (h : (Fin n → F2) ≃ₗ[F2] (Fin n → F2))
+    (x y : Fin n → F2) :
+    h x ⬝ᵥ dotContragredient h y = x ⬝ᵥ y := by
+  rw [dotProduct_comm (h x), dotProduct_comm x]
+  change
+    (dotDualEquiv n (dotContragredient h y)) (h x) =
+      (dotDualEquiv n y) x
+  simp [dotContragredient, dotDualEquiv]
 
 /-- A linear automorphism and its contragredient, packaged as an automorphism
 of the standard perfect BANANA pair. -/
@@ -87,27 +110,12 @@ noncomputable def perfectPairAutomorphismOfLinearEquiv
     (h : (Fin n → F2) ≃ₗ[F2] (Fin n → F2)) :
     BananaMatrixEmbedding (perfectBanana n) (perfectBanana n) where
   left := h.toLinearMap
-  right :=
-    ((dotDualEquiv n).trans h.symm.dualMap).trans
-      (dotDualEquiv n).symm |>.toLinearMap
+  right := (dotContragredient h).toLinearMap
   left_injective := h.injective
-  right_injective := by
-    exact (((dotDualEquiv n).trans h.symm.dualMap).trans
-      (dotDualEquiv n).symm).injective
+  right_injective := (dotContragredient h).injective
   pairing_apply := by
     intro x y
-    simp only [perfectBanana_eval]
-    change
-      h x ⬝ᵥ
-          (((dotDualEquiv n).trans h.symm.dualMap).trans
-            (dotDualEquiv n).symm) y =
-        x ⬝ᵥ y
-    change
-      (dotDualEquiv n
-        ((((dotDualEquiv n).trans h.symm.dualMap).trans
-          (dotDualEquiv n).symm) y)) (h x) =
-        x ⬝ᵥ y
-    simp [dotDualEquiv, dotProduct_comm]
+    simpa only [perfectBanana_eval] using dotContragredient_pairing h x y
 
 @[simp] theorem perfectPairAutomorphismOfLinearEquiv_left
     {n : ℕ}
@@ -124,8 +132,8 @@ theorem perfectPairAutomorphismOfLinearEquiv_right_pairing
     h x ⬝ᵥ
         (perfectPairAutomorphismOfLinearEquiv h).right y =
       x ⬝ᵥ y := by
-  simpa only [perfectBanana_eval] using
-    (perfectPairAutomorphismOfLinearEquiv h).pairing_apply x y
+  change h x ⬝ᵥ dotContragredient h y = x ⬝ᵥ y
+  exact dotContragredient_pairing h x y
 
 /-- Coordinate form of the manuscript's perfect-pair homogeneity lemma.
 
@@ -154,13 +162,11 @@ theorem exists_perfectPairAutomorphism_extends
       ← rightPairingMap_pairing e₁ z y]
     let x : Fin l → F2 := u₁.symm z
     have hz₁ : (z : Fin n → F2) = e₁.left x := by
-      change (u₁ x : Fin n → F2) = e₁.left x
-      rfl
+      simpa [x, u₁] using
+        (BananaMatrixEmbedding.leftRangeEquiv_coe e₁ x).symm
     have hzf : (f z : Fin n → F2) = e₂.left x := by
-      change (u₂ x : Fin n → F2) = e₂.left x
-      rfl
+      simp [f, x, u₁, u₂]
     rw [hz₁, hzf]
-    rw [dotProduct_comm (e₂.right y), dotProduct_comm (e₁.right y)]
     simpa only [perfectBanana_eval] using
       (e₂.pairing_apply x y).trans (e₁.pairing_apply x y).symm
 
@@ -175,25 +181,28 @@ theorem exists_perfectPairAutomorphism_extends
 
   have hleft (x : Fin l → F2) :
       H.left (e₁.left x) = e₂.left x := by
-    let z : A₁ := u₁ x
-    have hz := hleftRange z
+    have hz := hleftRange (u₁ x)
     change h (e₁.left x) = e₂.left x
-    simpa [H, f, z, u₁, u₂] using hz
+    simpa [H, f, u₁, u₂] using hz
 
   have hright (y : Fin r → F2) :
       H.right (e₁.right y) = e₂.right y := by
     apply dotProduct_eq
     intro w
     obtain ⟨x, rfl⟩ := h.surjective w
-    rw [← dotProduct_comm]
-    rw [H.perfectPairAutomorphismOfLinearEquiv_right_pairing]
-    rw [dotProduct_comm]
+    have hcontr :=
+      perfectPairAutomorphismOfLinearEquiv_right_pairing
+        h x (e₁.right y)
     have hqy := LinearMap.congr_fun hq x
-    have hpair₁ :=
-      rightPairingMap_pairing e₁ x y
-    have hpair₂ :=
-      rightPairingMap_pairing e₂ (h x) y
+    have hpair₁ := rightPairingMap_pairing e₁ x y
+    have hpair₂ := rightPairingMap_pairing e₂ (h x) y
     rw [hqy] at hpair₂
+    change
+      H.right (e₁.right y) ⬝ᵥ h x =
+        e₂.right y ⬝ᵥ h x
+    rw [dotProduct_comm (H.right (e₁.right y)),
+      dotProduct_comm (e₂.right y)]
+    rw [hcontr]
     exact hpair₁.trans hpair₂.symm
 
   exact ⟨H, hleft, hright⟩
