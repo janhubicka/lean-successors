@@ -50,7 +50,13 @@ noncomputable def rightPairingMap
       (e.right.dualMap (dotDualEquiv n x))
   have hy :=
     congrArg (fun φ : Module.Dual F2 (Fin r → F2) => φ y) h
-  simpa [rightPairingMap, dotDualEquiv] using hy.symm
+  have hy' :
+      rightPairingMap e x ⬝ᵥ y = x ⬝ᵥ e.right y := by
+    change
+      (dotDualEquiv r (rightPairingMap e x)) y =
+        (e.right.dualMap (dotDualEquiv n x)) y
+    exact hy
+  exact hy'.symm
 
 theorem rightPairingMap_surjective
     {l r n : ℕ}
@@ -173,10 +179,9 @@ theorem exists_perfectPairAutomorphism_extends
         BananaMatrixEmbedding.leftRangeEquiv_coe e₁ x
     have hzf : (f z : Fin n → F2) = e₂.left x := by
       change
-        ((u₂ (u₁.symm z) : A₂) : Fin n → F2) =
-          e₂.left x
-      simpa [x, u₂] using
-        BananaMatrixEmbedding.leftRangeEquiv_coe e₂ (u₁.symm z)
+        ((e₂.leftRangeEquiv (u₁.symm z) : A₂) : Fin n → F2) =
+          e₂.left (u₁.symm z)
+      exact BananaMatrixEmbedding.leftRangeEquiv_coe e₂ (u₁.symm z)
     rw [hz₁, hzf]
     simpa only [perfectBanana_eval] using
       (e₂.pairing_apply x y).trans (e₁.pairing_apply x y).symm
