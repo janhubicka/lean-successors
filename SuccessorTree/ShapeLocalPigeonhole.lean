@@ -6,9 +6,9 @@ import Mathlib.Tactic
 /-!
 # Local one-step pigeonhole from the global one-dimensional Ramsey theorem
 
-The one-dimensional Milliken fusion is global at a frozen cut.  To run the
+The one-dimensional Milliken fusion is global at a frozen cut. To run the
 ordinary finite-front fusion we need the same statement below an arbitrary
-finite prefix.  The bridge is canonical: a same-depth refinement fixes the
+finite prefix. The bridge is canonical: a same-depth refinement fixes the
 canonical extension of the prefix, and every one-step extension factors
 through that fixed bridge with one coordinate in AM^d_1.
 -/
@@ -114,11 +114,14 @@ theorem prefixCanonical_eq_of_levelNeighborhood
     H.canonicalExtension_unique CA CB n hagree hfull
   calc
     H.prefixCanonical hdA = CA := rfl
-    _ = H.canonicalExtension CA n :=
-      (H.canonicalExtension_idem CA n).symm
+    _ = H.canonicalExtension CA n := by
+      let facA : RamseyFiniteFactor H a (ramseyApprox H (d + 1) A) :=
+        Classical.choice hdA.1
+      change H.canonicalExtension facA.map n =
+        H.canonicalExtension (H.canonicalExtension facA.map n) n
+      exact (H.canonicalExtension_idem facA.map n).symm
     _ = CB := huniq.symm
     _ = H.prefixCanonical hdB := rfl
-
 
 /-- The global one-dimensional Ramsey theorem implies the arbitrary-prefix
 local pigeonhole principle required by the ordinary Milliken front fusion. -/
