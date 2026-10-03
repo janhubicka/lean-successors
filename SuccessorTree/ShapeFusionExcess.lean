@@ -29,7 +29,7 @@ variable [PartialOrder T] [LevelTree T]
 variable {S : STree T Label}
 
 /-- Next cut after a one-moving head. -/
-def AM.nextCut
+noncomputable def AM.nextCut
     (H : SMTree S) {c : Nat} (g : AM H c 1) : Nat :=
   g.topLevel H + 1
 
@@ -81,7 +81,8 @@ noncomputable def shapeLineApply
         exact lt_trans hx (by
           unfold AM.nextCut
           have hge := H.levelMap_id_le (g.representative H).map c
-          rw [← g.canonical_level_cut H] at hge
+          have hge' : c ≤ g.topLevel H := by
+            simpa [AM.topLevel] using hge
           omega))
       (MMap.comp_fixesBelow H (g.canonical H) P c hfixG hfixP))
 
@@ -204,7 +205,7 @@ noncomputable def firstMoveSplit
     Q (P y.1) = R y.1 := hQP y.1 y.2
     _ = r.1.1 y := hRy
 
-def AM.excess
+noncomputable def AM.excess
     (H : SMTree S) {c : Nat}
     (r : AM H c 1) : Nat :=
   r.topLevel H - c
