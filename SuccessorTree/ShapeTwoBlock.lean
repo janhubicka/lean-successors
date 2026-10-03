@@ -71,7 +71,8 @@ theorem twoBlockHead_canonical
         _ = LevelTree.lev (K x) := by rw [hagree x (by simpa [hx])]
         _ = H.levelMap K.map n := by
           simpa [hx] using (H.levelMap_eq K.map (a := x)).symm
-    exact htop.trans_le hell
+    rw [htop]
+    exact hell
 
 /-- Chosen outer factor after the first canonical level of a two-level block. -/
 noncomputable def twoBlockTailMap
@@ -99,7 +100,11 @@ theorem twoBlockTailMap_spec
     unfold AM.nextCut
     rw [H.twoBlockHead_topLevel h]
   refine ⟨?_, ?_⟩
-  · rw [hnext]
+  · change
+      (Classical.choose
+        (H.exists_factor_through_canonical_succ K n)).FixesBelow H
+          (g.nextCut H)
+    rw [hnext]
     exact hfix
   · intro x hx
     change
