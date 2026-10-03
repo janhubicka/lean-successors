@@ -450,7 +450,7 @@ theorem shapeFusionExists_eval_step
       AM.excess H q = AM.excess H r - 1 ∧
       H.shapeFusionEval D i r =
         H.shapeLineApply (D.head i)
-          ((H.shapeFusionEval D (i + 1) q).castCut H (D.cut_succ i))
+          (H.amCastCut (D.cut_succ i) (H.shapeFusionEval D (i + 1) q))
           (.letter (H.firstMoveSplit r hmove).first) := by
   let R := H.firstMoveSplit r hmove
   obtain ⟨t, htfixHead, htlevHead, htcomm⟩ :=
