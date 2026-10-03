@@ -433,5 +433,131 @@ theorem ShapeFusionData.line_closed_cast
   exact D.line_closed i q hq p
 
 
+
+/-- One recursive excess step: split the first move of the explicit right
+coordinate, transport the remaining tail across the current canonical head,
+and obtain an algebraic line over a coordinate at the next cut. -/
+theorem ShapeFusionData.exists_eval_step
+    (D : ShapeFusionData H n)
+    (i : Nat)
+    (r : AM H (D.cut i) 1)
+    (hmove : D.cut i < r.topLevel H) :
+    ∃ q : AM H (D.cut (i + 1)) 1,
+      q.excess H = r.excess H - 1 ∧
+      D.eval i r =
+        H.shapeLineApply (D.head i)
+          ((D.eval (i + 1) q).castCut H (D.cut_succ i))
+          (.letter (H.firstMoveSplit r hmove).first) := by
+  let R := H.firstMoveSplit r hmove
+  obtain ⟨t, htfixHead, htlevHead, htcomm⟩ :=
+    H.exists_transport_after_head (D.head i) R.tail R.tail_fixes
+  have hcut : D.cut (i + 1) = (D.head i).nextCut H :=
+    D.cut_succ i
+  have htfix : t.FixesBelow H (D.cut (i + 1)) := by
+    rw [hcut]
+    exact htfixHead
+  have htlev :
+      H.levelMap t.map (D.cut (i + 1)) =
+        D.cut (i + 1) +
+          (H.levelMap R.tail.map (D.cut i + 1) - (D.cut i + 1)) := by
+    rw [hcut]
+    exact htlevHead
+  let q : AM H (D.cut (i + 1)) 1 :=
+    t.toAM H (D.cut (i + 1)) 1 htfix
+  have hqex : q.excess H = r.excess H - 1 := by
+    unfold AM.excess
+    rw [show q.topLevel H = H.levelMap t.map (D.cut (i + 1)) by
+      exact MMap.toAM_one_topLevel H t (D.cut (i + 1)) htfix]
+    rw [htlev]
+    have htail :=
+      H.firstMoveSplit_tail_excess r hmove
+    change
+      (D.cut (i + 1) +
+          (H.levelMap R.tail.map (D.cut i + 1) - (D.cut i + 1)) -
+        D.cut (i + 1)) =
+        r.topLevel H - D.cut i - 1
+    rw [Nat.add_sub_cancel_left]
+    simpa [AM.excess] using htail
+  refine ⟨q, hqex, ?_⟩
+  let qe : AM H (D.cut (i + 1)) 1 := D.eval (i + 1) q
+  let qline : AM H ((D.head i).nextCut H) 1 :=
+    qe.castCut H hcut
+  have hqlineRep :
+      qline.representative H = qe.representative H := by
+    exact AM.castCut_representative H hcut qe
+  apply Subtype.ext
+  apply Subtype.ext
+  funext x
+  have hrTop := r.representative_top H
+  have hrVal := congrArg Subtype.val hrTop
+  change
+    (r.representative H).restrictLe H (D.cut i) = r.1.1 at hrVal
+  have hrx := congrFun hrVal x
+  have hsplitVal := congrArg Subtype.val R.agrees
+  change
+    (MMap.comp H R.tail R.first.toMMap).restrictLe H (D.cut i) =
+      r.1.1 at hsplitVal
+  have hsx := congrFun hsplitVal x
+  have hrSplit :
+      r.representative H x.1 =
+        R.tail (R.first.toMMap x.1) := by
+    calc
+      r.representative H x.1 = r.1.1 x := hrx
+      _ = R.tail (R.first.toMMap x.1) := hsx.symm
+  have hdec := congrArg
+    (fun F : MMap H => F (r.representative H x.1))
+    (D.decompose i)
+  have hfirstLev :
+      LevelTree.lev (R.first.toMMap x.1) ≤ D.cut i + 1 := by
+    rw [R.first.level_apply H]
+    split <;> omega
+  have hcomm :=
+    htcomm (R.first.toMMap x.1) hfirstLev
+  let z : T :=
+    (D.head i).canonical H (R.first.toMMap x.1)
+  have hz :
+      LevelTree.lev z ≤ D.cut (i + 1) := by
+    calc
+      LevelTree.lev z =
+          H.levelMap ((D.head i).canonical H).map
+            (LevelTree.lev (R.first.toMMap x.1)) :=
+        (H.levelMap_eq ((D.head i).canonical H).map
+          (a := R.first.toMMap x.1)).symm
+      _ ≤ H.levelMap ((D.head i).canonical H).map (D.cut i + 1) :=
+        (H.levelMap_strictMono ((D.head i).canonical H).map).monotone
+          hfirstLev
+      _ = (D.head i).nextCut H :=
+        (D.head i).canonical_level_next H
+      _ = D.cut (i + 1) := hcut.symm
+  have hqe :
+      qe.representative H z =
+        (D.tail (i + 1)).1 (q.representative H z) := by
+    exact H.shapeAct_representative_agrees
+      (D.cut (i + 1)) (D.tail (i + 1)) q z hz
+  have hqrep :
+      q.representative H z = t z := by
+    exact MMap.toAM_one_representative_agrees
+      H t (D.cut (i + 1)) htfix z hz
+  change
+    (D.tail i).1 (r.representative H x.1) =
+      qline.representative H
+        ((D.head i).canonical H (R.first.toMMap x.1))
+  calc
+    (D.tail i).1 (r.representative H x.1) =
+        (D.tail (i + 1)).1
+          ((D.head i).canonical H (r.representative H x.1)) := hdec
+    _ =
+        (D.tail (i + 1)).1
+          ((D.head i).canonical H
+            (R.tail (R.first.toMMap x.1))) := by rw [hrSplit]
+    _ =
+        (D.tail (i + 1)).1
+          (t ((D.head i).canonical H (R.first.toMMap x.1))) := by
+      rw [hcomm]
+    _ = qe.representative H z := by
+      rw [hqe, hqrep]
+    _ = qline.representative H z := by
+      rw [hqlineRep]
+
 end SMTree
 end SuccessorTree
