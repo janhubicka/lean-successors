@@ -204,7 +204,9 @@ theorem exists_fusionStep_killing_goodTails
       H.shapeAct n W' (H.shapeLineApply g q p) ∈ A := by
     simpa [shapePullback, HalesJewett.SubspaceAction.pullback,
       shapeSubspaceAction] using hline
-  change W' = ShapeSubspace.comp H W Un at rfl
+  change
+    H.shapeAct n (ShapeSubspace.comp H W Un)
+      (H.shapeLineApply g q p) ∈ A at hline'
   rw [H.shapeAct_comp n W Un (H.shapeLineApply g q p)] at hline'
   rw [H.shapeAct_weaken_shapeLineApply g U q p] at hline'
   exact hline'
