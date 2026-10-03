@@ -387,6 +387,80 @@ def directSumEmbedding
     rw [f.pairing_apply, g.pairing_apply]
 
 
+
+/-- Direct sums of linear maps preserve identities pointwise. -/
+theorem directSumLinearMap_id_apply
+    {m₁ m₂ : ℕ}
+    (x : Fin (m₁ + m₂) → F2) :
+    directSumLinearMap
+        (LinearMap.id : (Fin m₁ → F2) →ₗ[F2] (Fin m₁ → F2))
+        (LinearMap.id : (Fin m₂ → F2) →ₗ[F2] (Fin m₂ → F2)) x =
+      x := by
+  funext i
+  induction i using Fin.addCases <;>
+    simp [directSumLinearMap, finLeftPart, finRightPart]
+
+/-- Direct sums of linear maps preserve composition pointwise. -/
+theorem directSumLinearMap_comp_apply
+    {m₁ m₂ n₁ n₂ p₁ p₂ : ℕ}
+    (f₁ : (Fin m₁ → F2) →ₗ[F2] (Fin n₁ → F2))
+    (f₂ : (Fin n₁ → F2) →ₗ[F2] (Fin p₁ → F2))
+    (g₁ : (Fin m₂ → F2) →ₗ[F2] (Fin n₂ → F2))
+    (g₂ : (Fin n₂ → F2) →ₗ[F2] (Fin p₂ → F2))
+    (x : Fin (m₁ + m₂) → F2) :
+    directSumLinearMap (f₂.comp f₁) (g₂.comp g₁) x =
+      directSumLinearMap f₂ g₂ (directSumLinearMap f₁ g₁ x) := by
+  funext i
+  induction i using Fin.addCases <;>
+    simp [directSumLinearMap, finLeftPart, finRightPart]
+
+/-- The left component of direct-sum BANANA embeddings preserves
+composition. -/
+theorem directSumEmbedding_comp_left
+    {l₁' r₁' l₂' r₂' l₁'' r₁'' l₂'' r₂'' : ℕ}
+    {A' : BananaMatrixStructure l₁' r₁'}
+    {B' : BananaMatrixStructure l₂' r₂'}
+    {A'' : BananaMatrixStructure l₁'' r₁''}
+    {B'' : BananaMatrixStructure l₂'' r₂''}
+    (f₁ : BananaMatrixEmbedding A A')
+    (f₂ : BananaMatrixEmbedding A' A'')
+    (g₁ : BananaMatrixEmbedding B B')
+    (g₂ : BananaMatrixEmbedding B' B'') :
+    (directSumEmbedding A B
+      (BananaMatrixEmbedding.comp f₂ f₁)
+      (BananaMatrixEmbedding.comp g₂ g₁)).left =
+    (BananaMatrixEmbedding.comp
+      (directSumEmbedding A' B' f₂ g₂)
+      (directSumEmbedding A B f₁ g₁)).left := by
+  apply LinearMap.ext
+  intro x
+  exact directSumLinearMap_comp_apply
+    f₁.left f₂.left g₁.left g₂.left x
+
+/-- The right component of direct-sum BANANA embeddings preserves
+composition. -/
+theorem directSumEmbedding_comp_right
+    {l₁' r₁' l₂' r₂' l₁'' r₁'' l₂'' r₂'' : ℕ}
+    {A' : BananaMatrixStructure l₁' r₁'}
+    {B' : BananaMatrixStructure l₂' r₂'}
+    {A'' : BananaMatrixStructure l₁'' r₁''}
+    {B'' : BananaMatrixStructure l₂'' r₂''}
+    (f₁ : BananaMatrixEmbedding A A')
+    (f₂ : BananaMatrixEmbedding A' A'')
+    (g₁ : BananaMatrixEmbedding B B')
+    (g₂ : BananaMatrixEmbedding B' B'') :
+    (directSumEmbedding A B
+      (BananaMatrixEmbedding.comp f₂ f₁)
+      (BananaMatrixEmbedding.comp g₂ g₁)).right =
+    (BananaMatrixEmbedding.comp
+      (directSumEmbedding A' B' f₂ g₂)
+      (directSumEmbedding A B f₁ g₁)).right := by
+  apply LinearMap.ext
+  intro x
+  exact directSumLinearMap_comp_apply
+    f₁.right f₂.right g₁.right g₂.right x
+
+
 end BananaMatrixStructure
 
 end SuccessorTree.NonPrecompact
