@@ -39,11 +39,25 @@ structure FiniteCopySystem where
       compEmb (compEmb f g) h = compEmb f (compEmb g h)
   range : ∀ {A B}, Emb A B → Copy A B
   mapCopy : ∀ {A B C}, Emb B C → Copy A B → Copy A C
+  mapCopy_id :
+    ∀ {A B} (p : Copy A B),
+      mapCopy (idEmb B) p = p
+  mapCopy_comp :
+    ∀ {A B C D} (f : Emb B C) (g : Emb C D) (p : Copy A B),
+      mapCopy (compEmb f g) p = mapCopy g (mapCopy f p)
   range_comp :
     ∀ {A B C} (f : Emb A B) (g : Emb B C),
       range (compEmb f g) = mapCopy g (range f)
   range_surjective :
     ∀ {A B}, Function.Surjective (@range A B)
+  /-- Intrinsic containment of a smaller copy in a larger copy in the same ambient object. -/
+  Subcopy : ∀ {P A C}, Copy P C → Copy A C → Prop
+  /-- The P-subcopies of the range of an embedding A → C are exactly
+  the transported P-copies of A. -/
+  subcopy_range_iff :
+    ∀ {P A C} (f : Emb A C) (p : Copy P C),
+      Subcopy p (range f) ↔
+        ∃ q : Copy P A, mapCopy f q = p
   copyFintype : ∀ A B, Fintype (Copy A B)
   copyDecidableEq : ∀ A B, DecidableEq (Copy A B)
 
