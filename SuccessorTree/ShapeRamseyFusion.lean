@@ -439,6 +439,16 @@ theorem largeFusionEval_step
   rw [H.shapeAct_val, H.shapeAct_val]
   apply Subtype.ext
   funext x
+  change
+    (MMap.comp H (H.largeFusionLimit X).1 (r.representative H)).restrictLe
+        H X.cut x =
+      (MMap.comp H C.refiner.1
+        (H.shapeLineApply C.head qline (.letter R.first)).representative).restrictLe
+        H X.cut x
+  change
+    (H.largeFusionLimit X).1 (r.representative H x.1) =
+      C.refiner.1
+        ((H.shapeLineApply C.head qline (.letter R.first)).representative H x.1)
   have hrTop := r.representative_top H
   have hrVal := congrArg Subtype.val hrTop
   change
@@ -485,11 +495,13 @@ theorem largeFusionEval_step
   have hqrep : q.representative H z = t z := by
     exact MMap.toAM_one_representative_agrees
       H t Y.cut htfix z hz
-  change
-    (H.largeFusionLimit X).1 (r.representative H x.1) =
-      C.refiner.1
-        (qline.representative H
-          (C.head.canonical H (R.first.toMMap x.1)))
+  have hlineRep :
+      (H.shapeLineApply C.head qline (.letter R.first)).representative H x.1 =
+        qline.representative H
+          (C.head.canonical H (R.first.toMMap x.1)) := by
+    exact H.shapeLineApply_representative_agrees
+      C.head qline (.letter R.first) x.1 x.2
+  rw [hlineRep]
   calc
     (H.largeFusionLimit X).1 (r.representative H x.1) =
         C.refiner.1
