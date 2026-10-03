@@ -120,6 +120,63 @@ theorem subcopy_map
   refine ⟨q, ?_⟩
   rw [S.mapCopy_comp, hq]
 
+/-- A finite list of original P-copies of B can simultaneously be made
+extendible to A-copies after embedding B into a further amalgam.  Repetitions
+are harmless; this list form is the direct recursion behind the finite-set
+version below. -/
+theorem extend_list_copies
+    (M : AmalgamationSystem S)
+    {P A B : S.Obj}
+    (pA : S.Emb P A)
+    (copies : List (S.Copy P B)) :
+    ∃ (D : S.Obj) (base : S.Emb B D),
+      ∀ p ∈ copies,
+        ∃ a : S.Copy A D,
+          S.Subcopy (S.mapCopy base p) a := by
+  classical
+  induction copies with
+  | nil =>
+      refine ⟨B, S.idEmb B, ?_⟩
+      intro p hp
+      simp at hp
+  | cons p copies ih =>
+      obtain ⟨D, base, hbase⟩ := ih
+      obtain ⟨ep, hep⟩ := S.range_surjective p
+      obtain ⟨D', i, j, hij⟩ :=
+        M.amalgamate (S.compEmb ep base) pA
+      refine ⟨D', S.compEmb base i, ?_⟩
+      intro q hq
+      simp only [List.mem_cons] at hq
+      rcases hq with rfl | hq
+      · let a : S.Copy A D' := S.range j
+        refine ⟨a, ?_⟩
+        have hpbase :
+            S.mapCopy base p = S.range (S.compEmb ep base) := by
+          calc
+            S.mapCopy base p =
+                S.mapCopy base (S.range ep) := by rw [hep]
+            _ = S.range (S.compEmb ep base) :=
+              (S.range_comp ep base).symm
+        have hpmap :
+            S.mapCopy (S.compEmb base i) p =
+              S.range (S.compEmb (S.compEmb ep base) i) := by
+          calc
+            S.mapCopy (S.compEmb base i) p =
+                S.mapCopy i (S.mapCopy base p) :=
+              S.mapCopy_comp base i p
+            _ = S.mapCopy i (S.range (S.compEmb ep base)) := by
+              rw [hpbase]
+            _ = S.range (S.compEmb (S.compEmb ep base) i) :=
+              (S.range_comp (S.compEmb ep base) i).symm
+        rw [hpmap, hij]
+        exact (S.subcopy_range_iff j
+          (S.range (S.compEmb pA j))).mpr
+            ⟨S.range pA, by rw [S.range_comp]⟩
+      · obtain ⟨a, ha⟩ := hbase q hq
+        refine ⟨S.mapCopy i a, ?_⟩
+        rw [S.mapCopy_comp]
+        exact subcopy_map (S := S) i ha
+
 /-- A finite family of original P-copies of B can simultaneously be made
 extendible to A-copies after embedding B into a further amalgam. -/
 theorem extend_finite_copies
@@ -132,46 +189,11 @@ theorem extend_finite_copies
         ∃ a : S.Copy A D,
           S.Subcopy (S.mapCopy base p) a := by
   classical
-  refine Finset.induction_on copies ?_ (fun p copies hp ih => ?_)
-  · refine ⟨B, S.idEmb B, ?_⟩
-    intro q hq
-    simp at hq
-  · obtain ⟨D, base, hbase⟩ := ih
-    obtain ⟨ep, hep⟩ := S.range_surjective p
-    obtain ⟨D', i, j, hij⟩ :=
-      M.amalgamate (S.compEmb ep base) pA
-    refine ⟨D', S.compEmb base i, ?_⟩
-    intro q hq
-    rw [Finset.mem_insert] at hq
-    rcases hq with rfl | hq
-    · let a : S.Copy A D' := S.range j
-      refine ⟨a, ?_⟩
-      have hpbase :
-          S.mapCopy base p = S.range (S.compEmb ep base) := by
-        calc
-          S.mapCopy base p =
-              S.mapCopy base (S.range ep) := by rw [hep]
-          _ = S.range (S.compEmb ep base) :=
-            (S.range_comp ep base).symm
-      have hpmap :
-          S.mapCopy (S.compEmb base i) p =
-            S.range (S.compEmb (S.compEmb ep base) i) := by
-        calc
-          S.mapCopy (S.compEmb base i) p =
-              S.mapCopy i (S.mapCopy base p) :=
-            S.mapCopy_comp base i p
-          _ = S.mapCopy i (S.range (S.compEmb ep base)) := by
-            rw [hpbase]
-          _ = S.range (S.compEmb (S.compEmb ep base) i) :=
-            (S.range_comp (S.compEmb ep base) i).symm
-      rw [hpmap, hij]
-      exact (S.subcopy_range_iff j
-        (S.range (S.compEmb pA j))).mpr
-          ⟨S.range pA, by rw [S.range_comp]⟩
-    · obtain ⟨a, ha⟩ := hbase q hq
-      refine ⟨S.mapCopy i a, ?_⟩
-      rw [S.mapCopy_comp]
-      exact subcopy_map (S := S) i ha
+  obtain ⟨D, base, h⟩ :=
+    extend_list_copies M pA copies.toList
+  refine ⟨D, base, ?_⟩
+  intro p hp
+  exact h p (by simpa using hp)
 
 /-- Attach an A-copy over every P-copy of B. -/
 theorem extend_all_copies
@@ -334,8 +356,7 @@ theorem copyRamseyDegreeLE_of_embedding
       ⟨subcopyColourSet (S := S) colouringP (S.mapCopy g a),
         hpalette_mem, hcolour_mem_set⟩
 
-  rw [S.mapCopy_comp] at hcolour_union
-  exact hcolour_union
+  simpa only [S.mapCopy_comp] using hcolour_union
 
 
 end AmalgamationSystem
