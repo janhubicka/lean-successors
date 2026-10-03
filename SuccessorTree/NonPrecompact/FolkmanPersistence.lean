@@ -45,6 +45,7 @@ theorem folkmanFiber_pairwiseDisjoint
     (labels : Finset (Fin q)) :
     (labels : Set (Fin q)).PairwiseDisjoint (folkmanFiber owner) := by
   intro i hi j hj hij
+  change Disjoint (folkmanFiber owner i) (folkmanFiber owner j)
   rw [Finset.disjoint_left]
   intro x hxi hxj
   have hxi' := (Finset.mem_filter.mp hxi).2
@@ -78,9 +79,21 @@ theorem folkmanEdgeCount_biUnion_right
       ∑ j ∈ labels,
         folkmanEdgeCount edge X (folkmanFiber owner j) := by
   unfold folkmanEdgeCount
-  apply Finset.sum_congr rfl
-  intro x hx
-  rw [Finset.sum_biUnion (folkmanFiber_pairwiseDisjoint owner labels)]
+  calc
+    (∑ x ∈ X,
+        ∑ y ∈ labels.biUnion (folkmanFiber owner),
+          if edge x y = 1 then 1 else 0) =
+      ∑ x ∈ X, ∑ j ∈ labels,
+        ∑ y ∈ folkmanFiber owner j,
+          if edge x y = 1 then 1 else 0 := by
+        apply Finset.sum_congr rfl
+        intro x hx
+        rw [Finset.sum_biUnion
+          (folkmanFiber_pairwiseDisjoint owner labels)]
+    _ = ∑ j ∈ labels, ∑ x ∈ X,
+        ∑ y ∈ folkmanFiber owner j,
+          if edge x y = 1 then 1 else 0 := by
+        rw [Finset.sum_comm]
 
 /-- A finite Folkman--BANANA structure in atom coordinates. -/
 structure FolkmanAtomStructure where
@@ -189,9 +202,18 @@ theorem diagonal_left_to_allRight_odd
         (folkmanFiber f.leftOwner i)
         (Finset.univ.biUnion (folkmanFiber f.rightOwner))) := by
   apply ZMod.natCast_eq_one_iff_odd.mp
-  rw [folkmanEdgeCount_biUnion_right]
-  rw [Nat.cast_sum]
-  simp [f.pairing_parity, FolkmanAtomStructure.diagonal]
+  rw [folkmanEdgeCount_biUnion_right, Nat.cast_sum]
+  calc
+    (∑ j ∈ (Finset.univ : Finset (Fin (2 ^ (k + 1)))),
+        (folkmanEdgeCount C.edge
+          (folkmanFiber f.leftOwner i)
+          (folkmanFiber f.rightOwner j) : F2)) =
+      ∑ j ∈ (Finset.univ : Finset (Fin (2 ^ (k + 1)))),
+        (if i = j then 1 else 0) := by
+          apply Finset.sum_congr rfl
+          intro j hj
+          exact f.pairing_parity i j
+    _ = 1 := by simp
 
 end FolkmanAtomEmbedding
 
@@ -212,7 +234,7 @@ theorem exists_folkmanPersistentColouring
             P.Inside f ∧ colouring P = colour := by
   classical
   let colouring : FolkmanAxCopy C → Fin (2 ^ k) :=
-    fun P => P.Colour.fin k
+    fun P => FolkmanAxCopy.Colour.fin P k
   refine ⟨colouring, ?_⟩
   intro f colour
 
@@ -265,7 +287,7 @@ theorem exists_folkmanPersistentColouring
   have hcount :
       folkmanEdgeCount C.edge leftBlock allRight =
         ∑ i ∈ t, a i := by
-    simpa [leftBlock, a, allRight] using
+    simpa only [leftBlock, a] using
       folkmanEdgeCount_biUnion_left
         C.edge f.leftOwner t allRight
 
@@ -307,11 +329,11 @@ theorem exists_folkmanPersistentColouring
           (z.1.val : ZMod (2 ^ (k + 1))) := hresidue
       _ = z.1 := ZMod.natCast_zmod_val z.1
 
-  have hsub : P.Colour.residue k = z := by
+  have hsub : FolkmanAxCopy.Colour.residue P k = z := by
     apply Subtype.ext
     exact hcolourResidue
 
-  change residueParityColourEquivFin k 1 (P.Colour.residue k) = colour
+  change residueParityColourEquivFin k 1 (FolkmanAxCopy.Colour.residue P k) = colour
   rw [hsub]
   exact (residueParityColourEquivFin k 1).apply_symm_apply colour
 
