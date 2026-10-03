@@ -431,7 +431,12 @@ theorem largeFusionEval_step
   have hqlineRep :
       qline.representative H = qe.representative H := by
     exact amCastCut_representative H hcut qe
+  change
+    H.shapeAct X.cut (H.largeFusionLimit X) r =
+      H.shapeAct X.cut C.refiner
+        (H.shapeLineApply C.head qline (.letter R.first))
   apply Subtype.ext
+  rw [H.shapeAct_val, H.shapeAct_val]
   apply Subtype.ext
   funext x
   have hrTop := r.representative_top H
