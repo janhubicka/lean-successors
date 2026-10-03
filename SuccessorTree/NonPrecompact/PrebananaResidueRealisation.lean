@@ -1,0 +1,87 @@
+import SuccessorTree.NonPrecompact.SubsetSums
+
+/-!
+# Nonempty odd subset sums for pre-BANANA residue realisation
+
+The circulation proof of the pre-BANANA finite-residue realisation lemma
+needs a strengthening of the basic subset-sum theorem.  With exactly
+`q = 2^k` odd weights, every residue modulo `q` is represented by a
+nonempty subset.
+
+For a nonzero target residue, apply the existing `q-1` theorem after
+reserving one weight; the empty subset cannot realise a nonzero residue.
+For the zero residue, use the reserved weight and choose a subset of the
+remaining weights which cancels it.
+-/
+
+namespace SuccessorTree.NonPrecompact
+
+open scoped BigOperators
+
+/-- Exactly `2^k` odd weights have a nonempty subset with any prescribed
+sum modulo `2^k`. -/
+theorem exists_nonempty_odd_subset_sum_two_pow
+    {k : ℕ} {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (a : ι → ℕ)
+    (hcard : s.card = 2 ^ k)
+    (ha : ∀ i ∈ s, Odd (a i))
+    (r : ZMod (2 ^ k)) :
+    ∃ t : Finset ι,
+      t.Nonempty ∧ t ⊆ s ∧
+        (∑ i ∈ t, (a i : ZMod (2 ^ k))) = r := by
+  have hqpos : 0 < 2 ^ k := pow_pos (by decide) _
+  have hspos : 0 < s.card := by
+    rw [hcard]
+    exact hqpos
+  obtain ⟨j, hj⟩ := Finset.card_pos.mp hspos
+
+  let u : Finset ι := s.erase j
+
+  have hucard : u.card + 1 = 2 ^ k := by
+    dsimp [u]
+    rw [Finset.card_erase_add_one hj]
+    exact hcard
+
+  have hua : ∀ i ∈ u, Odd (a i) := by
+    intro i hi
+    exact ha i (Finset.mem_of_mem_erase hi)
+
+  have hfull :=
+    odd_indexedSubsetSums_two_pow_eq_univ
+      (s := u) (a := a) hucard hua
+
+  have chooseSubset
+      (z : ZMod (2 ^ k)) :
+      ∃ t : Finset ι,
+        t ⊆ u ∧
+          (∑ i ∈ t, (a i : ZMod (2 ^ k))) = z := by
+    have hz :
+        z ∈ indexedSubsetSums u
+          (fun i => (a i : ZMod (2 ^ k))) := by
+      rw [hfull]
+      simp
+    exact
+      (mem_indexedSubsetSums_iff.mp hz)
+
+  by_cases hr : r = 0
+  · obtain ⟨t, htu, hsum⟩ :=
+      chooseSubset (-(a j : ZMod (2 ^ k)))
+    have hjnot : j ∉ t := by
+      intro hjt
+      exact (Finset.mem_erase.mp (htu hjt)).1 rfl
+    refine ⟨insert j t, ?_, ?_, ?_⟩
+    · exact ⟨j, Finset.mem_insert_self j t⟩
+    · rw [Finset.insert_subset_iff]
+      exact ⟨hj, htu.trans (Finset.erase_subset _ _)⟩
+    · rw [hr, Finset.sum_insert hjnot, hsum]
+      simp
+  · obtain ⟨t, htu, hsum⟩ := chooseSubset r
+    have htne : t ≠ ∅ := by
+      intro ht
+      subst t
+      simp at hsum
+      exact hr hsum.symm
+    refine ⟨t, Finset.nonempty_iff_ne_empty.mpr htne,
+      htu.trans (Finset.erase_subset _ _), hsum⟩
+
+end SuccessorTree.NonPrecompact
