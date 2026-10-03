@@ -48,6 +48,25 @@ theorem FatBlockSeq.tail_blockMap_zero
   intro x
   rfl
 
+/-- The same original block appears at shifted indices in adjacent suffixes. -/
+theorem FatBlockSeq.tail_blockMap_succ
+    (H : SMTree S) {n : Nat}
+    (U : FatBlockSeq H n) (i k : Nat) :
+    (U.tail H i).blockMap H (k + 1) =
+      (U.tail H (i + 1)).blockMap H k := by
+  apply MMap.ext_apply
+  intro x
+  change
+    H.canonicalExtension
+        (((U.tail H i).block (k + 1)).1.representative H)
+        ((U.tail H i).cut (k + 1)) x =
+      H.canonicalExtension
+        (((U.tail H (i + 1)).block k).1.representative H)
+        ((U.tail H (i + 1)).cut k) x
+  have hidx : i + (k + 1) = (i + 1) + k := by omega
+  simp only [FatBlockSeq.tail]
+  rw [hidx]
+
 /-- Cumulative maps of a suffix are the corresponding segment compositions. -/
 theorem FatBlockSeq.tail_cumulative_succ
     (H : SMTree S) {n : Nat}
@@ -68,6 +87,7 @@ theorem FatBlockSeq.tail_cumulative_succ
       rfl
   | succ k ih =>
       rw [FatBlockSeq.cumulative_succ]
+      rw [U.tail_blockMap_succ H i k]
       rw [ih]
       rw [FatBlockSeq.cumulative_succ]
       apply MMap.ext_apply
@@ -86,8 +106,7 @@ theorem FatBlockSeq.tail_limit_eq_cumulative
   unfold FatBlockSeq.limit
   rw [ShapeMap.fusionLimit_apply]
   unfold FatBlockSeq.fusionStage
-  have hbase : (U.tail H i).cut 0 = U.cut i := rfl
-  rw [hx, hbase]
+  rw [hx]
   have hidx : U.cut i + k + 1 - U.cut i = k + 1 := by omega
   rw [hidx]
 
@@ -113,68 +132,64 @@ theorem FatBlockSeq.tail_limit_decompose
     rw [hleft, hblock, hnext]
   · have hxge : U.cut i ≤ LevelTree.lev x := Nat.le_of_not_gt hxlow
     obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le hxge
-    have hx : LevelTree.lev x = U.cut i + k := hk.symm
-    rw [U.tail_limit_eq_cumulative H i k x hx]
-    rw [U.tail_cumulative_succ H i k]
-    change
-      (U.tail H (i + 1)).cumulative H k (U.blockMap H i x) =
-        (U.tail H (i + 1)).limit H (U.blockMap H i x)
-    have hblockLev :
-        LevelTree.lev (U.blockMap H i x) =
-          U.cut (i + 1) + (k - 1) := by
-      cases k with
-      | zero =>
-          have hx0 : LevelTree.lev x = U.cut i := by simpa using hx
-          have hlev :=
-            H.levelMap_eq (U.blockMap H i).map (a := x)
-          rw [hx0, U.blockMap_level_cut H i] at hlev
-          have hcut := U.cut_strict (Nat.lt_succ_self i)
-          omega
-      | succ k =>
+    have hx : LevelTree.lev x = U.cut i + k := hk
+    cases k with
+    | zero =>
+        rw [U.tail_limit_eq_cumulative H i 0 x (by simpa using hx)]
+        rw [U.tail_cumulative_succ H i 0]
+        change
+          (MMap.id H) (U.blockMap H i x) =
+            (U.tail H (i + 1)).limit H (U.blockMap H i x)
+        rw [MMap.id_apply]
+        symm
+        apply (U.tail H (i + 1)).limit_fixesBelow H
+        have hlev :
+            LevelTree.lev (U.blockMap H i x) =
+              U.cut (i + 1) - 1 := by
           calc
             LevelTree.lev (U.blockMap H i x) =
                 H.levelMap (U.blockMap H i).map (LevelTree.lev x) :=
               (H.levelMap_eq (U.blockMap H i).map (a := x)).symm
-            _ = H.levelMap (U.blockMap H i).map (U.cut i + (k + 1)) := by
-              rw [hx]
-            _ =
-                H.levelMap
-                  (H.canonicalExtension
-                    ((U.block i).1.representative H) (U.cut i)).map
-                  (U.cut i + (k + 1)) := by rfl
-            _ =
-                H.levelMap ((U.block i).1.representative H).map (U.cut i) +
-                  (k + 1) := by
-              rw [H.canonicalExtension_level_tail
-                ((U.block i).1.representative H) (U.cut i) (k + 1)]
-            _ = (U.cut (i + 1) - 1) + (k + 1) := by
-              have htop := (U.block i).2
-              unfold AM.topLevel at htop
-              rw [htop]
-            _ = U.cut (i + 1) + k := by
-              have hcut := U.cut_strict (Nat.lt_succ_self i)
-              omega
-    cases k with
-    | zero =>
-        change (MMap.id H) (U.blockMap H i x) =
-          (U.tail H (i + 1)).limit H (U.blockMap H i x)
-        rw [MMap.id_apply]
-        symm
-        apply (U.tail H (i + 1)).limit_fixesBelow H
-        have hlev0 : LevelTree.lev (U.blockMap H i x) =
-            U.cut (i + 1) - 1 := by
-          simpa using hblockLev
-        rw [hlev0]
+            _ = H.levelMap (U.blockMap H i).map (U.cut i) := by
+              simpa using hx
+            _ = U.cut (i + 1) - 1 := U.blockMap_level_cut H i
+        rw [hlev]
         have hcut := U.cut_strict (Nat.lt_succ_self i)
         omega
     | succ k =>
-        have hy :
-            LevelTree.lev (U.blockMap H i x) =
-              U.cut (i + 1) + k := by
-          simpa using hblockLev
+        have hx' : LevelTree.lev x = U.cut i + (k + 1) := by
+          simpa using hx
+        rw [U.tail_limit_eq_cumulative H i (k + 1) x hx']
+        rw [U.tail_cumulative_succ H i (k + 1)]
+        change
+          (U.tail H (i + 1)).cumulative H (k + 1)
+              (U.blockMap H i x) =
+            (U.tail H (i + 1)).limit H (U.blockMap H i x)
         symm
-        exact U.tail_limit_eq_cumulative H (i + 1) k
-          (U.blockMap H i x) hy
+        apply U.tail_limit_eq_cumulative H (i + 1) k
+        calc
+          LevelTree.lev (U.blockMap H i x) =
+              H.levelMap (U.blockMap H i).map (LevelTree.lev x) :=
+            (H.levelMap_eq (U.blockMap H i).map (a := x)).symm
+          _ = H.levelMap (U.blockMap H i).map
+                (U.cut i + (k + 1)) := by rw [hx']
+          _ =
+              H.levelMap
+                (H.canonicalExtension
+                  ((U.block i).1.representative H) (U.cut i)).map
+                (U.cut i + (k + 1)) := by rfl
+          _ =
+              H.levelMap ((U.block i).1.representative H).map (U.cut i) +
+                (k + 1) := by
+            rw [H.canonicalExtension_level_tail
+              ((U.block i).1.representative H) (U.cut i) (k + 1)]
+          _ = (U.cut (i + 1) - 1) + (k + 1) := by
+            have htop := (U.block i).2
+            unfold AM.topLevel at htop
+            rw [htop]
+          _ = U.cut (i + 1) + k := by
+            have hcut := U.cut_strict (Nat.lt_succ_self i)
+            omega
 
 end SMTree
 end SuccessorTree
