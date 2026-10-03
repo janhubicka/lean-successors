@@ -222,14 +222,13 @@ theorem exists_folkmanPersistentColouring
     fun i =>
       folkmanEdgeCount C.edge
         (folkmanFiber f.leftOwner i) allRight
-  let last : Fin (2 ^ (k + 1)) :=
-    Fin.last (2 ^ (k + 1) - 1)
+  let omitted : Fin (2 ^ (k + 1)) := 0
   let s : Finset (Fin (2 ^ (k + 1))) :=
-    Finset.univ.erase last
+    Finset.univ.erase omitted
 
   have hcard : s.card + 1 = 2 ^ (k + 1) := by
     dsimp [s]
-    rw [Finset.card_erase_add_one (Finset.mem_univ last)]
+    rw [Finset.card_erase_add_one (Finset.mem_univ omitted)]
     simp
 
   have ha : ∀ i ∈ s, Odd (a i) := by
