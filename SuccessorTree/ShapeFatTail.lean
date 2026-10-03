@@ -56,16 +56,8 @@ theorem FatBlockSeq.tail_blockMap_succ
       (U.tail H (i + 1)).blockMap H k := by
   apply MMap.ext_apply
   intro x
-  change
-    H.canonicalExtension
-        (((U.tail H i).block (k + 1)).1.representative H)
-        ((U.tail H i).cut (k + 1)) x =
-      H.canonicalExtension
-        (((U.tail H (i + 1)).block k).1.representative H)
-        ((U.tail H (i + 1)).cut k) x
-  have hidx : i + (k + 1) = (i + 1) + k := by omega
-  simp only [FatBlockSeq.tail]
-  rw [hidx]
+  simp [FatBlockSeq.blockMap, FatBlockSeq.tail,
+    Nat.add_assoc, Nat.add_comm, Nat.add_left_comm]
 
 /-- Cumulative maps of a suffix are the corresponding segment compositions. -/
 theorem FatBlockSeq.tail_cumulative_succ
@@ -151,9 +143,10 @@ theorem FatBlockSeq.tail_limit_decompose
                 H.levelMap (U.blockMap H i).map (LevelTree.lev x) :=
               (H.levelMap_eq (U.blockMap H i).map (a := x)).symm
             _ = H.levelMap (U.blockMap H i).map (U.cut i) := by
-              simpa using hx
+              exact congrArg (H.levelMap (U.blockMap H i).map) hx
             _ = U.cut (i + 1) - 1 := U.blockMap_level_cut H i
         rw [hlev]
+        change U.cut (i + 1) - 1 < U.cut (i + 1)
         have hcut := U.cut_strict (Nat.lt_succ_self i)
         omega
     | succ k =>
@@ -188,7 +181,8 @@ theorem FatBlockSeq.tail_limit_decompose
             unfold AM.topLevel at htop
             rw [htop]
           _ = U.cut (i + 1) + k := by
-            have hcut := U.cut_strict (Nat.lt_succ_self i)
+            have hcut : U.cut i < U.cut (i + 1) :=
+              U.cut_strict (Nat.lt_succ_self i)
             omega
 
 end SMTree
