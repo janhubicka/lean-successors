@@ -95,14 +95,12 @@ theorem exists_linearEquiv_extends_of_surjective
   let K' := q'.ker
   let i : qA.ker →ₗ[F2] K :=
     (A.subtype.comp qA.ker.subtype).codRestrict K (fun x => by
-      have hx0 : qA x.1 = 0 := LinearMap.mem_ker.mp x.2
-      change q x.1.1 = 0
-      simpa [qA] using hx0)
+      change qA x.1 = 0
+      exact LinearMap.mem_ker.mp x.2)
   let i' : qA'.ker →ₗ[F2] K' :=
     (A'.subtype.comp qA'.ker.subtype).codRestrict K' (fun x => by
-      have hx0 : qA' x.1 = 0 := LinearMap.mem_ker.mp x.2
-      change q' x.1.1 = 0
-      simpa [qA'] using hx0)
+      change qA' x.1 = 0
+      exact LinearMap.mem_ker.mp x.2)
   have hi : Function.Injective i := by
     intro x y hxy
     apply Subtype.ext
@@ -135,12 +133,8 @@ theorem exists_linearEquiv_extends_of_surjective
     exists_linearEquiv_extends_submoduleEquiv fI hKdim
 
   have hTker (x : qA.ker) : T (i x) = i' (fKer x) := by
-    let z : I := ⟨i x, ⟨x, rfl⟩⟩
-    have heix : ei.symm z = x := by
-      apply ei.injective
-      simp [z, ei]
-    have hz := hT z
-    simpa [z, fI, ei', heix] using hz
+    have hz := hT (ei x)
+    simpa [fI, ei, ei', LinearEquiv.ofInjective_apply] using hz
 
   obtain ⟨s, hs⟩ :=
     q.exists_rightInverse_of_surjective (LinearMap.range_eq_top.mpr hq)
