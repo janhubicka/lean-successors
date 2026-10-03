@@ -41,10 +41,54 @@ jobs:
             --exclude='*.c' --exclude='*.cpp' --exclude='*.h' \
             --exclude='*.ilean' --exclude='*.trace' --exclude='*.hash' \
             "$TOOLCHAIN" "$GITHUB_WORKSPACE" "$RUNNER_TEMP/lean-toolchain-path.txt"
-          ls -lh "$RUNNER_TEMP/lean-proof-environment.tar.zst"
+          split -b 400M -d "$RUNNER_TEMP/lean-proof-environment.tar.zst" "$RUNNER_TEMP/lean-environment-part-"
+          ls -lh "$RUNNER_TEMP"/lean-environment-part-*
       - uses: actions/upload-artifact@v4
         with:
-          name: lean-proof-environment
-          path: ${{ runner.temp }}/lean-proof-environment.tar.zst
+          name: lean-environment-part-00
+          path: ${{ runner.temp }}/lean-environment-part-00
           compression-level: 0
-          retention-days: 3
+          retention-days: 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lean-environment-part-01
+          path: ${{ runner.temp }}/lean-environment-part-01
+          compression-level: 0
+          retention-days: 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lean-environment-part-02
+          path: ${{ runner.temp }}/lean-environment-part-02
+          compression-level: 0
+          retention-days: 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lean-environment-part-03
+          path: ${{ runner.temp }}/lean-environment-part-03
+          compression-level: 0
+          retention-days: 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lean-environment-part-04
+          path: ${{ runner.temp }}/lean-environment-part-04
+          compression-level: 0
+          retention-days: 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lean-environment-part-05
+          path: ${{ runner.temp }}/lean-environment-part-05
+          compression-level: 0
+          retention-days: 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lean-environment-part-06
+          path: ${{ runner.temp }}/lean-environment-part-06
+          compression-level: 0
+          retention-days: 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lean-environment-part-07
+          path: ${{ runner.temp }}/lean-environment-part-07
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: ignore
