@@ -58,7 +58,6 @@ theorem twoBlockHead_canonical
       (g.representative H) n x hx]
     exact hagree x hx
   · intro ell hell
-    rw [H.twoBlockHead_topLevel h] at hell
     apply H.canonicalExtension_tail_mem_levelRange
       (g.representative H) n ell
     have htop :
@@ -72,8 +71,7 @@ theorem twoBlockHead_canonical
         _ = LevelTree.lev (K x) := by rw [hagree x (by simpa [hx])]
         _ = H.levelMap K.map n := by
           simpa [hx] using (H.levelMap_eq K.map (a := x)).symm
-    rw [htop]
-    exact hell
+    exact htop.trans_le hell
 
 /-- Chosen outer factor after the first canonical level of a two-level block. -/
 noncomputable def twoBlockTailMap
@@ -101,7 +99,8 @@ theorem twoBlockTailMap_spec
     unfold AM.nextCut
     rw [H.twoBlockHead_topLevel h]
   refine ⟨?_, ?_⟩
-  · simpa [twoBlockTailMap, hnext] using hfix
+  · rw [hnext]
+    exact hfix
   · intro x hx
     change
       H.twoBlockTailMap h (g.canonical H x) = K x
