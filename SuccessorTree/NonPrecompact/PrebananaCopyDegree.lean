@@ -42,7 +42,9 @@ def allMarkedPower (k : ℕ) : PrebananaAtomStructure where
   atomCount_pos := by positivity
   mark := fun _ => 1
   total_mark_parity := by
-    simp [prebananaMarkedCount, pow_succ]
+    have hEven : Even (2 ^ (k + 1)) :=
+      even_two.pow_of_ne_zero (Nat.succ_ne_zero k)
+    simpa [prebananaMarkedCount] using hEven.natCast_zmod_two
 
 end PrebananaAtomStructure
 
