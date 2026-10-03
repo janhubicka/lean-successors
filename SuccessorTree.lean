@@ -50,3 +50,5 @@ import SuccessorTree.NonPrecompact.PrebananaPersistence
 import SuccessorTree.NonPrecompact.PrebananaCopyDegree
 
 import SuccessorTree.NonPrecompact.FolkmanPersistence
+
+import SuccessorTree.NonPrecompact.ExpansionDegree
