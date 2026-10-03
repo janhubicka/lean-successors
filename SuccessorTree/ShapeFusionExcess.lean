@@ -220,6 +220,13 @@ theorem firstMoveSplit_tail_excess
   rw [(H.firstMoveSplit r hmove).tail_top]
   omega
 
+/-- Transport an AM type along equality of its frozen cut. -/
+def amCastCut
+    (H : SMTree S) {c d : Nat}
+    (h : c = d) (a : AM H c 1) : AM H d 1 := by
+  subst d
+  exact a
+
 /-- Abstract direct fusion data for the excess induction. -/
 structure ShapeFusionData
     (H : SMTree S) (n : Nat) where
@@ -240,7 +247,8 @@ structure ShapeFusionData
     ∀ i (q : AM H (cut (i + 1)) 1),
       q ∈ cell (i + 1) →
       ∀ p : LineInput (OneLevelLetter H (cut i)),
-        H.shapeLineApply (head i) (by simpa [cut_succ i] using q) p ∈ cell i
+        H.shapeLineApply (head i)
+          (H.amCastCut (cut_succ i) q) p ∈ cell i
 
 
 /-- The canonical head hits the next cut on the next source level. -/
@@ -402,14 +410,6 @@ theorem shapeFusionEval_id_eq_head
         ((D.head i).representative H) (D.cut i) x.1 x.2]
     _ = (D.head i).1.1 x := hxHead
 
-
-/-- Transport an AM type along equality of its frozen cut. -/
-def amCastCut
-    (H : SMTree S) {c d : Nat}
-    (h : c = d) (a : AM H c 1) : AM H d 1 := by
-  subst d
-  exact a
-
 @[simp] theorem amCastCut_rfl
     (H : SMTree S) {c : Nat}
     (a : AM H c 1) :
@@ -439,7 +439,7 @@ theorem shapeFusionLine_closed_cast
     (p : LineInput (OneLevelLetter H (D.cut i))) :
     H.shapeLineApply (D.head i)
         (H.amCastCut (D.cut_succ i) q) p ∈ D.cell i := by
-  simpa [amCastCut] using D.line_closed i q hq p
+  exact D.line_closed i q hq p
 
 
 
