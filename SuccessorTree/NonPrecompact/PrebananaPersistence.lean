@@ -56,13 +56,12 @@ theorem prebanana_sum_fiber_markedCount
       apply Finset.sum_congr rfl
       intro j hj
       simp [prebananaMarkedCount, prebananaFiber, marked,
-        Finset.filter_filter, and_left_comm, and_comm, and_assoc]
+        Finset.filter_filter, and_comm]
     _ = (marked.filter fun i => part i ∈ labels).card :=
       Finset.sum_card_fiberwise_eq_card_filter marked labels part
     _ = prebananaMarkedCount mark
           (Finset.univ.filter fun i => part i ∈ labels) := by
-      simp [prebananaMarkedCount, marked, Finset.filter_filter,
-        and_left_comm, and_comm, and_assoc]
+      simp [prebananaMarkedCount, marked, Finset.filter_filter, and_comm]
 
 /-- An all-marked `q`-atom pre-BANANA target copy inside an ambient
 pre-BANANA atom structure.
@@ -207,7 +206,7 @@ theorem exists_prebananaPersistentColouring
   have hremaining :
       Finset.univ \ labels = s \ t := by
     ext j
-    simp [labels, s, and_left_comm, and_assoc]
+    simp [labels, s]
 
   have hblockComplement :
       Finset.univ \ block =
