@@ -121,17 +121,20 @@ theorem shapeLineBad_mono_fusionStep
   intro p
   have hqLine := hq p
   rw [hW'] at hqLine
-  change
-    H.shapeAct n W
-      (H.shapeAct n Un (H.shapeLineApply g q p)) ∈ A at hqLine
+  have hqLine' :
+      H.shapeAct n (ShapeSubspace.comp H W Un)
+        (H.shapeLineApply g q p) ∈ A := by
+    simpa [shapePullback, HalesJewett.SubspaceAction.pullback,
+      shapeSubspaceAction] using hqLine
+  rw [H.shapeAct_comp n W Un (H.shapeLineApply g q p)] at hqLine'
   have hweaken :
       Un =
         ShapeSubspace.weaken H (Nat.le_of_lt (g.lt_nextCut H)) Ug := by
     apply Subtype.ext
     rfl
   rw [hweaken,
-    H.shapeAct_weaken_shapeLineApply g Ug q p] at hqLine
-  exact hqLine
+    H.shapeAct_weaken_shapeLineApply g Ug q p] at hqLine'
+  exact hqLine'
 
 /-- Being settled is preserved by any later fusion step above the head's next
 cut. -/
@@ -152,9 +155,14 @@ theorem shapeSettled_mono_fusionStep
       unfold AM.nextCut at hgm
       omega
     have heq := H.shapeAct_eq_of_fusionStep_above hstep g htop
-    change H.shapeAct n W' g ∈ A at hmem
-    change H.shapeAct n W g ∉ A
-    simpa [heq] using hmem
+    have hmem' : H.shapeAct n W' g ∈ A := by
+      simpa [shapePullback, HalesJewett.SubspaceAction.pullback,
+        shapeSubspaceAction] using hmem
+    have hmemW : H.shapeAct n W g ∈ A := by
+      rw [← heq]
+      exact hmem'
+    simpa [shapePullback, HalesJewett.SubspaceAction.pullback,
+      shapeSubspaceAction] using hmemW
   · right
     exact H.shapeLineBad_mono_fusionStep hstep A g hgm hbad
 
@@ -192,12 +200,14 @@ theorem exists_fusionStep_killing_goodTails
   apply hU q
   intro p
   have hline := hq p
-  change H.shapeAct n W' (H.shapeLineApply g q p) ∈ A at hline
-  change
-    H.shapeAct n W
-      (H.shapeAct n Un (H.shapeLineApply g q p)) ∈ A at hline
-  rw [H.shapeAct_weaken_shapeLineApply g U q p] at hline
-  exact hline
+  have hline' :
+      H.shapeAct n W' (H.shapeLineApply g q p) ∈ A := by
+    simpa [shapePullback, HalesJewett.SubspaceAction.pullback,
+      shapeSubspaceAction] using hline
+  change W' = ShapeSubspace.comp H W Un at rfl
+  rw [H.shapeAct_comp n W Un (H.shapeLineApply g q p)] at hline'
+  rw [H.shapeAct_weaken_shapeLineApply g U q p] at hline'
+  exact hline'
 
 /-- Under the contradiction hypothesis that no large good-tail set exists,
 every finite exact front can be settled by refinements at its next level. -/
@@ -255,8 +265,8 @@ private theorem settleExactFinset
               q.1.nextCut H ≤ m + 1 := by
             unfold AM.nextCut
             rw [q.2]
-          exact H.shapeSettled_mono_fusionStep hW₂ A q.1 hqNext
-            (hsettled q hqP)
+          exact H.shapeSettled_mono_fusionStep (m := m + 1)
+            hW₂ A q.1 hqNext (hsettled q hqP)
       · refine ⟨W₁, hW₁, ?_⟩
         intro q hq
         have hcases : q = p ∨ q ∈ P := by
