@@ -410,9 +410,14 @@ theorem directSumLinearMap_comp_apply
     (x : Fin (m₁ + m₂) → F2) :
     directSumLinearMap (f₂.comp f₁) (g₂.comp g₁) x =
       directSumLinearMap f₂ g₂ (directSumLinearMap f₁ g₁ x) := by
-  funext i
-  induction i using Fin.addCases <;>
-    simp [directSumLinearMap, finLeftPart, finRightPart]
+  change
+    Fin.append
+        (f₂ (f₁ (finLeftPart x)))
+        (g₂ (g₁ (finRightPart x))) =
+      Fin.append
+        (f₂ (finLeftPart (directSumLinearMap f₁ g₁ x)))
+        (g₂ (finRightPart (directSumLinearMap f₁ g₁ x)))
+  rw [finLeftPart_directSumLinearMap, finRightPart_directSumLinearMap]
 
 /-- The left component of direct-sum BANANA embeddings preserves
 composition. -/
