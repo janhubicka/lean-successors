@@ -139,7 +139,7 @@ theorem extend_finite_copies
       obtain ⟨D, base, hbase⟩ := ih
       obtain ⟨ep, hep⟩ := S.range_surjective p
       obtain ⟨D', i, j, hij⟩ :=
-        M.amalgamate (S.compEmb ep base) pA
+        AmalgamationSystem.amalgamate M (S.compEmb ep base) pA
       refine ⟨D', S.compEmb base i, ?_⟩
       intro q hq
       rw [Finset.mem_insert] at hq
@@ -157,7 +157,7 @@ theorem extend_finite_copies
       · obtain ⟨a, ha⟩ := hbase q hq
         refine ⟨S.mapCopy i a, ?_⟩
         rw [S.mapCopy_comp]
-        exact M.subcopy_map i ha
+        exact subcopy_map M i ha
 
 /-- Attach an A-copy over every P-copy of B. -/
 theorem extend_all_copies
@@ -169,7 +169,7 @@ theorem extend_all_copies
           S.Subcopy (S.mapCopy base p) a := by
   classical
   obtain ⟨D, base, h⟩ :=
-    M.extend_finite_copies pA (Finset.univ : Finset (S.Copy P B))
+    extend_finite_copies M pA (Finset.univ : Finset (S.Copy P B))
   exact ⟨D, base, fun p => h p (Finset.mem_univ p)⟩
 
 end AmalgamationSystem
