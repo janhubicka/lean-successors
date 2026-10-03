@@ -110,4 +110,34 @@ theorem exists_nonempty_odd_subset_sum_family
   choose chosen hchosen using hchoice
   exact ⟨chosen, hchosen⟩
 
+
+/-- If selected atoms have the complementary residue to the target, then the
+unselected atoms have the target residue.  A nonempty reserved set disjoint
+from the selected atoms guarantees that the leftover block is nonempty. -/
+theorem leftover_nonempty_and_sum_eq
+    {q : ℕ} {ι : Type*} [DecidableEq ι]
+    (atoms selected reserved : Finset ι)
+    (weight : ι → ZMod q)
+    (target : ZMod q)
+    (hselected : selected ⊆ atoms)
+    (hreserved : reserved.Nonempty)
+    (hreservedAtoms : reserved ⊆ atoms)
+    (hdisj : Disjoint reserved selected)
+    (htotal : (∑ x ∈ atoms, weight x) = 0)
+    (htarget : (∑ x ∈ selected, weight x) + target = 0) :
+    (atoms \ selected).Nonempty ∧
+      (∑ x ∈ atoms \ selected, weight x) = target := by
+  constructor
+  · obtain ⟨x, hx⟩ := hreserved
+    refine ⟨x, Finset.mem_sdiff.mpr ⟨hreservedAtoms hx, ?_⟩⟩
+    intro hxs
+    exact (Finset.disjoint_left.mp hdisj) hx hxs
+  · have hsplit :
+        (∑ x ∈ selected, weight x) +
+            (∑ x ∈ atoms \ selected, weight x) = 0 := by
+      rw [Finset.sum_sdiff hselected]
+      exact htotal
+    apply add_left_cancel
+    exact hsplit.trans htarget.symm
+
 end SuccessorTree.NonPrecompact
