@@ -134,14 +134,15 @@ theorem extend_list_copies
         ∃ a : S.Copy A D,
           S.Subcopy (S.mapCopy base pcopy) a := by
   classical
-  exact List.rec
-    (by
+  cases copies with
+  | nil =>
       refine ⟨B, S.idEmb B, ?_⟩
       intro q hq
-      simp at hq)
-    (fun headCopy tail ih => by
-      obtain ⟨D, base, hbase⟩ := ih
-      obtain ⟨ep, hep⟩ := S.range_surjective headCopy
+      simp at hq
+  | cons head tail =>
+      obtain ⟨D, base, hbase⟩ :=
+        extend_list_copies M pA tail
+      obtain ⟨ep, hep⟩ := S.range_surjective head
       obtain ⟨D', i, j, hij⟩ :=
         M.amalgamate (S.compEmb ep base) pA
       refine ⟨D', S.compEmb base i, ?_⟩
@@ -151,20 +152,20 @@ theorem extend_list_copies
       · let a : S.Copy A D' := S.range j
         refine ⟨a, ?_⟩
         have hpbase :
-            S.mapCopy base headCopy =
+            S.mapCopy base head =
               S.range (S.compEmb ep base) := by
           calc
-            S.mapCopy base headCopy =
+            S.mapCopy base head =
                 S.mapCopy base (S.range ep) := by rw [hep]
             _ = S.range (S.compEmb ep base) :=
               (S.range_comp ep base).symm
         have hpmap :
-            S.mapCopy (S.compEmb base i) headCopy =
+            S.mapCopy (S.compEmb base i) head =
               S.range (S.compEmb (S.compEmb ep base) i) := by
           calc
-            S.mapCopy (S.compEmb base i) headCopy =
-                S.mapCopy i (S.mapCopy base headCopy) :=
-              S.mapCopy_comp base i headCopy
+            S.mapCopy (S.compEmb base i) head =
+                S.mapCopy i (S.mapCopy base head) :=
+              S.mapCopy_comp base i head
             _ = S.mapCopy i (S.range (S.compEmb ep base)) := by
               rw [hpbase]
             _ = S.range (S.compEmb (S.compEmb ep base) i) :=
@@ -176,8 +177,8 @@ theorem extend_list_copies
       · obtain ⟨a, ha⟩ := hbase q hq
         refine ⟨S.mapCopy i a, ?_⟩
         rw [S.mapCopy_comp]
-        exact subcopy_map (S := S) i ha)
-    copies
+        exact subcopy_map (S := S) i ha
+termination_by copies.length
 
 /-- A finite family of original P-copies of B can simultaneously be made
 extendible to A-copies after embedding B into a further amalgam. -/
