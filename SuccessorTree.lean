@@ -35,6 +35,7 @@ import SuccessorTree.NonPrecompact.BananaPersistence
 import SuccessorTree.NonPrecompact.PerfectCopy
 import SuccessorTree.NonPrecompact.PairingCopies
 import SuccessorTree.NonPrecompact.BananaStructure
+import SuccessorTree.NonPrecompact.BananaDirectSum
 import SuccessorTree.NonPrecompact.Completion
 import SuccessorTree.RamseySpace.Basic
 import SuccessorTree.RamseySpace.Finitization
