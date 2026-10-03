@@ -59,18 +59,11 @@ theorem FatBlockSeq.lineApply_base
     (H : SMTree S) {n : Nat}
     (U : FatBlockSeq H n) (i : Nat)
     (q : AM H (U.cut (i + 1)) 1) :
-    U.lineApply H i q LineInput.base = (U.block i).1 := by
+    U.lineApply H i q LineInput.base = (U.block H i).1 := by
   apply Subtype.ext
   apply Subtype.ext
   funext x
-  have hqfix :=
-    q.representative_fixesBelow H
-  have hblockTop := (U.block i).1.representative_top H
-  have hblockVal := congrArg Subtype.val hblockTop
-  change
-    ((U.block i).1.representative H).restrictLe H (U.cut i) =
-      (U.block i).1.1 at hblockVal
-  have hxBlock := congrFun hblockVal x
+  have hqfix := q.representative_fixesBelow H
   have hblockLev :
       LevelTree.lev (U.blockMap H i x.1) < U.cut (i + 1) := by
     calc
@@ -84,12 +77,11 @@ theorem FatBlockSeq.lineApply_base
         have hcut := U.cut_strict (Nat.lt_succ_self i)
         omega
   change
-    q.representative H (U.blockMap H i x.1) = (U.block i).1.1 x
+    q.representative H (U.blockMap H i x.1) = U.seed i x.1
   rw [hqfix (U.blockMap H i x.1) hblockLev]
   rw [FatBlockSeq.blockMap]
-  rw [H.canonicalExtension_agrees
-    ((U.block i).1.representative H) (U.cut i) x.1 x.2]
-  exact hxBlock
+  exact H.canonicalExtension_agrees
+    (U.seed i) (U.cut i) x.1 x.2
 
 /-- The total suffix map, packaged as a shape subspace at the suffix cut. -/
 noncomputable def FatBlockSeq.tailSubspace
@@ -110,7 +102,7 @@ noncomputable def FatBlockSeq.evalAt
 theorem FatBlockSeq.evalAt_id
     (H : SMTree S) {n : Nat}
     (U : FatBlockSeq H n) (i : Nat) :
-    U.evalAt H i (AM.id1 H (U.cut i)) = (U.block i).1 := by
+    U.evalAt H i (AM.id1 H (U.cut i)) = (U.block H i).1 := by
   apply Subtype.ext
   apply Subtype.ext
   funext x
@@ -130,22 +122,15 @@ theorem FatBlockSeq.evalAt_id
         (by simpa [hxlev])]
       change U.blockMap H i x.1 = U.blockMap H i x.1
       rfl
-  have hblockTop := (U.block i).1.representative_top H
-  have hblockVal := congrArg Subtype.val hblockTop
-  change
-    ((U.block i).1.representative H).restrictLe H (U.cut i) =
-      (U.block i).1.1 at hblockVal
-  have hxBlock := congrFun hblockVal x
   change
     (U.tail H i).limit H
         ((AM.id1 H (U.cut i)).representative H x.1) =
-      (U.block i).1.1 x
+      U.seed i x.1
   rw [hxId]
   rw [htail]
   rw [FatBlockSeq.blockMap]
-  rw [H.canonicalExtension_agrees
-    ((U.block i).1.representative H) (U.cut i) x.1 x.2]
-  exact hxBlock
+  exact H.canonicalExtension_agrees
+    (U.seed i) (U.cut i) x.1 x.2
 
 end SMTree
 end SuccessorTree
