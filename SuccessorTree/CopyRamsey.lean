@@ -87,6 +87,93 @@ def CopyRamseyDegreeLE
 
 end FiniteCopySystem
 
+/-- An abstract amalgamation class on a finite copy system.  This is the
+one amalgamation-square operation needed by the degree-propagation lemma. -/
+structure AmalgamationSystem (S : FiniteCopySystem) where
+  amalgamate :
+    ∀ {P B A : S.Obj} (p : S.Emb P B) (a : S.Emb P A),
+      ∃ (D : S.Obj) (i : S.Emb B D) (j : S.Emb A D),
+        S.compEmb p i = S.compEmb a j
+
+namespace AmalgamationSystem
+
+variable {S : FiniteCopySystem} (M : AmalgamationSystem S)
+
+attribute [local instance] FiniteCopySystem.copyFintype
+attribute [local instance] FiniteCopySystem.copyDecidableEq
+
+/-- Intrinsic subcopy containment is preserved by further embeddings. -/
+theorem subcopy_map
+    {P A B C : S.Obj}
+    (g : S.Emb B C)
+    {p : S.Copy P B} {a : S.Copy A B}
+    (h : S.Subcopy p a) :
+    S.Subcopy (S.mapCopy g p) (S.mapCopy g a) := by
+  obtain ⟨fa, hfa⟩ := S.range_surjective a
+  rw [← hfa] at h
+  obtain ⟨q, hq⟩ := (S.subcopy_range_iff fa p).mp h
+  have hrange :
+      S.mapCopy g a = S.range (S.compEmb fa g) := by
+    rw [S.range_comp, hfa]
+  rw [hrange]
+  apply (S.subcopy_range_iff (S.compEmb fa g) (S.mapCopy g p)).mpr
+  refine ⟨q, ?_⟩
+  rw [S.mapCopy_comp, hq]
+
+/-- A finite family of original P-copies of B can simultaneously be made
+extendible to A-copies after embedding B into a further amalgam. -/
+theorem extend_finite_copies
+    {P A B : S.Obj}
+    (pA : S.Emb P A)
+    (copies : Finset (S.Copy P B)) :
+    ∃ (D : S.Obj) (base : S.Emb B D),
+      ∀ p ∈ copies,
+        ∃ a : S.Copy A D,
+          S.Subcopy (S.mapCopy base p) a := by
+  classical
+  induction copies using Finset.induction_on with
+  | empty =>
+      refine ⟨B, S.idEmb B, ?_⟩
+      simp
+  | @insert p copies hp ih =>
+      obtain ⟨D, base, hbase⟩ := ih
+      obtain ⟨ep, hep⟩ := S.range_surjective p
+      obtain ⟨D', i, j, hij⟩ :=
+        M.amalgamate (S.compEmb ep base) pA
+      refine ⟨D', S.compEmb base i, ?_⟩
+      intro q hq
+      rw [Finset.mem_insert] at hq
+      rcases hq with rfl | hq
+      · let a : S.Copy A D' := S.range j
+        refine ⟨a, ?_⟩
+        rw [show S.mapCopy (S.compEmb base i) p =
+            S.range (S.compEmb (S.compEmb ep base) i) by
+              rw [S.mapCopy_comp, ← S.range_comp, hep, S.range_comp]]
+        rw [hij]
+        exact (S.subcopy_range_iff j
+          (S.range (S.compEmb pA j))).mpr
+            ⟨S.range pA, by
+              rw [S.range_comp]⟩
+      · obtain ⟨a, ha⟩ := hbase q hq
+        refine ⟨S.mapCopy i a, ?_⟩
+        rw [S.mapCopy_comp]
+        exact M.subcopy_map i ha
+
+/-- Attach an A-copy over every P-copy of B. -/
+theorem extend_all_copies
+    {P A B : S.Obj}
+    (pA : S.Emb P A) :
+    ∃ (D : S.Obj) (base : S.Emb B D),
+      ∀ p : S.Copy P B,
+        ∃ a : S.Copy A D,
+          S.Subcopy (S.mapCopy base p) a := by
+  classical
+  obtain ⟨D, base, h⟩ :=
+    M.extend_finite_copies pA (Finset.univ : Finset (S.Copy P B))
+  exact ⟨D, base, fun p => h p (Finset.mem_univ p)⟩
+
+end AmalgamationSystem
+
 structure RamseyExpansion (S : FiniteCopySystem) where
   Exp : S.Obj → Type x
   expFintype : ∀ A, Fintype (Exp A)
