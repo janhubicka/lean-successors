@@ -100,3 +100,102 @@ theorem shapeActK_one
   apply Subtype.ext
   rfl
 
+
+
+/-- Before the requested starting depth N, front-fusion stages are literally
+the initial map. -/
+theorem frontFusionStage_eq_base_of_lt
+    [Fintype κ]
+    (H : SMTree S)
+    (colour : StepColouring H κ)
+    (hpig : LocalPigeonhole H colour)
+    (N : Nat) (B : MMap H) :
+    ∀ {i : Nat}, i < N →
+      frontFusionStage H colour hpig N B i = B := by
+  intro i hi
+  induction i with
+  | zero => rfl
+  | succ i ih =>
+      rw [frontFusionStage]
+      have hnot : ¬ N ≤ i + 1 := by omega
+      simp only [hnot, dif_neg]
+      exact ih (by omega)
+
+/-- Starting front fusion at depth N preserves every source node below N. -/
+theorem frontFusion_fixesBelow
+    [Fintype κ]
+    (H : SMTree S)
+    (colour : StepColouring H κ)
+    (hpig : LocalPigeonhole H colour)
+    (N : Nat) (B : MMap H)
+    (hB : B.FixesBelow H N) :
+    (H.frontFusion colour hpig N B).FixesBelow H N := by
+  intro x hx
+  change
+    frontFusionStage H colour hpig N B (LevelTree.lev x) x = x
+  rw [H.frontFusionStage_eq_base_of_lt colour hpig N B hx]
+  exact hB x hx
+
+/-- The final front fusion is a genuine refinement of its initial map. -/
+theorem frontFusion_reduction_base
+    [Fintype κ]
+    (H : SMTree S)
+    (colour : StepColouring H κ)
+    (hpig : LocalPigeonhole H colour)
+    (N : Nat) (B : MMap H) :
+    RamseyReduction H (H.frontFusion colour hpig N B) B := by
+  let F : Nat → MMap H := frontFusionStage H colour hpig N B
+  let hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1)) :=
+    H.frontFusionStage_step colour hpig N B
+  have h :=
+    H.fusionOfSteps_reduction_stage F hstep 0
+  simpa [frontFusion, F, hstep] using h
+
+/-- A right factor between two maps which both fix below n must itself fix
+below n. -/
+theorem exists_frozen_rightFactor
+    (H : SMTree S) {n : Nat}
+    {A B : MMap H}
+    (hA : A.FixesBelow H n)
+    (hB : B.FixesBelow H n)
+    (hAB : RamseyReduction H A B) :
+    ∃ R : MMap H,
+      R.FixesBelow H n ∧
+      A = MMap.comp H B R := by
+  rcases hAB with ⟨R, hR⟩
+  have hRfix : R.FixesBelow H n := by
+    intro x hx
+    apply B.map.injective
+    calc
+      B (R x) = A x := (hR x).symm
+      _ = x := hA x hx
+      _ = B x := (hB x hx).symm
+  refine ⟨R, hRfix, ?_⟩
+  apply MMap.ext_apply
+  intro x
+  exact hR x
+
+/-- A step colouring concentrated on one absolute approximation level. -/
+def singleLevelStepColour
+    (H : SMTree S) {κ : Type w}
+    (default : κ)
+    (m : Nat)
+    (nextColour : RamseyApprox H (m + 1) → κ) :
+    StepColouring H κ :=
+  fun j b =>
+    if h : j = m then
+      by
+        subst j
+        exact nextColour b
+    else default
+
+@[simp] theorem singleLevelStepColour_at
+    (H : SMTree S) {κ : Type w}
+    (default : κ)
+    (m : Nat)
+    (nextColour : RamseyApprox H (m + 1) → κ)
+    (b : RamseyApprox H (m + 1)) :
+    H.singleLevelStepColour default m nextColour m b =
+      nextColour b := by
+  simp [singleLevelStepColour]
+
