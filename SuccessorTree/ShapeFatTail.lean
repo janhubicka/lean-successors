@@ -183,7 +183,6 @@ theorem FatBlockSeq.tail_limit_decompose
               (U.seed i) (U.cut i) (k + 1)]
           _ = (U.cut (i + 1) - 1) + (k + 1) := by
             have htop := U.seed_top i
-            unfold AM.topLevel at htop
             rw [htop]
           _ = U.cut (i + 1) + k := by
             have hcut : U.cut i < U.cut (i + 1) :=
