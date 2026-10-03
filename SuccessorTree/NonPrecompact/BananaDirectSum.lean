@@ -238,6 +238,34 @@ def directSumLeftPart {m n : ℕ} (x : Fin (m + n) → F2) : Fin m → F2 :=
 def directSumRightPart {m n : ℕ} (x : Fin (m + n) → F2) : Fin n → F2 :=
   fun i => x (Fin.natAdd m i)
 
+@[simp] theorem directSumLeftPart_add {m n : ℕ}
+    (x y : Fin (m + n) → F2) :
+    directSumLeftPart (x + y) =
+      directSumLeftPart x + directSumLeftPart y := by
+  funext i
+  simp [directSumLeftPart]
+
+@[simp] theorem directSumRightPart_add {m n : ℕ}
+    (x y : Fin (m + n) → F2) :
+    directSumRightPart (x + y) =
+      directSumRightPart x + directSumRightPart y := by
+  funext i
+  simp [directSumRightPart]
+
+@[simp] theorem directSumLeftPart_smul {m n : ℕ}
+    (a : F2) (x : Fin (m + n) → F2) :
+    directSumLeftPart (a • x) =
+      a • directSumLeftPart x := by
+  funext i
+  simp [directSumLeftPart]
+
+@[simp] theorem directSumRightPart_smul {m n : ℕ}
+    (a : F2) (x : Fin (m + n) → F2) :
+    directSumRightPart (a • x) =
+      a • directSumRightPart x := by
+  funext i
+  simp [directSumRightPart]
+
 theorem append_directSumParts {m n : ℕ} (x : Fin (m + n) → F2) :
     Fin.append (directSumLeftPart x) (directSumRightPart x) = x := by
   funext i
@@ -258,12 +286,12 @@ def directSumLinearMap
     apply funext
     intro i
     induction i using Fin.addCases <;>
-      simp [directSumLeftPart, directSumRightPart]
+      simp [directSumLinearMap]
   map_smul' a x := by
     apply funext
     intro i
     induction i using Fin.addCases <;>
-      simp [directSumLeftPart, directSumRightPart]
+      simp [directSumLinearMap]
 
 theorem directSumLinearMap_injective
     {m n m' n' : ℕ}
@@ -305,14 +333,22 @@ theorem directSum_eval_append
         (Fin.append x₁ x₂) (Fin.append y₁ y₂) =
       A.eval x₁ y₁ + B.eval x₂ y₂ := by
   unfold eval
-  apply Eq.trans ?_ ?_
-  · congr 1
+  have hmul :
+      (bananaDirectSum A B).pairing *ᵥ Fin.append y₁ y₂ =
+        Fin.append (A.pairing *ᵥ y₁) (B.pairing *ᵥ y₂) := by
     apply funext
     intro i
     induction i using Fin.addCases <;>
       simp [bananaDirectSum, Matrix.mulVec, dotProduct, Fin.sum_univ_add]
-  · rw [Fin.sum_univ_add]
-    simp [dotProduct]
+  rw [hmul]
+  change
+    (∑ i : Fin (l₁ + l₂),
+      Fin.append x₁ x₂ i *
+        Fin.append (A.pairing *ᵥ y₁) (B.pairing *ᵥ y₂) i) =
+      x₁ ⬝ᵥ (A.pairing *ᵥ y₁) +
+        x₂ ⬝ᵥ (B.pairing *ᵥ y₂)
+  rw [Fin.sum_univ_add]
+  simp [dotProduct]
 
 end BananaMatrixStructure
 
