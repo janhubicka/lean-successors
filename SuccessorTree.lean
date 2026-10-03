@@ -59,3 +59,4 @@ import SuccessorTree.ShapeDirectLine
 import SuccessorTree.ShapeTwoBlock
 import SuccessorTree.ShapeMillikenFusion
 import SuccessorTree.ShapeLargeShapeLine
+import SuccessorTree.ShapeRamseyFusion
