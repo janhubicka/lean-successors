@@ -287,9 +287,14 @@ theorem exists_folkmanPersistentColouring
   have hcount :
       folkmanEdgeCount C.edge leftBlock allRight =
         ∑ i ∈ t, a i := by
-    simpa only [leftBlock, a] using
-      folkmanEdgeCount_biUnion_left
-        C.edge f.leftOwner t allRight
+    change
+      folkmanEdgeCount C.edge
+          (t.biUnion (folkmanFiber f.leftOwner)) allRight =
+        ∑ i ∈ t,
+          folkmanEdgeCount C.edge
+            (folkmanFiber f.leftOwner i) allRight
+    exact folkmanEdgeCount_biUnion_left
+      C.edge f.leftOwner t allRight
 
   have hleftNonempty : leftBlock.Nonempty := by
     obtain ⟨i, hi⟩ := htne
