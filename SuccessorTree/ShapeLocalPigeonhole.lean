@@ -114,8 +114,8 @@ theorem prefixCanonical_eq_of_levelNeighborhood
     H.canonicalExtension_unique CA CB n hagree hfull
   calc
     H.prefixCanonical hdA = CA := rfl
-    _ = H.canonicalExtension CA n := by
-      rw [H.canonicalExtension_idem CA n]
+    _ = H.canonicalExtension CA n :=
+      (H.canonicalExtension_idem CA n).symm
     _ = CB := huniq.symm
     _ = H.prefixCanonical hdB := rfl
 
