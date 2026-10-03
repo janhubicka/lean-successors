@@ -391,7 +391,7 @@ noncomputable def millikenLimit
   let L : MMap H := H.fusionOfSteps F hstep
   refine ⟨L, ?_⟩
   intro x hx
-  change H.millikenStage A hNo (LevelTree.lev x) x = x
+  change (H.millikenStage A hNo (LevelTree.lev x)).1 x = x
   rw [H.millikenStage_eq_id_of_le A hNo
     (LevelTree.lev x) (Nat.le_of_lt hx)]
   rfl
@@ -410,9 +410,12 @@ theorem millikenLimit_mem_stage
     fun j => (H.millikenStage A hNo j).1
   let hstep : ∀ j : Nat, FusionStep H j (F j) (F (j + 1)) :=
     H.millikenStage_step A hNo
-  change H.fusionOfSteps F hstep ∈
-    (ramseyApproximationSystem H).levelNeighborhood (i + 1) (F i)
-  exact H.fusionOfSteps_mem_levelNeighborhood F hstep i
+  have hlim :=
+    H.fusionOfSteps_mem_levelNeighborhood F hstep i
+  change
+    (H.millikenLimit A hNo).1 ∈
+      (ramseyApproximationSystem H).levelNeighborhood (i + 1) (F i)
+  simpa [millikenLimit, F, hstep] using hlim
 
 /-- A line-existence principle sufficient to close the Milliken fusion. -/
 def LargeSetHasShapeLine
@@ -477,9 +480,6 @@ theorem exists_large_goodTails
   rcases hsettledLimit with hnot | hbad
   · exact hnot hgmem
   · exact hbad q hq
-
-end SMTree
-end SuccessorTree
 
 end SMTree
 end SuccessorTree
