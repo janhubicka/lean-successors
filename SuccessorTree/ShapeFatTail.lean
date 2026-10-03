@@ -32,8 +32,13 @@ noncomputable def FatBlockSeq.tail
   cut_strict := by
     intro a b hab
     exact U.cut_strict (Nat.add_lt_add_left hab i)
-  block := fun j => by
-    simpa [Nat.add_assoc] using U.block (i + j)
+  seed := fun j => U.seed (i + j)
+  seed_fixes := by
+    intro j
+    exact U.seed_fixes (i + j)
+  seed_top := by
+    intro j
+    simpa [Nat.add_assoc] using U.seed_top (i + j)
 
 @[simp] theorem FatBlockSeq.tail_cut
     (H : SMTree S) {n : Nat}
@@ -169,15 +174,15 @@ theorem FatBlockSeq.tail_limit_decompose
           _ =
               H.levelMap
                 (H.canonicalExtension
-                  ((U.block i).1.representative H) (U.cut i)).map
+                  (U.seed i) (U.cut i)).map
                 (U.cut i + (k + 1)) := by rfl
           _ =
-              H.levelMap ((U.block i).1.representative H).map (U.cut i) +
+              H.levelMap (U.seed i).map (U.cut i) +
                 (k + 1) := by
             rw [H.canonicalExtension_level_tail
-              ((U.block i).1.representative H) (U.cut i) (k + 1)]
+              (U.seed i) (U.cut i) (k + 1)]
           _ = (U.cut (i + 1) - 1) + (k + 1) := by
-            have htop := (U.block i).2
+            have htop := U.seed_top i
             unfold AM.topLevel at htop
             rw [htop]
           _ = U.cut (i + 1) + k := by
