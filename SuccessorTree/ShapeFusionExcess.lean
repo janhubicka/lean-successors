@@ -393,5 +393,44 @@ theorem ShapeFusionData.eval_id_eq_head
         ((D.head i).representative H) (D.cut i) x.1 x.2]
     _ = (D.head i).1.1 x := hxHead
 
+
+/-- Transport an AM type along equality of its frozen cut. -/
+def AM.castCut
+    (H : SMTree S) {c d : Nat}
+    (h : c = d) (a : AM H c 1) : AM H d 1 := by
+  subst d
+  exact a
+
+@[simp] theorem AM.castCut_rfl
+    (H : SMTree S) {c : Nat}
+    (a : AM H c 1) :
+    a.castCut H rfl = a := rfl
+
+theorem AM.castCut_representative
+    (H : SMTree S) {c d : Nat}
+    (h : c = d) (a : AM H c 1) :
+    (a.castCut H h).representative H = a.representative H := by
+  subst d
+  rfl
+
+theorem AM.castCut_topLevel
+    (H : SMTree S) {c d : Nat}
+    (h : c = d) (a : AM H c 1) :
+    (a.castCut H h).topLevel H = a.topLevel H := by
+  subst d
+  rfl
+
+/-- The line-closure field in a form using the explicit cut cast. -/
+theorem ShapeFusionData.line_closed_cast
+    (D : ShapeFusionData H n)
+    (i : Nat)
+    (q : AM H (D.cut (i + 1)) 1)
+    (hq : q ∈ D.cell (i + 1))
+    (p : LineInput (OneLevelLetter H (D.cut i))) :
+    H.shapeLineApply (D.head i)
+        (q.castCut H (D.cut_succ i)) p ∈ D.cell i := by
+  exact D.line_closed i q hq p
+
+
 end SMTree
 end SuccessorTree
