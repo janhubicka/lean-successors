@@ -46,3 +46,4 @@ import SuccessorTree.ShapeTransport
 import SuccessorTree.ShapeTransportAlphabet
 import SuccessorTree.ShapeWordFactor
 import SuccessorTree.ShapeFusionExcess
+import SuccessorTree.ShapeGoodTails
