@@ -63,3 +63,6 @@ import SuccessorTree.ShapeRamseyFusion
 import SuccessorTree.ShapeLocalPigeonhole
 import SuccessorTree.ShapeFiniteProduct
 import SuccessorTree.ShapeFiniteRamsey
+import SuccessorTree.FatTree.Basic
+import SuccessorTree.FatTree.Lift
+import SuccessorTree.FatTree.Reduction
