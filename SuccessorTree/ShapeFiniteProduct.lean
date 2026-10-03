@@ -199,3 +199,139 @@ def singleLevelStepColour
       nextColour b := by
   simp [singleLevelStepColour]
 
+
+
+/-- Common colour chosen at a prefix after its one-step extensions have been
+made homogeneous. Irrelevant prefixes receive the supplied default colour. -/
+noncomputable def previousColour
+    (H : SMTree S) {κ : Type w}
+    (default : κ)
+    (A : MMap H)
+    (m : Nat)
+    (nextColour : RamseyApprox H (m + 1) → κ)
+    (p : RamseyApprox H m) : κ :=
+  if h : (ramseyApproximationSystem H).neighborhood p A |>.Nonempty then
+    nextColour
+      (ramseyApprox H (m + 1) (Classical.choose h))
+  else default
+
+/-- At a one-step homogeneous relevant prefix, previousColour is the colour
+of every actual one-step extension. -/
+theorem previousColour_eq_child
+    [Fintype κ]
+    (H : SMTree S)
+    (default : κ)
+    (A : MMap H)
+    (m : Nat)
+    (nextColour : RamseyApprox H (m + 1) → κ)
+    (p : RamseyApprox H m)
+    (hhom :
+      OneStepHomogeneous H
+        (H.singleLevelStepColour default m nextColour)
+        ⟨m, p⟩ A)
+    {X : MMap H}
+    (hX : X ∈ (ramseyApproximationSystem H).neighborhood p A) :
+    H.previousColour default A m nextColour p =
+      nextColour (ramseyApprox H (m + 1) X) := by
+  classical
+  have hne :
+      ((ramseyApproximationSystem H).neighborhood p A).Nonempty :=
+    ⟨X, hX⟩
+  let Y : MMap H := Classical.choose hne
+  have hY :
+      Y ∈ (ramseyApproximationSystem H).neighborhood p A :=
+    Classical.choose_spec hne
+  rcases hhom with ⟨c, hc⟩
+  have hcx :
+      nextColour (ramseyApprox H (m + 1) X) = c := by
+    have hxstep :
+        ramseyApprox H (m + 1) X ∈
+          (ramseyApproximationSystem H).oneStepApproximations p A :=
+      ⟨X, hX, rfl⟩
+    simpa [singleLevelStepColour] using
+      hc (ramseyApprox H (m + 1) X) hxstep
+  have hcy :
+      nextColour (ramseyApprox H (m + 1) Y) = c := by
+    have hystep :
+        ramseyApprox H (m + 1) Y ∈
+          (ramseyApproximationSystem H).oneStepApproximations p A :=
+      ⟨Y, hY, rfl⟩
+    simpa [singleLevelStepColour] using
+      hc (ramseyApprox H (m + 1) Y) hystep
+  rw [previousColour]
+  simp only [hne, dite_true]
+  exact hcy.trans hcx.symm
+
+/-- One backward product step, from colour level m+1 to level m. -/
+structure ShapeProductStep
+    (H : SMTree S) {κ : Type w}
+    (n m : Nat)
+    (B : ShapeSubspace H n)
+    (nextColour : RamseyApprox H (m + 1) → κ) where
+  space : ShapeSubspace H n
+  reduction : RamseyReduction H space.1 B.1
+  colour : RamseyApprox H m → κ
+  child_colour :
+    ∀ K : ShapeSubspace H n,
+      nextColour
+          (ramseyApprox H (m + 1)
+            (MMap.comp H space.1 K.1)) =
+        colour
+          (ramseyApprox H m
+            (MMap.comp H space.1 K.1))
+
+/-- Settle one source level by the ordinary finite-front Milliken fusion. -/
+noncomputable def buildShapeProductStep
+    [Fintype κ]
+    (H : SMTree S)
+    (default : κ)
+    {n m : Nat} (hnm : n < m)
+    (B : ShapeSubspace H n)
+    (nextColour : RamseyApprox H (m + 1) → κ) :
+    ShapeProductStep H n m B nextColour := by
+  let sc : StepColouring H κ :=
+    H.singleLevelStepColour default m nextColour
+  let hpig : LocalPigeonhole H sc :=
+    H.shapeLocalPigeonhole sc
+  let Amap : MMap H :=
+    H.frontFusion sc hpig n B.1
+  have hAfix : Amap.FixesBelow H n :=
+    H.frontFusion_fixesBelow sc hpig n B.1 B.2
+  let A : ShapeSubspace H n := ⟨Amap, hAfix⟩
+  have hred : RamseyReduction H A.1 B.1 :=
+    H.frontFusion_reduction_base sc hpig n B.1
+  let prev : RamseyApprox H m → κ :=
+    H.previousColour default A.1 m nextColour
+  refine {
+    space := A
+    reduction := hred
+    colour := prev
+    child_colour := ?_
+  }
+  intro K
+  let F : MMap H := MMap.comp H A.1 K.1
+  let p : RamseyApprox H m := ramseyApprox H m F
+  have hFA : RamseyReduction H F A.1 := by
+    refine ⟨K.1, ?_⟩
+    intro x
+    rfl
+  have hFpA :
+      F ∈ (ramseyApproximationSystem H).neighborhood p A.1 :=
+    ⟨hFA, rfl⟩
+  obtain ⟨d, hd⟩ :=
+    (ramseyFinitization H).exists_hasDepth_of_mem_neighborhood hFpA
+  have hmd : m ≤ d :=
+    ramseyLeFin_level_le H hd.1
+  have hdpos : 0 < d := lt_of_lt_of_le (Nat.zero_lt_of_lt hnm) hmd
+  have hnd : n ≤ d := (Nat.le_of_lt hnm).trans hmd
+  have hhom :
+      OneStepHomogeneous H sc
+        (⟨m, p⟩ :
+          (ramseyApproximationSystem H).FiniteApprox)
+        A.1 := by
+    exact H.frontFusion_homogeneous sc hpig n B.1
+      ⟨m, p⟩ hd hdpos hnd
+  have hprev :=
+    H.previousColour_eq_child default A.1 m nextColour p hhom hFpA
+  exact hprev.symm
+
