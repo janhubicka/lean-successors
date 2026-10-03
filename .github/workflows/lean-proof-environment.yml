@@ -1,0 +1,50 @@
+name: Lean proof environment
+
+on:
+  push:
+    paths:
+      - '.github/workflows/lean-proof-environment.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - run: lake update
+      - run: lake exe cache get
+      - run: lake build
+      - name: Package proof-checking environment
+        run: |
+          set -euxo pipefail
+          TOOLCHAIN="$(dirname "$(dirname "$(elan which lean)")")"
+          printf '%s\n' "$TOOLCHAIN" > "$RUNNER_TEMP/lean-toolchain-path.txt"
+          tar --zstd -cf "$RUNNER_TEMP/lean-proof-environment.tar.zst" \
+            --exclude='.git' --exclude='*.a' --exclude='*.o' \
+            --exclude='*.c' --exclude='*.cpp' --exclude='*.h' \
+            --exclude='*.ilean' --exclude='*.trace' --exclude='*.hash' \
+            "$TOOLCHAIN" "$GITHUB_WORKSPACE" "$RUNNER_TEMP/lean-toolchain-path.txt"
+          ls -lh "$RUNNER_TEMP/lean-proof-environment.tar.zst"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lean-proof-environment
+          path: ${{ runner.temp }}/lean-proof-environment.tar.zst
+          compression-level: 0
+          retention-days: 3
