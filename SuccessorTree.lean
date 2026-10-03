@@ -50,3 +50,4 @@ import SuccessorTree.ShapeGoodTails
 import SuccessorTree.ShapeDirectLine
 import SuccessorTree.ShapeTwoBlock
 import SuccessorTree.ShapeMillikenFusion
+import SuccessorTree.ShapeLargeShapeLine
