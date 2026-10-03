@@ -136,10 +136,12 @@ theorem exists_linearEquiv_extends_of_surjective
     have hz := hT (ei x)
     have hleft : ((ei x : I) : K) = i x := by
       rfl
+    have hfi : fI (ei x) = ei' (fKer x) := by
+      simp [fI]
     have hright : ((ei' (fKer x) : I') : K') = i' (fKer x) := by
       rfl
-    rw [hleft, hright] at hz
-    simpa [fI] using hz
+    rw [hleft, hfi] at hz
+    exact hz.trans hright
 
   obtain ⟨s, hs⟩ :=
     q.exists_rightInverse_of_surjective (LinearMap.range_eq_top.mpr hq)
