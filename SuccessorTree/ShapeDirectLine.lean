@@ -300,16 +300,17 @@ theorem blockEval_replayTwoBlock_line
           F.1 (R.toMMap (et.toMMap (p.1.representative H z.1)))
       apply congrArg F.1
       apply congrArg R.toMMap
+      have ht0 :
+          et.toMMap (p.1.canonical H z.1) =
+            p.1.canonical H (e.toMMap z.1) := by
+        simpa [et] using
+          (H.transportLetter_commutes
+            (p.1.representative H) n e z.1 z.2)
       have ht :
           et.toMMap (p.1.representative H z.1) =
             p.1.canonical H (e.toMMap z.1) := by
-        change
-          (H.transportLetter (p.1.representative H) n e)
-              (p.1.canonical H z.1) =
-            p.1.canonical H (e.toMMap z.1)
-        exact H.transportLetter_commutes
-          (p.1.representative H) n e z.1 z.2
-      simpa [hpCan] using ht
+        simpa [hpCan] using ht0
+      exact ht.symm
 
 end SMTree
 end SuccessorTree
