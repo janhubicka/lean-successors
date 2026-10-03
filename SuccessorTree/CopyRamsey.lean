@@ -1,0 +1,267 @@
+import Mathlib.Data.Fintype.Card
+import Mathlib.Data.Finset.Card
+import Mathlib.Tactic
+
+/-!
+# Abstract copy Ramsey interface
+
+This file isolates the finite-structure Ramsey infrastructure needed by the
+circulation lemmas comparing copy Ramsey degrees with precompact Ramsey
+expansions.
+
+A FiniteCopySystem records objects, embeddings, copy-ranges, composition,
+and the functorial action of embeddings on copies. It deliberately does not
+assume rigidity: several embeddings may have the same range.
+
+A RamseyExpansion records finitely many expansion types, hereditary
+restriction of an expansion along a reduct embedding, existence of expansion
+types, and the embedding Ramsey property for expanded objects.
+
+The main theorem is the manuscript's expansion-degree bound.
+-/
+
+namespace SuccessorTree
+
+universe u v w x
+
+structure FiniteCopySystem where
+  Obj : Type u
+  Emb : Obj → Obj → Type v
+  Copy : Obj → Obj → Type w
+  idEmb : ∀ A, Emb A A
+  compEmb : ∀ {A B C}, Emb A B → Emb B C → Emb A C
+  comp_id_left :
+    ∀ {A B} (f : Emb A B), compEmb (idEmb A) f = f
+  comp_id_right :
+    ∀ {A B} (f : Emb A B), compEmb f (idEmb B) = f
+  comp_assoc :
+    ∀ {A B C D} (f : Emb A B) (g : Emb B C) (h : Emb C D),
+      compEmb (compEmb f g) h = compEmb f (compEmb g h)
+  range : ∀ {A B}, Emb A B → Copy A B
+  mapCopy : ∀ {A B C}, Emb B C → Copy A B → Copy A C
+  range_comp :
+    ∀ {A B C} (f : Emb A B) (g : Emb B C),
+      range (compEmb f g) = mapCopy g (range f)
+  range_surjective :
+    ∀ {A B}, Function.Surjective (@range A B)
+  copyFintype : ∀ A B, Fintype (Copy A B)
+  copyDecidableEq : ∀ A B, DecidableEq (Copy A B)
+
+namespace FiniteCopySystem
+
+variable (S : FiniteCopySystem)
+
+attribute [local instance] FiniteCopySystem.copyFintype
+attribute [local instance] FiniteCopySystem.copyDecidableEq
+
+def coloursInside
+    {A B C : S.Obj} {r : ℕ}
+    (colouring : S.Copy A C → Fin r)
+    (f : S.Emb B C) : Finset (Fin r) :=
+  Finset.univ.image fun p : S.Copy A B => colouring (S.mapCopy f p)
+
+def CopyArrow
+    (A B C : S.Obj) (r t : ℕ) : Prop :=
+  ∀ colouring : S.Copy A C → Fin r,
+    ∃ f : S.Emb B C,
+      (S.coloursInside colouring f).card ≤ t
+
+def CopyRamseyDegreeLE
+    (A : S.Obj) (t : ℕ) : Prop :=
+  ∀ (B : S.Obj) (r : ℕ), 0 < r →
+    ∃ C : S.Obj, S.CopyArrow A B C r t
+
+end FiniteCopySystem
+
+structure RamseyExpansion (S : FiniteCopySystem) where
+  Exp : S.Obj → Type x
+  expFintype : ∀ A, Fintype (Exp A)
+  expDecidableEq : ∀ A, DecidableEq (Exp A)
+  expNonempty : ∀ A, Nonempty (Exp A)
+  restrict : ∀ {A B}, S.Emb A B → Exp B → Exp A
+  restrict_id :
+    ∀ {A} (a : Exp A),
+      restrict (S.idEmb A) a = a
+  restrict_comp :
+    ∀ {A B C} (f : S.Emb A B) (g : S.Emb B C) (c : Exp C),
+      restrict (S.compEmb f g) c =
+        restrict f (restrict g c)
+  ramsey :
+    ∀ {A B : S.Obj}
+      (a : Exp A) (b : Exp B)
+      (r : ℕ), 0 < r →
+      ∃ (C : S.Obj) (c : Exp C),
+        ∀ colouring :
+            { f : S.Emb A C // restrict f c = a } → Fin r,
+          ∃ g : { g : S.Emb B C // restrict g c = b },
+            ∀ e₁ e₂ :
+                { e : S.Emb A B // restrict e b = a },
+              colouring
+                  ⟨S.compEmb e₁.1 g.1, by
+                    rw [restrict_comp, g.2, e₁.2]⟩ =
+                colouring
+                  ⟨S.compEmb e₂.1 g.1, by
+                    rw [restrict_comp, g.2, e₂.2]⟩
+
+namespace RamseyExpansion
+
+variable {S : FiniteCopySystem} (E : RamseyExpansion S)
+
+attribute [local instance] FiniteCopySystem.copyFintype
+attribute [local instance] FiniteCopySystem.copyDecidableEq
+
+local instance instExpansionFintype (A : S.Obj) : Fintype (E.Exp A) :=
+  E.expFintype A
+
+local instance instExpansionDecidableEq (A : S.Obj) : DecidableEq (E.Exp A) :=
+  E.expDecidableEq A
+
+abbrev ExpEmb
+    {A B : S.Obj} (a : E.Exp A) (b : E.Exp B) :=
+  { f : S.Emb A B // E.restrict f b = a }
+
+def idExp
+    {A : S.Obj} (a : E.Exp A) :
+    E.ExpEmb a a :=
+  ⟨S.idEmb A, E.restrict_id a⟩
+
+def compExp
+    {A B C : S.Obj}
+    {a : E.Exp A} {b : E.Exp B} {c : E.Exp C}
+    (f : E.ExpEmb a b) (g : E.ExpEmb b c) :
+    E.ExpEmb a c :=
+  ⟨S.compEmb f.1 g.1, by
+    rw [E.restrict_comp, g.2, f.2]⟩
+
+@[simp] theorem compExp_val
+    {A B C : S.Obj}
+    {a : E.Exp A} {b : E.Exp B} {c : E.Exp C}
+    (f : E.ExpEmb a b) (g : E.ExpEmb b c) :
+    (E.compExp f g).1 = S.compEmb f.1 g.1 := rfl
+
+theorem simultaneous_ramsey
+    {A B : S.Obj}
+    (types : Finset (E.Exp A))
+    (b : E.Exp B)
+    (r : ℕ) (hr : 0 < r) :
+    ∃ (C : S.Obj) (c : E.Exp C),
+      ∀ colour :
+          ∀ a : E.Exp A, E.ExpEmb a c → Fin r,
+        ∃ g : E.ExpEmb b c,
+          ∀ a ∈ types,
+            ∀ e₁ e₂ : E.ExpEmb a b,
+              colour a (E.compExp e₁ g) =
+                colour a (E.compExp e₂ g) := by
+  classical
+  induction types using Finset.induction_on with
+  | empty =>
+      refine ⟨B, b, ?_⟩
+      intro colour
+      refine ⟨E.idExp b, ?_⟩
+      simp
+  | @insert a types ha ih =>
+      obtain ⟨D, d, hD⟩ := ih
+      obtain ⟨C, c, hC⟩ := E.ramsey a d r hr
+      refine ⟨C, c, ?_⟩
+      intro colour
+      obtain ⟨h, hh⟩ := hC (colour a)
+      let pulled :
+          ∀ x : E.Exp A, E.ExpEmb x d → Fin r :=
+        fun x e => colour x (E.compExp e h)
+      obtain ⟨g, hg⟩ := hD pulled
+      refine ⟨E.compExp g h, ?_⟩
+      intro x hx e₁ e₂
+      rw [Finset.mem_insert] at hx
+      rcases hx with rfl | hx
+      · have hmono := hh (E.compExp e₁ g) (E.compExp e₂ g)
+        simpa [pulled, compExp, S.comp_assoc] using hmono
+      · have hmono := hg x hx e₁ e₂
+        simpa [pulled, compExp, S.comp_assoc] using hmono
+
+theorem copyRamseyDegreeLE_card_expansionTypes
+    (A : S.Obj) :
+    S.CopyRamseyDegreeLE A (Fintype.card (E.Exp A)) := by
+  classical
+  intro B r hr
+  let b : E.Exp B := Classical.choice (E.expNonempty B)
+  obtain ⟨C, c, hsim⟩ :=
+    E.simultaneous_ramsey (Finset.univ : Finset (E.Exp A)) b r hr
+  refine ⟨C, ?_⟩
+  intro colouring
+
+  let expandedColour :
+      ∀ a : E.Exp A, E.ExpEmb a c → Fin r :=
+    fun _ e => colouring (S.range e.1)
+
+  obtain ⟨g, hg⟩ := hsim expandedColour
+
+  let rep : S.Copy A B → S.Emb A B :=
+    fun p => Classical.choose (S.range_surjective p)
+  have hrep (p : S.Copy A B) :
+      S.range (rep p) = p :=
+    Classical.choose_spec (S.range_surjective p)
+
+  let copyType : S.Copy A B → E.Exp A :=
+    fun p => E.restrict (rep p) b
+
+  let colourOn : S.Copy A B → Fin r :=
+    fun p => colouring (S.mapCopy g.1 p)
+
+  have hsame
+      (p q : S.Copy A B)
+      (hpq : copyType p = copyType q) :
+      colourOn p = colourOn q := by
+    let ep : E.ExpEmb (copyType p) b :=
+      ⟨rep p, rfl⟩
+    let eq' : E.ExpEmb (copyType p) b :=
+      ⟨rep q, by
+        change E.restrict (rep q) b = copyType p
+        exact hpq.symm⟩
+    have hhom :=
+      hg (copyType p) (Finset.mem_univ _) ep eq'
+    change
+      colouring (S.mapCopy g.1 p) =
+        colouring (S.mapCopy g.1 q)
+    simpa [expandedColour, ep, eq', S.range_comp, hrep] using hhom
+
+  let colourByType : E.Exp A → Fin r :=
+    fun a =>
+      if h : ∃ p : S.Copy A B, copyType p = a then
+        colourOn (Classical.choose h)
+      else
+        ⟨0, hr⟩
+
+  have hfactor (p : S.Copy A B) :
+      colourOn p = colourByType (copyType p) := by
+    have hex : ∃ q : S.Copy A B, copyType q = copyType p :=
+      ⟨p, rfl⟩
+    rw [show colourByType (copyType p) =
+        colourOn (Classical.choose hex) by
+          simp [colourByType, hex]]
+    exact hsame p (Classical.choose hex)
+      (Classical.choose_spec hex).symm
+
+  refine ⟨g.1, ?_⟩
+  unfold FiniteCopySystem.coloursInside
+  have hsubset :
+      Finset.univ.image colourOn ⊆
+        Finset.univ.image colourByType := by
+    intro z hz
+    rcases Finset.mem_image.mp hz with ⟨p, hp, rfl⟩
+    apply Finset.mem_image.mpr
+    refine ⟨copyType p, Finset.mem_univ _, ?_⟩
+    exact (hfactor p).symm
+  calc
+    (Finset.univ.image
+        (fun p : S.Copy A B =>
+          colouring (S.mapCopy g.1 p))).card =
+        (Finset.univ.image colourOn).card := rfl
+    _ ≤ (Finset.univ.image colourByType).card :=
+      Finset.card_le_card hsubset
+    _ ≤ (Finset.univ : Finset (E.Exp A)).card :=
+      Finset.card_image_le
+    _ = Fintype.card (E.Exp A) := Finset.card_univ
+
+end RamseyExpansion
+
+end SuccessorTree
