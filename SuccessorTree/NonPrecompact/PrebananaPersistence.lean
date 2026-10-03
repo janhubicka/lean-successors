@@ -131,7 +131,10 @@ theorem exists_prebananaPersistentColouring
           PrebananaAllMarkedTargetCopy (2 ^ (k + 1)) n mark,
         ∀ colour : Fin (2 ^ k),
           ∃ P : PrebananaTwoAtomCopy mark (0 : Fin n),
-            colouring P = colour := by
+            colouring P = colour ∧
+            ∃ labels : Finset (Fin (2 ^ (k + 1))),
+              P.block =
+                Finset.univ.filter fun i => T.part i ∈ labels := by
   classical
   let cstar : Fin n := 0
   let colouring :
@@ -235,7 +238,7 @@ theorem exists_prebananaPersistentColouring
       exact hcomplementOdd
   }
 
-  refine ⟨P, ?_⟩
+  refine ⟨P, ?_, ⟨labels, rfl⟩⟩
 
   have hcolourResidue :
       (prebananaMarkedCount mark block :
