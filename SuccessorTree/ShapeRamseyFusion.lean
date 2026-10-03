@@ -820,5 +820,70 @@ theorem shapeOneDimensionalRamsey
   exact (H.shapeSubspaceAction n).finiteRamsey_of_binary
     (H.shapeBinaryRamsey n) colour
 
+
+/-- A finite nested tail of length excess(r)+1 already sends r into the
+current large set. -/
+theorem largeFiniteEval_mem
+    (H : SMTree S) :
+    ∀ (X : ShapeLargeStage H) (r : AM H X.cut 1),
+      H.largeFiniteEval X (AM.excess H r + 1) r ∈ X.set := by
+  intro X r
+  generalize hk : AM.excess H r = k
+  induction k using Nat.strong_induction_on generalizing X r with
+  | h k ih =>
+      by_cases hk0 : k = 0
+      · have hex0 : AM.excess H r = 0 := hk.trans hk0
+        have htopLe : r.topLevel H ≤ X.cut := by
+          unfold AM.excess at hex0
+          exact Nat.sub_eq_zero_iff_le.mp hex0
+        have rid : r = AM.id1 H X.cut :=
+          AM.eq_id1_of_topLevel_le H r htopLe
+        rw [rid]
+        simpa [AM.excess, AM.id1_topLevel] using
+          H.largeFiniteEval_id_mem X
+      · have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
+        have hmove : X.cut < r.topLevel H := by
+          have hpos : 0 < AM.excess H r := by
+            rw [hk]
+            exact hkpos
+          unfold AM.excess at hpos
+          omega
+        obtain ⟨q, hqex, heval⟩ :=
+          H.largeFiniteEval_step X k r hmove
+        let Y := H.nextLargeStage X
+        let C := H.chooseLargeStage X
+        have hqk : AM.excess H q = k - 1 := by
+          calc
+            AM.excess H q = AM.excess H r - 1 := hqex
+            _ = k - 1 := by rw [hk]
+        have hqmem0 :=
+          ih (k - 1) (by omega) Y q hqk
+        have hlen : AM.excess H q + 1 = k := by
+          rw [hqk]
+          omega
+        have hqmem :
+            H.largeFiniteEval Y k q ∈ Y.set := by
+          simpa [hlen] using hqmem0
+        have hgood :
+            H.largeFiniteEval Y k q ∈
+              H.shapeGoodTails C.head
+                (H.shapePullback C.refiner X.set) := by
+          simpa [Y, C, nextLargeStage] using hqmem
+        have hline :
+            H.shapeLineApply C.head
+                (H.largeFiniteEval Y k q)
+                (.letter (H.firstMoveSplit r hmove).first) ∈
+              H.shapePullback C.refiner X.set :=
+          hgood (.letter (H.firstMoveSplit r hmove).first)
+        have hout :
+            H.shapeAct X.cut C.refiner
+                (H.shapeLineApply C.head
+                  (H.largeFiniteEval Y k q)
+                  (.letter (H.firstMoveSplit r hmove).first)) ∈ X.set := by
+          exact hline
+        rw [hk]
+        have heval' := heval
+        simpa [Y, C] using heval'.symm ▸ hout
+
 end SMTree
 end SuccessorTree
