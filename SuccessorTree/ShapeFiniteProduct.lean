@@ -4,11 +4,9 @@ import Mathlib.Tactic
 /-!
 # Finite-dimensional product induction for shape maps
 
-The one-dimensional theorem and its arbitrary-prefix version are now
-available.  This file carries out the standard finite product induction:
-settle the last moving source level by ordinary front fusion, replace the
-colour of a block by the common colour of its one-step extensions, and apply
-the induction hypothesis to the shorter prefix.
+Settle the last moving source level by ordinary front fusion, and replace
+the colour of a block by the common colour of its one-step extensions.
+The resulting step is the input to finite-dimensional induction.
 -/
 
 namespace SuccessorTree
@@ -29,6 +27,17 @@ noncomputable def shapeActK
     (MMap.comp_fixesBelow H W.1 (a.representative H) n
       W.2 (a.representative_fixesBelow H))
 
+/-- Equality of approximations is pointwise equality on their source domain. -/
+theorem ramseyApprox_apply_eq
+    (H : SMTree S) {m : Nat} {F G : MMap H}
+    (h : ramseyApprox H m F = ramseyApprox H m G)
+    (x : T) (hx : LevelTree.lev x < m) : F x = G x := by
+  cases m with
+  | zero => omega
+  | succ m =>
+      have hv := congrArg Subtype.val h
+      exact congrFun hv ⟨x, by omega⟩
+
 /-- A toAM representative agrees with its defining total map throughout the
 represented source segment. -/
 theorem MMap.toAM_representative_agrees
@@ -36,17 +45,8 @@ theorem MMap.toAM_representative_agrees
     (hfix : F.FixesBelow H n)
     (x : T) (hx : LevelTree.lev x < n + k) :
     (F.toAM H n k hfix).representative H x = F x := by
-  cases hnk : n + k with
-  | zero =>
-      omega
-  | succ m =>
-      have htop := (F.toAM H n k hfix).representative_top H
-      have hval := congrArg Subtype.val htop
-      change
-        ((F.toAM H n k hfix).representative H).restrictLe H m =
-          F.restrictLe H m at hval
-      have hxm : LevelTree.lev x ≤ m := by omega
-      exact congrFun hval ⟨x, hxm⟩
+  exact H.ramseyApprox_apply_eq
+    (AM.representative_top H (F.toAM H n k hfix)) x hx
 
 /-- Chosen representatives of a shape action agree with literal composition
 on the whole finite block. -/
@@ -60,8 +60,7 @@ theorem shapeActK_representative_agrees
   exact MMap.toAM_representative_agrees H
     (MMap.comp H W.1 (a.representative H)) n k
     (MMap.comp_fixesBelow H W.1 (a.representative H) n
-      W.2 (a.representative_fixesBelow H))
-    x hx
+      W.2 (a.representative_fixesBelow H)) x hx
 
 /-- Truncate a finite AM block by one moving source level. -/
 noncomputable def AM.dropLast
@@ -88,10 +87,9 @@ theorem AM.zero_eq_id
     (a : AM H n 0) :
     a = (MMap.id H).toAM H n 0 (MMap.id_fixesBelow H n) := by
   apply Subtype.ext
-  exact (ramseyApproximationSystem H).isInitial_eq_sameLevel a.2
+  exact ((ramseyApproximationSystem H).isInitial_eq_sameLevel a.2).symm
 
-/-- The generic k-action specializes to the previously used one-dimensional
-shape action. -/
+/-- The generic action specializes to the one-dimensional shape action. -/
 theorem shapeActK_one
     (H : SMTree S) (n : Nat)
     (W : ShapeSubspace H n)
@@ -100,10 +98,7 @@ theorem shapeActK_one
   apply Subtype.ext
   rfl
 
-
-
-/-- Before the requested starting depth N, front-fusion stages are literally
-the initial map. -/
+/-- Before the starting depth N, front-fusion stages are the initial map. -/
 theorem frontFusionStage_eq_base_of_lt
     [Fintype κ]
     (H : SMTree S)
@@ -118,7 +113,7 @@ theorem frontFusionStage_eq_base_of_lt
   | succ i ih =>
       rw [frontFusionStage]
       have hnot : ¬ N ≤ i + 1 := by omega
-      simp only [hnot, dif_neg]
+      simp only [hnot, dite_eq_right]
       exact ih (by omega)
 
 /-- Starting front fusion at depth N preserves every source node below N. -/
@@ -144,15 +139,11 @@ theorem frontFusion_reduction_base
     (hpig : LocalPigeonhole H colour)
     (N : Nat) (B : MMap H) :
     RamseyReduction H (H.frontFusion colour hpig N B) B := by
-  let F : Nat → MMap H := frontFusionStage H colour hpig N B
-  let hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1)) :=
-    H.frontFusionStage_step colour hpig N B
-  have h :=
-    H.fusionOfSteps_reduction_stage F hstep 0
-  simpa [frontFusion, F, hstep] using h
+  exact H.fusionOfSteps_reduction_stage
+    (frontFusionStage H colour hpig N B)
+    (H.frontFusionStage_step colour hpig N B) 0
 
-/-- A right factor between two maps which both fix below n must itself fix
-below n. -/
+/-- A right factor between maps fixing below n must itself fix below n. -/
 theorem exists_frozen_rightFactor
     (H : SMTree S) {n : Nat}
     {A B : MMap H}
@@ -199,24 +190,20 @@ def singleLevelStepColour
       nextColour b := by
   simp [singleLevelStepColour]
 
-
-
-/-- Common colour chosen at a prefix after its one-step extensions have been
-made homogeneous. Irrelevant prefixes receive the supplied default colour. -/
+/-- The colour of a chosen extension; irrelevant prefixes get the default. -/
 noncomputable def previousColour
     (H : SMTree S) {κ : Type w}
     (default : κ)
     (A : MMap H)
     (m : Nat)
     (nextColour : RamseyApprox H (m + 1) → κ)
-    (p : RamseyApprox H m) : κ :=
-  if h : (ramseyApproximationSystem H).neighborhood p A |>.Nonempty then
-    nextColour
-      (ramseyApprox H (m + 1) (Classical.choose h))
+    (p : RamseyApprox H m) : κ := by
+  classical
+  exact if h : ((ramseyApproximationSystem H).neighborhood p A).Nonempty then
+    nextColour (ramseyApprox H (m + 1) (Classical.choose h))
   else default
 
-/-- At a one-step homogeneous relevant prefix, previousColour is the colour
-of every actual one-step extension. -/
+/-- At a homogeneous relevant prefix, previousColour equals every child colour. -/
 theorem previousColour_eq_child
     [Fintype κ]
     (H : SMTree S)
@@ -291,10 +278,8 @@ noncomputable def buildShapeProductStep
     ShapeProductStep H n m B nextColour := by
   let sc : StepColouring H κ :=
     H.singleLevelStepColour default m nextColour
-  let hpig : LocalPigeonhole H sc :=
-    H.shapeLocalPigeonhole sc
-  let Amap : MMap H :=
-    H.frontFusion sc hpig n B.1
+  let hpig : LocalPigeonhole H sc := H.shapeLocalPigeonhole sc
+  let Amap : MMap H := H.frontFusion sc hpig n B.1
   have hAfix : Amap.FixesBelow H n :=
     H.frontFusion_fixesBelow sc hpig n B.1 B.2
   let A : ShapeSubspace H n := ⟨Amap, hAfix⟩
@@ -320,18 +305,14 @@ noncomputable def buildShapeProductStep
     ⟨hFA, rfl⟩
   obtain ⟨d, hd⟩ :=
     (ramseyFinitization H).exists_hasDepth_of_mem_neighborhood hFpA
-  have hmd : m ≤ d :=
-    ramseyLeFin_level_le H hd.1
+  have hmd : m ≤ d := ramseyLeFin_level_le H hd.1
   have hdpos : 0 < d := lt_of_lt_of_le (Nat.zero_lt_of_lt hnm) hmd
   have hnd : n ≤ d := (Nat.le_of_lt hnm).trans hmd
   have hhom :
       OneStepHomogeneous H sc
-        (⟨m, p⟩ :
-          (ramseyApproximationSystem H).FiniteApprox)
-        A.1 := by
-    exact H.frontFusion_homogeneous sc hpig n B.1
-      ⟨m, p⟩ hd hdpos hnd
-  have hprev :=
-    H.previousColour_eq_child default A.1 m nextColour p hhom hFpA
-  exact hprev.symm
+        (⟨m, p⟩ : (ramseyApproximationSystem H).FiniteApprox) A.1 := by
+    exact H.frontFusion_homogeneous sc hpig n B.1 ⟨m, p⟩ hd hdpos hnd
+  exact (H.previousColour_eq_child default A.1 m nextColour p hhom hFpA).symm
 
+end SMTree
+end SuccessorTree
