@@ -39,11 +39,25 @@ structure FiniteCopySystem where
       compEmb (compEmb f g) h = compEmb f (compEmb g h)
   range : ∀ {A B}, Emb A B → Copy A B
   mapCopy : ∀ {A B C}, Emb B C → Copy A B → Copy A C
+  mapCopy_id :
+    ∀ {A B} (p : Copy A B),
+      mapCopy (idEmb B) p = p
+  mapCopy_comp :
+    ∀ {A B C D} (f : Emb B C) (g : Emb C D) (p : Copy A B),
+      mapCopy (compEmb f g) p = mapCopy g (mapCopy f p)
   range_comp :
     ∀ {A B C} (f : Emb A B) (g : Emb B C),
       range (compEmb f g) = mapCopy g (range f)
   range_surjective :
     ∀ {A B}, Function.Surjective (@range A B)
+  /-- Intrinsic containment of a smaller copy in a larger copy in the same ambient object. -/
+  Subcopy : ∀ {P A C}, Copy P C → Copy A C → Prop
+  /-- The P-subcopies of the range of an embedding A → C are exactly
+  the transported P-copies of A. -/
+  subcopy_range_iff :
+    ∀ {P A C} (f : Emb A C) (p : Copy P C),
+      Subcopy p (range f) ↔
+        ∃ q : Copy P A, mapCopy f q = p
   copyFintype : ∀ A B, Fintype (Copy A B)
   copyDecidableEq : ∀ A B, DecidableEq (Copy A B)
 
@@ -72,6 +86,283 @@ def CopyRamseyDegreeLE
     ∃ C : S.Obj, S.CopyArrow A B C r t
 
 end FiniteCopySystem
+
+/-- An abstract amalgamation class on a finite copy system.  This is the
+one amalgamation-square operation needed by the degree-propagation lemma. -/
+structure AmalgamationSystem (S : FiniteCopySystem) where
+  amalgamate :
+    ∀ {P B A : S.Obj} (p : S.Emb P B) (a : S.Emb P A),
+      ∃ (D : S.Obj) (i : S.Emb B D) (j : S.Emb A D),
+        S.compEmb p i = S.compEmb a j
+
+namespace AmalgamationSystem
+
+variable {S : FiniteCopySystem}
+
+attribute [local instance] FiniteCopySystem.copyFintype
+attribute [local instance] FiniteCopySystem.copyDecidableEq
+
+/-- Intrinsic subcopy containment is preserved by further embeddings. -/
+theorem subcopy_map
+    {P A B C : S.Obj}
+    (g : S.Emb B C)
+    {p : S.Copy P B} {a : S.Copy A B}
+    (h : S.Subcopy p a) :
+    S.Subcopy (S.mapCopy g p) (S.mapCopy g a) := by
+  obtain ⟨fa, hfa⟩ := S.range_surjective a
+  rw [← hfa] at h
+  obtain ⟨q, hq⟩ := (S.subcopy_range_iff fa p).mp h
+  have hrange :
+      S.mapCopy g a = S.range (S.compEmb fa g) := by
+    rw [S.range_comp, hfa]
+  rw [hrange]
+  apply (S.subcopy_range_iff (S.compEmb fa g) (S.mapCopy g p)).mpr
+  refine ⟨q, ?_⟩
+  rw [S.mapCopy_comp, hq]
+
+/-- A finite list of original P-copies of B can simultaneously be made
+extendible to A-copies after embedding B into a further amalgam.  Repetitions
+are harmless; this list form is the direct recursion behind the finite-set
+version below. -/
+theorem extend_list_copies
+    (M : AmalgamationSystem S)
+    {P A B : S.Obj}
+    (pA : S.Emb P A)
+    (copies : List (S.Copy P B)) :
+    ∃ (D : S.Obj) (base : S.Emb B D),
+      ∀ pcopy ∈ copies,
+        ∃ a : S.Copy A D,
+          S.Subcopy (S.mapCopy base pcopy) a := by
+  classical
+  cases copies with
+  | nil =>
+      refine ⟨B, S.idEmb B, ?_⟩
+      intro q hq
+      simp at hq
+  | cons head tail =>
+      obtain ⟨D, base, hbase⟩ :=
+        extend_list_copies M pA tail
+      obtain ⟨ep, hep⟩ := S.range_surjective head
+      obtain ⟨D', i, j, hij⟩ :=
+        M.amalgamate (S.compEmb ep base) pA
+      refine ⟨D', S.compEmb base i, ?_⟩
+      intro q hq
+      simp only [List.mem_cons] at hq
+      rcases hq with rfl | hq
+      · let a : S.Copy A D' := S.range j
+        refine ⟨a, ?_⟩
+        have hpbase :
+            S.mapCopy base q =
+              S.range (S.compEmb ep base) := by
+          calc
+            S.mapCopy base q =
+                S.mapCopy base (S.range ep) := by rw [hep]
+            _ = S.range (S.compEmb ep base) :=
+              (S.range_comp ep base).symm
+        have hpmap :
+            S.mapCopy (S.compEmb base i) q =
+              S.range (S.compEmb (S.compEmb ep base) i) := by
+          calc
+            S.mapCopy (S.compEmb base i) q =
+                S.mapCopy i (S.mapCopy base q) :=
+              S.mapCopy_comp base i q
+            _ = S.mapCopy i (S.range (S.compEmb ep base)) := by
+              rw [hpbase]
+            _ = S.range (S.compEmb (S.compEmb ep base) i) :=
+              (S.range_comp (S.compEmb ep base) i).symm
+        rw [hpmap, hij]
+        exact (S.subcopy_range_iff j
+          (S.range (S.compEmb pA j))).mpr
+            ⟨S.range pA, by rw [S.range_comp]⟩
+      · obtain ⟨a, ha⟩ := hbase q hq
+        refine ⟨S.mapCopy i a, ?_⟩
+        rw [S.mapCopy_comp]
+        exact subcopy_map (S := S) i ha
+termination_by copies.length
+
+/-- A finite family of original P-copies of B can simultaneously be made
+extendible to A-copies after embedding B into a further amalgam. -/
+theorem extend_finite_copies
+    (M : AmalgamationSystem S)
+    {P A B : S.Obj}
+    (pA : S.Emb P A)
+    (copies : Finset (S.Copy P B)) :
+    ∃ (D : S.Obj) (base : S.Emb B D),
+      ∀ p ∈ copies,
+        ∃ a : S.Copy A D,
+          S.Subcopy (S.mapCopy base p) a := by
+  classical
+  obtain ⟨D, base, h⟩ :=
+    extend_list_copies M pA copies.toList
+  refine ⟨D, base, ?_⟩
+  intro p hp
+  exact h p (by simpa using hp)
+
+/-- Attach an A-copy over every P-copy of B. -/
+theorem extend_all_copies
+    (M : AmalgamationSystem S)
+    {P A B : S.Obj}
+    (pA : S.Emb P A) :
+    ∃ (D : S.Obj) (base : S.Emb B D),
+      ∀ p : S.Copy P B,
+        ∃ a : S.Copy A D,
+          S.Subcopy (S.mapCopy base p) a := by
+  classical
+  obtain ⟨D, base, h⟩ :=
+    extend_finite_copies M pA (Finset.univ : Finset (S.Copy P B))
+  exact ⟨D, base, fun p => h p (Finset.mem_univ p)⟩
+
+/-- The set of colours appearing on P-subcopies of one A-copy. -/
+noncomputable def subcopyColourSet
+    {P A C : S.Obj} {r : ℕ}
+    (colouring : S.Copy P C → Fin r)
+    (a : S.Copy A C) : Finset (Fin r) := by
+  classical
+  exact
+    (Finset.univ.filter fun p : S.Copy P C => S.Subcopy p a).image colouring
+
+/-- An A-copy contains at most as many P-colours as there are P-copies in A. -/
+theorem subcopyColourSet_card_le
+    {P A C : S.Obj} {r : ℕ}
+    (colouring : S.Copy P C → Fin r)
+    (a : S.Copy A C) :
+    (subcopyColourSet (S := S) colouring a).card ≤
+      Fintype.card (S.Copy P A) := by
+  classical
+  obtain ⟨f, hf⟩ := S.range_surjective a
+  let transported : Finset (S.Copy P C) :=
+    Finset.univ.image (S.mapCopy f)
+  have hcopies :
+      (Finset.univ.filter fun p : S.Copy P C => S.Subcopy p a) ⊆
+        transported := by
+    intro p hp
+    have hsub : S.Subcopy p a := (Finset.mem_filter.mp hp).2
+    rw [← hf] at hsub
+    obtain ⟨q, hq⟩ := (S.subcopy_range_iff f p).mp hsub
+    exact Finset.mem_image.mpr ⟨q, Finset.mem_univ _, hq⟩
+  calc
+    (subcopyColourSet (S := S) colouring a).card ≤
+        (Finset.univ.filter fun p : S.Copy P C => S.Subcopy p a).card :=
+      Finset.card_image_le
+    _ ≤ transported.card := Finset.card_le_card hcopies
+    _ ≤ (Finset.univ : Finset (S.Copy P A)).card :=
+      Finset.card_image_le
+    _ = Fintype.card (S.Copy P A) := Finset.card_univ
+
+/-- Copy Ramsey degree propagates from a structure A to any substructure P.
+
+If P embeds into A, A has copy Ramsey degree at most d, and there are s
+P-copies in A, then P has copy Ramsey degree at most s*d.  This is the
+abstract form of the circulation manuscript's degree-propagation lemma. -/
+theorem copyRamseyDegreeLE_of_embedding
+    (M : AmalgamationSystem S)
+    {P A : S.Obj}
+    (pA : S.Emb P A)
+    {d : ℕ}
+    (hA : S.CopyRamseyDegreeLE A d) :
+    S.CopyRamseyDegreeLE P
+      (Fintype.card (S.Copy P A) * d) := by
+  classical
+  intro B r hr
+
+  obtain ⟨Bplus, base, hext⟩ :=
+    extend_all_copies M pA
+
+  let Palette := Finset (Fin r)
+  let nPal := Fintype.card Palette
+  have hnPal : 0 < nPal :=
+    Fintype.card_pos_iff.mpr ⟨∅⟩
+
+  obtain ⟨C, hC⟩ := hA Bplus nPal hnPal
+  refine ⟨C, ?_⟩
+  intro colouringP
+
+  let paletteEquiv : Palette ≃ Fin nPal :=
+    Fintype.equivFin Palette
+
+  let colouringA : S.Copy A C → Fin nPal :=
+    fun a => paletteEquiv (subcopyColourSet (S := S) colouringP a)
+
+  obtain ⟨g, hg⟩ := hC colouringA
+
+  let palettes : Finset Palette :=
+    (S.coloursInside colouringA g).image paletteEquiv.symm
+
+  have hpalettes_card : palettes.card ≤ d := by
+    calc
+      palettes.card ≤ (S.coloursInside colouringA g).card :=
+        Finset.card_image_le
+      _ ≤ d := hg
+
+  have hpalette_size :
+      ∀ T ∈ palettes, T.card ≤ Fintype.card (S.Copy P A) := by
+    intro T hT
+    rcases Finset.mem_image.mp hT with ⟨z, hz, hTz⟩
+    rcases Finset.mem_image.mp hz with ⟨a, ha, hza⟩
+    have hT_eq :
+        T = subcopyColourSet (S := S) colouringP (S.mapCopy g a) := by
+      rw [← hTz, ← hza]
+      simp [colouringA, paletteEquiv]
+    rw [hT_eq]
+    exact subcopyColourSet_card_le (S := S) colouringP (S.mapCopy g a)
+
+  let allColours : Finset (Fin r) :=
+    palettes.biUnion id
+
+  have hallColours_card :
+      allColours.card ≤ Fintype.card (S.Copy P A) * d := by
+    calc
+      allColours.card ≤ ∑ T ∈ palettes, T.card :=
+        Finset.card_biUnion_le
+      _ ≤ ∑ _T ∈ palettes, Fintype.card (S.Copy P A) := by
+        exact Finset.sum_le_sum hpalette_size
+      _ = palettes.card * Fintype.card (S.Copy P A) := by
+        rw [Finset.sum_const_nat]
+        simp
+      _ ≤ d * Fintype.card (S.Copy P A) :=
+        Nat.mul_le_mul_right _ hpalettes_card
+      _ = Fintype.card (S.Copy P A) * d := Nat.mul_comm _ _
+
+  refine ⟨S.compEmb base g, ?_⟩
+  unfold FiniteCopySystem.coloursInside
+  apply le_trans (Finset.card_le_card ?_) hallColours_card
+  intro colour hcolour
+  rcases Finset.mem_image.mp hcolour with ⟨p, hp, rfl⟩
+
+  obtain ⟨a, ha⟩ := hext p
+  have hsub :
+      S.Subcopy
+        (S.mapCopy g (S.mapCopy base p))
+        (S.mapCopy g a) :=
+    subcopy_map (S := S) g ha
+
+  have hcolour_mem_set :
+      colouringP (S.mapCopy g (S.mapCopy base p)) ∈
+        subcopyColourSet (S := S) colouringP (S.mapCopy g a) := by
+    unfold subcopyColourSet
+    apply Finset.mem_image.mpr
+    refine ⟨S.mapCopy g (S.mapCopy base p), ?_, rfl⟩
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hsub⟩
+
+  have hpalette_mem :
+      subcopyColourSet (S := S) colouringP (S.mapCopy g a) ∈ palettes := by
+    apply Finset.mem_image.mpr
+    refine ⟨colouringA (S.mapCopy g a), ?_, ?_⟩
+    · unfold FiniteCopySystem.coloursInside
+      apply Finset.mem_image.mpr
+      exact ⟨a, Finset.mem_univ _, rfl⟩
+    · simp [colouringA, paletteEquiv]
+
+  have hcolour_union :
+      colouringP (S.mapCopy g (S.mapCopy base p)) ∈ allColours := by
+    exact Finset.mem_biUnion.mpr
+      ⟨subcopyColourSet (S := S) colouringP (S.mapCopy g a),
+        hpalette_mem, hcolour_mem_set⟩
+
+  simpa only [S.mapCopy_comp] using hcolour_union
+
+
+end AmalgamationSystem
 
 structure RamseyExpansion (S : FiniteCopySystem) where
   Exp : S.Obj → Type x
@@ -214,9 +505,7 @@ theorem copyRamseyDegreeLE_card_expansionTypes
     let ep : E.ExpEmb (copyType p) b :=
       ⟨rep p, rfl⟩
     let eq' : E.ExpEmb (copyType p) b :=
-      ⟨rep q, by
-        change E.restrict (rep q) b = copyType p
-        exact hpq.symm⟩
+      ⟨rep q, hpq.symm⟩
     have hhom :=
       hg (copyType p) (Finset.mem_univ _) ep eq'
     change
