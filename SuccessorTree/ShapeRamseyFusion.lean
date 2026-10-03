@@ -277,5 +277,61 @@ theorem largeFusionLimit_agrees_finite
   · have hdl : d ≤ LevelTree.lev x + 1 := by omega
     exact H.largeFiniteTail_stable_of_le X hdl x hx
 
+
+/-- Evaluate a one-moving coordinate in a finite nested Milliken tail. -/
+noncomputable def largeFiniteEval
+    (H : SMTree S)
+    (X : ShapeLargeStage H)
+    (d : Nat)
+    (r : AM H X.cut 1) :
+    AM H X.cut 1 :=
+  H.shapeAct X.cut (H.largeFiniteSubspace X d) r
+
+/-- At length one, the identity coordinate evaluates to the chosen refiner
+applied to the chosen head. -/
+theorem largeFiniteEval_id_one
+    (H : SMTree S)
+    (X : ShapeLargeStage H) :
+    H.largeFiniteEval X 1 (AM.id1 H X.cut) =
+      H.shapeAct X.cut (H.chooseLargeStage X).refiner
+        (H.chooseLargeStage X).head := by
+  let C := H.chooseLargeStage X
+  apply Subtype.ext
+  rw [largeFiniteEval, H.shapeAct_val, H.shapeAct_val]
+  apply Subtype.ext
+  funext x
+  have hid :=
+    MMap.toAM_one_representative_agrees
+      H (MMap.id H) X.cut (MMap.id_fixesBelow H X.cut)
+      x.1 x.2
+  have hheadTop := C.head.representative_top H
+  have hheadVal := congrArg Subtype.val hheadTop
+  change C.head.representative H |>.restrictLe H X.cut =
+    C.head.1.1 at hheadVal
+  have hxHead := congrFun hheadVal x
+  change
+    H.largeFiniteTail X 1
+      ((AM.id1 H X.cut).representative H x.1) =
+      C.refiner.1 (C.head.representative H x.1)
+  rw [hid]
+  change
+    C.refiner.1
+      ((H.largeFiniteTail (H.nextLargeStage X) 0)
+        (C.head.canonical H x.1)) =
+      C.refiner.1 (C.head.representative H x.1)
+  rw [largeFiniteTail, MMap.id_apply]
+  apply congrArg C.refiner.1
+  rw [AM.canonical,
+    H.canonicalExtension_agrees
+      (C.head.representative H) X.cut x.1 x.2]
+
+/-- Membership form of the preceding base case. -/
+theorem largeFiniteEval_id_mem
+    (H : SMTree S)
+    (X : ShapeLargeStage H) :
+    H.largeFiniteEval X 1 (AM.id1 H X.cut) ∈ X.set := by
+  rw [H.largeFiniteEval_id_one X]
+  exact (H.chooseLargeStage X).head_mem
+
 end SMTree
 end SuccessorTree
