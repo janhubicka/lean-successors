@@ -732,5 +732,93 @@ theorem largeFiniteEval_step
     _ = H.largeFiniteTail Y d (q.representative H z) := by rw [hqrep]
     _ = qe.representative H z := hqe.symm
 
+
+/-- Boolean Ramsey theorem for one-moving shape maps, obtained by the two
+Milliken fusions above. -/
+theorem shapeBinaryRamsey
+    (H : SMTree S) (n : Nat) :
+    (H.shapeSubspaceAction n).BinaryRamsey := by
+  classical
+  letI : Nonempty (AM H n 1) := ⟨AM.id1 H n⟩
+  intro colour
+  let A0 : Set (AM H n 1) := {g | colour g = false}
+  let A1 : Set (AM H n 1) := {g | colour g = true}
+  have hcover : Set.univ ⊆ A0 ∪ A1 := by
+    intro g hg
+    cases h : colour g with
+    | false =>
+        exact Or.inl h
+    | true =>
+        exact Or.inr h
+  obtain ⟨W, hlarge⟩ :=
+    (H.shapeSubspaceAction n).binary_cover_has_large_pullback
+      A0 A1 hcover
+  rcases hlarge with h0 | h1
+  · let X : ShapeLargeStage H := {
+      cut := n
+      set := H.shapePullback W A0
+      large := h0
+    }
+    let L : ShapeSubspace H n := H.largeFusionLimit X
+    let V : ShapeSubspace H n := ShapeSubspace.comp H W L
+    refine ⟨V, ?_⟩
+    intro x y
+    have hx := H.largeFusionEval_mem X x
+    have hy := H.largeFusionEval_mem X y
+    have hx0 :
+        colour (H.shapeAct n W (H.shapeAct n L x)) = false := by
+      exact hx
+    have hy0 :
+        colour (H.shapeAct n W (H.shapeAct n L y)) = false := by
+      exact hy
+    change
+      colour (H.shapeAct n V x) =
+        colour (H.shapeAct n V y)
+    rw [show H.shapeAct n V x =
+        H.shapeAct n W (H.shapeAct n L x) by
+      exact H.shapeAct_comp n W L x]
+    rw [show H.shapeAct n V y =
+        H.shapeAct n W (H.shapeAct n L y) by
+      exact H.shapeAct_comp n W L y]
+    exact hx0.trans hy0.symm
+  · let X : ShapeLargeStage H := {
+      cut := n
+      set := H.shapePullback W A1
+      large := h1
+    }
+    let L : ShapeSubspace H n := H.largeFusionLimit X
+    let V : ShapeSubspace H n := ShapeSubspace.comp H W L
+    refine ⟨V, ?_⟩
+    intro x y
+    have hx := H.largeFusionEval_mem X x
+    have hy := H.largeFusionEval_mem X y
+    have hx1 :
+        colour (H.shapeAct n W (H.shapeAct n L x)) = true := by
+      exact hx
+    have hy1 :
+        colour (H.shapeAct n W (H.shapeAct n L y)) = true := by
+      exact hy
+    change
+      colour (H.shapeAct n V x) =
+        colour (H.shapeAct n V y)
+    rw [show H.shapeAct n V x =
+        H.shapeAct n W (H.shapeAct n L x) by
+      exact H.shapeAct_comp n W L x]
+    rw [show H.shapeAct n V y =
+        H.shapeAct n W (H.shapeAct n L y) by
+      exact H.shapeAct_comp n W L y]
+    exact hx1.trans hy1.symm
+
+/-- Finite-colour Ramsey theorem for one-moving shape-preserving maps. -/
+theorem shapeOneDimensionalRamsey
+    (H : SMTree S) (n : Nat)
+    {κ : Type w} [Fintype κ] [DecidableEq κ]
+    (colour : AM H n 1 → κ) :
+    ∃ W : ShapeSubspace H n,
+      (H.shapeSubspaceAction n).Homogeneous colour W := by
+  letI : Nonempty (AM H n 1) := ⟨AM.id1 H n⟩
+  exact (H.shapeSubspaceAction n).finiteRamsey_of_binary
+    (H.shapeBinaryRamsey n) colour
+
 end SMTree
 end SuccessorTree
