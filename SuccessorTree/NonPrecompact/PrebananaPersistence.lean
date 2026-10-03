@@ -125,20 +125,19 @@ with `2^(k+1)` atoms then contains every colour. -/
 theorem exists_prebananaPersistentColouring
     (k : ℕ) {n : ℕ} [NeZero n]
     (mark : Fin n → F2) :
-    ∃ cstar : Fin n,
-      ∃ colouring :
-          PrebananaTwoAtomCopy mark cstar → Fin (2 ^ k),
-        ∀ T :
-            PrebananaAllMarkedTargetCopy (2 ^ (k + 1)) n mark,
-          ∀ colour : Fin (2 ^ k),
-            ∃ P : PrebananaTwoAtomCopy mark cstar,
-              colouring P = colour := by
+    ∃ colouring :
+        PrebananaTwoAtomCopy mark (0 : Fin n) → Fin (2 ^ k),
+      ∀ T :
+          PrebananaAllMarkedTargetCopy (2 ^ (k + 1)) n mark,
+        ∀ colour : Fin (2 ^ k),
+          ∃ P : PrebananaTwoAtomCopy mark (0 : Fin n),
+            colouring P = colour := by
   classical
   let cstar : Fin n := 0
   let colouring :
       PrebananaTwoAtomCopy mark cstar → Fin (2 ^ k) :=
     fun P => P.residueFinColour k
-  refine ⟨cstar, colouring, ?_⟩
+  refine ⟨colouring, ?_⟩
   intro T colour
 
   let jstar : Fin (2 ^ (k + 1)) := T.part cstar
