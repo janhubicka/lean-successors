@@ -146,6 +146,10 @@ theorem directSum_inl_pairing_apply
         (directSumRightInl (r₁ := r₁) (r₂ := r₂) y) =
       A.eval x y := by
   unfold eval
+  change
+    Fin.append x 0 ⬝ᵥ
+      (bananaDirectSum A B).pairing *ᵥ Fin.append y 0 =
+      x ⬝ᵥ (A.pairing *ᵥ y)
   rw [directSum_mulVec_inl]
   change
     (∑ i : Fin (l₁ + l₂),
@@ -161,6 +165,10 @@ theorem directSum_inr_pairing_apply
         (directSumRightInr (r₁ := r₁) (r₂ := r₂) y) =
       B.eval x y := by
   unfold eval
+  change
+    Fin.append 0 x ⬝ᵥ
+      (bananaDirectSum A B).pairing *ᵥ Fin.append 0 y =
+      x ⬝ᵥ (B.pairing *ᵥ y)
   rw [directSum_mulVec_inr]
   change
     (∑ i : Fin (l₁ + l₂),
@@ -194,6 +202,9 @@ theorem directSum_cross_pairing_left_right
         (directSumLeftInl (l₁ := l₁) (l₂ := l₂) x)
         (directSumRightInr (r₁ := r₁) (r₂ := r₂) y) = 0 := by
   unfold eval
+  change
+    Fin.append x 0 ⬝ᵥ
+      (bananaDirectSum A B).pairing *ᵥ Fin.append 0 y = 0
   rw [directSum_mulVec_inr]
   change
     (∑ i : Fin (l₁ + l₂),
@@ -208,6 +219,9 @@ theorem directSum_cross_pairing_right_left
         (directSumLeftInr (l₁ := l₁) (l₂ := l₂) x)
         (directSumRightInl (r₁ := r₁) (r₂ := r₂) y) = 0 := by
   unfold eval
+  change
+    Fin.append 0 x ⬝ᵥ
+      (bananaDirectSum A B).pairing *ᵥ Fin.append y 0 = 0
   rw [directSum_mulVec_inl]
   change
     (∑ i : Fin (l₁ + l₂),
