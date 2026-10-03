@@ -128,7 +128,7 @@ theorem prebananaTwoMarkedCopyRamseyDegree_infinite :
   let B := PrebananaAtomStructure.allMarkedPower t
   obtain ⟨C, hC⟩ :=
     hdegree B (2 ^ t) (by positivity)
-  letI : NeZero C.atomCount :=
+  haveI : NeZero C.atomCount :=
     ⟨Nat.ne_of_gt C.atomCount_pos⟩
   obtain ⟨colouring, hpersistent⟩ :=
     exists_prebananaPersistentColouring t C.mark
