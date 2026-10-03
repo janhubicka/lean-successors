@@ -110,10 +110,10 @@ variable {S : FiniteCopySystem} (E : RamseyExpansion S)
 attribute [local instance] FiniteCopySystem.copyFintype
 attribute [local instance] FiniteCopySystem.copyDecidableEq
 
-local instance expFintype (A : S.Obj) : Fintype (E.Exp A) :=
+local instance instExpansionFintype (A : S.Obj) : Fintype (E.Exp A) :=
   E.expFintype A
 
-local instance expDecidableEq (A : S.Obj) : DecidableEq (E.Exp A) :=
+local instance instExpansionDecidableEq (A : S.Obj) : DecidableEq (E.Exp A) :=
   E.expDecidableEq A
 
 abbrev ExpEmb
