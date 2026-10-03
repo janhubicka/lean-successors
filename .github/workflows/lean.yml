@@ -72,16 +72,27 @@ jobs:
           print('PASS: all 8 transitive axiom reports use only standard Lean axioms')
           PY
 
+      - name: Check localized manuscript patches
+        run: |
+          set -o pipefail
+          python3 manuscript/make-validation-patches.py --reference \
+            --output proof-audit/manuscript-patches \
+            | tee proof-audit/manuscript-patches.log
+
       - name: Record reproducible proof snapshot
         run: |
           git rev-parse HEAD > proof-audit/COMMIT
           cp lean-toolchain lakefile.toml lake-manifest.json proof-audit/
           git diff --check
-          git diff ef5cce3d9dcfea768c69998515a7ded6bc03e603 HEAD -- \
-            SuccessorTree.lean SuccessorTree scripts .github/workflows/lean.yml \
+          BASE=ef5cce3d9dcfea768c69998515a7ded6bc03e603
+          MERGE_BASE="$(git merge-base origin/main HEAD)"
+          printf '%s\n' "$BASE" > proof-audit/COMPLETION_BASE
+          printf '%s\n' "$MERGE_BASE" > proof-audit/BRANCH_BASE
+          git diff "$BASE" HEAD -- \
+            SuccessorTree.lean SuccessorTree scripts manuscript docs/shape-ramsey-audit.md .github/workflows/lean.yml \
             > proof-audit/shape-ramsey-completion.patch
-          git diff "$(git merge-base origin/main HEAD)" HEAD -- \
-            SuccessorTree.lean SuccessorTree scripts .github/workflows/lean.yml \
+          git diff "$MERGE_BASE" HEAD -- \
+            SuccessorTree.lean SuccessorTree scripts manuscript docs/shape-ramsey-audit.md .github/workflows/lean.yml \
             > proof-audit/shape-ramsey-branch.patch
           if test -d manuscript; then cp -R manuscript proof-audit/; fi
           if test -f docs/shape-ramsey-audit.md; then cp docs/shape-ramsey-audit.md proof-audit/; fi
