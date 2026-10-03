@@ -303,9 +303,9 @@ theorem blockEval_replayTwoBlock_line
       have ht0 :
           et.toMMap (p.1.canonical H z.1) =
             p.1.canonical H (e.toMMap z.1) := by
-        simpa [et] using
-          (H.transportLetter_commutes
-            (p.1.representative H) n e z.1 z.2)
+        simpa [et, AM.canonical] using
+          (H.transportLetter_commutes_at_level
+            (p.1.representative H) n m hpm e z.1 z.2)
       have ht :
           et.toMMap (p.1.representative H z.1) =
             p.1.canonical H (e.toMMap z.1) := by
