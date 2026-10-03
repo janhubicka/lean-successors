@@ -97,7 +97,7 @@ structure AmalgamationSystem (S : FiniteCopySystem) where
 
 namespace AmalgamationSystem
 
-variable {S : FiniteCopySystem} (M : AmalgamationSystem S)
+variable {S : FiniteCopySystem}
 
 attribute [local instance] FiniteCopySystem.copyFintype
 attribute [local instance] FiniteCopySystem.copyDecidableEq
@@ -123,6 +123,7 @@ theorem subcopy_map
 /-- A finite family of original P-copies of B can simultaneously be made
 extendible to A-copies after embedding B into a further amalgam. -/
 theorem extend_finite_copies
+    (M : AmalgamationSystem S)
     {P A B : S.Obj}
     (pA : S.Emb P A)
     (copies : Finset (S.Copy P B)) :
@@ -163,10 +164,11 @@ theorem extend_finite_copies
     · obtain ⟨a, ha⟩ := hbase q hq
       refine ⟨S.mapCopy i a, ?_⟩
       rw [S.mapCopy_comp]
-      exact subcopy_map (M := M) i ha
+      exact subcopy_map (S := S) i ha
 
 /-- Attach an A-copy over every P-copy of B. -/
 theorem extend_all_copies
+    (M : AmalgamationSystem S)
     {P A B : S.Obj}
     (pA : S.Emb P A) :
     ∃ (D : S.Obj) (base : S.Emb B D),
@@ -175,7 +177,7 @@ theorem extend_all_copies
           S.Subcopy (S.mapCopy base p) a := by
   classical
   obtain ⟨D, base, h⟩ :=
-    extend_finite_copies (M := M) pA (Finset.univ : Finset (S.Copy P B))
+    extend_finite_copies M pA (Finset.univ : Finset (S.Copy P B))
   exact ⟨D, base, fun p => h p (Finset.mem_univ p)⟩
 
 end AmalgamationSystem
@@ -224,6 +226,7 @@ If P embeds into A, A has copy Ramsey degree at most d, and there are s
 P-copies in A, then P has copy Ramsey degree at most s*d.  This is the
 abstract form of the circulation manuscript's degree-propagation lemma. -/
 theorem copyRamseyDegreeLE_of_embedding
+    (M : AmalgamationSystem S)
     {P A : S.Obj}
     (pA : S.Emb P A)
     {d : ℕ}
@@ -234,7 +237,7 @@ theorem copyRamseyDegreeLE_of_embedding
   intro B r hr
 
   obtain ⟨Bplus, base, hext⟩ :=
-    extend_all_copies (M := M) pA
+    extend_all_copies M pA
 
   let Palette := Finset (Fin r)
   let nPal := Fintype.card Palette
@@ -302,7 +305,7 @@ theorem copyRamseyDegreeLE_of_embedding
       S.Subcopy
         (S.mapCopy g (S.mapCopy base p))
         (S.mapCopy g a) :=
-    subcopy_map (M := M) g ha
+    subcopy_map (S := S) g ha
 
   have hcolour_mem_set :
       colouringP (S.mapCopy g (S.mapCopy base p)) ∈
