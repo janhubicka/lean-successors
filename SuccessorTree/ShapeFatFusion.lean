@@ -91,3 +91,129 @@ noncomputable def FatBlockSeq.cumulative
     U.cumulative H (i + 1) =
       MMap.comp H (U.blockMap H i) (U.cumulative H i) := rfl
 
+
+/-- After i blocks, the cumulative map has a full consecutive tail beginning
+at source level n+i and target cut c_i. -/
+theorem FatBlockSeq.cumulative_level_tail
+    (H : SMTree S) {n : Nat}
+    (U : FatBlockSeq H n) :
+    ∀ i j : Nat,
+      H.levelMap (U.cumulative H i).map (n + i + j) =
+        U.cut i + j := by
+  intro i
+  induction i with
+  | zero =>
+      intro j
+      obtain ⟨x, hx⟩ := H.level_nonempty (n + 0 + j)
+      calc
+        H.levelMap (U.cumulative H 0).map (n + 0 + j) =
+            LevelTree.lev ((U.cumulative H 0) x) := by
+          simpa [hx] using H.levelMap_eq (U.cumulative H 0).map (a := x)
+        _ = LevelTree.lev x := rfl
+        _ = n + j := by omega
+        _ = U.cut 0 + j := by rw [U.cut_zero]
+  | succ i ih =>
+      intro j
+      have hcomp :=
+        H.levelMap_comp (U.blockMap H i) (U.cumulative H i)
+          (n + (i + 1) + j)
+      rw [hcomp]
+      have hinner :
+          H.levelMap (U.cumulative H i).map (n + (i + 1) + j) =
+            U.cut i + (j + 1) := by
+        have h := ih (j + 1)
+        convert h using 1 <;> omega
+      rw [hinner]
+      change
+        H.levelMap
+            (H.canonicalExtension
+              ((U.block i).1.representative H) (U.cut i)).map
+            (U.cut i + (j + 1)) =
+          U.cut (i + 1) + j
+      rw [H.canonicalExtension_level_tail
+        ((U.block i).1.representative H) (U.cut i) (j + 1)]
+      rw [(U.block i).2]
+      have hcut : U.cut i < U.cut (i + 1) :=
+        U.cut_strict (Nat.lt_succ_self i)
+      omega
+
+/-- Adding block i does not change nodes strictly below source level n+i. -/
+theorem FatBlockSeq.cumulative_succ_agrees
+    (H : SMTree S) {n : Nat}
+    (U : FatBlockSeq H n) (i : Nat)
+    (x : T) (hx : LevelTree.lev x < n + i) :
+    U.cumulative H (i + 1) x = U.cumulative H i x := by
+  change U.blockMap H i (U.cumulative H i x) =
+    U.cumulative H i x
+  apply U.blockMap_fixesBelow H i
+  calc
+    LevelTree.lev (U.cumulative H i x) =
+        H.levelMap (U.cumulative H i).map (LevelTree.lev x) :=
+      (H.levelMap_eq (U.cumulative H i).map (a := x)).symm
+    _ < H.levelMap (U.cumulative H i).map (n + i) :=
+      H.levelMap_strictMono (U.cumulative H i).map hx
+    _ = U.cut i := by
+      simpa using U.cumulative_level_tail H i 0
+
+/-- Reindex cumulative block maps by absolute source level so that ordinary
+M1 fusion applies. -/
+noncomputable def FatBlockSeq.fusionStage
+    (H : SMTree S) {n : Nat}
+    (U : FatBlockSeq H n) (i : Nat) : MMap H :=
+  U.cumulative H (i + 1 - n)
+
+/-- The reindexed cumulative maps form an M1 fusion sequence. -/
+theorem FatBlockSeq.fusionStage_stable
+    (H : SMTree S) {n : Nat}
+    (U : FatBlockSeq H n) :
+    ShapeMap.FusionStable (fun i => (U.fusionStage H i).map) := by
+  intro i x hx
+  by_cases hlow : i + 1 < n
+  · have h0 : i + 1 - n = 0 := by omega
+    have h1 : i + 2 - n = 0 := by omega
+    change U.cumulative H (i + 1 - n) x =
+      U.cumulative H (i + 2 - n) x
+    rw [h0, h1]
+  · have hn : n ≤ i + 1 := Nat.le_of_not_gt hlow
+    let k := i + 1 - n
+    have hik : i + 1 = n + k := by
+      dsimp [k]
+      omega
+    have hk1 : i + 2 - n = k + 1 := by
+      dsimp [k]
+      omega
+    change U.cumulative H (i + 1 - n) x =
+      U.cumulative H (i + 2 - n) x
+    rw [show i + 1 - n = k by rfl, hk1]
+    exact (U.cumulative_succ_agrees H k x (by
+      rw [← hik]
+      omega)).symm
+
+/-- The M1 limit carried by a fat block sequence. -/
+noncomputable def FatBlockSeq.limit
+    (H : SMTree S) {n : Nat}
+    (U : FatBlockSeq H n) : MMap H where
+  map :=
+    ShapeMap.fusionLimit
+      (fun i => (U.fusionStage H i).map)
+      (U.fusionStage_stable H)
+  mem :=
+    H.fusion_mem
+      (fun i => (U.fusionStage H i).map)
+      (fun i => (U.fusionStage H i).mem)
+      (U.fusionStage_stable H)
+
+/-- The fat limit fixes the frozen source prefix. -/
+theorem FatBlockSeq.limit_fixesBelow
+    (H : SMTree S) {n : Nat}
+    (U : FatBlockSeq H n) :
+    (U.limit H).FixesBelow H n := by
+  intro x hx
+  change U.fusionStage H (LevelTree.lev x) x = x
+  have h0 : LevelTree.lev x + 1 - n = 0 := by omega
+  change U.cumulative H (LevelTree.lev x + 1 - n) x = x
+  rw [h0]
+  rfl
+
+end SMTree
+end SuccessorTree
