@@ -47,6 +47,7 @@ import SuccessorTree.NonPrecompact.LinearExtension
 import SuccessorTree.NonPrecompact.PerfectHomogeneity
 
 import SuccessorTree.NonPrecompact.PrebananaPersistence
+import SuccessorTree.NonPrecompact.PrebananaEppaObstruction
 
 import SuccessorTree.NonPrecompact.PrebananaCopyDegree
 
