@@ -47,3 +47,4 @@ import SuccessorTree.ShapeTransportAlphabet
 import SuccessorTree.ShapeWordFactor
 import SuccessorTree.ShapeFatFusion
 import SuccessorTree.ShapeFatTail
+import SuccessorTree.ShapeFirstSplit
