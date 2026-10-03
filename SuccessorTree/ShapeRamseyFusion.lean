@@ -46,10 +46,14 @@ structure ShapeLargeChoice
 noncomputable def chooseLargeStage
     (H : SMTree S) (X : ShapeLargeStage H) :
     ShapeLargeChoice H X := by
-  obtain ⟨W, g, hg, hgood⟩ :=
+  let h :=
     H.exists_large_goodTails (H.largeSetHasShapeLine X.cut)
       X.set X.large
-  exact ⟨W, g, hg, hgood⟩
+  let W : ShapeSubspace H X.cut := Classical.choose h
+  let hW := Classical.choose_spec h
+  let g : AM H X.cut 1 := Classical.choose hW
+  have hg := Classical.choose_spec hW
+  exact ⟨W, g, hg.1, hg.2⟩
 
 noncomputable def nextLargeStage
     (H : SMTree S) (X : ShapeLargeStage H) :
@@ -129,7 +133,8 @@ theorem largeHeadCanonical_bound
       exact C.head.representative_fixesBelow H x hlow
     rw [hcan]
     exact lt_of_lt_of_le hlow
-      (Nat.le_add_right X.cut (C.head.nextCut H - X.cut + r))
+      (le_trans (Nat.le_of_lt (C.head.lt_nextCut H))
+        (Nat.le_add_right (C.head.nextCut H) r))
   · have hge : X.cut ≤ LevelTree.lev x := Nat.le_of_not_gt hlow
     obtain ⟨j, hj⟩ := Nat.exists_eq_add_of_le hge
     have hjr : j ≤ r := by omega
@@ -266,10 +271,10 @@ theorem largeFusionLimit_agrees_finite
     H.largeFiniteTail X (LevelTree.lev x + 1) x =
       H.largeFiniteTail X d x
   by_cases hle : LevelTree.lev x + 1 ≤ d
-  · exact H.largeFiniteTail_stable_of_le X hle x (by
+  · symm
+    exact H.largeFiniteTail_stable_of_le X hle x (by
       omega)
   · have hdl : d ≤ LevelTree.lev x + 1 := by omega
-    symm
     exact H.largeFiniteTail_stable_of_le X hdl x hx
 
 end SMTree
