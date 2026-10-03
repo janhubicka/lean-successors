@@ -346,7 +346,7 @@ noncomputable def shapeFusionEval
 
 /-- The base (zero-excess) coordinate evaluates to the chosen head. -/
 theorem shapeFusionEval_id_eq_head
-    {n : Nat}
+    (H : SMTree S) {n : Nat}
     (D : ShapeFusionData H n) (i : Nat) :
     H.shapeFusionEval D i (AM.id1 H (D.cut i)) = D.head i := by
   apply Subtype.ext
@@ -425,7 +425,7 @@ theorem amCastCut_topLevel
 
 /-- The line-closure field in a form using the explicit cut cast. -/
 theorem shapeFusionLine_closed_cast
-    {n : Nat}
+    (H : SMTree S) {n : Nat}
     (D : ShapeFusionData H n)
     (i : Nat)
     (q : AM H (D.cut (i + 1)) 1)
@@ -441,7 +441,7 @@ theorem shapeFusionLine_closed_cast
 coordinate, transport the remaining tail across the current canonical head,
 and obtain an algebraic line over a coordinate at the next cut. -/
 theorem shapeFusionExists_eval_step
-    {n : Nat}
+    (H : SMTree S) {n : Nat}
     (D : ShapeFusionData H n)
     (i : Nat)
     (r : AM H (D.cut i) 1)
@@ -567,7 +567,7 @@ theorem shapeFusionExists_eval_step
 /-- The excess induction: every explicit right coordinate evaluates into the
 chosen large cell at its fusion stage. -/
 theorem shapeFusionEval_mem
-    {n : Nat}
+    (H : SMTree S) {n : Nat}
     (D : ShapeFusionData H n) :
     ∀ i : Nat, ∀ r : AM H (D.cut i) 1,
       H.shapeFusionEval D i r ∈ D.cell i := by
