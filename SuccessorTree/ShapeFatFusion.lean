@@ -45,6 +45,19 @@ theorem MMap.toAM_one_topLevel
     _ = H.levelMap F.map n := by
       simpa [hx] using (H.levelMap_eq F.map (a := x)).symm
 
+/-- The chosen representative of a finite approximation built from a total
+M-map agrees with that map on the represented source segment. -/
+theorem MMap.toAM_one_representative_agrees
+    (H : SMTree S) (F : MMap H) (n : Nat)
+    (hfix : F.FixesBelow H n)
+    (x : T) (hx : LevelTree.lev x ≤ n) :
+    (F.toAM H n 1 hfix).representative H x = F x := by
+  let a : AM H n 1 := F.toAM H n 1 hfix
+  have htop := a.representative_top H
+  have hval := congrArg Subtype.val htop
+  change (a.representative H).restrictLe H n = F.restrictLe H n at hval
+  exact congrFun hval ⟨x, hx⟩
+
 /-- Infinite sequence of one-moving blocks with strictly increasing cuts.
 
 We store total M-map representatives rather than dependent finite subtypes.
