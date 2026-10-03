@@ -59,7 +59,10 @@ theorem AMExact.base_le
     (p : AMExact H n m) :
     n ≤ m := by
   have h := H.levelMap_id_le (p.1.representative H).map n
-  simpa [AM.topLevel, p.2] using h
+  have htop :
+      H.levelMap (p.1.representative H).map n = m := by
+    simpa [AM.topLevel] using p.2
+  exact h.trans_eq htop
 
 /-- Compose an exact n-to-m one-moving prefix with one one-moving map based
 at m. -/
@@ -126,20 +129,24 @@ theorem crossEval_replay_base
     H.crossEval F p (replayApplyAM H m R LineInput.base) =
       H.shapeAct n (H.refineByReplay F p R) p.1 := by
   apply Subtype.ext
+  rw [crossEval, H.shapeAct_val, H.shapeAct_val]
   apply Subtype.ext
   funext x
   have hpLev :
       LevelTree.lev (p.1.representative H x.1) ≤ m := by
-    exact p.1.level_le_topLevel H x.1 x.2 |>.trans_eq p.2
+    exact (p.1.level_le_topLevel H x.1 x.2).trans_eq p.2
   have hbase :=
     H.replayApplyAM_base_representative_agrees
       m R (p.1.representative H x.1) hpLev
+  have hcomp :=
+    H.composeAcross_representative_agrees p
+      (replayApplyAM H m R LineInput.base) x.1 x.2
   change
     F.1
-      ((replayApplyAM H m R LineInput.base).representative H
-        (p.1.representative H x.1)) =
+      ((H.composeAcross p
+        (replayApplyAM H m R LineInput.base)).representative H x.1) =
       F.1 (R.toMMap (p.1.representative H x.1))
-  rw [hbase]
+  rw [hcomp, hbase]
 
 /-- A two-level block obtained by inserting an exact prefix into a replay
 block and then applying the current outer subspace. -/
@@ -208,7 +215,11 @@ theorem blockEval_replayTwoBlock_line
       have hid :=
         H.lineInputAM_representative_agrees n LineInput.base z.1 z.2
       have hblock :=
-        H.replayTwoBlock_representative_agrees F p R z.1 z.2
+        H.replayTwoBlock_representative_agrees F p R z.1
+          (Nat.le_succ_of_le z.2)
+      have hid' :
+          (H.lineInputAM n LineInput.base).representative H z.1 = z.1 := by
+        simpa [localInputMMap] using hid
       have hpCan :
           p.1.canonical H z.1 = p.1.representative H z.1 := by
         rw [AM.canonical, H.canonicalExtension_agrees
@@ -222,24 +233,29 @@ theorem blockEval_replayTwoBlock_line
         F.1
           ((H.composeAcross p
             (replayApplyAM H m R LineInput.base)).representative H z.1)
-      rw [hid, hblock, hpCan, hq]
+      rw [hid', hblock, hpCan, hq]
       exact congrArg F.1
         (H.replayApplyAM_base_representative_agrees
           m R (p.1.representative H z.1)
           (by
             exact p.1.level_le_topLevel H z.1 z.2 |>.trans_eq p.2))
   | letter e =>
-      let et0 := H.transportLetter (p.1.representative H) n e
       have hpm : H.levelMap (p.1.representative H).map n = m := by
-        exact p.2
-      let et : OneLevelLetter H m := by
-        simpa [AM.topLevel] using et0
+        simpa [AM.topLevel] using p.2
+      subst m
+      let et : OneLevelLetter H
+          (H.levelMap (p.1.representative H).map n) :=
+        H.transportLetter (p.1.representative H) n e
       refine ⟨LineInput.letter et, ?_⟩
       apply Subtype.ext
       apply Subtype.ext
       funext z
       have he :=
         H.lineInputAM_representative_agrees n (LineInput.letter e) z.1 z.2
+      have he' :
+          (H.lineInputAM n (LineInput.letter e)).representative H z.1 =
+            e.toMMap z.1 := by
+        simpa [localInputMMap] using he
       have hblock :=
         H.replayTwoBlock_representative_agrees F p R
           (e.toMMap z.1) (by
@@ -255,20 +271,36 @@ theorem blockEval_replayTwoBlock_line
       have hq :=
         H.composeAcross_representative_agrees p
           (replayApplyAM H m R (LineInput.letter et)) z.1 z.2
+      have hfixComp :
+          (MMap.comp H R.toMMap et.toMMap).FixesBelow H
+            (H.levelMap (p.1.representative H).map n) :=
+        MMap.comp_fixesBelow H R.toMMap et.toMMap
+          (H.levelMap (p.1.representative H).map n)
+          R.fixesBelow
+          (by
+            intro a ha
+            exact et.eq_id_below H ha)
       have hlocal :
-          (replayApplyAM H m R (LineInput.letter et)).representative H
+          (replayApplyAM H
+              (H.levelMap (p.1.representative H).map n)
+              R (LineInput.letter et)).representative H
               (p.1.representative H z.1) =
             R.toMMap
               (et.toMMap (p.1.representative H z.1)) := by
-        apply MMap.toAM_one_representative_agrees
-        exact p.1.level_le_topLevel H z.1 z.2 |>.trans_eq p.2
+        exact MMap.toAM_one_representative_agrees
+          H (MMap.comp H R.toMMap et.toMMap)
+          (H.levelMap (p.1.representative H).map n)
+          hfixComp
+          (p.1.representative H z.1)
+          (by
+            exact (p.1.level_le_topLevel H z.1 z.2).trans_eq p.2)
       change
         (H.replayTwoBlock F p R).representative H
           ((H.lineInputAM n (LineInput.letter e)).representative H z.1) =
         F.1
           ((H.composeAcross p
             (replayApplyAM H m R (LineInput.letter et))).representative H z.1)
-      rw [he, hblock, hq, hlocal]
+      rw [he', hblock, hq, hlocal]
       change
         F.1 (R.toMMap (p.1.canonical H (e.toMMap z.1))) =
           F.1 (R.toMMap (et.toMMap (p.1.representative H z.1)))
