@@ -238,6 +238,31 @@ def finLeftPart {m n : ℕ} (x : Fin (m + n) → F2) : Fin m → F2 :=
 def finRightPart {m n : ℕ} (x : Fin (m + n) → F2) : Fin n → F2 :=
   fun i => x (Fin.natAdd m i)
 
+
+@[simp] theorem finLeftPart_add
+    {m n : ℕ} (x y : Fin (m + n) → F2) :
+    finLeftPart (x + y) = finLeftPart x + finLeftPart y := by
+  funext i
+  rfl
+
+@[simp] theorem finRightPart_add
+    {m n : ℕ} (x y : Fin (m + n) → F2) :
+    finRightPart (x + y) = finRightPart x + finRightPart y := by
+  funext i
+  rfl
+
+@[simp] theorem finLeftPart_smul
+    {m n : ℕ} (a : F2) (x : Fin (m + n) → F2) :
+    finLeftPart (a • x) = a • finLeftPart x := by
+  funext i
+  rfl
+
+@[simp] theorem finRightPart_smul
+    {m n : ℕ} (a : F2) (x : Fin (m + n) → F2) :
+    finRightPart (a • x) = a • finRightPart x := by
+  funext i
+  rfl
+
 /-- Direct sum of two linear maps between finite coordinate spaces. -/
 def directSumLinearMap
     {m₁ m₂ n₁ n₂ : ℕ}
@@ -247,28 +272,14 @@ def directSumLinearMap
   toFun x := Fin.append (f (finLeftPart x)) (g (finRightPart x))
   map_add' x y := by
     apply funext
-    rw [Fin.forall_fin_add]
-    constructor
-    · intro i
-      change f (finLeftPart x + finLeftPart y) i =
-        f (finLeftPart x) i + f (finLeftPart y) i
-      rw [map_add]
-    · intro i
-      change g (finRightPart x + finRightPart y) i =
-        g (finRightPart x) i + g (finRightPart y) i
-      rw [map_add]
+    intro i
+    induction i using Fin.addCases <;>
+      simp [directSumLinearMap]
   map_smul' a x := by
     apply funext
-    rw [Fin.forall_fin_add]
-    constructor
-    · intro i
-      change f (a • finLeftPart x) i = a * f (finLeftPart x) i
-      rw [map_smul]
-      rfl
-    · intro i
-      change g (a • finRightPart x) i = a * g (finRightPart x) i
-      rw [map_smul]
-      rfl
+    intro i
+    induction i using Fin.addCases <;>
+      simp [directSumLinearMap]
 
 @[simp] theorem finLeftPart_directSumLinearMap
     {m₁ m₂ n₁ n₂ : ℕ}
