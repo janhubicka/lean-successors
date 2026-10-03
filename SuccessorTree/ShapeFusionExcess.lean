@@ -273,7 +273,7 @@ theorem AM.canonical_recanonical_next
     calc
       H.levelMap (g.representative H).map c =
           g.topLevel H := rfl
-      _ < g.nextCut H := Nat.lt_succ_self _
+      _ ≤ g.nextCut H := Nat.le_of_lt (Nat.lt_succ_self _)
       _ = H.levelMap (g.canonical H).map (c + 1) := hnext.symm
       _ ≤ ell := hell
 
@@ -337,6 +337,7 @@ theorem exists_transport_after_head
 
 /-- Direct evaluation of a right coordinate in the tail subspace. -/
 noncomputable def ShapeFusionData.eval
+    {n : Nat}
     (D : ShapeFusionData H n)
     (i : Nat)
     (r : AM H (D.cut i) 1) :
@@ -345,6 +346,7 @@ noncomputable def ShapeFusionData.eval
 
 /-- The base (zero-excess) coordinate evaluates to the chosen head. -/
 theorem ShapeFusionData.eval_id_eq_head
+    {n : Nat}
     (D : ShapeFusionData H n) (i : Nat) :
     D.eval i (AM.id1 H (D.cut i)) = D.head i := by
   apply Subtype.ext
@@ -423,6 +425,7 @@ theorem AM.castCut_topLevel
 
 /-- The line-closure field in a form using the explicit cut cast. -/
 theorem ShapeFusionData.line_closed_cast
+    {n : Nat}
     (D : ShapeFusionData H n)
     (i : Nat)
     (q : AM H (D.cut (i + 1)) 1)
@@ -438,6 +441,7 @@ theorem ShapeFusionData.line_closed_cast
 coordinate, transport the remaining tail across the current canonical head,
 and obtain an algebraic line over a coordinate at the next cut. -/
 theorem ShapeFusionData.exists_eval_step
+    {n : Nat}
     (D : ShapeFusionData H n)
     (i : Nat)
     (r : AM H (D.cut i) 1)
@@ -563,6 +567,7 @@ theorem ShapeFusionData.exists_eval_step
 /-- The excess induction: every explicit right coordinate evaluates into the
 chosen large cell at its fusion stage. -/
 theorem ShapeFusionData.eval_mem
+    {n : Nat}
     (D : ShapeFusionData H n) :
     ∀ i : Nat, ∀ r : AM H (D.cut i) 1,
       D.eval i r ∈ D.cell i := by
@@ -571,9 +576,9 @@ theorem ShapeFusionData.eval_mem
   induction k using Nat.strong_induction_on generalizing i r with
   | h k ih =>
       by_cases hk0 : k = 0
-      · subst k
+      · have hexcess0 : r.excess H = 0 := hk.trans hk0
         have hex0 : r.topLevel H - D.cut i = 0 := by
-          simpa [AM.excess] using hk
+          simpa [AM.excess] using hexcess0
         have htopLe : r.topLevel H ≤ D.cut i :=
           Nat.sub_eq_zero_iff_le.mp hex0
         have rid : r = AM.id1 H (D.cut i) := by
