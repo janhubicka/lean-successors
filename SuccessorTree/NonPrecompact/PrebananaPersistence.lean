@@ -52,12 +52,12 @@ theorem prebanana_sum_fiber_markedCount
     Finset.univ.filter fun i => mark i = 1
   calc
     (∑ j ∈ labels, prebananaMarkedCount mark (prebananaFiber part j)) =
-        ∑ j ∈ labels, #{i ∈ marked | part i = j} := by
+        ∑ j ∈ labels, (marked.filter fun i => part i = j).card := by
       apply Finset.sum_congr rfl
       intro j hj
       simp [prebananaMarkedCount, prebananaFiber, marked,
         Finset.filter_filter, and_left_comm, and_comm, and_assoc]
-    _ = #{i ∈ marked | part i ∈ labels} :=
+    _ = (marked.filter fun i => part i ∈ labels).card :=
       Finset.sum_card_fiberwise_eq_card_filter marked labels part
     _ = prebananaMarkedCount mark
           (Finset.univ.filter fun i => part i ∈ labels) := by
