@@ -229,6 +229,157 @@ theorem directSum_cross_pairing_right_left
   rw [Fin.sum_univ_add]
   simp
 
+
+/-- Restrict a vector on a sum of coordinate blocks to the first block. -/
+def directSumLeftPart {m n : ℕ} (x : Fin (m + n) → F2) : Fin m → F2 :=
+  fun i => x (Fin.castAdd n i)
+
+/-- Restrict a vector on a sum of coordinate blocks to the second block. -/
+def directSumRightPart {m n : ℕ} (x : Fin (m + n) → F2) : Fin n → F2 :=
+  fun i => x (Fin.natAdd m i)
+
+theorem append_directSumParts {m n : ℕ} (x : Fin (m + n) → F2) :
+    Fin.append (directSumLeftPart x) (directSumRightPart x) = x := by
+  funext i
+  induction i using Fin.addCases <;>
+    simp [directSumLeftPart, directSumRightPart]
+
+/-- Block sum of two linear maps between finite coordinate spaces. -/
+def directSumLinearMap
+    {m n m' n' : ℕ}
+    (f : (Fin m → F2) →ₗ[F2] (Fin m' → F2))
+    (g : (Fin n → F2) →ₗ[F2] (Fin n' → F2)) :
+    (Fin (m + n) → F2) →ₗ[F2] (Fin (m' + n') → F2) where
+  toFun x :=
+    Fin.append
+      (f (directSumLeftPart x))
+      (g (directSumRightPart x))
+  map_add' x y := by
+    apply funext
+    intro i
+    induction i using Fin.addCases <;>
+      simp [directSumLeftPart, directSumRightPart]
+  map_smul' a x := by
+    apply funext
+    intro i
+    induction i using Fin.addCases <;>
+      simp [directSumLeftPart, directSumRightPart]
+
+theorem directSumLinearMap_injective
+    {m n m' n' : ℕ}
+    {f : (Fin m → F2) →ₗ[F2] (Fin m' → F2)}
+    {g : (Fin n → F2) →ₗ[F2] (Fin n' → F2)}
+    (hf : Function.Injective f)
+    (hg : Function.Injective g) :
+    Function.Injective (directSumLinearMap f g) := by
+  intro x y h
+  have hleftMap :
+      f (directSumLeftPart x) = f (directSumLeftPart y) := by
+    funext i
+    have hi := congrFun h (Fin.castAdd n' i)
+    simpa [directSumLinearMap] using hi
+  have hrightMap :
+      g (directSumRightPart x) = g (directSumRightPart y) := by
+    funext i
+    have hi := congrFun h (Fin.natAdd m' i)
+    simpa [directSumLinearMap] using hi
+  have hleft :
+      directSumLeftPart x = directSumLeftPart y :=
+    hf hleftMap
+  have hright :
+      directSumRightPart x = directSumRightPart y :=
+    hg hrightMap
+  calc
+    x = Fin.append (directSumLeftPart x) (directSumRightPart x) :=
+      (append_directSumParts x).symm
+    _ = Fin.append (directSumLeftPart y) (directSumRightPart y) := by
+      rw [hleft, hright]
+    _ = y := append_directSumParts y
+
+/-- Evaluation of a direct-sum pairing splits as the sum of the two old
+pairings. -/
+theorem directSum_eval_append
+    (x₁ : Fin l₁ → F2) (x₂ : Fin l₂ → F2)
+    (y₁ : Fin r₁ → F2) (y₂ : Fin r₂ → F2) :
+    (bananaDirectSum A B).eval
+        (Fin.append x₁ x₂) (Fin.append y₁ y₂) =
+      A.eval x₁ y₁ + B.eval x₂ y₂ := by
+  unfold eval
+  apply Eq.trans ?_ ?_
+  · congr 1
+    apply funext
+    intro i
+    induction i using Fin.addCases <;>
+      simp [bananaDirectSum, Matrix.mulVec, dotProduct, Fin.sum_univ_add]
+  · rw [Fin.sum_univ_add]
+    simp [dotProduct]
+
 end BananaMatrixStructure
+
+namespace BananaMatrixEmbedding
+
+variable
+  {l₁ r₁ l₂ r₂ l₁' r₁' l₂' r₂' : ℕ}
+  {A₁ : BananaMatrixStructure l₁ r₁}
+  {A₂ : BananaMatrixStructure l₂ r₂}
+  {B₁ : BananaMatrixStructure l₁' r₁'}
+  {B₂ : BananaMatrixStructure l₂' r₂'}
+
+/-- Direct sum of two BANANA embeddings.  It acts blockwise on both vector
+sorts, so embeddings on either factor extend by the identity on the other
+factor by taking the other embedding to be an identity map. -/
+def directSum
+    (f : BananaMatrixEmbedding A₁ B₁)
+    (g : BananaMatrixEmbedding A₂ B₂) :
+    BananaMatrixEmbedding
+      (bananaDirectSum A₁ A₂)
+      (bananaDirectSum B₁ B₂) where
+  left := BananaMatrixStructure.directSumLinearMap f.left g.left
+  right := BananaMatrixStructure.directSumLinearMap f.right g.right
+  left_injective :=
+    BananaMatrixStructure.directSumLinearMap_injective
+      f.left_injective g.left_injective
+  right_injective :=
+    BananaMatrixStructure.directSumLinearMap_injective
+      f.right_injective g.right_injective
+  pairing_apply := by
+    intro x y
+    let x₁ := BananaMatrixStructure.directSumLeftPart
+      (m := l₁) (n := l₂) x
+    let x₂ := BananaMatrixStructure.directSumRightPart
+      (m := l₁) (n := l₂) x
+    let y₁ := BananaMatrixStructure.directSumLeftPart
+      (m := r₁) (n := r₂) y
+    let y₂ := BananaMatrixStructure.directSumRightPart
+      (m := r₁) (n := r₂) y
+    have hx :
+        Fin.append x₁ x₂ = x := by
+      exact BananaMatrixStructure.append_directSumParts x
+    have hy :
+        Fin.append y₁ y₂ = y := by
+      exact BananaMatrixStructure.append_directSumParts y
+    change
+      (bananaDirectSum B₁ B₂).eval
+        (Fin.append (f.left x₁) (g.left x₂))
+        (Fin.append (f.right y₁) (g.right y₂)) =
+      (bananaDirectSum A₁ A₂).eval x y
+    calc
+      (bananaDirectSum B₁ B₂).eval
+          (Fin.append (f.left x₁) (g.left x₂))
+          (Fin.append (f.right y₁) (g.right y₂)) =
+          B₁.eval (f.left x₁) (f.right y₁) +
+            B₂.eval (g.left x₂) (g.right y₂) :=
+        BananaMatrixStructure.directSum_eval_append
+          B₁ B₂ (f.left x₁) (g.left x₂) (f.right y₁) (g.right y₂)
+      _ = A₁.eval x₁ y₁ + A₂.eval x₂ y₂ := by
+        rw [f.pairing_apply, g.pairing_apply]
+      _ = (bananaDirectSum A₁ A₂).eval
+          (Fin.append x₁ x₂) (Fin.append y₁ y₂) :=
+        (BananaMatrixStructure.directSum_eval_append
+          A₁ A₂ x₁ x₂ y₁ y₂).symm
+      _ = (bananaDirectSum A₁ A₂).eval x y := by
+        rw [hx, hy]
+
+end BananaMatrixEmbedding
 
 end SuccessorTree.NonPrecompact
