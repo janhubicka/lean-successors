@@ -242,10 +242,8 @@ theorem blockEval_replayTwoBlock_line
   | letter e =>
       have hpm : H.levelMap (p.1.representative H).map n = m := by
         simpa [AM.topLevel] using p.2
-      cases hpm
-      let et : OneLevelLetter H
-          (H.levelMap (p.1.representative H).map n) :=
-        H.transportLetter (p.1.representative H) n e
+      let et : OneLevelLetter H m := by
+        exact hpm ▸ H.transportLetter (p.1.representative H) n e
       refine ⟨LineInput.letter et, ?_⟩
       apply Subtype.ext
       apply Subtype.ext
@@ -273,23 +271,19 @@ theorem blockEval_replayTwoBlock_line
           (replayApplyAM H m R (LineInput.letter et)) z.1 z.2
       have hfixComp :
           (MMap.comp H R.toMMap et.toMMap).FixesBelow H
-            (H.levelMap (p.1.representative H).map n) :=
-        MMap.comp_fixesBelow H R.toMMap et.toMMap
-          (H.levelMap (p.1.representative H).map n)
+            m :=
+        MMap.comp_fixesBelow H R.toMMap et.toMMap m
           R.fixesBelow
           (by
             intro a ha
             exact et.eq_id_below H ha)
       have hlocal :
-          (replayApplyAM H
-              (H.levelMap (p.1.representative H).map n)
-              R (LineInput.letter et)).representative H
+          (replayApplyAM H m R (LineInput.letter et)).representative H
               (p.1.representative H z.1) =
             R.toMMap
               (et.toMMap (p.1.representative H z.1)) := by
         exact MMap.toAM_one_representative_agrees
-          H (MMap.comp H R.toMMap et.toMMap)
-          (H.levelMap (p.1.representative H).map n)
+          H (MMap.comp H R.toMMap et.toMMap) m
           hfixComp
           (p.1.representative H z.1)
           (by
