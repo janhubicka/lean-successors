@@ -613,5 +613,124 @@ theorem largeFusionEval_mem
         rw [heval]
         exact hgood
 
+
+/-- One positive-excess coordinate in a finite nested tail becomes the
+current refiner applied to one algebraic shape line; the tail coordinate at
+the next stage has one smaller excess. -/
+theorem largeFiniteEval_step
+    (H : SMTree S)
+    (X : ShapeLargeStage H)
+    (d : Nat)
+    (r : AM H X.cut 1)
+    (hmove : X.cut < r.topLevel H) :
+    ∃ q : AM H (H.nextLargeStage X).cut 1,
+      AM.excess H q = AM.excess H r - 1 ∧
+      H.largeFiniteEval X (d + 1) r =
+        H.shapeAct X.cut (H.chooseLargeStage X).refiner
+          (H.shapeLineApply (H.chooseLargeStage X).head
+            (H.amCastCut rfl
+              (H.largeFiniteEval (H.nextLargeStage X) d q))
+            (.letter (H.firstMoveSplit r hmove).first)) := by
+  let C := H.chooseLargeStage X
+  let Y := H.nextLargeStage X
+  let R := H.firstMoveSplit r hmove
+  obtain ⟨t, htfixHead, htlevHead, htcomm⟩ :=
+    H.exists_transport_after_head C.head R.tail R.tail_fixes
+  have hcut : Y.cut = C.head.nextCut H := rfl
+  have htfix : t.FixesBelow H Y.cut := by
+    rw [hcut]
+    exact htfixHead
+  have htlev :
+      H.levelMap t.map Y.cut =
+        Y.cut + (H.levelMap R.tail.map (X.cut + 1) - (X.cut + 1)) := by
+    rw [hcut]
+    exact htlevHead
+  let q : AM H Y.cut 1 := t.toAM H Y.cut 1 htfix
+  have hqex : AM.excess H q = AM.excess H r - 1 := by
+    unfold AM.excess
+    rw [show q.topLevel H = H.levelMap t.map Y.cut by
+      exact MMap.toAM_one_topLevel H t Y.cut htfix]
+    rw [htlev]
+    have htail := H.firstMoveSplit_tail_excess r hmove
+    change
+      (Y.cut +
+          (H.levelMap R.tail.map (X.cut + 1) - (X.cut + 1)) -
+        Y.cut) =
+        r.topLevel H - X.cut - 1
+    rw [Nat.add_sub_cancel_left]
+    simpa [AM.excess] using htail
+  refine ⟨q, hqex, ?_⟩
+  let qe : AM H Y.cut 1 := H.largeFiniteEval Y d q
+  have hlineCast :
+      H.amCastCut rfl qe = qe := by rfl
+  apply Subtype.ext
+  rw [largeFiniteEval, H.shapeAct_val, H.shapeAct_val]
+  apply Subtype.ext
+  funext x
+  have hrTop := r.representative_top H
+  have hrVal := congrArg Subtype.val hrTop
+  change (r.representative H).restrictLe H X.cut = r.1.1 at hrVal
+  have hrx := congrFun hrVal x
+  have hsplitVal := congrArg Subtype.val R.agrees
+  change
+    (MMap.comp H R.tail R.first.toMMap).restrictLe H X.cut =
+      r.1.1 at hsplitVal
+  have hsx := congrFun hsplitVal x
+  have hrSplit :
+      r.representative H x.1 =
+        R.tail (R.first.toMMap x.1) := by
+    calc
+      r.representative H x.1 = r.1.1 x := hrx
+      _ = R.tail (R.first.toMMap x.1) := hsx.symm
+  have hfirstLev :
+      LevelTree.lev (R.first.toMMap x.1) ≤ X.cut + 1 := by
+    rw [R.first.level_apply H]
+    split <;> omega
+  have hcomm := htcomm (R.first.toMMap x.1) hfirstLev
+  let z : T := C.head.canonical H (R.first.toMMap x.1)
+  have hz : LevelTree.lev z ≤ Y.cut := by
+    calc
+      LevelTree.lev z =
+          H.levelMap (C.head.canonical H).map
+            (LevelTree.lev (R.first.toMMap x.1)) :=
+        (H.levelMap_eq (C.head.canonical H).map
+          (a := R.first.toMMap x.1)).symm
+      _ ≤ H.levelMap (C.head.canonical H).map (X.cut + 1) :=
+        (H.levelMap_strictMono (C.head.canonical H).map).monotone hfirstLev
+      _ = C.head.nextCut H := C.head.canonical_level_next H
+      _ = Y.cut := hcut.symm
+  have hqrep : q.representative H z = t z := by
+    exact MMap.toAM_one_representative_agrees H t Y.cut htfix z hz
+  have hqe :
+      qe.representative H z =
+        H.largeFiniteTail Y d (q.representative H z) := by
+    exact H.shapeAct_representative_agrees
+      Y.cut (H.largeFiniteSubspace Y d) q z hz
+  have hlineRep :
+      (H.shapeLineApply C.head qe (.letter R.first)).representative H x.1 =
+        qe.representative H z := by
+    exact H.shapeLineApply_representative_agrees
+      C.head qe (.letter R.first) x.1 x.2
+  change
+    C.refiner.1
+      (H.largeFiniteTail Y d
+        (C.head.canonical H (r.representative H x.1))) =
+      C.refiner.1
+        ((H.shapeLineApply C.head
+          (H.amCastCut rfl qe) (.letter R.first)).representative H x.1)
+  rw [hlineCast]
+  apply congrArg C.refiner.1
+  rw [hlineRep]
+  calc
+    H.largeFiniteTail Y d
+        (C.head.canonical H (r.representative H x.1)) =
+      H.largeFiniteTail Y d
+        (C.head.canonical H
+          (R.tail (R.first.toMMap x.1))) := by rw [hrSplit]
+    _ = H.largeFiniteTail Y d
+        (t (C.head.canonical H (R.first.toMMap x.1))) := by rw [hcomm]
+    _ = H.largeFiniteTail Y d (q.representative H z) := by rw [hqrep]
+    _ = qe.representative H z := hqe.symm
+
 end SMTree
 end SuccessorTree
