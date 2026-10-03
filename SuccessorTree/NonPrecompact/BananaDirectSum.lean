@@ -248,13 +248,27 @@ def directSumLinearMap
   map_add' x y := by
     apply funext
     rw [Fin.forall_fin_add]
-    constructor <;> intro i <;>
-      simp [finLeftPart, finRightPart]
+    constructor
+    · intro i
+      change f (finLeftPart x + finLeftPart y) i =
+        f (finLeftPart x) i + f (finLeftPart y) i
+      rw [map_add]
+    · intro i
+      change g (finRightPart x + finRightPart y) i =
+        g (finRightPart x) i + g (finRightPart y) i
+      rw [map_add]
   map_smul' a x := by
     apply funext
     rw [Fin.forall_fin_add]
-    constructor <;> intro i <;>
-      simp [finLeftPart, finRightPart]
+    constructor
+    · intro i
+      change f (a • finLeftPart x) i = a * f (finLeftPart x) i
+      rw [map_smul]
+      rfl
+    · intro i
+      change g (a • finRightPart x) i = a * g (finRightPart x) i
+      rw [map_smul]
+      rfl
 
 @[simp] theorem finLeftPart_directSumLinearMap
     {m₁ m₂ n₁ n₂ : ℕ}
