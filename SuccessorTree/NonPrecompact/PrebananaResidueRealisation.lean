@@ -133,11 +133,15 @@ theorem leftover_nonempty_and_sum_eq
     intro hxs
     exact (Finset.disjoint_left.mp hdisj) hx hxs
   · have hsplit :
-        (∑ x ∈ selected, weight x) +
-            (∑ x ∈ atoms \ selected, weight x) = 0 := by
+        (∑ x ∈ atoms \ selected, weight x) +
+            (∑ x ∈ selected, weight x) = 0 := by
       rw [Finset.sum_sdiff hselected]
       exact htotal
+    have hsplit' :
+        (∑ x ∈ selected, weight x) +
+            (∑ x ∈ atoms \ selected, weight x) = 0 := by
+      simpa [add_comm] using hsplit
     apply add_left_cancel
-    exact hsplit.trans htarget.symm
+    exact hsplit'.trans htarget.symm
 
 end SuccessorTree.NonPrecompact
