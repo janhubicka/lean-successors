@@ -54,6 +54,42 @@ theorem shapeAct_weaken_nextCut_head
   exact H.shapeAct_weaken_eq_self_of_top_lt
     (Nat.le_of_lt (g.lt_nextCut H)) U g (Nat.lt_succ_self _)
 
+/-- The finite value of an algebraic line is its literal total composition. -/
+theorem shapeLineApply_apply
+    (H : SMTree S) {c : Nat}
+    (g : AM H c 1)
+    (q : AM H (g.nextCut H) 1)
+    (p : LineInput (OneLevelLetter H c))
+    (x : InitialNode T c) :
+    (H.shapeLineApply g q p).1.1 x =
+      q.representative H
+        (g.canonical H (localInputMMap H c p x.1)) := by
+  rfl
+
+/-- The chosen total representative of an algebraic line agrees with the
+literal line composition through the frozen cut. -/
+theorem shapeLineApply_representative_agrees
+    (H : SMTree S) {c : Nat}
+    (g : AM H c 1)
+    (q : AM H (g.nextCut H) 1)
+    (p : LineInput (OneLevelLetter H c))
+    (x : T) (hx : LevelTree.lev x ≤ c) :
+    (H.shapeLineApply g q p).representative H x =
+      q.representative H
+        (g.canonical H (localInputMMap H c p x)) := by
+  have htop := (H.shapeLineApply g q p).representative_top H
+  have hval := congrArg Subtype.val htop
+  change
+    ((H.shapeLineApply g q p).representative H).restrictLe H c =
+      (H.shapeLineApply g q p).1.1 at hval
+  let xx : InitialNode T c := ⟨x, hx⟩
+  calc
+    (H.shapeLineApply g q p).representative H x =
+        (H.shapeLineApply g q p).1.1 xx := congrFun hval xx
+    _ = q.representative H
+        (g.canonical H (localInputMMap H c p x)) :=
+      H.shapeLineApply_apply g q p xx
+
 /-- Refining beyond the next cut acts only on the tail coordinate of the
 algebraic line. -/
 theorem shapeAct_weaken_shapeLineApply
@@ -78,6 +114,7 @@ theorem shapeAct_weaken_shapeLineApply
         change LevelTree.lev x.1 ≤ c + 1
         omega
     | letter e =>
+        change LevelTree.lev (e.toMMap x.1) ≤ c + 1
         rw [e.level_apply H]
         split <;> omega
   have hz :
@@ -95,9 +132,10 @@ theorem shapeAct_weaken_shapeLineApply
     H.shapeAct_representative_agrees
       (g.nextCut H) U q z hz
   change
-    U.1 (q.representative H (g.canonical H (P x.1))) =
-      (H.shapeAct (g.nextCut H) U q).representative H
-        (g.canonical H (P x.1))
+    U.1 ((H.shapeLineApply g q p).representative H x.1) =
+      (H.shapeLineApply g (H.shapeAct (g.nextCut H) U q) p).1.1 x
+  rw [H.shapeLineApply_representative_agrees g q p x.1 x.2]
+  rw [H.shapeLineApply_apply g (H.shapeAct (g.nextCut H) U q) p x]
   exact hqrep.symm
 
 /-- Avoidance of a good-tail set is inherited by further right refinement. -/
