@@ -287,5 +287,187 @@ theorem settleExactFront
   intro p
   exact hset p (by simp [P])
 
+
+/-- Contradiction hypothesis used by the Milliken fusion: no refinement has a
+head whose good-tail set is large. -/
+def NoLargeGoodTails
+    (H : SMTree S) {n : Nat}
+    (A : Set (AM H n 1)) : Prop :=
+  ∀ (W : ShapeSubspace H n) (g : AM H n 1),
+    g ∈ H.shapePullback W A →
+    ¬ (H.shapeSubspaceAction (g.nextCut H)).Large
+      (H.shapeGoodTails g (H.shapePullback W A))
+
+/-- Absolute fusion stages. Stage i+1 processes the exact terminal front at
+level i once i reaches the frozen source cut n. -/
+noncomputable def millikenStage
+    (H : SMTree S) {n : Nat}
+    (A : Set (AM H n 1))
+    (hNo : H.NoLargeGoodTails A) :
+    Nat → ShapeSubspace H n
+  | 0 => ShapeSubspace.id H n
+  | i + 1 =>
+      if h : n ≤ i then
+        Classical.choose
+          (H.settleExactFront h A hNo
+            (H.millikenStage A hNo i))
+      else
+        H.millikenStage A hNo i
+
+theorem millikenStage_step
+    (H : SMTree S) {n : Nat}
+    (A : Set (AM H n 1))
+    (hNo : H.NoLargeGoodTails A)
+    (i : Nat) :
+    FusionStep H i
+      (H.millikenStage A hNo i).1
+      (H.millikenStage A hNo (i + 1)).1 := by
+  classical
+  rw [millikenStage]
+  by_cases h : n ≤ i
+  · simp only [h, dif_pos]
+    exact (Classical.choose_spec
+      (H.settleExactFront h A hNo
+        (H.millikenStage A hNo i))).1
+  · simp only [h, dif_neg]
+    refine ⟨MMap.id H, MMap.id_fixesBelow H (i + 1), ?_⟩
+    apply MMap.ext_apply
+    intro x
+    rfl
+
+/-- Once level m has been processed, every exact m-word is settled. -/
+theorem millikenStage_exact_settled
+    (H : SMTree S) {n m : Nat}
+    (A : Set (AM H n 1))
+    (hNo : H.NoLargeGoodTails A)
+    (hnm : n ≤ m)
+    (p : AMExact H n m) :
+    H.ShapeSettled (H.millikenStage A hNo (m + 1)) A p.1 := by
+  classical
+  rw [millikenStage]
+  simp only [hnm, dif_pos]
+  exact (Classical.choose_spec
+    (H.settleExactFront hnm A hNo
+      (H.millikenStage A hNo m))).2 p
+
+/-- Before the frozen source cut no stage has changed from the identity. -/
+theorem millikenStage_eq_id_of_le
+    (H : SMTree S) {n : Nat}
+    (A : Set (AM H n 1))
+    (hNo : H.NoLargeGoodTails A) :
+    ∀ i : Nat, i ≤ n →
+      H.millikenStage A hNo i = ShapeSubspace.id H n := by
+  intro i hi
+  induction i with
+  | zero => rfl
+  | succ i ih =>
+      rw [millikenStage]
+      have hnot : ¬ n ≤ i := by omega
+      simp only [hnot, dif_neg]
+      exact ih (by omega)
+
+/-- M1 diagonal limit of the exact-front fusion. -/
+noncomputable def millikenLimit
+    (H : SMTree S) {n : Nat}
+    (A : Set (AM H n 1))
+    (hNo : H.NoLargeGoodTails A) :
+    ShapeSubspace H n := by
+  let F : Nat → MMap H :=
+    fun i => (H.millikenStage A hNo i).1
+  let hstep : ∀ i : Nat, FusionStep H i (F i) (F (i + 1)) :=
+    H.millikenStage_step A hNo
+  let L : MMap H := H.fusionOfSteps F hstep
+  refine ⟨L, ?_⟩
+  intro x hx
+  change H.millikenStage A hNo (LevelTree.lev x) x = x
+  rw [H.millikenStage_eq_id_of_le A hNo
+    (LevelTree.lev x) (Nat.le_of_lt hx)]
+  rfl
+
+/-- The fusion limit is a frozen-neighborhood refinement of every sufficiently
+late fusion stage. -/
+theorem millikenLimit_mem_stage
+    (H : SMTree S) {n : Nat}
+    (A : Set (AM H n 1))
+    (hNo : H.NoLargeGoodTails A)
+    (i : Nat) :
+    (H.millikenLimit A hNo).1 ∈
+      (ramseyApproximationSystem H).levelNeighborhood (i + 1)
+        (H.millikenStage A hNo i).1 := by
+  let F : Nat → MMap H :=
+    fun j => (H.millikenStage A hNo j).1
+  let hstep : ∀ j : Nat, FusionStep H j (F j) (F (j + 1)) :=
+    H.millikenStage_step A hNo
+  change H.fusionOfSteps F hstep ∈
+    (ramseyApproximationSystem H).levelNeighborhood (i + 1) (F i)
+  exact H.fusionOfSteps_mem_levelNeighborhood F hstep i
+
+/-- A line-existence principle sufficient to close the Milliken fusion. -/
+def LargeSetHasShapeLine
+    (H : SMTree S) (n : Nat) : Prop :=
+  ∀ A : Set (AM H n 1),
+    (H.shapeSubspaceAction n).Large A →
+      ∃ g : AM H n 1,
+        ∃ q : AM H (g.nextCut H) 1,
+          q ∈ H.shapeGoodTails g A
+
+/-- The Milliken contradiction: if every large set contains one genuine local
+shape line, then every large set has a refinement with a large good-tail set. -/
+theorem exists_large_goodTails
+    (H : SMTree S) {n : Nat}
+    (hline : H.LargeSetHasShapeLine n)
+    (A : Set (AM H n 1))
+    (hA : (H.shapeSubspaceAction n).Large A) :
+    ∃ W : ShapeSubspace H n,
+      ∃ g : AM H n 1,
+        g ∈ H.shapePullback W A ∧
+        (H.shapeSubspaceAction (g.nextCut H)).Large
+          (H.shapeGoodTails g (H.shapePullback W A)) := by
+  classical
+  by_contra hnone
+  have hNo : H.NoLargeGoodTails A := by
+    intro W g hg hlarge
+    exact hnone ⟨W, g, hg, hlarge⟩
+  let L : ShapeSubspace H n := H.millikenLimit A hNo
+  have hlargePull :
+      (H.shapeSubspaceAction n).Large (H.shapePullback L A) := by
+    exact (H.shapeSubspaceAction n).large_pullback hA L
+  obtain ⟨g, q, hq⟩ :=
+    hline (H.shapePullback L A) hlargePull
+  have hgmem : g ∈ H.shapePullback L A := by
+    have hb := hq LineInput.base
+    rw [H.shapeLineApply_base g q] at hb
+    exact hb
+  let m : Nat := g.topLevel H
+  have hnm : n ≤ m := by
+    have hge := H.levelMap_id_le (g.representative H).map n
+    simpa [m, AM.topLevel] using hge
+  let p : AMExact H n m := ⟨g, rfl⟩
+  have hsettledStage :
+      H.ShapeSettled (H.millikenStage A hNo (m + 1)) A g := by
+    exact H.millikenStage_exact_settled A hNo hnm p
+  have hlim :
+      (H.millikenLimit A hNo).1 ∈
+        (ramseyApproximationSystem H).levelNeighborhood (m + 2)
+          (H.millikenStage A hNo (m + 1)).1 := by
+    simpa using H.millikenLimit_mem_stage A hNo (m + 1)
+  have hstep :
+      FusionStep H (m + 1)
+        (H.millikenStage A hNo (m + 1)).1
+        (H.millikenLimit A hNo).1 :=
+    H.fusionStep_of_mem_levelNeighborhood hlim
+  have hnext : g.nextCut H ≤ m + 2 := by
+    unfold AM.nextCut m
+    omega
+  have hsettledLimit :
+      H.ShapeSettled L A g :=
+    H.shapeSettled_mono_fusionStep hstep A g hnext hsettledStage
+  rcases hsettledLimit with hnot | hbad
+  · exact hnot hgmem
+  · exact hbad q hq
+
+end SMTree
+end SuccessorTree
+
 end SMTree
 end SuccessorTree
