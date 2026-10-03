@@ -241,5 +241,157 @@ structure ShapeFusionData
       ∀ p : LineInput (OneLevelLetter H (cut i)),
         H.shapeLineApply (head i) (by simpa [cut_succ i] using q) p ∈ cell i
 
+
+/-- The canonical head hits the next cut on the next source level. -/
+theorem AM.canonical_level_next
+    (H : SMTree S) {c : Nat} (g : AM H c 1) :
+    H.levelMap (g.canonical H).map (c + 1) = g.nextCut H := by
+  calc
+    H.levelMap (g.canonical H).map (c + 1) =
+        H.levelMap (g.canonical H).map c + 1 := by
+      exact H.canonicalExtension_level_succ
+        (g.representative H) c c le_rfl
+    _ = g.topLevel H + 1 := by rw [g.canonical_level_cut H]
+    _ = g.nextCut H := rfl
+
+/-- A canonical head remains canonical when the prescribed prefix is extended
+by one source level. -/
+theorem AM.canonical_recanonical_next
+    (H : SMTree S) {c : Nat} (g : AM H c 1) :
+    H.canonicalExtension (g.canonical H) (c + 1) =
+      g.canonical H := by
+  symm
+  apply H.canonicalExtension_unique
+    (g.canonical H) (g.canonical H) (c + 1)
+  · intro x hx
+    rfl
+  · intro ell hell
+    apply H.canonicalExtension_tail_mem_levelRange
+      (g.representative H) c ell
+    have hnext := g.canonical_level_next H
+    calc
+      H.levelMap (g.representative H).map c =
+          g.topLevel H := rfl
+      _ < g.nextCut H := Nat.lt_succ_self _
+      _ = H.levelMap (g.canonical H).map (c + 1) := hnext.symm
+      _ ≤ ell := hell
+
+/-- Chosen representatives of toAM agree with the total map on the finite
+source segment they represent. -/
+theorem MMap.toAM_one_representative_agrees
+    (H : SMTree S) (F : MMap H) (c : Nat)
+    (hfix : F.FixesBelow H c)
+    (x : T) (hx : LevelTree.lev x ≤ c) :
+    (F.toAM H c 1 hfix).representative H x = F x := by
+  let a : AM H c 1 := F.toAM H c 1 hfix
+  have htop := a.representative_top H
+  have hval := congrArg Subtype.val htop
+  change (a.representative H).restrictLe H c = F.restrictLe H c at hval
+  exact congrFun hval ⟨x, hx⟩
+
+/-- The terminal level of a one-moving approximation built from a total
+M-map is the total map's level at the frozen cut. -/
+theorem MMap.toAM_one_topLevel
+    (H : SMTree S) (F : MMap H) (c : Nat)
+    (hfix : F.FixesBelow H c) :
+    (F.toAM H c 1 hfix).topLevel H = H.levelMap F.map c := by
+  obtain ⟨x, hx⟩ := H.level_nonempty c
+  unfold AM.topLevel
+  calc
+    H.levelMap ((F.toAM H c 1 hfix).representative H).map c =
+        LevelTree.lev ((F.toAM H c 1 hfix).representative H x) := by
+      simpa [hx] using
+        H.levelMap_eq ((F.toAM H c 1 hfix).representative H).map (a := x)
+    _ = LevelTree.lev (F x) := by
+      rw [MMap.toAM_one_representative_agrees H F c hfix x (by simpa [hx])]
+    _ = H.levelMap F.map c := by
+      simpa [hx] using (H.levelMap_eq F.map (a := x)).symm
+
+/-- Transport a split tail across a canonical head. The target cut is exactly
+the next cut of the head, and excess is preserved. -/
+theorem exists_transport_after_head
+    (H : SMTree S)
+    {c : Nat}
+    (g : AM H c 1)
+    (s : MMap H)
+    (hs : s.FixesBelow H (c + 1)) :
+    ∃ t : MMap H,
+      t.FixesBelow H (g.nextCut H) ∧
+      H.levelMap t.map (g.nextCut H) =
+        g.nextCut H + (H.levelMap s.map (c + 1) - (c + 1)) ∧
+      ∀ x : T, LevelTree.lev x ≤ c + 1 →
+        g.canonical H (s x) = t (g.canonical H x) := by
+  obtain ⟨t, htfix, htlev, htcomm⟩ :=
+    H.exists_transport_across_canonical
+      (g.canonical H) s (c + 1) hs
+  have hnext := g.canonical_level_next H
+  have hrecanon := g.canonical_recanonical_next H
+  refine ⟨t, ?_, ?_, ?_⟩
+  · simpa [hnext] using htfix
+  · simpa [hnext] using htlev
+  · intro x hx
+    have h := htcomm x hx
+    rw [hrecanon] at h
+    exact h
+
+/-- Direct evaluation of a right coordinate in the tail subspace. -/
+noncomputable def ShapeFusionData.eval
+    (D : ShapeFusionData H n)
+    (i : Nat)
+    (r : AM H (D.cut i) 1) :
+    AM H (D.cut i) 1 :=
+  H.shapeAct (D.cut i) (D.tail i) r
+
+/-- The base (zero-excess) coordinate evaluates to the chosen head. -/
+theorem ShapeFusionData.eval_id_eq_head
+    (D : ShapeFusionData H n) (i : Nat) :
+    D.eval i (AM.id1 H (D.cut i)) = D.head i := by
+  apply Subtype.ext
+  apply Subtype.ext
+  funext x
+  have hidTop := (AM.id1 H (D.cut i)).representative_top H
+  have hidVal := congrArg Subtype.val hidTop
+  change
+    ((AM.id1 H (D.cut i)).representative H).restrictLe H (D.cut i) =
+      (MMap.id H).restrictLe H (D.cut i) at hidVal
+  have hxId := congrFun hidVal x
+  have hdec := congrArg
+    (fun F : MMap H => F x.1) (D.decompose i)
+  have hheadLev :
+      LevelTree.lev ((D.head i).canonical H x.1) < D.cut (i + 1) := by
+    calc
+      LevelTree.lev ((D.head i).canonical H x.1) =
+          H.levelMap ((D.head i).canonical H).map
+            (LevelTree.lev x.1) :=
+        (H.levelMap_eq ((D.head i).canonical H).map (a := x.1)).symm
+      _ ≤ H.levelMap ((D.head i).canonical H).map (D.cut i) :=
+        (H.levelMap_strictMono ((D.head i).canonical H).map).monotone x.2
+      _ = (D.head i).topLevel H := (D.head i).canonical_level_cut H
+      _ < (D.head i).nextCut H := Nat.lt_succ_self _
+      _ = D.cut (i + 1) := (D.cut_succ i).symm
+  have htailFix :
+      (D.tail (i + 1)).1 ((D.head i).canonical H x.1) =
+        (D.head i).canonical H x.1 :=
+    (D.tail (i + 1)).2 _ hheadLev
+  have hheadTop := (D.head i).representative_top H
+  have hheadVal := congrArg Subtype.val hheadTop
+  change
+    ((D.head i).representative H).restrictLe H (D.cut i) =
+      (D.head i).1.1 at hheadVal
+  have hxHead := congrFun hheadVal x
+  change
+    (D.tail i).1
+        ((AM.id1 H (D.cut i)).representative H x.1) =
+      (D.head i).1.1 x
+  rw [hxId]
+  calc
+    (D.tail i).1 x.1 =
+        (D.tail (i + 1)).1 ((D.head i).canonical H x.1) := hdec
+    _ = (D.head i).canonical H x.1 := htailFix
+    _ = (D.head i).representative H x.1 := by
+      rw [AM.canonical, H.canonicalExtension_agrees
+        ((D.head i).representative H) (D.cut i) x.1 x.2]
+    _ = (D.head i).1.1 x := hxHead
+
 end SMTree
 end SuccessorTree
