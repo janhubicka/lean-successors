@@ -559,5 +559,49 @@ theorem ShapeFusionData.exists_eval_step
     _ = qline.representative H z := by
       rw [hqlineRep]
 
+
+/-- The excess induction: every explicit right coordinate evaluates into the
+chosen large cell at its fusion stage. -/
+theorem ShapeFusionData.eval_mem
+    (D : ShapeFusionData H n) :
+    ∀ i : Nat, ∀ r : AM H (D.cut i) 1,
+      D.eval i r ∈ D.cell i := by
+  intro i r
+  generalize hk : r.excess H = k
+  induction k using Nat.strong_induction_on generalizing i r with
+  | h k ih =>
+      by_cases hk0 : k = 0
+      · subst k
+        have hex0 : r.topLevel H - D.cut i = 0 := by
+          simpa [AM.excess] using hk
+        have htopLe : r.topLevel H ≤ D.cut i :=
+          Nat.sub_eq_zero_iff_le.mp hex0
+        have rid : r = AM.id1 H (D.cut i) := by
+          exact AM.eq_id1_of_topLevel_le H r htopLe
+        rw [rid, D.eval_id_eq_head]
+        exact D.head_mem i
+      · have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
+        have htopGe : D.cut i ≤ r.topLevel H := by
+          have hge := H.levelMap_id_le (r.representative H).map (D.cut i)
+          simpa [AM.topLevel] using hge
+        have hmove : D.cut i < r.topLevel H := by
+          have hexpos : 0 < r.excess H := by
+            rw [hk]
+            exact hkpos
+          unfold AM.excess at hexpos
+          omega
+        obtain ⟨q, hqex, heval⟩ :=
+          D.exists_eval_step i r hmove
+        have hqk : q.excess H = k - 1 := by
+          calc
+            q.excess H = r.excess H - 1 := hqex
+            _ = k - 1 := by rw [hk]
+        have hqmem :
+            D.eval (i + 1) q ∈ D.cell (i + 1) :=
+          ih (k - 1) (by omega) (i + 1) q hqk
+        rw [heval]
+        exact D.line_closed_cast i (D.eval (i + 1) q) hqmem
+          (.letter (H.firstMoveSplit r hmove).first)
+
 end SMTree
 end SuccessorTree
