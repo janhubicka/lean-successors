@@ -62,13 +62,13 @@ def refl (U : FiniteFatTree H) : ReductionWitness H U U where
 
 /-- Restrict a finite reduction witness to an initial segment.
 The target prefix ends at the image of the retained terminal cut. -/
-def prefix
+def initialSegment
     {V U : FiniteFatTree H}
     (w : ReductionWitness H V U)
     (n : Nat) (hn : n ≤ V.height) :
     ReductionWitness H
-      (V.prefix H n hn)
-      (U.prefix H
+      (V.initialSegment H n hn)
+      (U.initialSegment H
         (w.index (⟨n, by omega⟩ : Fin (V.height + 1))).1
         (by
           exact Nat.le_of_lt_succ
@@ -101,7 +101,7 @@ def prefix
     have h := w.lift_subset iv
     rw [V.prefix_oneLift H n hn i]
     have htarget :
-        (U.prefix H
+        (U.initialSegment H
           (w.index (⟨n, by omega⟩ :
             Fin (V.height + 1))).1
           (by
