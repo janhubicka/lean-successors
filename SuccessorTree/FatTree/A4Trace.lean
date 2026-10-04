@@ -484,12 +484,16 @@ noncomputable def ExactTrace.extendByLetter
           (H.levelMap_eq C.map
             (a := e.toMMap (q.1.representative H a))).symm
       _ = H.levelMap C.map (d + 1) := by rw [hea]
+      _ = H.levelMap C.map d + 1 := by
+        exact H.canonicalExtension_level_succ
+          (h.representative H) d d le_rfl
       _ =
           H.levelMap (h.representative H).map d + 1 := by
         dsimp [C]
-        exact H.canonicalExtension_level_succ
-          (h.representative H) d d le_rfl
+        rw [H.canonicalExtension_level_at_prefix
+          (h.representative H) d]
       _ = h.rowEndLevel H + 1 := rfl
+  unfold ExactTrace
   rw [hsrc]
   refine ⟨theta, ?_, ?_⟩
   · calc
