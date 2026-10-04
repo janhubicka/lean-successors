@@ -63,3 +63,5 @@ import SuccessorTree.NonPrecompact.QuadraticGauss
 import SuccessorTree.NonPrecompact.QuadraticMoments
 
 import SuccessorTree.NonPrecompact.QuadraticArithmetic
+
+import SuccessorTree.NonPrecompact.QuadraticCongruence
