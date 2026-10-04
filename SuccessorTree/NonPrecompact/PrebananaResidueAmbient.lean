@@ -20,7 +20,11 @@ def prebananaResidueAmbient (m k : ℕ) : PrebananaAtomStructure where
   atomCount_pos := by positivity
   mark := fun _ => 1
   total_mark_parity := by
-    simp [prebananaMarkedCount, pow_succ]
+    have hpow : Even (2 ^ (k + 1)) :=
+      even_two.pow_of_ne_zero (Nat.succ_ne_zero k)
+    have hEven : Even ((m - 1) * 2 ^ (k + 1) + 2) :=
+      (Even.mul_left hpow (m - 1)).add even_two
+    simpa [prebananaMarkedCount] using hEven.natCast_zmod_two
 
 @[simp] theorem prebananaResidueAmbient_atomCount
     (m k : ℕ) :
@@ -39,6 +43,7 @@ theorem prebananaResidueAmbient_atomCount_even
     Even (prebananaResidueAmbient m k).atomCount := by
   rw [prebananaResidueAmbient_atomCount]
   refine Even.add ?_ even_two
-  exact Even.mul_right (even_two.pow_of_ne_zero (Nat.succ_ne_zero k)) (m - 1)
+  exact Even.mul_left
+    (even_two.pow_of_ne_zero (Nat.succ_ne_zero k)) (m - 1)
 
 end SuccessorTree.NonPrecompact
