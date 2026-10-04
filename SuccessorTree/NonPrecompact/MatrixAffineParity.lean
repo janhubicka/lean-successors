@@ -75,7 +75,7 @@ theorem pow_two_sub_dvd_card_matrixAffineFiber
   by_cases hne : Nonempty (affineFiber M.mulVecLin b)
   · let x0 : affineFiber M.mulVecLin b := Classical.choice hne
     rw [affineFiber_card_eq_ker_card M.mulVecLin b x0]
-    rw [Module.natCard_eq_pow_finrank (K := F2)]
+    rw [Module.natCard_eq_pow_finrank (K := F2), Nat.card_zmod]
     apply pow_dvd_pow 2
     have hrange :
         Module.finrank F2 (LinearMap.range M.mulVecLin) ≤ m := by
