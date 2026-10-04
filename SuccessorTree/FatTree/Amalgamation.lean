@@ -406,6 +406,55 @@ theorem splice_oneLift_ge
   unfold FatTree.oneLift
   rw [splice_rowExtension_ge H x V n hcut hi]
 
+/-- Once the starting row is at or beyond the splice point,
+iterated Lift in the splice is exactly iterated Lift in the attached tail,
+with the row index shifted by the splice offset. -/
+theorem splice_liftSteps_ge
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n)
+    (i steps : Nat) (hi : x.height ≤ i) (X : Set T) :
+    (splice H x V n hcut).liftSteps H i steps X =
+      V.liftSteps H (n + (i - x.height)) steps X := by
+  induction steps generalizing i X with
+  | zero =>
+      rfl
+  | succ steps ih =>
+      rw [FatTree.liftSteps_succ, FatTree.liftSteps_succ]
+      rw [splice_oneLift_ge H x V n hcut hi]
+      have hi1 : x.height ≤ i + 1 := by omega
+      have hidx :
+          n + (i + 1 - x.height) =
+            (n + (i - x.height)) + 1 := by
+        omega
+      have hrec :=
+        ih (i := i + 1)
+          (X := V.oneLift H (n + (i - x.height)) X)
+          hi1
+      simpa [hidx] using hrec
+
+/-- Tail interval Lift in a splice agrees with interval Lift in the attached
+tail, after shifting both endpoints. -/
+theorem splice_liftTo_ge
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n)
+    (a b : Nat) (ha : x.height ≤ a) (hab : a ≤ b)
+    (X : Set T) :
+    (splice H x V n hcut).liftTo H a b hab X =
+      V.liftTo H
+        (n + (a - x.height))
+        (n + (b - x.height))
+        (by omega) X := by
+  unfold FatTree.liftTo
+  calc
+    (splice H x V n hcut).liftSteps H a (b - a) X =
+        V.liftSteps H (n + (a - x.height)) (b - a) X :=
+      splice_liftSteps_ge H x V n hcut a (b - a) ha X
+    _ = V.liftSteps H
+        (n + (a - x.height))
+        ((n + (b - x.height)) - (n + (a - x.height))) X := by
+      congr 2
+      omega
+
 /-- Cut-index map for the reduction from a splice to its ambient tail.
 Before the splice it follows the finite reduction witness; from the splice
 cut onward it is the shifted identity on the tail. -/
