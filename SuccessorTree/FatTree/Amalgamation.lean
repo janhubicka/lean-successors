@@ -895,7 +895,9 @@ theorem neighborhood_reduces_attached_tail
     · by_cases hnext : j + 1 < x.height
       · let ja : Fin (x.height + 1) := ⟨j, by omega⟩
         let jb : Fin (x.height + 1) := ⟨j + 1, by omega⟩
-        have hab : ja < jb := Fin.lt_def.mpr (by omega)
+        have hab : ja < jb := Fin.lt_def.mpr (by
+          change j < j + 1
+          exact Nat.lt_succ_self j)
         have ha := a.index_strict hab
         change (a.index ja).1 < (a.index jb).1 at ha
         simpa [β, hj, hnext, ja, jb] using ha
@@ -1021,7 +1023,9 @@ theorem neighborhood_reduces_attached_tail
       have haa :
           (a.index ji.castSucc).1 ≤ (a.index ji.succ).1 :=
         Nat.le_of_lt (a.index_strict
-          (Fin.lt_def.mpr (by omega)))
+          (Fin.lt_def.mpr (by
+            change j < j + 1
+            exact Nat.lt_succ_self j)))
       have hβ :
           β j ≤ β (j + 1) :=
         Nat.le_of_lt (hβstep j)
