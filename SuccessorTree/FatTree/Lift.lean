@@ -727,10 +727,7 @@ theorem liftSteps_add (U : FiniteFatTree H)
         (U.liftSteps H i a (by omega) X) := by
   induction a generalizing i X with
   | zero =>
-      change
-        U.liftSteps H i b h X =
-          U.liftSteps H i b (by omega) X
-      rfl
+      simpa only [Nat.zero_add, Nat.add_zero]
   | succ a ih =>
       let ri : Fin U.height := ⟨i, by omega⟩
       have hsum : (a + 1) + b = (a + b) + 1 := by omega
