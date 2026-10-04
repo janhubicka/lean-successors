@@ -82,12 +82,10 @@ theorem boundedRows_finite (n d : Nat) :
     (boundedRowCode_injective H n d)
 
 /-- The subtype of rows with fixed source cut and bounded last image
-level is a finite type. -/
-noncomputable instance boundedRowFiberFinite (n d : Nat) :
-    Finite {a : AM H n 1 // a.rowEndLevel H < d} :=
-  Finite.of_injective
-    (boundedRowCode H n d)
-    (boundedRowCode_injective H n d)
+level is a concrete finite type. -/
+noncomputable instance boundedRowFiberFintype (n d : Nat) :
+    Fintype {a : AM H n 1 // a.rowEndLevel H < d} :=
+  Set.Finite.fintype (boundedRows_finite H n d)
 
 /-- A row below terminal cut `d`, tagged by its source cut.  Source cuts are
 strictly below `d` because every row advances to a strictly larger next
@@ -95,8 +93,8 @@ cut. -/
 def BoundedRow (d : Nat) :=
   Σ n : Fin d, {a : AM H n.1 1 // a.rowEndLevel H < d}
 
-noncomputable instance boundedRowFinite (d : Nat) :
-    Finite (BoundedRow H d) := by
+noncomputable instance boundedRowFintype (d : Nat) :
+    Fintype (BoundedRow H d) := by
   infer_instance
 
 /-- The manuscript's finitary order on finite fat trees: reduction with the
