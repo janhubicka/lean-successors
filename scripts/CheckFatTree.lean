@@ -12,9 +12,11 @@ open SuccessorTree
 #check SMTree.FatTree.oneLift_descends
 #check SMTree.FatTree.oneLift_mem_of_mem_full_of_source
 #check SMTree.FatTree.liftSteps_subset_level
+#check SMTree.FatTree.liftSteps_add
 #check SMTree.FatTree.liftSteps_descends
 #check SMTree.FatTree.liftSteps_mem_of_mem_of_source
 #check SMTree.FatTree.liftTo_subset_level
+#check SMTree.FatTree.liftTo_split
 #check SMTree.FatTree.liftTo_descends
 #check SMTree.FatTree.liftTo_mem_of_mem_of_source
 
