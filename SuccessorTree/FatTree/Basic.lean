@@ -170,6 +170,36 @@ theorem cut_lt_succ (U : FiniteFatTree H) (i : Fin U.height) :
     U.cut i.castSucc < (U.row i).rowEndLevel H + 1 := Nat.lt_succ_of_le hle
     _ = U.cut i.succ := U.row_cut i
 
+/-- The k-th cut is at least k.  Thus the terminal ambient cut bounds
+the number of rows in a finite fat tree. -/
+theorem index_le_cut (U : FiniteFatTree H) :
+    ∀ k : Nat, (hk : k ≤ U.height) →
+      k ≤ U.cut (⟨k, Nat.lt_succ_of_le hk⟩ : Fin (U.height + 1)) := by
+  intro k
+  induction k with
+  | zero =>
+      intro hk
+      simp [U.cut_zero]
+  | succ k ih =>
+      intro hk
+      have hklt : k < U.height := by omega
+      let i : Fin U.height := ⟨k, hklt⟩
+      have hprev :
+          k ≤ U.cut i.castSucc := by
+        have := ih (Nat.le_of_lt hklt)
+        simpa [i] using this
+      have hstep := U.cut_lt_succ H i
+      change
+        U.cut (⟨k, by omega⟩ : Fin (U.height + 1)) <
+          U.cut (⟨k + 1, by omega⟩ : Fin (U.height + 1)) at hstep
+      omega
+
+/-- Height is bounded by the terminal cut. -/
+theorem height_le_terminalCut (U : FiniteFatTree H) :
+    U.height ≤ U.terminalCut := by
+  simpa [FiniteFatTree.terminalCut] using
+    U.index_le_cut H U.height le_rfl
+
 end FiniteFatTree
 
 end SMTree
