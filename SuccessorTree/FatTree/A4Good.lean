@@ -157,6 +157,84 @@ theorem fixedTraceGoodRows_base
     rw [cast_compose_base_exactTrace H y q h]
     exact hh
 
+
+/-- A second row is good after \`h\` precisely when it has the chosen colour
+after every raw successor-table update of every exact trace through \`y\`.
+Keeping the predecessor trace explicit matches the paper's \`Q[h]\`
+notation without pretending that the raw successor table is itself an
+admissible M-map. -/
+def FixedTraceUpdateGood
+    (c n : Nat)
+    (y : FiniteFatTree H)
+    (hn : n ≤ y.height)
+    (hsrc : FiniteFatTree.traceSourceCut H y n hn = c)
+    (O : Set (AM H c 1))
+    (h : AM H y.terminalCut 1)
+    (k : AM H (FiniteFatTree.appendRow H y h).terminalCut 1) : Prop :=
+  let hn' : n ≤ (FiniteFatTree.appendRow H y h).height := by
+    rw [FiniteFatTree.appendRow_height]
+    omega
+  let hsrc' :
+      FiniteFatTree.traceSourceCut H
+          (FiniteFatTree.appendRow H y h) n hn' = c :=
+    traceSource_eq_after_append H c n y hn hsrc h
+  ∀ (theta : FiniteFatTree.ExactTrace H
+        (FiniteFatTree.appendRow H y h) n hn')
+    (q : FiniteFatTree.ExactTrace H y n hn),
+      FiniteFatTree.IsRawTraceUpdate H y h n hn q theta →
+        FiniteFatTree.castTraceRow H hsrc'
+          (H.composeAcross
+            (exactTraceToAMExact H
+              (FiniteFatTree.appendRow H y h) n hn' theta)
+            k) ∈ O
+
+/-- The raw-update formulation is exactly the fixed-trace good-row condition
+for the appended prefix.  The reverse implication uses the verified reverse
+trace-update theorem: every exact trace through \`y ⌢ h\` has a raw
+predecessor through \`y\`. -/
+theorem fixedTraceUpdateGood_iff
+    (c n : Nat)
+    (y : FiniteFatTree H)
+    (hn : n ≤ y.height)
+    (hsrc : FiniteFatTree.traceSourceCut H y n hn = c)
+    (O : Set (AM H c 1))
+    (h : AM H y.terminalCut 1)
+    (k : AM H (FiniteFatTree.appendRow H y h).terminalCut 1) :
+    FixedTraceUpdateGood H c n y hn hsrc O h k ↔
+      k ∈ FixedTraceGoodRows H c n
+        (FiniteFatTree.appendRow H y h)
+        (by
+          rw [FiniteFatTree.appendRow_height]
+          omega)
+        (traceSource_eq_after_append H c n y hn hsrc h)
+        O := by
+  let hn' : n ≤ (FiniteFatTree.appendRow H y h).height := by
+    rw [FiniteFatTree.appendRow_height]
+    omega
+  let hsrc' :
+      FiniteFatTree.traceSourceCut H
+          (FiniteFatTree.appendRow H y h) n hn' = c :=
+    traceSource_eq_after_append H c n y hn hsrc h
+  constructor
+  · intro hraw theta
+    obtain ⟨q, hupdate⟩ :=
+      theta.exists_raw_predecessor H y h n hn
+    exact hraw theta q hupdate
+  · intro hgood theta q hupdate
+    exact hgood theta
+
+/-- The two-row local target used by the all-trace fusion. -/
+def FixedTraceGoodPair
+    (c n : Nat)
+    (y : FiniteFatTree H)
+    (hn : n ≤ y.height)
+    (hsrc : FiniteFatTree.traceSourceCut H y n hn = c)
+    (O : Set (AM H c 1))
+    (h : AM H y.terminalCut 1)
+    (k : AM H (FiniteFatTree.appendRow H y h).terminalCut 1) : Prop :=
+  h ∈ FixedTraceGoodRows H c n y hn hsrc O ∧
+    FixedTraceUpdateGood H c n y hn hsrc O h k
+
 end FatTree
 end SMTree
 end SuccessorTree
