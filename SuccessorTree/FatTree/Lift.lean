@@ -739,6 +739,20 @@ theorem liftSteps_mem_of_mem_of_source (U : FiniteFatTree H)
         (by simpa [ri] using hYnext)
         hz ⟨y, hyX, hyz⟩
 
+/-- Equality of the underlying finite fat tree transports an iterated
+Lift, including its dependent height proof. -/
+theorem liftSteps_congr_tree
+    {U V : FiniteFatTree H}
+    (hUV : U = V)
+    (i steps : Nat)
+    (hU : i + steps ≤ U.height)
+    (hV : i + steps ≤ V.height)
+    (X : Set T) :
+    U.liftSteps H i steps hU X =
+      V.liftSteps H i steps hV X := by
+  subst V
+  rfl
+
 /-- Changing the numerical step count along an equality only transports
 the dependent height proof; the resulting lift is unchanged. -/
 theorem liftSteps_congr_steps (U : FiniteFatTree H)
