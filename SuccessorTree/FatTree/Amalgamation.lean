@@ -24,6 +24,30 @@ namespace FatTree
 
 variable (H : SMTree S)
 
+/-- A finite fat tree occurs at cut `n` of an infinite fat tree when it is
+a finitary reduction of the first `n` rows.  This is the formal version of
+the manuscript condition that the depth is `n`. -/
+def StemAt (x : FiniteFatTree H) (U : FatTree H) (n : Nat) : Prop :=
+  FiniteFatTree.LeFin H x (U.initialSegment H n)
+
+/-- A stem occurring at cut `n` has terminal cut exactly `U.cut n`. -/
+theorem terminalCut_eq_of_stemAt
+    {x : FiniteFatTree H} {U : FatTree H} {n : Nat}
+    (h : StemAt H x U n) :
+    x.terminalCut = U.cut n := by
+  simpa [StemAt] using h.2
+
+/-- The cut index at which a finite stem occurs is unique. -/
+theorem stemAt_unique
+    {x : FiniteFatTree H} {U : FatTree H} {m n : Nat}
+    (hm : StemAt H x U m) (hn : StemAt H x U n) :
+    m = n := by
+  apply U.cut_injective H
+  calc
+    U.cut m = x.terminalCut :=
+      (terminalCut_eq_of_stemAt H hm).symm
+    _ = U.cut n := terminalCut_eq_of_stemAt H hn
+
 /-- Transport a one-row approximation along an equality of its source
 cut.  Keeping this transport explicit avoids asking Lean to eliminate a
 heterogeneous equality between dependent approximation types. -/
