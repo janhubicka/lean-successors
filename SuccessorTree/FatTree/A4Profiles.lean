@@ -191,9 +191,12 @@ theorem rawSuccessorFanOfUpdate_realizes
           ⟨x, by omega⟩).1 := by
   classical
   let hz := Classical.choose_spec (hupdate x hx)
-  change theta.1.representative H x =
-    H.canonicalExtension (h.representative H) y.terminalCut
-      (Classical.choose (hupdate x hx))
+  have hfan :
+      ((rawSuccessorFanOfUpdate H y h n hn q theta hupdate).toFun
+        ⟨x, by omega⟩).1 =
+        Classical.choose (hupdate x hx) := by
+    simp [rawSuccessorFanOfUpdate, hx]
+  rw [hfan]
   exact hz.2
 
 end FatTree
