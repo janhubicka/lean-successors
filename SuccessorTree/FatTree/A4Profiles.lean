@@ -80,6 +80,93 @@ noncomputable instance fintype {c : Nat} (q : AM H c 1) :
 
 end RawSuccessorFan
 
+/-- The successor decomposition carried by one top-level entry of a
+raw fan. -/
+noncomputable def RawSuccessorFan.code
+    {c : Nat} {q : AM H c 1}
+    (e : RawSuccessorFan H q)
+    (x : InitialNode T c)
+    (hx : LevelTree.lev x.1 = c) :
+    SuccCode S (q.representative H x.1) (e.toFun x).1 :=
+  succCodeOfCovBy S (e.top_covBy x hx)
+
+/-- A total history map followed by a one-level skip realizes a raw fan when
+it repeats that fan's successor data over every source-top node.  No
+admissibility of the raw fan is assumed. -/
+def HistoryRealizesFan
+    {c r : Nat}
+    (q : AM H c 1)
+    (P : MMap H)
+    (E : OneLevelLetter H r)
+    (e : RawSuccessorFan H q) : Prop :=
+  ∀ (x : InitialNode T c)
+    (hx : LevelTree.lev x.1 = c),
+      S.succ
+          (P (q.representative H x.1))
+          (e.code H x hx).params
+          (e.code H x hx).char =
+        some (E (P (q.representative H x.1)))
+
+/-- A history step can realize at most one raw fan at a fixed trace.  This is
+the formal uniqueness behind the manuscript's successor-fan profile. -/
+theorem historyRealizesFan_unique
+    {c r : Nat}
+    (q : AM H c 1)
+    (P : MMap H)
+    (E : OneLevelLetter H r)
+    {e f : RawSuccessorFan H q}
+    (he : HistoryRealizesFan H q P E e)
+    (hf : HistoryRealizesFan H q P E f) :
+    e = f := by
+  apply RawSuccessorFan.ext H
+  funext x
+  apply Subtype.ext
+  by_cases hxlt : LevelTree.lev x.1 < c
+  · rw [e.eq_id_below x hxlt, f.eq_id_below x hxlt]
+  · have hx : LevelTree.lev x.1 = c := by
+      have hxle := x.2
+      omega
+    let ce := e.code H x hx
+    let cf := f.code H x hx
+    have hsame :=
+      S.s2 (he x hx) (hf x hx)
+    have hparams : ce.params = cf.params := hsame.2.1
+    have hchar : ce.char = cf.char := hsame.2.2
+    have he0 := ce.succ_eq
+    have hf0 := cf.succ_eq
+    rw [hparams, hchar] at he0
+    exact Option.some.inj (he0.symm.trans hf0)
+
+/-- The profile coordinate of a history step at one trace: record the unique
+realized raw fan when it exists, and bottom otherwise. -/
+noncomputable def historyProfile
+    {c r : Nat}
+    (q : AM H c 1)
+    (P : MMap H)
+    (E : OneLevelLetter H r) :
+    Option (RawSuccessorFan H q) := by
+  classical
+  by_cases h :
+      ∃ e : RawSuccessorFan H q,
+        HistoryRealizesFan H q P E e
+  · exact some (Classical.choose h)
+  · exact none
+
+theorem historyProfile_eq_some
+    {c r : Nat}
+    (q : AM H c 1)
+    (P : MMap H)
+    (E : OneLevelLetter H r)
+    (e : RawSuccessorFan H q)
+    (he : HistoryRealizesFan H q P E e) :
+    historyProfile H q P E = some e := by
+  classical
+  unfold historyProfile
+  rw [dif_pos ⟨e, he⟩]
+  congr 1
+  exact historyRealizesFan_unique H q P E
+    (Classical.choose_spec ⟨e, he⟩) he
+
 /-- A finite profile over a finite family of traces: at each trace we either
 record a raw successor fan or none. The latter is the manuscript's bottom
 symbol recording failure to match that fan. -/
@@ -97,6 +184,29 @@ noncomputable instance fanProfileFintype
       ∀ i : C, Fintype (RawSuccessorFan H (trace i)) :=
     fun i => RawSuccessorFan.fintype H (trace i)
   infer_instance
+
+/-- Simultaneous successor-fan profile of one history step over a
+finite trace family. -/
+noncomputable def historyFanProfile
+    {c r : Nat}
+    {C : Type*} [Fintype C]
+    (trace : C → AM H c 1)
+    (P : MMap H)
+    (E : OneLevelLetter H r) :
+    FanProfile H C trace :=
+  fun i => historyProfile H (trace i) P E
+
+theorem historyFanProfile_eq_some
+    {c r : Nat}
+    {C : Type*} [Fintype C]
+    (trace : C → AM H c 1)
+    (P : MMap H)
+    (E : OneLevelLetter H r)
+    (i : C)
+    (e : RawSuccessorFan H (trace i))
+    (he : HistoryRealizesFan H (trace i) P E e) :
+    historyFanProfile H trace P E i = some e :=
+  historyProfile_eq_some H (trace i) P E e he
 
 /-- The exact traces of one finite fat-tree prefix form a concrete
 finite type, not merely a finite set. -/
