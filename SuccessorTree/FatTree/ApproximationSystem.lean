@@ -150,11 +150,12 @@ theorem mem_levelNeighborhood_iff_depthCone
   constructor
   · intro h
     refine ⟨h.1, ?_⟩
-    exact congrArg Subtype.val h.2
+    exact extendsStem_of_initialSegment_eq H
+      (congrArg Subtype.val h.2)
   · intro h
     refine ⟨h.1, ?_⟩
     apply Subtype.ext
-    exact h.2
+    exact initialSegment_eq_of_extendsStem H h.2
 
 end FatTree
 
