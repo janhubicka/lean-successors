@@ -75,3 +75,5 @@ import SuccessorTree.NonPrecompact.QuadraticResidueCollapse
 import SuccessorTree.NonPrecompact.QuadraticCoordinateGlue
 
 import SuccessorTree.NonPrecompact.QuadraticResidueGenerating
+
+import SuccessorTree.NonPrecompact.QuadraticResidueStandard
