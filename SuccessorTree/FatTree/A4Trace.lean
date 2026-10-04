@@ -412,6 +412,63 @@ def castTraceRow {a b : Nat} (h : a = b) (q : AM H a 1) : AM H b 1 := by
   cases h
   rfl
 
+/-- Raw successor-table data for an admissible candidate trace.
+
+Unlike `ExactTrace.extendByLetter`, this does not assume that the successor
+choices come from a total admissible one-level M-map.  It records exactly the
+finite table used in the manuscript: pointwise immediate successors of the
+old trace, followed by the canonical appended row. -/
+def IsRawTraceCandidate
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : ExactTrace H y n hn)
+    (theta : AM H
+      (traceSourceCut H (appendRow H y h) n (by
+        rw [appendRow_height]
+        omega)) 1) : Prop :=
+  theta.rowEndLevel H = traceTargetCut H (appendRow H y h) ∧
+    ∀ a : T, LevelTree.lev a = traceSourceCut H y n hn →
+      ∃ z : T,
+        q.1.representative H a ⋖ z ∧
+        theta.representative H a =
+          H.canonicalExtension (h.representative H) y.terminalCut z
+
+/-- Every admissible row carrying the manuscript's raw successor-table data
+is an exact trace of the appended finite fat tree.  No total admissible map
+extending the successor table is used. -/
+theorem exactTrace_of_raw_candidate
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : ExactTrace H y n hn)
+    (theta : AM H
+      (traceSourceCut H (appendRow H y h) n (by
+        rw [appendRow_height]
+        omega)) 1)
+    (hraw : IsRawTraceCandidate H y h n hn q theta) :
+    ExactTrace H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega) := by
+  refine ⟨theta, hraw.1, ?_⟩
+  intro a ha
+  have hsrc :
+      traceSourceCut H (appendRow H y h) n (by
+        rw [appendRow_height]
+        omega) =
+        traceSourceCut H y n hn :=
+    traceSourceCut_appendRow H y h n hn
+  have ha0 :
+      LevelTree.lev a = traceSourceCut H y n hn :=
+    ha.trans hsrc
+  rcases hraw.2 a ha0 with ⟨z, hqz, htheta⟩
+  have hqmem :
+      q.1.representative H a ∈ traceLift H y n hn :=
+    q.image_mem_lift H a ha0
+  rw [traceLift_appendRow_fan H y h n hn]
+  rw [htheta]
+  exact ⟨z, ⟨q.1.representative H a, hqmem, hqz⟩, rfl⟩
+
 /-- Manuscript trace-update relation.
 
 The intermediate successor table is deliberately *raw finite data*: for each
