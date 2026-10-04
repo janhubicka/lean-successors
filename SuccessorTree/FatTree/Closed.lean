@@ -62,11 +62,11 @@ theorem isMetricallyClosed :
       realized_prefix_eq H c hpref
         (i + 1) (i + 2) (i + 1) (by omega) (by omega)
     have ht :=
-      congrArg FiniteFatTree.terminalCut hseg
+      FiniteFatTree.cut_eq_of_eq H hseg (Fin.last (i + 1))
     change
-      (Classical.choose (hpref (i + 1))).cut (i + 1) =
-        (Classical.choose (hpref (i + 2))).cut (i + 1) at ht
-    simpa [X] using ht
+      (X (i + 1)).cut (i + 1) =
+        (X (i + 2)).cut (i + 1)
+    exact ht
 
   let U : FatTree H := {
     cut := cut
@@ -106,11 +106,9 @@ theorem isMetricallyClosed :
           realized_prefix_eq H c hpref
             (i.1 + 1) n i.1 (by omega) hiN
         have ht :=
-          congrArg FiniteFatTree.terminalCut hseg
-        change
-          (Classical.choose (hpref (i.1 + 1))).cut i.1 =
-            (Classical.choose (hpref n)).cut i.1 at ht
-        simpa [X] using ht
+          FiniteFatTree.cut_eq_of_eq H hseg (Fin.last i.1)
+        change (X (i.1 + 1)).cut i.1 = (X n).cut i.1
+        exact ht
       · intro i
         have hiNlt : i.1 < n := by
           change i.1 < n
@@ -120,19 +118,11 @@ theorem isMetricallyClosed :
         have hseg :=
           realized_prefix_eq H c hpref
             (i.1 + 1) n (i.1 + 1) le_rfl hiN
-        let j :
-            Fin ((Classical.choose (hpref n)).initialSegment H
-              (i.1 + 1) |>.height) :=
-          ⟨i.1, by
-            change i.1 < i.1 + 1
-            omega⟩
         have hr :=
-          FiniteFatTree.row_heq_of_eq H hseg j
+          FiniteFatTree.row_heq_of_eq H hseg (Fin.last i.1)
         change
-          HEq
-            ((Classical.choose (hpref (i.1 + 1))).row i.1)
-            ((Classical.choose (hpref n)).row i.1) at hr
-        simpa [X] using hr
+          HEq ((X (i.1 + 1)).row i.1) ((X n).row i.1)
+        exact hr
     _ = (c n).1 := hreal
 
 /-- Metric closedness plus the already verified A2 finitization gives the
@@ -179,7 +169,19 @@ theorem fusionComplete :
         (approximationSystem H).approx n X =
           (approximationSystem H).approx n (Y j) :=
       (hXcode n).trans hstab.symm
-    simpa only [RamseySpace.ApproximationSystem.finiteApprox, hXj] using hm
+    have htree :
+        X.initialSegment H n = (Y j).initialSegment H n :=
+      congrArg Subtype.val hXj
+    change
+      FiniteFatTree.LeFin H
+        (X.initialSegment H n)
+        ((Y k).initialSegment H m)
+    change
+      FiniteFatTree.LeFin H
+        ((Y j).initialSegment H n)
+        ((Y k).initialSegment H m) at hm
+    rw [htree]
+    exact hm
   · have hX :
         (approximationSystem H).approx (n0 + k) X =
           (approximationSystem H).approx (n0 + k)
