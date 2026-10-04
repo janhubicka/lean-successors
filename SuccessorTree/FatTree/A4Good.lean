@@ -127,7 +127,29 @@ theorem fixedTraceGoodRows_base
               (FiniteFatTree.traceSourceCut H y y.height le_rfl))
             a (by omega)
         rw [hid]
-        simpa [Nat.sub_self, TreeLevel] using ha
+        have hlift :
+            y.liftSteps H y.height (y.height - y.height) (by omega)
+                (TreeLevel (T := T)
+                  (FiniteFatTree.traceSourceCut H y y.height le_rfl)) =
+              TreeLevel (T := T)
+                (FiniteFatTree.traceSourceCut H y y.height le_rfl) := by
+          calc
+            y.liftSteps H y.height (y.height - y.height) (by omega)
+                (TreeLevel (T := T)
+                  (FiniteFatTree.traceSourceCut H y y.height le_rfl)) =
+              y.liftSteps H y.height 0 (by omega)
+                (TreeLevel (T := T)
+                  (FiniteFatTree.traceSourceCut H y y.height le_rfl)) :=
+                y.liftSteps_congr_steps H y.height
+                  (y.height - y.height) 0
+                  (by omega) (by omega) (Nat.sub_self y.height)
+                  (TreeLevel (T := T)
+                    (FiniteFatTree.traceSourceCut H y y.height le_rfl))
+            _ = TreeLevel (T := T)
+                  (FiniteFatTree.traceSourceCut H y y.height le_rfl) :=
+                y.liftSteps_zero H y.height (by omega) _
+        rw [hlift]
+        exact ha
     have hgood := hh q0
     rw [cast_compose_base_exactTrace H y q0 h] at hgood
     exact hgood
