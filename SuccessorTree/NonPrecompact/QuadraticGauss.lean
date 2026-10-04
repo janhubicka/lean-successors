@@ -76,6 +76,7 @@ sum in the first variable is zero away from the zero second variable and
 is the full cardinality at zero. -/
 theorem sum_f2Sign_bilinear_fixed
     {V : Type*} [AddCommGroup V] [Module F2 V] [Fintype V]
+    [DecidableEq V]
     (b : V →ₗ[F2] V →ₗ[F2] F2)
     (hnondeg : Function.Injective b.flip)
     (w : V) :
