@@ -68,10 +68,13 @@
     \leanverified{#1}{#2}%
   \endgroup
 }
+% A3 structural splice snapshot. Actions run 37183768621 checked
+% the splice/depth/reduction core separately; the full A3 neighbourhood
+% clauses are still under formalization.
 \newcommand{\successorfatleanpartial}[2]{%
   \begingroup
     \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
-    \renewcommand{\leancommit}{e477607203330e364c7813b0d1a424d07f2aa6d3}%
+    \renewcommand{\leancommit}{c24813e31cbcaba26db5240128fa5e0127c8f442}%
     \leanpartial{#1}{#2}%
   \endgroup
 }
