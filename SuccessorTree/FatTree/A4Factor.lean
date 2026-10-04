@@ -64,17 +64,16 @@ theorem exists_lastBlock_exactTrace
   rcases hg.1 with ⟨w⟩
 
   let irow : Fin V.height := ⟨y.height, by
-    dsimp [V]
-    rw [FiniteFatTree.appendRow_height]
+    change y.height < y.height + 1
     omega⟩
   let j0 : Fin (Z.height + 1) := ⟨y.height, by
-    dsimp [Z]
+    change y.height < (m + 1) + 1
     omega⟩
   let jmid : Fin (Z.height + 1) := ⟨m, by
-    dsimp [Z]
+    change m < (m + 1) + 1
     omega⟩
   let jrow : Fin Z.height := ⟨m, by
-    dsimp [Z]
+    change m < m + 1
     omega⟩
 
   have hirow : irow = Fin.last y.height := by
@@ -204,7 +203,7 @@ theorem exists_lastBlock_exactTrace
           (TreeLevel (T := T) (V.cut irow.castSucc)) :=
       ⟨b, hbmem, rfl⟩
     have hzZ := hLift hzV
-    rw [hirowSucc, hidxLast, hidx0] at hzZ
+    simp only [hidx0, hirowSucc, hidxLast] at hzZ
 
     have h0m : j0 ≤ jmid := by
       change y.height ≤ m
@@ -447,8 +446,11 @@ theorem exists_lastBlock_exactTrace
         congrFun hcTop x
 
   have hcastHEq :
-      HEq compCast comp :=
-    FiniteFatTree.castRow_heq H hsrc comp
+      HEq compCast comp := by
+    dsimp [compCast]
+    unfold FiniteFatTree.castTraceRow
+    cases hsrc
+    rfl
   exact hEq ▸ hcastHEq
 
 end FatTree
