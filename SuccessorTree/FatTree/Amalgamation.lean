@@ -941,6 +941,8 @@ theorem neighborhood_reduces_attached_tail
         exact hbj.trans (Nat.le_of_lt hb)
       simp [β, hj, hnext]
       omega
+  have hβstep : ∀ j : Nat, β j < β (j + 1) := fun j =>
+    hβstrict (Nat.lt_succ_self j)
   refine ⟨{
     index := β
     index_strict := hβstrict
@@ -1008,7 +1010,7 @@ theorem neighborhood_reduces_attached_tail
           (Fin.lt_def.mpr (by omega)))
       have hβ :
           β j ≤ β (j + 1) :=
-        Nat.le_of_lt (hβstrict (Nat.lt_succ_self j))
+        Nat.le_of_lt (hβstep j)
       have htarget :=
         V.liftTo_level_congr H haa hβ h0.symm h1.symm
       intro z hz
@@ -1047,7 +1049,7 @@ theorem neighborhood_reduces_attached_tail
         omega
       have hβ :
           β j ≤ β (j + 1) :=
-        Nat.le_of_lt (hβstrict (Nat.lt_succ_self j))
+        Nat.le_of_lt (hβstep j)
       have htarget :=
         V.liftTo_level_congr H hsrc hβ h0.symm h1.symm
       intro z hz
