@@ -176,8 +176,7 @@ theorem traceLift_appendRow
         (traceLift H y n hn) := by
   let z := appendRow H y h
   have hzheight : z.height = y.height + 1 := by
-    dsimp [z]
-    exact appendRow_height H y h
+    rfl
   have hzN : n ≤ z.height := by
     rw [hzheight]
     omega
@@ -246,7 +245,17 @@ theorem traceLift_appendRow
           (traceLift H y n hn) := hone
     _ = (appendRow H y h).oneLift H (Fin.last y.height)
           (traceLift H y n hn) := by
-      dsimp [z]
+      have hidx :
+          (⟨y.height, by omega⟩ :
+            Fin (appendRow H y h).height) =
+            (Fin.last y.height :
+              Fin (appendRow H y h).height) := by
+        apply Fin.ext
+        rfl
+      simpa [z] using congrArg
+        (fun j : Fin (appendRow H y h).height =>
+          (appendRow H y h).oneLift H j
+            (traceLift H y n hn)) hidx
 
 /-- In manuscript notation, the previous theorem says that the new trace
 Lift is h-plus applied to the successor fan of the old trace Lift. -/
