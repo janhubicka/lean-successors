@@ -245,14 +245,17 @@ theorem traceLift_appendRow
           (traceLift H y n hn) := hone
     _ = (appendRow H y h).oneLift H (Fin.last y.height)
           (traceLift H y n hn) := by
+      let j : Fin (appendRow H y h).height :=
+        ⟨y.height, by
+          rw [appendRow_height]
+          exact Nat.lt_succ_self y.height⟩
       have hidx :
-          (⟨y.height, by omega⟩ :
-            Fin (appendRow H y h).height) =
+          j =
             (Fin.last y.height :
               Fin (appendRow H y h).height) := by
         apply Fin.ext
         rfl
-      simpa [z] using congrArg
+      simpa [z, j] using congrArg
         (fun j : Fin (appendRow H y h).height =>
           (appendRow H y h).oneLift H j
             (traceLift H y n hn)) hidx
