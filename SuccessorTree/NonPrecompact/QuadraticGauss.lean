@@ -1,5 +1,5 @@
 import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
-import SuccessorTree.NonPrecompact.AffineParity
+import SuccessorTree.NonPrecompact.BilinearResidue
 
 /-!
 # Character-sum input for the symplectic quadratic residue argument
@@ -25,20 +25,6 @@ def f2Sign (a : F2) : ℤ :=
 
 @[simp] theorem f2Sign_one : f2Sign 1 = -1 := by
   norm_num [f2Sign]
-
-theorem f2_eq_zero_or_one (a : F2) : a = 0 ∨ a = 1 := by
-  have hval : a.val = 0 ∨ a.val = 1 := by
-    have hlt := ZMod.val_lt a
-    omega
-  rcases hval with h | h
-  · left
-    apply ZMod.val_injective
-    simpa using h
-  · right
-    apply ZMod.val_injective
-    calc
-      a.val = 1 := h
-      _ = (1 : F2).val := by simp only [ZMod.val_one]
 
 theorem f2Sign_add (a b : F2) :
     f2Sign (a + b) = f2Sign a * f2Sign b := by
