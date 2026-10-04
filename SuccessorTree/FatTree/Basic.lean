@@ -190,16 +190,6 @@ theorem cut_eq_of_eq {U V : FiniteFatTree H}
   cases h
   rfl
 
-/-- Transport a one-step Lift across equality of finite fat trees. -/
-theorem oneLift_eq_of_eq {U V : FiniteFatTree H}
-    (h : U = V) (i : Fin V.height) (X : Set T) :
-    U.oneLift H
-        (Fin.cast
-          (congrArg (fun Z : FiniteFatTree H => Z.height) h).symm i) X =
-      V.oneLift H i X := by
-  cases h
-  rfl
-
 /-- The first `n` rows of a finite fat tree, retaining the cut after
 the last retained row. -/
 def initialSegment (U : FiniteFatTree H) (n : Nat) (hn : n ≤ U.height) :
