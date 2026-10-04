@@ -130,6 +130,55 @@ theorem liftSteps_subset_liftTo
       rw [← hend]
       exact hzTail
 
+/-- A reduction witness carries the whole lift between any two selected
+cuts into the corresponding lift of the ambient fat tree. -/
+theorem liftTo_subset_liftTo
+    {V U : FatTree H}
+    (w : ReductionWitness H V U)
+    (i k : Nat) (hik : i ≤ k) :
+    V.liftTo H i k hik
+        (TreeLevel (T := T) (V.cut i)) ⊆
+      U.liftTo H (w.index i) (w.index k)
+        (w.index_strict.monotone hik)
+        (TreeLevel (T := T) (U.cut (w.index i))) := by
+  have hlevels :
+      TreeLevel (T := T) (V.cut i) ⊆
+        TreeLevel (T := T) (U.cut (w.index i)) := by
+    intro x hx
+    change LevelTree.lev x = U.cut (w.index i)
+    change LevelTree.lev x = V.cut i at hx
+    rw [← w.cut_eq i]
+    exact hx
+  have h :=
+    w.liftSteps_subset_liftTo H i (k - i)
+      (X := TreeLevel (T := T) (V.cut i))
+      (Y := TreeLevel (T := T) (U.cut (w.index i)))
+      (fun _ hx => hx) (fun _ hx => hx) hlevels
+  have hidx : i + (k - i) = k := by omega
+  simpa [FatTree.liftTo, hidx] using h
+
+/-- Composition of fat-subtree reduction witnesses. -/
+def trans
+    {V U W : FatTree H}
+    (wVU : ReductionWitness H V U)
+    (wUW : ReductionWitness H U W) :
+    ReductionWitness H V W where
+  index := fun i => wUW.index (wVU.index i)
+  index_strict := wUW.index_strict.comp wVU.index_strict
+  cut_eq := by
+    intro i
+    calc
+      V.cut i = U.cut (wVU.index i) := wVU.cut_eq i
+      _ = W.cut (wUW.index (wVU.index i)) :=
+        wUW.cut_eq (wVU.index i)
+  lift_subset := by
+    intro i
+    exact (wVU.lift_subset i).trans
+      (wUW.liftTo_subset_liftTo H
+        (wVU.index i) (wVU.index (i + 1))
+        (Nat.le_of_lt
+          (wVU.index_strict (Nat.lt_succ_self i))))
+
 end ReductionWitness
 
 /-- The infinite fat-subtree relation is reflexive. -/
