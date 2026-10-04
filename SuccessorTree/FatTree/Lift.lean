@@ -289,9 +289,9 @@ theorem liftSteps_mem_of_mem_of_source (U : FatTree H)
       rcases hsource with ⟨x, hx, hxz⟩
       have hxLevel : LevelTree.lev x = U.cut i := hX hx
       have hzLevel : LevelTree.lev z = U.cut i := hY hz
-      have hzx : z = x :=
+      have hxz' : x = z :=
         LevelTree.same_level_of_le hxz (hxLevel.trans hzLevel.symm)
-      simpa [hzx] using hx
+      simpa [← hxz'] using hx
   | succ steps ih =>
       have hXnext :
           U.oneLift H i X ⊆
