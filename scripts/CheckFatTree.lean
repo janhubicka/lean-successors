@@ -8,6 +8,10 @@ open SuccessorTree
 #check SMTree.FatTree.initialSegment_terminalCut
 #check SMTree.FiniteFatTree.rowExtension
 #check SMTree.FiniteFatTree.rowExtension_level_succ
+#check SMTree.FiniteFatTree.rowExtension_fixesBelow
+#check SMTree.FiniteFatTree.oneLift
+#check SMTree.FiniteFatTree.oneLift_subset_nextLevel
+#check SMTree.FiniteFatTree.oneLift_mem_of_mem_full_of_source
 #check SMTree.FatTree.cut_strictMono
 #check SMTree.FatTree.rowExtension_level_succ
 #check SMTree.MMap.le_apply_of_fixesBelow
