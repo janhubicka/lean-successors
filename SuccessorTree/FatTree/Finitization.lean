@@ -95,6 +95,9 @@ def BoundedRow (d : Nat) :=
 
 noncomputable instance boundedRowFintype (d : Nat) :
     Fintype (BoundedRow H d) := by
+  letI fibers :
+      ∀ n : Fin d, Fintype {a : AM H n.1 1 // a.rowEndLevel H < d} :=
+    fun n => boundedRowFiberFintype H n.1 d
   infer_instance
 
 /-- The manuscript's finitary order on finite fat trees: reduction with the
