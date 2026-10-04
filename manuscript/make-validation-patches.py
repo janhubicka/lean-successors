@@ -22,10 +22,10 @@ import tempfile
 
 PROOF_COMMIT = '1856f22fa1c94a27b3b282945da7d0f962903cc6'
 PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37150740752'
-FAT_PROOF_COMMIT = 'e477607203330e364c7813b0d1a424d07f2aa6d3'
-FAT_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37181899053'
-A3_PROOF_COMMIT = 'c24813e31cbcaba26db5240128fa5e0127c8f442'
-A3_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37183768621'
+FAT_PROOF_COMMIT = '3c42b21e86adf0e3aca700e636c7a1fb6970f748'
+FAT_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37187320737'
+A3_PROOF_COMMIT = '3c42b21e86adf0e3aca700e636c7a1fb6970f748'
+A3_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37187320737'
 SUPPORT_NAME = 'successor-validation.tex'
 
 # Some anchors occur only in particular manuscript revisions. Missing optional
@@ -150,15 +150,17 @@ cut. No EA hypothesis is used.}
 \fi
 '''),
     ('fat-tree-amalgamation', r'\label{item:A3}', r'''
-\successorfatleanpartial{SuccessorTree/FatTree/Amalgamation.lean}{FatTree.splice}
+\successorfatleanverified{SuccessorTree/FatTree/Amalgamation.lean}{a3\_two\_amalgamation}
 \ifshowvalidation
-\todo[inline]{Řehořek: The structural concatenation used in A3 is now
-Lean-checked: a finite stem occurring at cut $n$ can be spliced to the tail
-at that cut, and the resulting infinite fat tree is a reduction of the
-ambient tail. Cut/row projections, the splice index, and the reduction
-witness are separately audited. Keep A3(1) and A3(2) orange until the
-corresponding basic-neighbourhood nonemptiness/inclusion statements are
-formalized. No EA hypothesis is used.}
+\todo[inline]{Řehořek: Both A3 clauses are Lean-checked. A3(1) is obtained
+by splicing the prescribed finite stem to the tail at its unique depth.
+For A3(2), splice $U\restriction_m$ to the tail of $V$ at the common
+terminal cut and rebase every refinement with initial stem $x$ into that
+tail. This proves exactly the required inclusion
+$[x,U']\subseteq[x,V]$. The current prose claims the stronger equality
+$[x,U']=[x,V]$; that strengthening is not needed for A3 and has not been
+formalized here, so either weaken the sentence to inclusion or prove the
+reverse inclusion separately. No EA hypothesis is used.}
 \fi
 '''),
         ('validation-boundary', r'\label{sec:finite-direct}', r'''
