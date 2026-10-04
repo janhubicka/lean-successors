@@ -157,6 +157,15 @@ noncomputable def step
   rw [hsplit, hlast]
   exact hone
 
+@[simp] theorem step_apply
+    (U : FatTree H) (a i : Nat)
+    (P : TraceHistoryState H U a i)
+    (E : OneLevelLetter H (U.cut (a + i)))
+    (x : T) :
+    (step H U a i P E) x =
+      U.rowExtension H (a + i) (E.toMMap (P x)) := by
+  rfl
+
 /-- A history step moves every base-level history point upward in the
 underlying tree. -/
 theorem le_step
