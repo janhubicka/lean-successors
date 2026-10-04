@@ -78,3 +78,5 @@ import SuccessorTree.FatTree.A4Trace
 import SuccessorTree.FatTree.A4Large
 import SuccessorTree.FatTree.A4Persistence
 import SuccessorTree.FatTree.A4Profiles
+
+import SuccessorTree.FatTree.A4Factor
