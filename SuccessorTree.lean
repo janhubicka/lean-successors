@@ -58,3 +58,4 @@ import SuccessorTree.ShapeFiniteRamsey
 import SuccessorTree.FatTree.Basic
 import SuccessorTree.FatTree.Lift
 import SuccessorTree.FatTree.Reduction
+import SuccessorTree.FatTree.FiniteReduction
