@@ -86,6 +86,42 @@ theorem exists_avoiding_refinement_of_not_large
   intro g hgV hgO
   exact havoid g hgO hgV
 
+/-- Binary partition step for large one-block sets.  After a
+stem-preserving refinement, one of the two cells remains large. -/
+theorem oneBlockLarge_partition
+    {x : FiniteFatTree H} {U : FatTree H}
+    {O O₀ O₁ : Set (AM H x.terminalCut 1)}
+    (hxU : ExtendsStem H x U)
+    (hlarge : OneBlockLarge H x U O)
+    (hpart : O ⊆ O₀ ∪ O₁) :
+    ∃ V : FatTree H,
+      FatTree.Reduces H V U ∧
+      ExtendsStem H x V ∧
+      (OneBlockLarge H x V O₀ ∨
+       OneBlockLarge H x V O₁) := by
+  classical
+  by_cases h₀ : OneBlockLarge H x U O₀
+  · exact ⟨U, FatTree.reduces_refl H U, hxU, Or.inl h₀⟩
+  · rcases exists_avoiding_refinement_of_not_large H h₀ with
+      ⟨V, hVU, hxV, havoid⟩
+    refine ⟨V, hVU, hxV, Or.inr ?_⟩
+    intro W hWV hxW
+    have hWU : FatTree.Reduces H W U :=
+      FatTree.reduces_trans H hWV hVU
+    rcases hlarge W hWU hxW with ⟨g, hgO, hgW⟩
+    have hgV : OneBlockOccurs H x V g := by
+      rcases hgW with ⟨k, hgk⟩
+      rcases exists_stemAt_of_reduces H hgk hWV with
+        ⟨m, hgm⟩
+      exact ⟨m, hgm⟩
+    have hgNot0 : g ∉ O₀ := havoid g hgV
+    have hgUnion : g ∈ O₀ ∪ O₁ := hpart hgO
+    have hg1 : g ∈ O₁ := by
+      rcases hgUnion with hg0 | hg1
+      · exact False.elim (hgNot0 hg0)
+      · exact hg1
+    exact ⟨g, hg1, hgW⟩
+
 end FatTree
 
 end SMTree
