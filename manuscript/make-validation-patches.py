@@ -24,6 +24,8 @@ PROOF_COMMIT = '1856f22fa1c94a27b3b282945da7d0f962903cc6'
 PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37150740752'
 FAT_PROOF_COMMIT = 'e477607203330e364c7813b0d1a424d07f2aa6d3'
 FAT_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37181899053'
+A3_PROOF_COMMIT = 'c24813e31cbcaba26db5240128fa5e0127c8f442'
+A3_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37183768621'
 SUPPORT_NAME = 'successor-validation.tex'
 
 # Some anchors occur only in particular manuscript revisions. Missing optional
@@ -150,11 +152,13 @@ cut. No EA hypothesis is used.}
     ('fat-tree-amalgamation', r'\label{item:A3}', r'''
 \successorfatleanpartial{SuccessorTree/FatTree/Amalgamation.lean}{FatTree.splice}
 \ifshowvalidation
-\todo[inline]{Řehořek: The concatenation used in A3 is being formalized as
-an explicit splice of a finite fat tree to an infinite tail at a matching
-terminal cut. The cut/row projections are the first obligations. Do not mark
-A3(1) or A3(2) verified until the splice reduction and neighbourhood
-inclusion statements are proved. This construction uses no EA hypothesis.}
+\todo[inline]{Řehořek: The structural concatenation used in A3 is now
+Lean-checked: a finite stem occurring at cut $n$ can be spliced to the tail
+at that cut, and the resulting infinite fat tree is a reduction of the
+ambient tail. Cut/row projections, the splice index, and the reduction
+witness are separately audited. Keep A3(1) and A3(2) orange until the
+corresponding basic-neighbourhood nonemptiness/inclusion statements are
+formalized. No EA hypothesis is used.}
 \fi
 '''),
         ('validation-boundary', r'\label{sec:finite-direct}', r'''
@@ -372,6 +376,8 @@ def main() -> None:
         'mode': mode, 'proof_commit': PROOF_COMMIT, 'proof_run': PROOF_RUN,
         'fat_tree_proof_commit': FAT_PROOF_COMMIT,
         'fat_tree_proof_run': FAT_PROOF_RUN,
+        'fat_tree_a3_proof_commit': A3_PROOF_COMMIT,
+        'fat_tree_a3_proof_run': A3_PROOF_RUN,
         'input_main_sha256': hashlib.sha256(source.encode()).hexdigest(),
         'patches': written, 'git_apply_check': 'passed for the stated input mode',
         'idempotence': 'passed', 'full_manuscript_latex_build': 'not performed',
