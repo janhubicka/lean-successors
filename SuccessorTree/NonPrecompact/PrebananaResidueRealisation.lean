@@ -40,8 +40,8 @@ theorem residueParityHom_sum_eq_card_of_odd
     _ = ∑ i ∈ s, (1 : F2) := by
       apply Finset.sum_congr rfl
       intro i hi
-      rw [residueParityHom_natCast]
-      exact (ha i hi).natCast_zmod_two
+      simpa [residueParityHom] using
+        (ha i hi).natCast_zmod_two
     _ = (s.card : F2) := by
       simp
 
