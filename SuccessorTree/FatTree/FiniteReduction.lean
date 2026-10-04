@@ -106,14 +106,19 @@ def initialSegment
       change i.1 < j.1
       exact hij)
   · intro i
-    have h := w.cut_eq (src i)
-    simpa [src, idx] using h
+    change Fin (n + 1) at i
+    rw [V.initialSegment_cut H n hn i]
+    rw [U.initialSegment_cut H m hm (idx i)]
+    exact w.cut_eq (src i)
   · intro i
+    change Fin n at i
     let iv : Fin V.height :=
       ⟨i.1, lt_of_lt_of_le i.2 hn⟩
     have h := w.lift_subset iv
     rw [V.initialSegment_oneLift H n hn i]
+    rw [V.initialSegment_cut H n hn i.castSucc]
     rw [U.initialSegment_liftTo H m hm]
+    rw [U.initialSegment_cut H m hm (idx i.castSucc)]
     simpa [src, idx, iv, vn, m] using h
 
 /-- Iterate the one-block inclusions of a finite reduction witness.
@@ -418,6 +423,7 @@ def initialSegment
     exact w.cut_eq i.1
   lift_subset := by
     intro i
+    change Fin n at i
     have h := w.lift_subset i.1
     rw [V.initialSegment_oneLift H n i]
     rw [U.initialSegment_liftTo H (w.index n)]
