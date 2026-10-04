@@ -9,6 +9,7 @@ optional embedding-space Ellentuck theorem.
 The formalization treats:
 
 - finite and infinite fat trees, with finite trees carrying the terminal cut;
+- the A.1 sequencing axioms through a typed exact-approximation interface;
 - canonical row extensions;
 - the recursive Lift operation;
 - infinite and finite fat-tree reduction;
@@ -23,6 +24,18 @@ The optional embedding Ellentuck axiom (EA) is not used in any of these
 definitions or proofs.
 
 ## Changes forced by formalization
+
+### 0. A.1 is elementary but not definitionally trivial
+
+All three A.1 sequencing clauses are now Lean-checked.  The only formal
+subtlety is that finite fat trees have dependent cut and row fields: equality
+of two finite approximations cannot be reduced to an untyped sequence
+equality without transporting those dependent indices.  The proof therefore
+uses explicit pointwise/heterogeneous extensionality.  This introduces no new
+mathematical hypothesis.
+
+Actions run 37188688958 checked the A.1 sequencing theorems using only
+propext, Classical.choice and Quot.sound, with no sorryAx.
 
 ### 1. Canonical extension in Lift
 
@@ -108,6 +121,14 @@ the required inclusion or supply a separate reverse-inclusion proof.
 
 Actions run 37187320737 checked seven A.3 reports, including both final
 clauses, using only the standard Lean axioms and no `sorryAx`.
+
+## A.4 status
+
+A.4 is the remaining fat-tree Ramsey-space axiom.  Its formalization has
+started with the concrete one-row finite-extension bridge; the full all-trace
+persistence/fusion argument is not yet green and must not be marked verified.
+The manuscript's distinction between canonical composites and arbitrary
+geometric one-block reductions remains essential here.
 
 ## EA boundary
 
