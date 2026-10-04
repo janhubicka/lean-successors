@@ -137,6 +137,59 @@ theorem historyRealizesFan_unique
     rw [hparams, hchar] at he0
     exact Option.some.inj (he0.symm.trans hf0)
 
+/-- Package the M3 duplication from a trace terminal level to a later
+history level as a one-level letter at that later level. -/
+noncomputable def duplicateHistoryLetter
+    (n m : Nat) (hnm : n < m) : OneLevelLetter H m where
+  toMMap := H.duplicate n m hnm
+  skips := H.duplicate_skips n m hnm
+
+/-- Once a later history point lies above every chosen successor in a raw
+fan, the single M3 duplication at that later level realizes the whole raw fan
+simultaneously.  This is the bridge which lets the A4 argument work with raw
+finite successor tables rather than assuming that those tables themselves
+extend to admissible one-level maps. -/
+theorem historyRealizesFan_of_below
+    {c m : Nat}
+    (q : AM H c 1)
+    (P : MMap H)
+    (e : RawSuccessorFan H q)
+    (hqm : q.rowEndLevel H < m)
+    (hPtop : H.levelMap P.map (q.rowEndLevel H) = m)
+    (hbelow :
+      ∀ (x : InitialNode T c)
+        (hx : LevelTree.lev x.1 = c),
+          (e.toFun x).1 ≤ P (q.representative H x.1)) :
+    HistoryRealizesFan H q P
+      (duplicateHistoryLetter H (q.rowEndLevel H) m hqm) e := by
+  intro x hx
+  let code := e.code H x hx
+  have hqlev :
+      LevelTree.lev (q.representative H x.1) = q.rowEndLevel H := by
+    calc
+      LevelTree.lev (q.representative H x.1) =
+          H.levelMap (q.representative H).map (LevelTree.lev x.1) :=
+        (H.levelMap_eq (q.representative H).map (a := x.1)).symm
+      _ = H.levelMap (q.representative H).map c := by rw [hx]
+      _ = q.rowEndLevel H := rfl
+  have hPlev :
+      LevelTree.lev (P (q.representative H x.1)) = m := by
+    calc
+      LevelTree.lev (P (q.representative H x.1)) =
+          H.levelMap P.map (LevelTree.lev (q.representative H x.1)) :=
+        (H.levelMap_eq P.map
+          (a := q.representative H x.1)).symm
+      _ = H.levelMap P.map (q.rowEndLevel H) := by rw [hqlev]
+      _ = m := hPtop
+  have hdup :=
+    H.duplicate_rule
+      (q.rowEndLevel H) m hqm
+      (q.representative H x.1)
+      (P (q.representative H x.1))
+      code.params code.char (e.toFun x).1
+      hqlev hPlev code.succ_eq (hbelow x hx)
+  simpa [duplicateHistoryLetter, code] using hdup
+
 /-- The profile coordinate of a history step at one trace: record the unique
 realized raw fan when it exists, and bottom otherwise. -/
 noncomputable def historyProfile
