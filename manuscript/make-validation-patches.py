@@ -93,6 +93,53 @@ Canonical-prefix invariance and frozen right factors are checked separately.
 The formal theorem also works below an arbitrary prescribed subspace.}
 \fi
 '''),
+    ('fat-tree-definition', r'\begin{definition}[Fat subtree]', r'''
+\successorleanverified{SuccessorTree/FatTree/Basic.lean}{FatTree.cut\_strictMono}
+\ifshowvalidation
+\todo[inline]{Řehořek: The fat-tree data are formalized for both finite and
+infinite height. It is cleaner to record the row condition as
+$\widetilde u_i(c(i))+1=c(i+1)$, equivalently to
+$u_i\in\AM^{c(i)}_1(c(i+1)-1)$. Strict growth and injectivity of the cut
+then follow rather than being extra assumptions. For a finite tree of height
+$q$, keep all $q+1$ cuts, including the terminal cut.}
+\fi
+'''),
+    ('fat-tree-lift', r'\label{def:lift}', r'''
+\successorleanverified{SuccessorTree/FatTree/Lift.lean}{FatTree.liftTo\_mem\_of\_mem\_of\_source}
+\ifshowvalidation
+\todo[inline]{Řehořek: Here $u_i^+$ must mean the canonical extension from
+Proposition~\ref{prop:canonical}, not an arbitrary total representative of
+the finite row. The level calculation and the Lift recursion are checked.
+Also record the source-locality fact used later: every endpoint of
+$\operatorname{Lift}_{U}(X,k)$ remembers its unique ancestor on the starting
+cut; hence a full-level lift inclusion restricts to every subset $X$ of that
+cut.}
+\fi
+'''),
+    ('fat-tree-reduction', r'\label{def:subfatsubtrees}', r'''
+\successorleanverified{SuccessorTree/FatTree/FiniteReduction.lean}{FiniteFatTree.reduces\_trans}
+\ifshowvalidation
+\todo[inline]{Řehořek: Reflexivity and transitivity of the fat-subtree order
+are checked for both finite and infinite trees. The finite witness map is
+defined on all $q+1$ cuts, so the terminal-cut clause is essential and is
+preserved automatically under composition. In the transitivity explanation,
+monotonicity alone is too terse: use source locality of Lift to restrict each
+full-level block inclusion to the subset reached by the preceding blocks,
+then compose the interval lifts. No strengthening of the definition is
+needed.}
+\fi
+'''),
+    ('fat-tree-finitization', r'\label{item:A2}', r'''
+\successorleanpartial{SuccessorTree/FatTree/Finitization.lean}{FiniteFatTree.leFin\_trans}
+\ifshowvalidation
+\todo[inline]{Řehořek: The proposed finite order
+$x\leq_{\rm fin}y\iff x\leq y$ with equal terminal cuts is checked to be a
+quasi-order. Formalization also bounds the height by the terminal cut and is
+reducing A2(1) to explicit finite codes for rows. Do not yet call
+A2(1)--(3) direct from the definition: lower-cone finiteness and the two
+approximation clauses should receive their own finite-code proofs.}
+\fi
+'''),
     ('validation-boundary', r'\label{sec:finite-direct}', r'''
 \successorleaninterface{SuccessorTree/Tree.lean}{LevelTree}
 \ifshowvalidation
