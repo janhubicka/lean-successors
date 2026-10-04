@@ -419,7 +419,7 @@ theorem leFin_prefix
     (hYZ : LeFin H Y Z)
     (n : Nat) (hn : n ≤ Y.height) :
     ∃ (m : Nat) (hm : m ≤ Z.height),
-      LeFin H (Y.prefix H n hn) (Z.prefix H m hm) := by
+      LeFin H (Y.initialSegment H n hn) (Z.initialSegment H m hm) := by
   rcases hYZ.1 with ⟨w⟩
   let yn : Fin (Y.height + 1) := ⟨n, by omega⟩
   let zn : Fin (Z.height + 1) := w.index yn
@@ -427,9 +427,9 @@ theorem leFin_prefix
   have hm : m ≤ Z.height := Nat.le_of_lt_succ zn.2
   refine ⟨m, hm, ?_⟩
   constructor
-  · exact ⟨w.prefix H n hn⟩
+  · exact ⟨w.initialSegment H n hn⟩
   · have hc := w.cut_eq yn
-    simpa [FiniteFatTree.prefix_terminalCut, yn, zn, m] using hc
+    simpa [FiniteFatTree.initialSegment_terminalCut, yn, zn, m] using hc
 
 end FiniteFatTree
 
