@@ -785,7 +785,7 @@ theorem liftSteps_add (U : FiniteFatTree H)
             (U.liftSteps H i (a + 1) (by omega) X)
 
 /-- Iterated lift is unchanged when all selected rows lie inside a
-finite prefix. -/
+finite initial segment. -/
 theorem initialSegment_liftSteps (U : FiniteFatTree H)
     (n : Nat) (hn : n ≤ U.height)
     (i steps : Nat) (h : i + steps ≤ n) (X : Set T) :
@@ -795,18 +795,43 @@ theorem initialSegment_liftSteps (U : FiniteFatTree H)
   | zero =>
       rfl
   | succ steps ih =>
-      rw [(U.initialSegment H n hn).liftSteps_succ H i steps h X,
-          U.liftSteps_succ H i steps (h.trans hn) X]
+      have hseg :
+          i + (steps + 1) ≤ (U.initialSegment H n hn).height := by
+        simpa using h
+      have hamb : i + (steps + 1) ≤ U.height := h.trans hn
+      have hs :=
+        (U.initialSegment H n hn).liftSteps_succ H i steps hseg X
+      have hu := U.liftSteps_succ H i steps hamb X
+      let iseg : Fin n := ⟨i, by omega⟩
+      let iu : Fin U.height := ⟨i, by omega⟩
       have hone :
-          (U.initialSegment H n hn).oneLift H
-              (⟨i, by omega⟩ : Fin n) X =
-            U.oneLift H (⟨i, by omega⟩ : Fin U.height) X :=
-        U.initialSegment_oneLift H n hn (⟨i, by omega⟩ : Fin n) X
-      rw [hone]
-      exact ih (i := i + 1) (by omega)
-        (X := U.oneLift H (⟨i, by omega⟩ : Fin U.height) X)
+          (U.initialSegment H n hn).oneLift H iseg X =
+            U.oneLift H iu X := by
+        simpa [iseg, iu] using
+          U.initialSegment_oneLift H n hn iseg X
+      calc
+        (U.initialSegment H n hn).liftSteps H i (steps + 1) h X =
+            (U.initialSegment H n hn).liftSteps H (i + 1) steps
+              (by omega)
+              ((U.initialSegment H n hn).oneLift H iseg X) := by
+                simpa [iseg] using hs
+        _ = (U.initialSegment H n hn).liftSteps H (i + 1) steps
+              (by omega) (U.oneLift H iu X) := by
+                rw [hone]
+        _ = U.liftSteps H (i + 1) steps (by omega)
+              (U.oneLift H iu X) := by
+                exact ih (i := i + 1) (by omega)
+                  (X := U.oneLift H iu X)
+        _ = U.liftSteps H i (steps + 1) (h.trans hn) X := by
+                simpa [iu] using hu.symm
 
-/-- Finite interval lifts commute with taking a prefix. -/
+/-- Lift between two finite cut indices. -/
+noncomputable def liftTo (U : FiniteFatTree H)
+    (a b : Fin (U.height + 1)) (hab : a ≤ b)
+    (X : Set T) : Set T :=
+  U.liftSteps H a.1 (b.1 - a.1) (by omega) X
+
+/-- Finite interval lifts commute with taking an initial segment. -/
 theorem initialSegment_liftTo (U : FiniteFatTree H)
     (n : Nat) (hn : n ≤ U.height)
     (a b : Fin (n + 1)) (hab : a ≤ b) (X : Set T) :
@@ -821,12 +846,6 @@ theorem initialSegment_liftTo (U : FiniteFatTree H)
   unfold liftTo
   exact U.initialSegment_liftSteps H n hn a.1 (b.1 - a.1)
     (by omega) X
-
-/-- Lift between two finite cut indices. -/
-noncomputable def liftTo (U : FiniteFatTree H)
-    (a b : Fin (U.height + 1)) (hab : a ≤ b)
-    (X : Set T) : Set T :=
-  U.liftSteps H a.1 (b.1 - a.1) (by omega) X
 
 /-- Endpoint equality transports a finite lift.  This packages the
 proof-irrelevance bookkeeping for the dependent interval bound. -/
@@ -1014,15 +1033,31 @@ theorem initialSegment_liftSteps (U : FatTree H)
   | zero =>
       rfl
   | succ steps ih =>
-      rw [FiniteFatTree.liftSteps_succ, FatTree.liftSteps_succ]
+      have hseg :
+          i + (steps + 1) ≤ (U.initialSegment H n).height := by
+        simpa using h
+      have hs :=
+        (U.initialSegment H n).liftSteps_succ H i steps hseg X
+      have hu := U.liftSteps_succ H i steps X
+      let iseg : Fin n := ⟨i, by omega⟩
       have hone :
-          (U.initialSegment H n).oneLift H
-              (⟨i, by omega⟩ : Fin n) X =
-            U.oneLift H i X :=
-        U.initialSegment_oneLift H n (⟨i, by omega⟩ : Fin n) X
-      rw [hone]
-      exact ih (i := i + 1) (by omega)
-        (X := U.oneLift H i X)
+          (U.initialSegment H n).oneLift H iseg X =
+            U.oneLift H i X := by
+        simpa [iseg] using
+          U.initialSegment_oneLift H n iseg X
+      calc
+        (U.initialSegment H n).liftSteps H i (steps + 1) h X =
+            (U.initialSegment H n).liftSteps H (i + 1) steps
+              (by omega)
+              ((U.initialSegment H n).oneLift H iseg X) := by
+                simpa [iseg] using hs
+        _ = (U.initialSegment H n).liftSteps H (i + 1) steps
+              (by omega) (U.oneLift H i X) := by
+                rw [hone]
+        _ = U.liftSteps H (i + 1) steps (U.oneLift H i X) := by
+                exact ih (i := i + 1) (by omega)
+                  (X := U.oneLift H i X)
+        _ = U.liftSteps H i (steps + 1) X := hu.symm
 
 /-- Interval Lift on a finite initial segment agrees with interval Lift in
 the ambient infinite fat tree. -/
