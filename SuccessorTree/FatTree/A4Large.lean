@@ -96,7 +96,7 @@ theorem appendRow_ambientNextRow
         apply Fin.ext
         rfl
       rw [hiEq]
-      exact HEq.trans happ hxrow.symm
+      exact HEq.trans happ hxrow
     · have hieq : i.1 = x.height := by omega
       have hiLast : i = Fin.last x.height := by
         apply Fin.ext
