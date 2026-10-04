@@ -1,5 +1,5 @@
 import SuccessorTree.FatTree.A4Large
-import SuccessorTree.FatTree.ApproximationSystem
+import SuccessorTree.FatTree.Closed
 import RamseySpace.Fusion
 
 /-!
@@ -251,6 +251,22 @@ theorem oneBlockLarge_exact_persistent
     exact hgm
   exact (exactAvoidStage_avoids H hxU hbad i g hgO)
     (by simpa [him, Nat.add_assoc] using hgmStage)
+
+/-- Closed fat-tree spaces therefore satisfy the exact-persistence
+conclusion for every large one-block set, without assuming A4. -/
+theorem oneBlockLarge_exact_persistent_closed
+    {x : FiniteFatTree H} {U : FatTree H}
+    {O : Set (AM H x.terminalCut 1)}
+    (hxU : ExtendsStem H x U)
+    (hlarge : OneBlockLarge H x U O) :
+    ∃ A : FatTree H, ∃ q : Nat,
+      FatTree.Reduces H A U ∧
+      ExtendsStem H x A ∧
+      x.height ≤ q ∧
+      OneBlockExactPersistent H x A O q :=
+  oneBlockLarge_exact_persistent H
+    (fusionComplete H) hxU hlarge
+
 
 end FatTree
 end SMTree
