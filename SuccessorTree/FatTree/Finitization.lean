@@ -122,7 +122,7 @@ def FixedTerminalCode (d : Nat) :=
     (Fin d → Option (InitialNode T d → Option (InitialNode T d)))
 
 noncomputable instance fixedTerminalCodeFintype (d : Nat) :
-    Fintype (FixedTerminalCode (T := T) H d) := by
+    Fintype (FixedTerminalCode (T := T) d) := by
   unfold FixedTerminalCode
   infer_instance
 
@@ -135,7 +135,7 @@ ambient code space.  Positions beyond the actual height are padded by
 `none`. -/
 noncomputable def fixedTerminalCode (d : Nat)
     (U : FixedTerminal H d) :
-    FixedTerminalCode (T := T) H d := by
+    FixedTerminalCode (T := T) d := by
   have hheight : U.1.height ≤ d := by
     have h := U.1.height_le_terminalCut H
     simpa [U.2] using h
@@ -177,12 +177,12 @@ theorem fixedTerminalCode_injective (d : Nat) :
   intro U V hcode
   have hheight : U.1.height = V.1.height := by
     have h := congrArg
-      (fun c : FixedTerminalCode (T := T) H d => c.1.1) hcode
+      (fun c : FixedTerminalCode (T := T) d => c.1.1) hcode
     simpa using h
   have hcuts := congrArg
-    (fun c : FixedTerminalCode (T := T) H d => c.2.1) hcode
+    (fun c : FixedTerminalCode (T := T) d => c.2.1) hcode
   have hrows := congrArg
-    (fun c : FixedTerminalCode (T := T) H d => c.2.2) hcode
+    (fun c : FixedTerminalCode (T := T) d => c.2.2) hcode
   have hcut : HEq U.1.cut V.1.cut := by
     cases hheight
     apply heq_of_eq
