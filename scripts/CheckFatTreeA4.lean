@@ -28,3 +28,7 @@ open SuccessorTree
 #check SMTree.FiniteFatTree.IsRawTraceUpdate
 #check SMTree.FiniteFatTree.ExactTrace.extendByLetter
 #print axioms SMTree.FiniteFatTree.ExactTrace.extendByLetter
+#check SMTree.FiniteFatTree.ExactTrace.exists_raw_predecessor
+#print axioms SMTree.FiniteFatTree.ExactTrace.exists_raw_predecessor
+#check SMTree.FiniteFatTree.isExactTrace_appendRow_iff
+#print axioms SMTree.FiniteFatTree.isExactTrace_appendRow_iff
