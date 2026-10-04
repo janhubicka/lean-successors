@@ -65,6 +65,18 @@ theorem terminalCut_eq_of_extendsStem
   simpa [FiniteFatTree.terminalCut] using
     h.1 (Fin.last x.height)
 
+/-- The data-level prefix representation is exactly equivalent to the
+literal finite initial-segment equality used in the manuscript. -/
+theorem initialSegment_eq_of_extendsStem
+    {x : FiniteFatTree H} {W : FatTree H}
+    (h : ExtendsStem H x W) :
+    W.initialSegment H x.height = x := by
+  refine FiniteFatTree.ext_pointwise H rfl ?_ ?_
+  · intro i
+    simpa using h.1 i
+  · intro i
+    simpa using h.2 i
+
 /-- A stem occurring at cut `n` has terminal cut exactly `U.cut n`. -/
 theorem terminalCut_eq_of_stemAt
     {x : FiniteFatTree H} {U : FatTree H} {n : Nat}
