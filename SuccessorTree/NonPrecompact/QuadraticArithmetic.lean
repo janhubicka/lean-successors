@@ -19,7 +19,7 @@ theorem int_eq_pow_two_or_neg_of_sq_eq
       T ^ 2 = (2 : ℤ) ^ (2 * d) := h
       _ = (2 : ℤ) ^ (d * 2) := by rw [Nat.mul_comm]
       _ = ((2 : ℤ) ^ d) ^ 2 := by
-        simpa using (pow_mul (2 : ℤ) d 2).symm
+        exact pow_mul (2 : ℤ) d 2
   exact sq_eq_sq_iff_eq_or_eq_neg.mp h'
 
 end SuccessorTree.NonPrecompact
