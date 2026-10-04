@@ -12,6 +12,9 @@ open SuccessorTree
 #check SMTree.FiniteFatTree.oneLift
 #check SMTree.FiniteFatTree.oneLift_subset_nextLevel
 #check SMTree.FiniteFatTree.oneLift_mem_of_mem_full_of_source
+#check SMTree.FiniteFatTree.liftSteps
+#check SMTree.FiniteFatTree.liftTo
+#check SMTree.FiniteFatTree.liftTo_succ
 #check SMTree.FatTree.cut_strictMono
 #check SMTree.FatTree.rowExtension_level_succ
 #check SMTree.MMap.le_apply_of_fixesBelow
