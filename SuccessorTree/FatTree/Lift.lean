@@ -536,6 +536,30 @@ noncomputable def liftSteps (U : FiniteFatTree H) :
     (i : Nat) (h : i + 0 ≤ U.height) (X : Set T) :
     U.liftSteps H i 0 h X = X := rfl
 
+@[simp] theorem liftSteps_succ (U : FiniteFatTree H)
+    (i steps : Nat) (h : i + (steps + 1) ≤ U.height)
+    (X : Set T) :
+    U.liftSteps H i (steps + 1) h X =
+      U.liftSteps H (i + 1) steps (by omega)
+        (U.oneLift H (⟨i, by omega⟩ : Fin U.height) X) := rfl
+
+/-- Finite iterated lifting is monotone in its starting set. -/
+theorem liftSteps_mono (U : FiniteFatTree H)
+    (i steps : Nat) (h : i + steps ≤ U.height)
+    {X Y : Set T} (hXY : X ⊆ Y) :
+    U.liftSteps H i steps h X ⊆
+      U.liftSteps H i steps h Y := by
+  induction steps generalizing i X Y with
+  | zero =>
+      simpa using hXY
+  | succ steps ih =>
+      rw [U.liftSteps_succ H i steps h X,
+          U.liftSteps_succ H i steps h Y]
+      exact ih (i := i + 1)
+        (X := U.oneLift H (⟨i, by omega⟩ : Fin U.height) X)
+        (Y := U.oneLift H (⟨i, by omega⟩ : Fin U.height) Y)
+        (U.oneLift_mono H (⟨i, by omega⟩ : Fin U.height) hXY)
+
 /-- Changing the numerical step count along an equality only transports
 the dependent height proof; the resulting lift is unchanged. -/
 theorem liftSteps_congr_steps (U : FiniteFatTree H)
