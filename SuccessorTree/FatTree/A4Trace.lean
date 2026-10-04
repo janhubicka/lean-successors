@@ -337,6 +337,46 @@ theorem exactTraces_finite
   rw [hend]
   exact Nat.lt_succ_self (traceTargetCut H y)
 
+/-- An exact trace of an appended tree has the expected new terminal
+image level. -/
+theorem ExactTrace.appendRow_rowEnd
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : ExactTrace H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega)) :
+    q.1.rowEndLevel H = h.rowEndLevel H + 1 := by
+  calc
+    q.1.rowEndLevel H =
+        traceTargetCut H (appendRow H y h) :=
+      q.rowEndLevel H
+    _ = h.rowEndLevel H + 1 :=
+      traceTargetCut_appendRow H y h
+
+/-- Geometric half of the exact trace update: every image point of an exact
+trace after appending `h` lies in the canonical image under `h⁺` of an
+immediate successor of the old trace lift. -/
+theorem ExactTrace.appendRow_image_mem_fan
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : ExactTrace H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega))
+    (a : T)
+    (ha :
+      LevelTree.lev a =
+        traceSourceCut H (appendRow H y h) n (by
+          rw [appendRow_height]
+          omega)) :
+    q.1.representative H a ∈
+      H.canonicalExtension (h.representative H) y.terminalCut ''
+        ImmediateSuccessors (T := T) (traceLift H y n hn) := by
+  have hm := q.image_mem_lift H a ha
+  rw [traceLift_appendRow_fan H y h n hn] at hm
+  exact hm
+
 /-- Consequently the subtype of exact traces is a finite type. -/
 noncomputable instance exactTraceFinite
     (y : FiniteFatTree H)
