@@ -86,6 +86,22 @@ theorem initialSegment_eq_of_extendsStem
     change HEq (W.row i.1) (x.row i)
     exact h.2 i
 
+/-- Literal finite initial-segment equality gives the data-level
+stem predicate.  Together with `initialSegment_eq_of_extendsStem`, this
+bridges the manuscript notation to Lean's proof-field-insensitive record
+representation. -/
+theorem extendsStem_of_initialSegment_eq
+    {x : FiniteFatTree H} {W : FatTree H}
+    (h : W.initialSegment H x.height = x) :
+    ExtendsStem H x W := by
+  have h' : x = W.initialSegment H x.height := h.symm
+  subst x
+  constructor
+  · intro i
+    rfl
+  · intro i
+    rfl
+
 /-- A sufficiently deep cone refinement preserves every shorter literal
 stem fixed by the ambient tree. -/
 theorem extendsStem_of_depthCone
