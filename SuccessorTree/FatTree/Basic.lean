@@ -127,6 +127,26 @@ namespace FiniteFatTree
 
 variable (H : SMTree S)
 
+/-- Two finite fat trees are equal once their data fields agree; the
+structural proof fields are irrelevant.  HEq is convenient because the cut
+and row domains depend on the height. -/
+theorem ext_data {U V : FiniteFatTree H}
+    (hheight : U.height = V.height)
+    (hcut : HEq U.cut V.cut)
+    (hrow : HEq U.row V.row) :
+    U = V := by
+  cases U with
+  | mk uh uc uz ur urc =>
+      cases V with
+      | mk vh vc vz vr vrc =>
+          dsimp at hheight hcut hrow
+          subst vh
+          have hc : uc = vc := eq_of_heq hcut
+          subst vc
+          have hr : ur = vr := eq_of_heq hrow
+          subst vr
+          rfl
+
 /-- The canonical total extension of a finite fat-tree row. -/
 noncomputable def rowExtension (U : FiniteFatTree H)
     (i : Fin U.height) : MMap H :=
