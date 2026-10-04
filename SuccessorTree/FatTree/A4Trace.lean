@@ -105,15 +105,9 @@ theorem traceLift_prefix_appendRow
           omega))) =
       traceLift H y n hn := by
   let z := appendRow H y h
-  have hm : y.height ≤ z.height := by
-    dsimp [z]
-    rw [appendRow_height]
-    omega
+  have hm : y.height ≤ z.height := by omega
   have hsrc :
-      traceSourceCut H z n (by
-        dsimp [z]
-        rw [appendRow_height]
-        omega) =
+      traceSourceCut H z n (by omega) =
         traceSourceCut H y n hn := by
     dsimp [z]
     exact traceSourceCut_appendRow H y h n hn
@@ -125,10 +119,7 @@ theorem traceLift_prefix_appendRow
     z.initialSegment_liftSteps H y.height hm
       n (y.height - n) (by omega)
       (TreeLevel (T := T)
-        (traceSourceCut H z n (by
-          dsimp [z]
-          rw [appendRow_height]
-          omega)))
+        (traceSourceCut H z n (by omega)))
   rw [hseg] at hlift
   rw [hsrc] at hlift
   rw [traceLift_eq_liftSteps H y n hn]
@@ -147,33 +138,21 @@ theorem traceLift_appendRow
         (traceLift H y n hn) := by
   let z := appendRow H y h
   have htotal :
-      z.height - n = (y.height - n) + 1 := by
-    dsimp [z]
-    rw [appendRow_height]
-    omega
+      z.height - n = (y.height - n) + 1 := by omega
   rw [traceLift_eq_liftSteps H z n]
   have hcongr :=
     z.liftSteps_congr_steps H n
       (z.height - n) ((y.height - n) + 1)
-      (by omega) (by
-        dsimp [z]
-        rw [appendRow_height]
-        omega)
+      (by omega) (by omega)
       htotal
       (TreeLevel (T := T)
-        (traceSourceCut H z n (by
-          dsimp [z]
-          rw [appendRow_height]
-          omega)))
+        (traceSourceCut H z n (by omega)))
   rw [hcongr]
   rw [z.liftSteps_add H n (y.height - n) 1]
   have hidx : n + (y.height - n) = y.height := by omega
   rw [hidx]
   have hpref :
-      z.liftSteps H n (y.height - n) (by
-        dsimp [z]
-        rw [appendRow_height]
-        omega)
+      z.liftSteps H n (y.height - n) (by omega)
         (TreeLevel (T := T)
           (traceSourceCut H z n (by
             dsimp [z]
@@ -183,16 +162,10 @@ theorem traceLift_appendRow
     dsimp [z]
     exact traceLift_prefix_appendRow H y h n hn
   rw [hpref]
-  rw [z.liftSteps_succ H y.height 0 (by
-    dsimp [z]
-    rw [appendRow_height]
-    omega)]
+  rw [z.liftSteps_succ H y.height 0 (by omega)]
   rw [z.liftSteps_zero H (y.height + 1)]
   change
-    z.oneLift H (⟨y.height, by
-      dsimp [z]
-      rw [appendRow_height]
-      omega⟩ : Fin z.height)
+    z.oneLift H (⟨y.height, by omega⟩ : Fin z.height)
       (traceLift H y n hn) =
       z.oneLift H (Fin.last y.height)
         (traceLift H y n hn)
