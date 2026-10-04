@@ -110,15 +110,15 @@ theorem exactTraces_finite
       (traceTargetCut H y + 1)).subset
   intro q hq
   have hend : q.rowEndLevel H = traceTargetCut H y := hq.1
-  omega
+  rw [hend]
+  exact Nat.lt_succ_self (traceTargetCut H y)
 
 /-- Consequently the subtype of exact traces is a finite type. -/
 noncomputable instance exactTraceFinite
     (y : FiniteFatTree H)
     (n : Nat) (hn : n ≤ y.height) :
     Finite (ExactTrace H y n hn) := by
-  rw [← Set.finite_coe_iff]
-  exact exactTraces_finite H y n hn
+  exact (exactTraces_finite H y n hn).to_subtype
 
 end FiniteFatTree
 
