@@ -126,7 +126,9 @@ theorem liftSteps_subset_liftTo
       rw [U.liftTo_split H
         (w.index i) (w.index (i + 1))
         (w.index (i + (steps + 1))) h01 h1last Y]
-      simpa [Y1, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hzTail
+      have hend : i + 1 + steps = i + (steps + 1) := by omega
+      rw [← hend]
+      exact hzTail
 
 end ReductionWitness
 
