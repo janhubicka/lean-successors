@@ -30,6 +30,22 @@ the manuscript condition that the depth is `n`. -/
 def StemAt (x : FiniteFatTree H) (U : FatTree H) (n : Nat) : Prop :=
   FiniteFatTree.LeFin H x (U.initialSegment H n)
 
+/-- An infinite fat tree literally extends a finite stem when the
+corresponding initial segment is equal to that stem. -/
+def ExtendsStem (x : FiniteFatTree H) (W : FatTree H) : Prop :=
+  W.initialSegment H x.height = x
+
+/-- Membership in the manuscript basic open set `[x,U]`. -/
+def InNeighborhood
+    (x : FiniteFatTree H) (U W : FatTree H) : Prop :=
+  FatTree.Reduces H W U ∧ ExtendsStem H x W
+
+/-- Membership in `[n,U]`: refine `U` while keeping its first `n`
+rows literally fixed. -/
+def InDepthCone (n : Nat) (U V : FatTree H) : Prop :=
+  FatTree.Reduces H V U ∧
+    V.initialSegment H n = U.initialSegment H n
+
 /-- A stem occurring at cut `n` has terminal cut exactly `U.cut n`. -/
 theorem terminalCut_eq_of_stemAt
     {x : FiniteFatTree H} {U : FatTree H} {n : Nat}
@@ -47,6 +63,17 @@ theorem stemAt_unique
     U.cut m = x.terminalCut :=
       (terminalCut_eq_of_stemAt H hm).symm
     _ = U.cut n := terminalCut_eq_of_stemAt H hn
+
+/-- A depth-cone refinement preserves which finite stems occur at
+that depth. -/
+theorem stemAt_of_depthCone
+    {x : FiniteFatTree H} {U V : FatTree H} {n : Nat}
+    (hx : StemAt H x U n)
+    (hV : InDepthCone H n U V) :
+    StemAt H x V n := by
+  unfold StemAt at hx ⊢
+  rw [hV.2]
+  exact hx
 
 /-- Transport a one-row approximation along an equality of its source
 cut.  Keeping this transport explicit avoids asking Lean to eliminate a
@@ -532,6 +559,23 @@ theorem splice_reduces
     rw [← htarget]
     rw [V.liftTo_succ H q
       (TreeLevel (T := T) (V.cut q))]
+
+/-- Todorčević A3(1) for the fat-tree space: every depth-cone refinement
+contains an infinite fat tree extending the prescribed finite stem. -/
+theorem a3_one_nonempty
+    {x : FiniteFatTree H} {U V : FatTree H} {n : Nat}
+    (hx : StemAt H x U n)
+    (hV : InDepthCone H n U V) :
+    ∃ W : FatTree H, InNeighborhood H x V W := by
+  have hxV : StemAt H x V n :=
+    stemAt_of_depthCone H hx hV
+  let hcut : x.terminalCut = V.cut n :=
+    terminalCut_eq_of_stemAt H hxV
+  let W : FatTree H := splice H x V n hcut
+  refine ⟨W, ?_, ?_⟩
+  · exact splice_reduces H hxV
+  · unfold ExtendsStem W
+    exact splice_initialSegment H x V n hcut
 
 end FatTree
 
