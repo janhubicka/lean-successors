@@ -370,18 +370,15 @@ theorem splice_row_ge
   have hnot : ¬ i < x.height := Nat.not_lt_of_ge hi
   simpa [splice, hnot, q] using hcast
 
-/-- The finite stem is literally the initial segment of its splice,
-not merely a finitary reduction of it. -/
-theorem splice_initialSegment
+/-- The splice agrees exactly with its prescribed finite stem on every
+cut and row.  This is the data-level form of saying that the stem is the
+initial segment of the splice. -/
+theorem splice_extendsStem
     (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
     (hcut : x.terminalCut = V.cut n) :
-    (splice H x V n hcut).initialSegment H x.height = x := by
-  refine FiniteFatTree.ext_data H
-    (U := (splice H x V n hcut).initialSegment H x.height)
-    (V := x) rfl ?_ ?_
-  · apply heq_of_eq
-    funext i
-    change (splice H x V n hcut).cut i.1 = x.cut i
+    ExtendsStem H x (splice H x V n hcut) := by
+  constructor
+  · intro i
     by_cases hi : i.1 < x.height
     · have h := splice_cut_lt H x V n hcut hi
       have hiEq :
@@ -401,36 +398,8 @@ theorem splice_initialSegment
         _ = x.cut i := by
               rw [hiLast]
               rfl
-  · have hcuts :
-        ((splice H x V n hcut).initialSegment H x.height).cut =
-          x.cut := by
-      funext i
-      change (splice H x V n hcut).cut i.1 = x.cut i
-      by_cases hi : i.1 < x.height
-      · have h := splice_cut_lt H x V n hcut hi
-        have hiEq :
-            (⟨i.1, Nat.lt_succ_of_lt hi⟩ :
-              Fin (x.height + 1)) = i := Fin.ext rfl
-        simpa [hiEq] using h
-      · have hieq : i.1 = x.height := by omega
-        have hiLast : i = Fin.last x.height := by
-          apply Fin.ext
-          exact hieq
-        calc
-          (splice H x V n hcut).cut i.1 =
-              V.cut n := by
-                simpa [hieq] using
-                  splice_cut_height H x V n hcut
-          _ = x.terminalCut := hcut.symm
-          _ = x.cut i := by
-                rw [hiLast]
-                rfl
-    cases hcuts
-    apply heq_of_eq
-    funext i
-    change (splice H x V n hcut).row i.1 = x.row i
-    exact eq_of_heq
-      (splice_row_lt H x V n hcut i.2)
+  · intro i
+    exact splice_row_lt H x V n hcut i.2
 
 /-- Before the splice point, the canonical row extension is exactly
 the canonical extension of the corresponding finite stem row. -/
@@ -1089,7 +1058,7 @@ theorem a3_one_nonempty
   refine ⟨W, ?_, ?_⟩
   · exact splice_reduces H hxV
   · unfold ExtendsStem W
-    exact splice_initialSegment H x V n hcut
+    exact splice_extendsStem H x V n hcut
 
 /-- Todorčević A3(2) for the fat-tree space.
 
