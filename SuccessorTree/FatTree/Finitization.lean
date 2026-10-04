@@ -31,10 +31,10 @@ noncomputable def boundedRowCode (n d : Nat)
   let F : MMap H := a.1.representative H
   have htop := a.1.representative_top H
   have hval := congrArg Subtype.val htop
-  change F.restrictLe H n = a.1.1 at hval
-  have hx : a.1.1 x = F x.1 := by
+  change F.restrictLe H n = a.1.1.1 at hval
+  have hx : a.1.1.1 x = F x.1 := by
     exact (congrFun hval x).symm
-  refine ⟨a.1.1 x, ?_⟩
+  refine ⟨a.1.1.1 x, ?_⟩
   have hlev :
       LevelTree.lev (F x.1) ≤ H.levelMap F.map n := by
     calc
@@ -46,7 +46,7 @@ noncomputable def boundedRowCode (n d : Nat)
   have hend : H.levelMap F.map n = a.1.rowEndLevel H := rfl
   apply Nat.le_of_lt
   calc
-    LevelTree.lev (a.1.1 x) = LevelTree.lev (F x.1) := by rw [hx]
+    LevelTree.lev (a.1.1.1 x) = LevelTree.lev (F x.1) := by rw [hx]
     _ ≤ H.levelMap F.map n := hlev
     _ = a.1.rowEndLevel H := hend
     _ < d := a.2
@@ -62,7 +62,7 @@ theorem boundedRowCode_injective (n d : Nat) :
   apply Subtype.ext
   funext x
   have hx := congrFun hab x
-  exact congrArg Subtype.val hx
+  simpa [boundedRowCode] using congrArg Subtype.val hx
 
 /-- For fixed source cut and ambient terminal bound there are only finitely
 many possible one-row approximations. -/
