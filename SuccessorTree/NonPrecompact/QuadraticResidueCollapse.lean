@@ -57,6 +57,10 @@ theorem residueMomentSum_eq_middle_power
         apply ZMod.natCast_eq_one_iff_odd.mpr
         simpa [d] using hmid
       rw [hodd]
-      simp [residueCoeff, d]
+      change
+        (1 : ResidueAlgebra (2 ^ s)) *
+          residueT (2 ^ s) ^ d =
+        residueT (2 ^ s) ^ (2 ^ s - 1)
+      simp [d]
 
 end SuccessorTree.NonPrecompact
