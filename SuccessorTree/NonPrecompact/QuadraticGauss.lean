@@ -27,14 +27,22 @@ def f2Sign (a : F2) : ℤ :=
   norm_num [f2Sign]
 
 theorem f2_eq_zero_or_one (a : F2) : a = 0 ∨ a = 1 := by
-  change Fin 2 at a
-  fin_cases a <;> simp
+  have hval : a.val = 0 ∨ a.val = 1 := by
+    have hlt := ZMod.val_lt a
+    omega
+  rcases hval with h | h
+  · left
+    apply ZMod.val_injective
+    simpa using h
+  · right
+    apply ZMod.val_injective
+    simpa using h
 
 theorem f2Sign_add (a b : F2) :
     f2Sign (a + b) = f2Sign a * f2Sign b := by
   rcases f2_eq_zero_or_one a with rfl | rfl <;>
     rcases f2_eq_zero_or_one b with rfl | rfl <;>
-      norm_num [f2Sign]
+      simp [f2Sign, CharTwo.add_self_eq_zero]
 
 /-- The nontrivial additive character F₂ → {+1,-1} ⊂ ℤ. -/
 def f2SignChar : AddChar F2 ℤ where
@@ -50,7 +58,7 @@ theorem exists_eq_one_of_linearMap_ne_zero
     (L : V →ₗ[F2] F2) (hL : L ≠ 0) :
     ∃ x : V, L x = 1 := by
   by_contra h
-  push_neg at h
+  push Not at h
   apply hL
   apply LinearMap.ext
   intro x
