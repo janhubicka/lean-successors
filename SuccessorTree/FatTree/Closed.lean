@@ -1,4 +1,4 @@
-import SuccessorTree.FatTree.ApproximationSystem
+import SuccessorTree.FatTree.RamseyFinitization
 import RamseySpace.Closed
 
 /-!
@@ -134,6 +134,65 @@ theorem isMetricallyClosed :
             ((Classical.choose (hpref n)).row i.1) at hr
         simpa [X] using hr
     _ = (c n).1 := hreal
+
+/-- Metric closedness plus the already verified A2 finitization gives the
+fusion-completeness interface needed by the combinatorial A4 persistence
+argument.  No A3 or A4 field is used here. -/
+theorem fusionComplete :
+    RamseySpace.FusionComplete (approximationSystem H) := by
+  let F := finitization H
+  refine ⟨?_⟩
+  intro n0 Y hY
+  let c : (approximationSystem H).ApproximationCode :=
+    fun n => (approximationSystem H).approx n (Y (n + 1))
+  have hpref :
+      ∀ N, (approximationSystem H).PrefixRealizable c N := by
+    intro N
+    refine ⟨Y (N + 1), ?_⟩
+    intro n hn
+    have hstab :
+        (approximationSystem H).approx n (Y (N + 1)) =
+          (approximationSystem H).approx n (Y (n + 1)) :=
+      (approximationSystem H).fusion_approx_eq hY
+        (by omega) (by omega)
+    simpa [c] using hstab
+  rcases isMetricallyClosed H c hpref with ⟨X, hXcode⟩
+  refine ⟨X, ?_⟩
+  intro k
+  constructor
+  · apply (F.realizesOrder X (Y k)).2
+    intro n
+    let j : Nat := max k (n + 1)
+    have hkj : k ≤ j := Nat.le_max_left _ _
+    have hnj : n + 1 ≤ j := Nat.le_max_right _ _
+    have hYjYk : FatTree.Reduces H (Y j) (Y k) :=
+      (approximationSystem H).fusion_le hY hkj
+    rcases (F.realizesOrder (Y j) (Y k)).1 hYjYk n with
+      ⟨m, hm⟩
+    refine ⟨m, ?_⟩
+    have hstab :
+        (approximationSystem H).approx n (Y j) =
+          (approximationSystem H).approx n (Y (n + 1)) :=
+      (approximationSystem H).fusion_approx_eq hY
+        hnj (by omega)
+    have hXj :
+        (approximationSystem H).approx n X =
+          (approximationSystem H).approx n (Y j) :=
+      (hXcode n).trans hstab.symm
+    simpa only [RamseySpace.ApproximationSystem.finiteApprox, hXj] using hm
+  · have hX :
+        (approximationSystem H).approx (n0 + k) X =
+          (approximationSystem H).approx (n0 + k)
+            (Y (n0 + k + 1)) :=
+      hXcode (n0 + k)
+    have hstab :
+        (approximationSystem H).approx (n0 + k)
+            (Y (n0 + k + 1)) =
+          (approximationSystem H).approx (n0 + k) (Y k) :=
+      (approximationSystem H).fusion_approx_eq hY
+        (by omega) (by omega)
+    exact hX.trans hstab
+
 
 end FatTree
 end SMTree
