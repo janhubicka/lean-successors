@@ -185,6 +185,8 @@ def insert_annotation(text: str, name: str, anchor: str, body: str) -> str:
     # A commented-out label is not a placement target.
     matches = list(re.finditer(r'^[^%\n]*' + re.escape(anchor) + r'[^\n]*\n',
                                text, re.MULTILINE))
+    if len(matches) == 0 and name in OPTIONAL_RULES:
+        return text
     if len(matches) != 1:
         raise ValueError(f'{name}: expected one uncommented anchor {anchor!r}, found {len(matches)}')
     pos = matches[0].end()
