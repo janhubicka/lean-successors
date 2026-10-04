@@ -73,3 +73,5 @@ import SuccessorTree.NonPrecompact.QuadraticBinomial
 import SuccessorTree.NonPrecompact.QuadraticResidueCollapse
 
 import SuccessorTree.NonPrecompact.QuadraticCoordinateGlue
+
+import SuccessorTree.NonPrecompact.QuadraticResidueGenerating
