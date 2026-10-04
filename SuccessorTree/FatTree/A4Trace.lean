@@ -716,9 +716,11 @@ theorem ExactTrace.exists_raw_predecessor
     · change qrow.topLevel H = traceTargetCut H y
       simpa [d] using hqtop
     · intro a ha
+      have ha0 : LevelTree.lev a = c0 := by
+        change LevelTree.lev a = c0 at ha
+        exact ha
       have ha1 : LevelTree.lev a = c1 := by
-        dsimp [c0] at ha
-        exact ha.trans hsrc.symm
+        exact ha0.trans hsrc.symm
       have hthetaFan :=
         theta.appendRow_image_mem_fan H y h n hn a ha1
       rcases hthetaFan with
@@ -742,16 +744,15 @@ theorem ExactTrace.exists_raw_predecessor
         simp [theta0]
       have hqTheta :
           qrow.representative H a ≤ theta.1.representative H a := by
-        have hq0 := hqle a (by
-          dsimp [c0]
-          exact ha)
+        have hq0 := hqle a ha0
         rwa [htheta0Eq] at hq0
       let C : MMap H :=
         H.canonicalExtension (h.representative H) y.terminalCut
       have hCfix : C.FixesBelow H d := by
         intro x hx
         have hxd : LevelTree.lev x < y.terminalCut := by
-          simpa [d] using hx
+          change LevelTree.lev x < traceTargetCut H y at hx
+          exact hx
         dsimp [C]
         rw [H.canonicalExtension_agrees
           (h.representative H) y.terminalCut x (Nat.le_of_lt hxd)]
@@ -762,7 +763,7 @@ theorem ExactTrace.exists_raw_predecessor
         C.map.map_le_of_le htz.le
       have htTheta :
           t ≤ theta.1.representative H a := by
-        rw [hthetaZ]
+        rw [← hthetaZ]
         exact htC.trans hCmono
       have hqt : qrow.representative H a = t := by
         rcases LevelTree.comparable_below hqTheta htTheta with h | h
@@ -775,9 +776,11 @@ theorem ExactTrace.exists_raw_predecessor
   let q : ExactTrace H y n hn := ⟨qrow, hqExact⟩
   refine ⟨q, ?_⟩
   intro a ha
+  have ha0 : LevelTree.lev a = c0 := by
+    change LevelTree.lev a = c0 at ha
+    exact ha
   have ha1 : LevelTree.lev a = c1 := by
-    dsimp [c0] at ha
-    exact ha.trans hsrc.symm
+    exact ha0.trans hsrc.symm
   have hthetaFan :=
     theta.appendRow_image_mem_fan H y h n hn a ha1
   rcases hthetaFan with
@@ -799,16 +802,15 @@ theorem ExactTrace.exists_raw_predecessor
     simp [theta0]
   have hqTheta :
       q.1.representative H a ≤ theta.1.representative H a := by
-    have hq0 := hqle a (by
-      dsimp [c0]
-      exact ha)
+    have hq0 := hqle a ha0
     rwa [htheta0Eq] at hq0
   let C : MMap H :=
     H.canonicalExtension (h.representative H) y.terminalCut
   have hCfix : C.FixesBelow H d := by
     intro x hx
     have hxd : LevelTree.lev x < y.terminalCut := by
-      simpa [d] using hx
+      change LevelTree.lev x < traceTargetCut H y at hx
+      exact hx
     dsimp [C]
     rw [H.canonicalExtension_agrees
       (h.representative H) y.terminalCut x (Nat.le_of_lt hxd)]
@@ -819,7 +821,7 @@ theorem ExactTrace.exists_raw_predecessor
     C.map.map_le_of_le htz.le
   have htTheta :
       t ≤ theta.1.representative H a := by
-    rw [hthetaZ]
+    rw [← hthetaZ]
     exact htC.trans hCmono
   have hqt : q.1.representative H a = t := by
     rcases LevelTree.comparable_below hqTheta htTheta with h | h
@@ -829,7 +831,7 @@ theorem ExactTrace.exists_raw_predecessor
         (htLevel.trans hqLevel.symm)).symm
   refine ⟨z, ?_, ?_⟩
   · simpa [hqt] using htz
-  · exact hthetaZ
+  · exact hthetaZ.symm
 
 
 end FiniteFatTree
