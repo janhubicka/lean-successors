@@ -185,6 +185,14 @@ end ReductionWitness
 theorem reduces_refl (U : FatTree H) : Reduces H U U :=
   ⟨ReductionWitness.refl H U⟩
 
+/-- The infinite fat-subtree relation is transitive. -/
+theorem reduces_trans {V U W : FatTree H}
+    (hVU : Reduces H V U) (hUW : Reduces H U W) :
+    Reduces H V W := by
+  rcases hVU with ⟨wVU⟩
+  rcases hUW with ⟨wUW⟩
+  exact ⟨ReductionWitness.trans H wVU wUW⟩
+
 end FatTree
 
 end SMTree
