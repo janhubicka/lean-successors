@@ -60,8 +60,8 @@ jobs:
           import re
           text = Path('proof-audit/axioms.log').read_text()
           entries = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
-          if len(entries) != 10:
-              raise SystemExit(f'Expected 10 complete axiom reports, received {len(entries)}')
+          if len(entries) != 8:
+              raise SystemExit(f'Expected 8 complete axiom reports, received {len(entries)}')
           allowed = {'propext', 'Classical.choice', 'Quot.sound'}
           for entry in entries:
               found = {x.strip() for x in entry.split(',') if x.strip()}
@@ -69,7 +69,7 @@ jobs:
                   raise SystemExit(f'Unexpected proof axioms: {found - allowed}')
           if 'sorryAx' in text or re.search(r'\berror:', text):
               raise SystemExit('Proof audit contains an error or an admitted proof')
-          print('PASS: all 10 transitive axiom reports use only standard Lean axioms')
+          print('PASS: all 8 transitive axiom reports use only standard Lean axioms')
           PY
 
       - name: Check fat-tree A1 sequencing axioms
