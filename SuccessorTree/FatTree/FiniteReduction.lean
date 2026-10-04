@@ -60,11 +60,183 @@ def refl (U : FiniteFatTree H) : ReductionWitness H U U where
     rw [U.liftTo_succ H i
       (TreeLevel (T := T) (U.cut i.castSucc))]
 
+/-- Iterate the one-block inclusions of a finite reduction witness.
+
+The terminal cut is available in the type through the bound
+`i + steps ≤ V.height`.  Source locality restricts each full-level block
+inclusion to the subset actually reached by the preceding blocks. -/
+theorem liftSteps_subset_liftTo
+    {V U : FiniteFatTree H}
+    (w : ReductionWitness H V U)
+    (i steps : Nat) (hbound : i + steps ≤ V.height)
+    {X Y : Set T}
+    (hX : X ⊆
+      TreeLevel (T := T)
+        (V.cut (⟨i, by omega⟩ : Fin (V.height + 1))))
+    (hY : Y ⊆
+      TreeLevel (T := T)
+        (U.cut (w.index
+          (⟨i, by omega⟩ : Fin (V.height + 1)))))
+    (hXY : X ⊆ Y) :
+    V.liftSteps H i steps hbound X ⊆
+      U.liftTo H
+        (w.index (⟨i, by omega⟩ : Fin (V.height + 1)))
+        (w.index (⟨i + steps, by omega⟩ : Fin (V.height + 1)))
+        (w.index_strict.monotone (by
+          change i ≤ i + steps
+          omega))
+        Y := by
+  induction steps generalizing i X Y with
+  | zero =>
+      have hsame :
+          (w.index (⟨i, by omega⟩ : Fin (V.height + 1))) =
+            w.index (⟨i + 0, by omega⟩ : Fin (V.height + 1)) := by
+        congr
+      simpa [FiniteFatTree.liftTo_same, hsame] using hXY
+  | succ steps ih =>
+      let vi : Fin V.height := ⟨i, by omega⟩
+      let v0 : Fin (V.height + 1) := vi.castSucc
+      let v1 : Fin (V.height + 1) := vi.succ
+      let u0 : Fin (U.height + 1) := w.index v0
+      let u1 : Fin (U.height + 1) := w.index v1
+      have hv01 : v0 < v1 := by
+        change i < i + 1
+        omega
+      have hu01 : u0 ≤ u1 :=
+        le_of_lt (w.index_strict hv01)
+      let Y1 : Set T := U.liftTo H u0 u1 hu01 Y
+      have hXvi :
+          X ⊆ TreeLevel (T := T) (V.cut vi.castSucc) := by
+        simpa [vi, v0] using hX
+      have hY0 :
+          Y ⊆ TreeLevel (T := T) (U.cut u0) := by
+        simpa [vi, v0, u0] using hY
+      have hX1 :
+          V.oneLift H vi X ⊆
+            TreeLevel (T := T) (V.cut vi.succ) :=
+        V.oneLift_subset_nextLevel H vi hXvi
+      have hY1 :
+          Y1 ⊆ TreeLevel (T := T) (U.cut u1) := by
+        dsimp [Y1]
+        exact U.liftTo_subset_level H u0 u1 hu01 hY0
+      have hX1Y1 : V.oneLift H vi X ⊆ Y1 := by
+        intro z hz
+        have hzVfull :
+            z ∈ V.oneLift H vi
+              (TreeLevel (T := T) (V.cut vi.castSucc)) :=
+          V.oneLift_mono H vi hXvi hz
+        have hzUfull : z ∈ U.liftTo H u0 u1 hu01
+            (TreeLevel (T := T) (U.cut u0)) := by
+          simpa [vi, v0, v1, u0, u1] using w.lift_subset vi hzVfull
+        rcases V.oneLift_descends H vi hXvi hz with
+          ⟨x, hx, hxz⟩
+        have hsourceY : ∃ y ∈ Y, y ≤ z :=
+          ⟨x, hXY hx, hxz⟩
+        exact U.liftTo_mem_of_mem_of_source H
+          u0 u1 hu01 hY0 (fun _ h => h) hzUfull hsourceY
+      intro z hz
+      rw [V.liftSteps_succ H i steps hbound X] at hz
+      have hzTail :=
+        ih (i := i + 1) (by omega)
+          (X := V.oneLift H vi X) (Y := Y1)
+          (by simpa [vi] using hX1)
+          (by
+            simpa [vi, v1, u1] using hY1)
+          hX1Y1 hz
+      let vlast : Fin (V.height + 1) :=
+        ⟨i + (steps + 1), by omega⟩
+      have hv1last : v1 ≤ vlast := by
+        change i + 1 ≤ i + (steps + 1)
+        omega
+      have hu1last : u1 ≤ w.index vlast :=
+        w.index_strict.monotone hv1last
+      rw [U.liftTo_split H u0 u1 (w.index vlast)
+        hu01 hu1last Y]
+      have hvrec :
+          (⟨i + 1 + steps, by omega⟩ :
+            Fin (V.height + 1)) = vlast := by
+        apply Fin.ext
+        omega
+      simpa [Y1, vi, v0, v1, u0, u1, vlast, hvrec] using hzTail
+
+/-- A finite reduction witness carries the whole lift between any two selected
+cuts into the corresponding lift of the ambient finite fat tree. -/
+theorem liftTo_subset_liftTo
+    {V U : FiniteFatTree H}
+    (w : ReductionWitness H V U)
+    (a b : Fin (V.height + 1)) (hab : a ≤ b) :
+    V.liftTo H a b hab
+        (TreeLevel (T := T) (V.cut a)) ⊆
+      U.liftTo H (w.index a) (w.index b)
+        (w.index_strict.monotone hab)
+        (TreeLevel (T := T) (U.cut (w.index a))) := by
+  have hlevels :
+      TreeLevel (T := T) (V.cut a) ⊆
+        TreeLevel (T := T) (U.cut (w.index a)) := by
+    intro x hx
+    change LevelTree.lev x = U.cut (w.index a)
+    change LevelTree.lev x = V.cut a at hx
+    rw [← w.cut_eq a]
+    exact hx
+  unfold FiniteFatTree.liftTo
+  have h :=
+    w.liftSteps_subset_liftTo H a.1 (b.1 - a.1)
+      (by omega)
+      (X := TreeLevel (T := T) (V.cut a))
+      (Y := TreeLevel (T := T) (U.cut (w.index a)))
+      (by simpa using (fun _ hx => hx :
+        TreeLevel (T := T) (V.cut a) ⊆
+          TreeLevel (T := T) (V.cut a)))
+      (by simpa using (fun _ hx => hx :
+        TreeLevel (T := T) (U.cut (w.index a)) ⊆
+          TreeLevel (T := T) (U.cut (w.index a))))
+      hlevels
+  have hend :
+      (⟨a.1 + (b.1 - a.1), by omega⟩ :
+        Fin (V.height + 1)) = b := by
+    apply Fin.ext
+    omega
+  simpa [hend] using h
+
+/-- Composition of finite fat-subtree reduction witnesses. -/
+def trans
+    {V U W : FiniteFatTree H}
+    (wVU : ReductionWitness H V U)
+    (wUW : ReductionWitness H U W) :
+    ReductionWitness H V W where
+  index := fun i => wUW.index (wVU.index i)
+  index_strict := wUW.index_strict.comp wVU.index_strict
+  cut_eq := by
+    intro i
+    calc
+      V.cut i = U.cut (wVU.index i) := wVU.cut_eq i
+      _ = W.cut (wUW.index (wVU.index i)) :=
+        wUW.cut_eq (wVU.index i)
+  lift_subset := by
+    intro i
+    exact (wVU.lift_subset i).trans
+      (wUW.liftTo_subset_liftTo H
+        (wVU.index i.castSucc) (wVU.index i.succ)
+        (le_of_lt (wVU.index_strict
+          (by
+            change i.1 < i.1 + 1
+            omega))))
+
 end ReductionWitness
 
 /-- The finite fat-subtree relation is reflexive. -/
 theorem reduces_refl (U : FiniteFatTree H) : Reduces H U U :=
   ⟨ReductionWitness.refl H U⟩
+
+/-- The finite fat-subtree relation is transitive.  Since the witness map is
+defined on `height + 1` cuts, the composed witness automatically preserves
+the terminal cut. -/
+theorem reduces_trans {V U W : FiniteFatTree H}
+    (hVU : Reduces H V U) (hUW : Reduces H U W) :
+    Reduces H V W := by
+  rcases hVU with ⟨wVU⟩
+  rcases hUW with ⟨wUW⟩
+  exact ⟨ReductionWitness.trans H wVU wUW⟩
 
 end FiniteFatTree
 
