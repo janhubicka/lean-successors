@@ -38,7 +38,6 @@ theorem f2Sign_natCast_eq_neg_one_pow (m : ℕ) :
       simp
   | succ m ih =>
       rw [Nat.cast_succ, f2Sign_add, ih, f2Sign_one, pow_succ]
-      ring
 
 /-- The abstract quadratic Gauss sum of the mod-two reduction of a natural
 weight is the ordinary integer sign sum used in the manuscript. -/
@@ -66,9 +65,9 @@ theorem even_of_quadratic_moment_divisibility
     (hkd : k < d)
     (hdiv : 2 ^ (2 * d - 2 * k) ∣ M) :
     Even M := by
-  rw [Nat.even_iff]
+  rw [Nat.even_iff, ← Nat.dvd_iff_mod_eq_zero]
   have hpos : 1 ≤ 2 * d - 2 * k := by omega
-  exact (pow_dvd_pow 2 hpos).trans hdiv
+  simpa using (pow_dvd_pow 2 hpos).trans hdiv
 
 /-- Cast a natural power-of-two divisibility statement to the integers. -/
 theorem int_pow_two_dvd_natCast_of_nat_dvd
