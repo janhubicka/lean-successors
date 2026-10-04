@@ -189,8 +189,6 @@ theorem appendRow_initialSegment
       _ = x.cut ii := appendRow_cut_old H x g ii
       _ = x.cut i := by
         congr 1
-        apply Fin.ext
-        rfl
   · intro i
     let ii : Fin x.height := ⟨i.1, by simpa using i.2⟩
     have hseg :
