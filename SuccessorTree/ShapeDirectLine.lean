@@ -95,6 +95,52 @@ theorem composeAcross_representative_agrees
   apply MMap.toAM_one_representative_agrees
   exact hx
 
+/-- Composing after the exact identity prefix does not change a one-moving
+word. -/
+theorem composeAcross_id1
+    (H : SMTree S) (n : Nat)
+    (q : AM H n 1) :
+    H.composeAcross
+        (⟨AM.id1 H n, AM.id1_topLevel H n⟩ : AMExact H n n)
+        q = q := by
+  apply Subtype.ext
+  apply Subtype.ext
+  funext x
+  have hcompTop :=
+    congrArg Subtype.val
+      ((H.composeAcross
+        (⟨AM.id1 H n, AM.id1_topLevel H n⟩ : AMExact H n n)
+        q).representative_top H)
+  have hqTop := congrArg Subtype.val (q.representative_top H)
+  change
+    ((H.composeAcross
+      (⟨AM.id1 H n, AM.id1_topLevel H n⟩ : AMExact H n n)
+      q).representative H).restrictLe H n =
+        (H.composeAcross
+          (⟨AM.id1 H n, AM.id1_topLevel H n⟩ : AMExact H n n)
+          q).1.1 at hcompTop
+  change
+    (q.representative H).restrictLe H n = q.1.1 at hqTop
+  have hid :
+      (AM.id1 H n).representative H x.1 = x.1 := by
+    exact MMap.toAM_one_representative_agrees
+      H (MMap.id H) n (MMap.id_fixesBelow H n) x.1 x.2
+  calc
+    (H.composeAcross
+        (⟨AM.id1 H n, AM.id1_topLevel H n⟩ : AMExact H n n)
+        q).1.1 x =
+        (H.composeAcross
+          (⟨AM.id1 H n, AM.id1_topLevel H n⟩ : AMExact H n n)
+          q).representative H x.1 :=
+      (congrFun hcompTop x).symm
+    _ = q.representative H ((AM.id1 H n).representative H x.1) :=
+      H.composeAcross_representative_agrees
+        (⟨AM.id1 H n, AM.id1_topLevel H n⟩ : AMExact H n n)
+        q x.1 x.2
+    _ = q.representative H x.1 := by rw [hid]
+    _ = q.1.1 x := congrFun hqTop x
+
+
 /-- Evaluate a local m-word after an exact n-to-m prefix and an outer
 n-subspace. -/
 noncomputable def crossEval
