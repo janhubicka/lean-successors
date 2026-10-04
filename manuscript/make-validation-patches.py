@@ -135,7 +135,17 @@ then compose the interval lifts. No strengthening of the definition is
 needed.}
 \fi
 '''),
-    ('fat-tree-sequencing', r'\\label{item:A1}', r'''\n\\successorfatleanverified{SuccessorTree/FatTree/Sequencing.lean}{FatTree.a1\\_one--a1\\_three}\n\\ifshowvalidation\n\\todo[inline]{Řehořek: All three A1 sequencing clauses are Lean-checked.\nThey are mathematically elementary, but equality of finite fat trees has\ndependent cut and row types, so the formal proof uses pointwise/heterogeneous\nextensionality rather than treating the sequence argument as definitional.\nNo additional hypothesis is needed.}\n\\fi\n'''),\n    ('fat-tree-finitization', r'\label{item:A2}', r'''
+    ('fat-tree-sequencing', r'\label{item:A1}', r'''
+\successorfatleanverified{SuccessorTree/FatTree/Sequencing.lean}{FatTree.a1\_one--a1\_three}
+\ifshowvalidation
+\todo[inline]{Řehořek: All three A1 sequencing clauses are Lean-checked.
+They are mathematically elementary, but equality of finite fat trees has
+dependent cut and row types, so the formal proof uses pointwise/heterogeneous
+extensionality rather than treating the sequence argument as definitional.
+No additional hypothesis is needed.}
+\fi
+'''),
+    ('fat-tree-finitization', r'\label{item:A2}', r'''
 \successorfatleanverified{SuccessorTree/FatTree/Finitization.lean}{A2(1)--A2(3)}
 \ifshowvalidation
 \todo[inline]{Řehořek: All three A2 clauses are Lean-checked. The current
