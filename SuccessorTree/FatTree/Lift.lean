@@ -219,6 +219,20 @@ noncomputable def liftSteps (U : FatTree H) :
     U.liftSteps H i (steps + 1) X =
       U.liftSteps H (i + 1) steps (U.oneLift H i X) := rfl
 
+/-- Iterating for `a+b` rows is the same as lifting for `a` rows
+and then for the remaining `b` rows. -/
+theorem liftSteps_add (U : FatTree H)
+    (i a b : Nat) (X : Set T) :
+    U.liftSteps H i (a + b) X =
+      U.liftSteps H (i + a) b (U.liftSteps H i a X) := by
+  induction a generalizing i X with
+  | zero =>
+      rfl
+  | succ a ih =>
+      rw [Nat.succ_add, liftSteps_succ, liftSteps_succ]
+      simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
+        ih (i := i + 1) (X := U.oneLift H i X)
+
 /-- Iterated lifting is monotone in its starting set. -/
 theorem liftSteps_mono (U : FatTree H)
     (i steps : Nat) {X Y : Set T}
@@ -345,6 +359,20 @@ theorem liftTo_subset_level (U : FatTree H)
   have h := U.liftSteps_subset_level H i (k - i) hX
   have hidx : i + (k - i) = k := by omega
   simpa [hidx] using h
+
+/-- A lift through an intermediate cut factors as the two successive
+lifts through that cut. -/
+theorem liftTo_split (U : FatTree H)
+    (i j k : Nat) (hij : i ≤ j) (hjk : j ≤ k)
+    (X : Set T) :
+    U.liftTo H i k (hij.trans hjk) X =
+      U.liftTo H j k hjk (U.liftTo H i j hij X) := by
+  change
+    U.liftSteps H i (k - i) X =
+      U.liftSteps H j (k - j) (U.liftSteps H i (j - i) X)
+  have hsum : k - i = (j - i) + (k - j) := by omega
+  have hidx : i + (j - i) = j := by omega
+  rw [hsum, U.liftSteps_add H i (j - i) (k - j) X, hidx]
 
 /-- `liftTo` is monotone in the starting set. -/
 theorem liftTo_mono (U : FatTree H)
