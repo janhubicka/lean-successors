@@ -271,9 +271,11 @@ theorem exists_lastBlock_exactTrace
       intro a ha
       exact ha
     have htLevel : LevelTree.lev t = U.cut m := by
-      have := hInterLevel ht
-      change LevelTree.lev t = Z.cut jmid at this
-      simpa [Z, jmid] using this
+      have htZ := hInterLevel ht
+      change LevelTree.lev t = Z.cut jmid at htZ
+      have hZmid : Z.cut jmid = U.cut m := by
+        rfl
+      exact htZ.trans hZmid
 
     have hpLeG :
         pcast.representative H x ≤ g.representative H x := by
@@ -293,7 +295,9 @@ theorem exists_lastBlock_exactTrace
       simpa [zlast, hrowx] using hmap
 
     have htCut : LevelTree.lev t = Z.cut jrow.castSucc := by
-      simpa [Z, jrow] using htLevel
+      have hZrow : Z.cut jrow.castSucc = U.cut m := by
+        rfl
+      exact htLevel.trans hZrow.symm
     have htRow :
         t ≤ Z.rowExtension H jrow t :=
       Z.le_rowExtension_at_cut H jrow htCut
@@ -337,8 +341,16 @@ theorem exists_lastBlock_exactTrace
       have hseg :=
         U.initialSegment_liftTo H (m + 1)
           j0 jmid h0m (TreeLevel (T := T) (Z.cut j0))
+      change
+        t ∈ Z.liftTo H j0 jmid h0m
+          (TreeLevel (T := T) (Z.cut j0)) at ht
       rw [hseg] at ht
-      simpa [Z, j0, jmid] using ht
+      have hZ0 : Z.cut j0 = U.cut y.height := by
+        rfl
+      change
+        t ∈ U.liftTo H y.height m hym
+          (TreeLevel (T := T) (U.cut y.height))
+      simpa only [hZ0] using ht
 
     have hpTrace :
         pcast.representative H x ∈
@@ -347,8 +359,10 @@ theorem exists_lastBlock_exactTrace
       rw [hpt]
       unfold FiniteFatTree.traceLift
       rw [U.initialSegment_liftTo H m]
-      simpa [FiniteFatTree.traceSourceIndex,
-        FiniteFatTree.traceSourceCut] using htU
+      change
+        t ∈ U.liftTo H y.height m hym
+          (TreeLevel (T := T) (U.cut y.height))
+      exact htU
 
     have hrowTLeLast :
         Z.rowExtension H jrow t ≤ zlast := by
@@ -363,7 +377,6 @@ theorem exists_lastBlock_exactTrace
         Z.rowExtension H jrow t =
             U.rowExtension H m t := by
           rw [U.initialSegment_rowExtension H (m + 1) jrow]
-          rfl
         _ = (U.row m).representative H t :=
           U.rowExtension_agrees H m t (by
             exact Nat.le_of_eq htLevel)
