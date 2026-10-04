@@ -63,4 +63,37 @@ theorem natCast_card_affineFiber_eq_det
     rw [hcard, hdet1]
     norm_num
 
+
+/-- An affine system of m equations in n binary variables has either no
+solutions or a number of solutions divisible by 2^(n-m).  The statement is
+uniform, since the empty fibre has cardinality zero. -/
+theorem pow_two_sub_dvd_card_matrixAffineFiber
+    {m n : ℕ}
+    (M : Matrix (Fin m) (Fin n) F2)
+    (b : Fin m → F2) :
+    2 ^ (n - m) ∣ Nat.card (affineFiber M.mulVecLin b) := by
+  by_cases hne : Nonempty (affineFiber M.mulVecLin b)
+  · let x0 : affineFiber M.mulVecLin b := Classical.choice hne
+    rw [affineFiber_card_eq_ker_card M.mulVecLin b x0]
+    rw [Module.natCard_eq_pow_finrank (K := F2)]
+    apply pow_dvd_pow 2
+    have hrange :
+        Module.finrank F2 (LinearMap.range M.mulVecLin) ≤ m := by
+      calc
+        Module.finrank F2 (LinearMap.range M.mulVecLin) ≤
+            Module.finrank F2 (Fin m → F2) :=
+          (LinearMap.range M.mulVecLin).finrank_le
+        _ = m := by
+          simp [Module.finrank_pi]
+    have hsum := M.mulVecLin.finrank_range_add_finrank_ker
+    have hsource :
+        Module.finrank F2 (Fin n → F2) = n := by
+      simp [Module.finrank_pi]
+    rw [hsource] at hsum
+    omega
+  · letI : IsEmpty (affineFiber M.mulVecLin b) :=
+      ⟨fun x => hne ⟨x⟩⟩
+    rw [(Finite.card_eq_zero_iff).2 inferInstance]
+    exact dvd_zero _
+
 end SuccessorTree.NonPrecompact
