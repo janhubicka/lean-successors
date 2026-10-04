@@ -95,6 +95,7 @@ jobs:
           PY
 
       - name: Check localized manuscript patches
+        if: always()
         run: |
           set -o pipefail
           python3 manuscript/make-validation-patches.py --reference \
