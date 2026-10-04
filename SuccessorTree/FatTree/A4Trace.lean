@@ -435,9 +435,9 @@ def IsRawTraceCandidate
           H.canonicalExtension (h.representative H) y.terminalCut z
 
 /-- Every admissible row carrying the manuscript's raw successor-table data
-is an exact trace of the appended finite fat tree.  No total admissible map
-extending the successor table is used. -/
-theorem exactTrace_of_raw_candidate
+satisfies the exact-trace predicate for the appended finite fat tree.  No
+total admissible map extending the successor table is used. -/
+theorem isExactTrace_of_raw_candidate
     (y : FiniteFatTree H)
     (h : AM H y.terminalCut 1)
     (n : Nat) (hn : n ≤ y.height)
@@ -447,10 +447,10 @@ theorem exactTrace_of_raw_candidate
         rw [appendRow_height]
         omega)) 1)
     (hraw : IsRawTraceCandidate H y h n hn q theta) :
-    ExactTrace H (appendRow H y h) n (by
+    IsExactTrace H (appendRow H y h) n (by
       rw [appendRow_height]
-      omega) := by
-  refine ⟨theta, hraw.1, ?_⟩
+      omega) theta := by
+  refine ⟨hraw.1, ?_⟩
   intro a ha
   have hsrc :
       traceSourceCut H (appendRow H y h) n (by
@@ -468,6 +468,22 @@ theorem exactTrace_of_raw_candidate
   rw [traceLift_appendRow_fan H y h n hn]
   rw [htheta]
   exact ⟨z, ⟨q.1.representative H a, hqmem, hqz⟩, rfl⟩
+
+/-- Package the preceding proposition as an exact-trace object. -/
+noncomputable def exactTraceOfRawCandidate
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : ExactTrace H y n hn)
+    (theta : AM H
+      (traceSourceCut H (appendRow H y h) n (by
+        rw [appendRow_height]
+        omega)) 1)
+    (hraw : IsRawTraceCandidate H y h n hn q theta) :
+    ExactTrace H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega) :=
+  ⟨theta, isExactTrace_of_raw_candidate H y h n hn q theta hraw⟩
 
 /-- Manuscript trace-update relation.
 
