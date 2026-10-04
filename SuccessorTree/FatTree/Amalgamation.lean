@@ -784,19 +784,19 @@ theorem splice_prefix_tail_reduces
   }⟩
   intro i
   by_cases hi : i < m
-  · let ix : Fin m := ⟨i, hi⟩
+  · let ix :
+        Fin ((U.initialSegment H m).height) :=
+      ⟨i, by
+        change i < m
+        exact hi⟩
     let hsplice :
         (U.initialSegment H m).terminalCut = V.cut n := by
       simpa using hcut.symm
     rw [splice_oneLift_lt H (U.initialSegment H m) V n
-      hsplice (by
-        change i < m
-        exact hi)]
+      hsplice ix.2]
     rw [U.initialSegment_oneLift H m ix]
     rw [splice_cut_lt H (U.initialSegment H m) V n
-      hsplice (by
-        change i < m
-        exact hi)]
+      hsplice ix.2]
     change
       U.oneLift H i (TreeLevel (T := T) (U.cut i)) ⊆
         U.liftTo H
