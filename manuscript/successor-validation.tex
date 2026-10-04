@@ -78,12 +78,13 @@
     \leanpartial{#1}{#2}%
   \endgroup
 }
-% Fat-tree A4 one-row bridge snapshot. Actions run 37190600176 checked
-% the append-one-row/prefix bridge separately; full all-trace A4 is unfinished.
+% Fat-tree A4 exact-trace snapshot. Actions run 37197761609 checked
+% the finite bridge, exact trace recursion, and bidirectional exact-trace
+% update separately; profile persistence/fusion is still unfinished.
 \newcommand{\successorfatafourpartial}[2]{%
   \begingroup
     \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
-    \renewcommand{\leancommit}{19b88d7116716891bdef58d9c927d6399745c039}%
+    \renewcommand{\leancommit}{64dc00f70042b6efd72823b3c28cac0fb96ac029}%
     \leanpartial{#1}{#2}%
   \endgroup
 }
