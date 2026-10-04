@@ -65,4 +65,4 @@ open SuccessorTree
 #check SMTree.FiniteFatTree.leFin_trans
 #print axioms SMTree.FiniteFatTree.leFin_trans
 
-#check @SMTree.FiniteFatTree.ext
+#check @SMTree.FiniteFatTree.ext_data
