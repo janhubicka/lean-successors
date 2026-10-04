@@ -61,7 +61,7 @@ def refl (U : FiniteFatTree H) : ReductionWitness H U U where
       (TreeLevel (T := T) (U.cut i.castSucc))]
 
 /-- Restrict a finite reduction witness to an initial segment.
-The target prefix ends at the image of the retained terminal cut. -/
+The target initial segment ends at the image of the retained terminal cut. -/
 def initialSegment
     {V U : FiniteFatTree H}
     (w : ReductionWitness H V U)
@@ -99,7 +99,7 @@ def initialSegment
     intro i
     let iv : Fin V.height := ⟨i.1, by omega⟩
     have h := w.lift_subset iv
-    rw [V.prefix_oneLift H n hn i]
+    rw [V.initialSegment_oneLift H n hn i]
     have htarget :
         (U.initialSegment H
           (w.index (⟨n, by omega⟩ :
@@ -147,7 +147,7 @@ def initialSegment
               (w.index
                 (⟨i.castSucc.1, by omega⟩ :
                   Fin (V.height + 1))))) := by
-      apply U.prefix_liftTo H
+      apply U.initialSegment_liftTo H
     rw [htarget]
     simpa [iv] using h
 
