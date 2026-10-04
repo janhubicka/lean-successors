@@ -149,7 +149,7 @@ theorem ext_data {U V : FiniteFatTree H}
 
 /-- The first `n` rows of a finite fat tree, retaining the cut after
 the last retained row. -/
-def prefix (U : FiniteFatTree H) (n : Nat) (hn : n ≤ U.height) :
+def initialSegment (U : FiniteFatTree H) (n : Nat) (hn : n ≤ U.height) :
     FiniteFatTree H where
   height := n
   cut := fun i =>
