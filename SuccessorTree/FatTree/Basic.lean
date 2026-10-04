@@ -190,16 +190,6 @@ theorem cut_eq_of_eq {U V : FiniteFatTree H}
   cases h
   rfl
 
-/-- Transport a row coordinate across equality of finite fat trees. -/
-theorem row_heq_of_eq {U V : FiniteFatTree H}
-    (h : U = V) (i : Fin U.height) :
-    HEq (U.row i)
-      (V.row
-        (Fin.cast
-          (congrArg (fun Z : FiniteFatTree H => Z.height) h) i)) := by
-  cases h
-  rfl
-
 /-- The first `n` rows of a finite fat tree, retaining the cut after
 the last retained row. -/
 def initialSegment (U : FiniteFatTree H) (n : Nat) (hn : n ≤ U.height) :
