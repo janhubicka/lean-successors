@@ -174,8 +174,10 @@ theorem appendRow_rowExtension_last
   have hcut :
       (appendRow H x g).cut (Fin.last x.height).castSucc =
         x.terminalCut := by
-    simpa [FiniteFatTree.terminalCut] using
-      appendRow_cut_old H x g (Fin.last x.height)
+    change
+      (appendRow H x g).cut (Fin.last x.height).castSucc =
+        x.cut (Fin.last x.height)
+    exact appendRow_cut_old H x g (Fin.last x.height)
   have hrow :
       HEq ((appendRow H x g).row (Fin.last x.height)) g :=
     appendRow_row_last H x g
