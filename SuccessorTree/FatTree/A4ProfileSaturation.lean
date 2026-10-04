@@ -141,7 +141,6 @@ noncomputable def current
         H.levelMap P.toMMap.map ((trace j).rowEndLevel H) =
           U.cut r := by
       rw [hend j, P.topLevel]
-      rfl
     exact historyProfile_rowTransport H U r (trace j) P.toMMap E hPtop
   · intro j x hx
     have hqlev :
@@ -539,10 +538,7 @@ theorem exists_globallySaturated_from
         · exact ⟨K, ReachableFrom.refl, hglobal⟩
         · unfold GloballySaturated at hglobal
           push_neg at hglobal
-          rcases hglobal with ⟨M, hKM, alpha, halphaM, halphaK⟩
-          have hMnew : ¬ M.seen ⊆ K.seen := by
-            intro hsub
-            exact halphaK (hsub halphaM)
+          rcases hglobal with ⟨M, hKM, hMnew⟩
           rcases reachable_first_new H U a trace hend hKM hMnew with
             ⟨P, E, hKP, hPsub, hEnewK⟩
           have hKsubP : K.seen ⊆ P.seen :=
