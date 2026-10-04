@@ -110,6 +110,7 @@ theorem exactTraces_finite
       (traceTargetCut H y + 1)).subset
   intro q hq
   have hend : q.rowEndLevel H = traceTargetCut H y := hq.1
+  change q.rowEndLevel H < traceTargetCut H y + 1
   rw [hend]
   exact Nat.lt_succ_self (traceTargetCut H y)
 
