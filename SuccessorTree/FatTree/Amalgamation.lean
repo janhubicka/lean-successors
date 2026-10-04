@@ -98,6 +98,30 @@ def splice
         omega
       simpa [r, c, hi, hnext, q, hidx] using hq
 
+@[simp] theorem splice_cut_lt
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n)
+    {i : Nat} (hi : i < x.height) :
+    (splice H x V n hcut).cut i =
+      x.cut ⟨i, Nat.lt_succ_of_lt hi⟩ := by
+  simp [splice, hi]
+
+@[simp] theorem splice_cut_ge
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n)
+    {i : Nat} (hi : x.height ≤ i) :
+    (splice H x V n hcut).cut i =
+      V.cut (n + (i - x.height)) := by
+  have hnot : ¬ i < x.height := Nat.not_lt_of_ge hi
+  simp [splice, hnot]
+
+@[simp] theorem splice_cut_height
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n) :
+    (splice H x V n hcut).cut x.height = V.cut n := by
+  simpa using
+    splice_cut_ge H x V n hcut (i := x.height) le_rfl
+
 end FatTree
 
 end SMTree
