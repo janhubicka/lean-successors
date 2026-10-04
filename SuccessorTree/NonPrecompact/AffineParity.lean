@@ -81,4 +81,34 @@ theorem even_card_affineFiber_of_finrank_lt
     rw [(Finite.card_eq_zero_iff).2 inferInstance]
     simp
 
+
+/-- General power-of-two divisibility for affine fibres over F₂.
+
+A nonempty affine fibre is a translate of the kernel.  Rank-nullity and
+the bound on the rank by the target dimension show that its cardinality is
+divisible by 2^(dim V - dim W).  The empty fibre is covered uniformly. -/
+theorem pow_two_finrank_sub_dvd_card_affineFiber
+    {V W : Type*} [AddCommGroup V] [AddCommGroup W]
+    [Module F2 V] [Module F2 W]
+    [Finite V] [Finite W]
+    [FiniteDimensional F2 V] [FiniteDimensional F2 W]
+    (L : V →ₗ[F2] W) (b : W) :
+    2 ^ (Module.finrank F2 V - Module.finrank F2 W) ∣
+      Nat.card (affineFiber L b) := by
+  by_cases hne : Nonempty (affineFiber L b)
+  · let x0 : affineFiber L b := Classical.choice hne
+    rw [affineFiber_card_eq_ker_card L b x0]
+    rw [Module.natCard_eq_pow_finrank (K := F2), Nat.card_zmod]
+    apply pow_dvd_pow 2
+    have hrange :
+        Module.finrank F2 (LinearMap.range L) ≤
+          Module.finrank F2 W :=
+      (LinearMap.range L).finrank_le
+    have hsum := L.finrank_range_add_finrank_ker
+    omega
+  · letI : IsEmpty (affineFiber L b) :=
+      ⟨fun x => hne ⟨x⟩⟩
+    rw [(Finite.card_eq_zero_iff).2 inferInstance]
+    exact dvd_zero _
+
 end SuccessorTree.NonPrecompact
