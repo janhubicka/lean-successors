@@ -162,10 +162,27 @@ theorem liftSteps_subset_liftTo
             Fin (V.height + 1)) = v1 := by
         apply Fin.ext
         rfl
-      have hzTail' := hzTail
-      rw [hvstart, hvrec] at hzTail'
+      let vr0 : Fin (V.height + 1) := ⟨i + 1, by omega⟩
+      let vrlast : Fin (V.height + 1) :=
+        ⟨i + 1 + steps, by omega⟩
+      have hvr : vr0 ≤ vrlast := by
+        change i + 1 ≤ i + 1 + steps
+        omega
+      have hur : w.index vr0 ≤ w.index vrlast :=
+        w.index_strict.monotone hvr
       change
-        z ∈ U.liftTo H u1 (w.index vlast) hu1last Y1 at hzTail'
+        z ∈ U.liftTo H (w.index vr0) (w.index vrlast) hur Y1 at hzTail
+      have hTailSet :
+          U.liftTo H (w.index vr0) (w.index vrlast) hur Y1 =
+            U.liftTo H u1 (w.index vlast) hu1last Y1 :=
+        U.liftTo_congr H hur hu1last
+          (congrArg w.index (by simpa [vr0] using hvstart))
+          (congrArg w.index (by simpa [vrlast] using hvrec))
+          Y1
+      have hzTail' :
+          z ∈ U.liftTo H u1 (w.index vlast) hu1last Y1 := by
+        rw [← hTailSet]
+        exact hzTail
       have hsplit :
           z ∈ U.liftTo H u0 (w.index vlast) hu0last Y := by
         rw [U.liftTo_split H u0 u1 (w.index vlast)
@@ -176,9 +193,32 @@ theorem liftSteps_subset_liftTo
             Fin (V.height + 1)) = v0 := by
         apply Fin.ext
         rfl
-      have houter := hsplit
-      rw [← hvbase] at houter
-      exact houter
+      let vend : Fin (V.height + 1) :=
+        ⟨i + (steps + 1), by omega⟩
+      have hvend : vlast = vend := by
+        apply Fin.ext
+        rfl
+      have hgoalCuts :
+          w.index (⟨i, by omega⟩ : Fin (V.height + 1)) ≤
+            w.index vend :=
+        w.index_strict.monotone (by
+          change i ≤ i + (steps + 1)
+          omega)
+      have hOuterSet :
+          U.liftTo H u0 (w.index vlast) hu0last Y =
+            U.liftTo H
+              (w.index (⟨i, by omega⟩ : Fin (V.height + 1)))
+              (w.index vend) hgoalCuts Y :=
+        U.liftTo_congr H hu0last hgoalCuts
+          (congrArg w.index hvbase.symm)
+          (congrArg w.index hvend) Y
+      have houter :
+          z ∈ U.liftTo H
+            (w.index (⟨i, by omega⟩ : Fin (V.height + 1)))
+            (w.index vend) hgoalCuts Y := by
+        rw [← hOuterSet]
+        exact hsplit
+      simpa [vend] using houter
 
 /-- A finite reduction witness carries the whole lift between any two selected
 cuts into the corresponding lift of the ambient finite fat tree. -/
@@ -227,7 +267,28 @@ theorem liftTo_subset_liftTo
         Fin (V.height + 1)) = b := by
     apply Fin.ext
     exact hnat
-  rw [hstart, hend] at hz'
+  let a0 : Fin (V.height + 1) := ⟨a.1, by omega⟩
+  let b0 : Fin (V.height + 1) :=
+    ⟨a.1 + (b.1 - a.1), by omega⟩
+  have hab0 : a0 ≤ b0 := by
+    change a.1 ≤ a.1 + (b.1 - a.1)
+    omega
+  have huw0 : w.index a0 ≤ w.index b0 :=
+    w.index_strict.monotone hab0
+  change
+    z ∈ U.liftTo H (w.index a0) (w.index b0) huw0
+      (TreeLevel (T := T) (U.cut (w.index a))) at hz'
+  have hEndSet :
+      U.liftTo H (w.index a0) (w.index b0) huw0
+          (TreeLevel (T := T) (U.cut (w.index a))) =
+        U.liftTo H (w.index a) (w.index b)
+          (w.index_strict.monotone hab)
+          (TreeLevel (T := T) (U.cut (w.index a))) :=
+    U.liftTo_congr H huw0 (w.index_strict.monotone hab)
+      (congrArg w.index (by simpa [a0] using hstart))
+      (congrArg w.index (by simpa [b0] using hend))
+      (TreeLevel (T := T) (U.cut (w.index a)))
+  rw [hEndSet] at hz'
   exact hz'
 
 /-- Composition of finite fat-subtree reduction witnesses. -/
