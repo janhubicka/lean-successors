@@ -113,12 +113,12 @@ theorem fixedTraceGoodRows_base
           (FiniteFatTree.traceSourceCut H y y.height le_rfl)
       refine ⟨id, ?_⟩
       constructor
-      · rw [AM.id1_topLevel]
-        exact baseTraceSource H y
+      · change id.topLevel H = FiniteFatTree.traceTargetCut H y
+        rw [AM.id1_topLevel]
+        simpa [FiniteFatTree.traceTargetCut] using baseTraceSource H y
       · intro a ha
-        unfold FiniteFatTree.traceLift
-        simp only [FiniteFatTree.traceSourceIndex]
-        rw [FiniteFatTree.liftTo_same]
+        rw [FiniteFatTree.traceLift_eq_liftSteps H y y.height le_rfl]
+        simp only [Nat.sub_self, FiniteFatTree.liftSteps_zero]
         have hid :
             id.representative H a = a := by
           exact MMap.toAM_one_representative_agrees
