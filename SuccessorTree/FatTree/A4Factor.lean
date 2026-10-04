@@ -224,11 +224,8 @@ theorem exists_lastBlock_exactTrace
     have hzZ' :
         zlast ∈ Z.liftTo H j0 (Fin.last Z.height) hNew
           (TreeLevel (T := T) (Z.cut j0)) := by
-      have hz0 :
-          zlast ∈ Z.liftTo H j0 (Fin.last Z.height) hNew
-            (TreeLevel (T := T) (Z.cut (w.index irow.castSucc))) := by
-        rw [← hLiftCongr]
-        exact hzZ
+      have hz0 := hzZ
+      rw [hLiftCongr] at hz0
       simpa [hidx0] using hz0
 
     have h0m : j0 ≤ jmid := by
@@ -472,9 +469,10 @@ theorem exists_lastBlock_exactTrace
         congrFun hcTop x
 
   have hcastHEq :
-      HEq compCast comp :=
-    FiniteFatTree.castTraceRow_heq H hsrc comp
-  exact hEq ▸ hcastHEq
+      HEq compCast comp := by
+    change HEq (FiniteFatTree.castTraceRow H hsrc comp) comp
+    exact FiniteFatTree.castTraceRow_heq H hsrc comp
+  exact HEq.trans (HEq.of_eq hEq) hcastHEq
 
 end FatTree
 end SMTree
