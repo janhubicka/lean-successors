@@ -71,3 +71,4 @@ import SuccessorTree.FatTree.Reduction
 import SuccessorTree.FatTree.FiniteReduction
 import SuccessorTree.FatTree.Finitization
 import SuccessorTree.FatTree.Amalgamation
+import SuccessorTree.FatTree.A4
