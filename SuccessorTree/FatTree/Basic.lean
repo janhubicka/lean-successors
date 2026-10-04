@@ -328,6 +328,45 @@ theorem cut_le_terminalCut (U : FiniteFatTree H)
       (Nat.le_of_lt_succ i.2)
   simpa [FiniteFatTree.terminalCut] using h
 
+/-- The cut function of a finite fat tree is strictly increasing on its
+finite cut index set. -/
+theorem cut_strictMono (U : FiniteFatTree H) :
+    StrictMono U.cut := by
+  intro i j hij
+  have hiHeight : i.1 < U.height := by
+    have hjHeight : j.1 ≤ U.height := Nat.le_of_lt_succ j.2
+    omega
+  let q : Fin U.height := ⟨i.1, hiHeight⟩
+  have hstep := U.cut_lt_succ H q
+  have hnextLe :
+      U.cut
+          (⟨i.1 + 1, by omega⟩ : Fin (U.height + 1)) ≤
+        U.cut j := by
+    have h :=
+      U.cut_le_of_index_le H
+        (i := i.1 + 1) (j := j.1)
+        (by omega) (Nat.le_of_lt_succ j.2) (by omega)
+    simpa using h
+  have hiEq :
+      (⟨i.1, by omega⟩ : Fin (U.height + 1)) = i :=
+    Fin.ext rfl
+  have hsuccEq :
+      q.succ =
+        (⟨i.1 + 1, by omega⟩ : Fin (U.height + 1)) :=
+    Fin.ext rfl
+  calc
+    U.cut i =
+        U.cut (⟨i.1, by omega⟩ : Fin (U.height + 1)) := by rw [hiEq]
+    _ < U.cut q.succ := by
+      simpa [q] using hstep
+    _ = U.cut (⟨i.1 + 1, by omega⟩ : Fin (U.height + 1)) := by rw [hsuccEq]
+    _ ≤ U.cut j := hnextLe
+
+/-- In particular, the finite cut function is injective. -/
+theorem cut_injective (U : FiniteFatTree H) :
+    Function.Injective U.cut :=
+  (U.cut_strictMono H).injective
+
 end FiniteFatTree
 
 end SMTree
