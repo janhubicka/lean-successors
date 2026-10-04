@@ -75,6 +75,31 @@ theorem stemAt_of_depthCone
   rw [hV.2]
   exact hx
 
+/-- A member of a basic neighbourhood witnesses that the stem has
+finite depth in the ambient fat tree. -/
+theorem exists_stemAt_of_neighborhood
+    {x : FiniteFatTree H} {U W : FatTree H}
+    (hW : InNeighborhood H x U W) :
+    ∃ n : Nat, StemAt H x U n := by
+  rcases FiniteFatTree.exists_initialSegment_leFin_of_reduces
+      H hW.1 x.height with ⟨n, hn⟩
+  refine ⟨n, ?_⟩
+  unfold StemAt ExtendsStem at *
+  rw [hW.2] at hn
+  exact hn
+
+/-- Finite depth transports along an infinite fat-tree reduction. -/
+theorem exists_stemAt_of_reduces
+    {x : FiniteFatTree H} {V U : FatTree H} {n : Nat}
+    (hx : StemAt H x V n)
+    (hVU : FatTree.Reduces H V U) :
+    ∃ m : Nat, StemAt H x U m := by
+  rcases FiniteFatTree.exists_initialSegment_leFin_of_reduces
+      H hVU n with ⟨m, hnm⟩
+  refine ⟨m, ?_⟩
+  unfold StemAt at hx ⊢
+  exact FiniteFatTree.leFin_trans H hx hnm
+
 /-- Transport a one-row approximation along an equality of its source
 cut.  Keeping this transport explicit avoids asking Lean to eliminate a
 heterogeneous equality between dependent approximation types. -/
