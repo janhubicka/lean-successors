@@ -48,55 +48,35 @@ theorem appendRow_ambientNextRow
     FiniteFatTree.appendRow H x (ambientNextRow H x U hxU) =
       U.initialSegment H (x.height + 1) := by
   let g : AM H x.terminalCut 1 := ambientNextRow H x U hxU
-  refine FiniteFatTree.ext_pointwise H rfl ?_ ?_
+  refine FiniteFatTree.ext_pointwise H
+    (U := FiniteFatTree.appendRow H x g)
+    (V := U.initialSegment H (x.height + 1))
+    rfl ?_ ?_
   · intro i
+    change FiniteFatTree.appendCut H x g i.1 = U.cut i.1
     by_cases hi : i.1 ≤ x.height
-    · by_cases hlast : i.1 = x.height + 1
-      · omega
-      · have hiOld : i.1 ≤ x.height := hi
-        let ix : Fin (x.height + 1) :=
-          ⟨i.1, Nat.lt_succ_of_le hiOld⟩
-        have hiCast :
-            Fin.cast
-              (congrArg (fun n => n + 1) rfl)
-              i = i := by rfl
-        have hcutx :=
-          cut_eq_of_extendsStem H hxU ix
-        calc
-          (FiniteFatTree.appendRow H x g).cut i =
-              x.cut ix := by
-                have h :=
-                  FiniteFatTree.appendRow_cut_old H x g ix
-                simpa [ix] using h
-          _ = U.cut ix.1 := hcutx.symm
-          _ = (U.initialSegment H (x.height + 1)).cut i := by
-                rfl
+    · rw [FiniteFatTree.appendCut_old H x g hi]
+      let ix : Fin (x.height + 1) :=
+        ⟨i.1, Nat.lt_succ_of_le hi⟩
+      simpa [ix] using (hxU.1 ix).symm
     · have hieq : i.1 = x.height + 1 := by omega
-      have hiLast :
-          i = Fin.last (x.height + 1) := by
-        apply Fin.ext
-        exact hieq
-      rw [hiLast]
-      rw [FiniteFatTree.appendRow_terminalCut]
-      change g.rowEndLevel H + 1 = U.cut (x.height + 1)
+      rw [hieq, FiniteFatTree.appendCut_new H x g]
       have hgEnd :
           g.rowEndLevel H = (U.row x.height).rowEndLevel H := by
-        simp [g, ambientNextRow]
+        simp [g, ambientNextRow, FatTree.castRow_rowEndLevel]
       rw [hgEnd]
       exact U.row_cut x.height
   · intro i
+    change
+      HEq ((FiniteFatTree.appendRow H x g).row i)
+        (U.row i.1)
     by_cases hi : i.1 < x.height
     · let ix : Fin x.height := ⟨i.1, hi⟩
-      have hxrow :=
-        FiniteFatTree.row_heq_of_eq (H := H) hxU.symm ix
-      have happ :=
-        FiniteFatTree.appendRow_row_old H x g ix
-      have hiEq :
-          i = ix.castSucc := by
-        apply Fin.ext
-        rfl
+      have hiEq : i = ix.castSucc := Fin.ext rfl
       rw [hiEq]
-      exact HEq.trans happ hxrow
+      exact HEq.trans
+        (FiniteFatTree.appendRow_row_old H x g ix)
+        (hxU.2 ix).symm
     · have hieq : i.1 = x.height := by omega
       have hiLast : i = Fin.last x.height := by
         apply Fin.ext
