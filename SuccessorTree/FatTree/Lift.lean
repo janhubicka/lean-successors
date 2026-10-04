@@ -619,6 +619,85 @@ theorem liftSteps_descends (U : FiniteFatTree H)
         ⟨x, hx, hxy⟩
       exact ⟨x, hx, hxy.trans hyz⟩
 
+/-- Source locality persists through any finite number of rows.
+
+If an endpoint is obtained by lifting a source set `Y` and lies above a
+member of another source set `X` on the same initial cut, then it is already
+obtained by lifting `X`. -/
+theorem liftSteps_mem_of_mem_of_source (U : FiniteFatTree H)
+    (i steps : Nat) (h : i + steps ≤ U.height)
+    {X Y : Set T}
+    (hX : X ⊆
+      TreeLevel (T := T) (U.cut (⟨i, by omega⟩ : Fin (U.height + 1))))
+    (hY : Y ⊆
+      TreeLevel (T := T) (U.cut (⟨i, by omega⟩ : Fin (U.height + 1))))
+    {z : T}
+    (hz : z ∈ U.liftSteps H i steps h Y)
+    (hsource : ∃ x ∈ X, x ≤ z) :
+    z ∈ U.liftSteps H i steps h X := by
+  induction steps generalizing i X Y z with
+  | zero =>
+      rcases hsource with ⟨x, hx, hxz⟩
+      have hxLevel :
+          LevelTree.lev x =
+            U.cut (⟨i, by omega⟩ : Fin (U.height + 1)) :=
+        hX hx
+      have hzLevel :
+          LevelTree.lev z =
+            U.cut (⟨i, by omega⟩ : Fin (U.height + 1)) :=
+        hY hz
+      have hxeq : x = z :=
+        LevelTree.same_level_of_le hxz
+          (hxLevel.trans hzLevel.symm)
+      simpa [hxeq] using hx
+  | succ steps ih =>
+      let ri : Fin U.height := ⟨i, by omega⟩
+      have hXri :
+          X ⊆ TreeLevel (T := T) (U.cut ri.castSucc) := by
+        simpa [ri] using hX
+      have hYri :
+          Y ⊆ TreeLevel (T := T) (U.cut ri.castSucc) := by
+        simpa [ri] using hY
+      have hXnext :
+          U.oneLift H ri X ⊆
+            TreeLevel (T := T) (U.cut ri.succ) :=
+        U.oneLift_subset_nextLevel H ri hXri
+      have hYnext :
+          U.oneLift H ri Y ⊆
+            TreeLevel (T := T) (U.cut ri.succ) :=
+        U.oneLift_subset_nextLevel H ri hYri
+      rw [U.liftSteps_succ H i steps h Y] at hz
+      rcases U.liftSteps_descends H (i + 1) steps (by omega)
+          (X := U.oneLift H ri Y)
+          (by simpa [ri] using hYnext) hz with
+        ⟨y, hy, hyz⟩
+      rcases hsource with ⟨x, hx, hxz⟩
+      have hxLevel : LevelTree.lev x = U.cut ri.castSucc :=
+        hXri hx
+      have hyLevel : LevelTree.lev y = U.cut ri.succ :=
+        hYnext hy
+      have hxy : x ≤ y := by
+        rcases LevelTree.comparable_below hxz hyz with hxy | hyx
+        · exact hxy
+        · have hlev := LevelTree.level_le_of_le hyx
+          have hcut := U.cut_lt_succ H ri
+          rw [hyLevel, hxLevel] at hlev
+          omega
+      have hyFull :
+          y ∈ U.oneLift H ri
+            (TreeLevel (T := T) (U.cut ri.castSucc)) :=
+        U.oneLift_mono H ri hYri hy
+      have hyX : y ∈ U.oneLift H ri X :=
+        U.oneLift_mem_of_mem_full_of_source H ri hXri
+          hyFull ⟨x, hx, hxy⟩
+      rw [U.liftSteps_succ H i steps h X]
+      exact ih (i := i + 1) (by omega)
+        (X := U.oneLift H ri X)
+        (Y := U.oneLift H ri Y)
+        (by simpa [ri] using hXnext)
+        (by simpa [ri] using hYnext)
+        hz ⟨y, hyX, hyz⟩
+
 /-- Changing the numerical step count along an equality only transports
 the dependent height proof; the resulting lift is unchanged. -/
 theorem liftSteps_congr_steps (U : FiniteFatTree H)
