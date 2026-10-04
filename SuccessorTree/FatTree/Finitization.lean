@@ -396,10 +396,15 @@ theorem reduces_of_initialSegment_leFin
       _ = U.cut (φ (i + 1)) := hcut (i + 1)
   have hfin := fw.lift_subset ri
   rw [V.initialSegment_oneLift H (i + 1) ri] at hfin
-  rw [V.initialSegment_cut H (i + 1) ri.castSucc] at hfin
+  change
+    V.oneLift H i (TreeLevel (T := T) (V.cut i)) ⊆
+      (U.initialSegment H (φ (i + 1))).liftTo H
+        (fw.index ri.castSucc)
+        (fw.index ri.succ)
+        _
+        (TreeLevel (T := T)
+          (U.cut (fw.index ri.castSucc).1)) at hfin
   rw [U.initialSegment_liftTo H (φ (i + 1))] at hfin
-  rw [U.initialSegment_cut H (φ (i + 1))
-    (fw.index ri.castSucc)] at hfin
   change
     V.oneLift H i (TreeLevel (T := T) (V.cut i)) ⊆
       U.liftTo H
