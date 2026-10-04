@@ -76,6 +76,18 @@ row along equality of its source cut. -/
   cases h
   rfl
 
+/-- Canonical extensions agree when both the source cut and the
+finite row agree heterogeneously. -/
+theorem canonicalExtension_eq_of_row_heq
+    {a b : Nat} {u : AM H a 1} {v : AM H b 1}
+    (hab : a = b) (huv : HEq u v) :
+    H.canonicalExtension (u.representative H) a =
+      H.canonicalExtension (v.representative H) b := by
+  cases hab
+  have huv' : u = v := eq_of_heq huv
+  cases huv'
+  rfl
+
 /-- Splice a finite fat tree `x` onto the tail of an infinite fat tree
 `V`, starting the tail at cut `n`.  The compatibility hypothesis is
 exactly equality of the terminal cut of `x` with `V.cut n`. -/
@@ -244,7 +256,9 @@ theorem splice_rowExtension_lt
       x.rowExtension H ⟨i, hi⟩ := by
   let ix : Fin x.height := ⟨i, hi⟩
   unfold FatTree.rowExtension FiniteFatTree.rowExtension
-  simp [splice, hi, ix, canonicalExtension_castRow]
+  exact canonicalExtension_eq_of_row_heq H
+    (splice_cut_lt H x V n hcut hi)
+    (splice_row_lt H x V n hcut hi)
 
 /-- At and after the splice point, the canonical row extension is the
 corresponding shifted row extension of the tail. -/
@@ -254,9 +268,10 @@ theorem splice_rowExtension_ge
     {i : Nat} (hi : x.height ≤ i) :
     (splice H x V n hcut).rowExtension H i =
       V.rowExtension H (n + (i - x.height)) := by
-  have hnot : ¬ i < x.height := Nat.not_lt_of_ge hi
   unfold FatTree.rowExtension
-  simp [splice, hnot, canonicalExtension_castRow]
+  exact canonicalExtension_eq_of_row_heq H
+    (splice_cut_ge H x V n hcut hi)
+    (splice_row_ge H x V n hcut hi)
 
 /-- One-step Lift before the splice is the one-step Lift of the finite stem. -/
 theorem splice_oneLift_lt
@@ -362,10 +377,12 @@ theorem spliceIndex_succ_eq_of_lt
       (w.index ((⟨i, hi⟩ : Fin x.height).succ)).1 := by
   let ix : Fin x.height := ⟨i, hi⟩
   by_cases hnext : i + 1 < x.height
-  · have hidx :
-        (⟨i + 1, by omega⟩ : Fin (x.height + 1)) =
-          ix.succ := Fin.ext rfl
-    simp [spliceIndex, hnext, ix, hidx]
+  · let j : Fin (x.height + 1) := ⟨i + 1, by omega⟩
+    have hj : j = ix.succ := Fin.ext rfl
+    calc
+      spliceIndex H w (i + 1) = (w.index j).1 := by
+        simp [spliceIndex, hnext, j]
+      _ = (w.index ix.succ).1 := by rw [hj]
   · have heq : i + 1 = x.height := by omega
     have hixlast : ix.succ = Fin.last x.height := by
       apply Fin.ext
@@ -374,7 +391,9 @@ theorem spliceIndex_succ_eq_of_lt
     have hval : (w.index ix.succ).1 = n := by
       rw [hixlast, hlast]
       rfl
-    simpa [spliceIndex, hnext, heq] using hval.symm
+    have hleft : spliceIndex H w (i + 1) = n := by
+      simp [spliceIndex, hnext, heq]
+    exact hleft.trans hval.symm
 
 /-- Splicing a finite stem occurring at cut `n` onto the tail of `V`
 produces an infinite fat subtree of `V`.  This is the structural
@@ -411,7 +430,29 @@ theorem splice_reduces
       spliceIndex_succ_eq_of_lt H w hterm hi
     rw [splice_oneLift_lt H x V n hcut hi]
     rw [splice_cut_lt H x V n hcut hi]
-    simpa [ix, h0, h1] using hw
+    change
+      x.oneLift H ix
+          (TreeLevel (T := T) (x.cut ix.castSucc)) ⊆
+        V.liftTo H
+          (spliceIndex H w i)
+          (spliceIndex H w (i + 1))
+          _
+          (TreeLevel (T := T) (V.cut (spliceIndex H w i)))
+    have habw :
+        (w.index ix.castSucc).1 ≤ (w.index ix.succ).1 :=
+      Nat.le_of_lt (w.index_strict (by
+        exact Fin.lt_def.mpr (by
+          change i < i + 1
+          omega)))
+    have hsp :
+        spliceIndex H w i ≤ spliceIndex H w (i + 1) :=
+      Nat.le_of_lt (hstrict (Nat.lt_succ_self i))
+    have htarget :=
+      V.liftTo_level_congr H habw hsp h0.symm h1.symm
+    intro z hz
+    have hz' := hw hz
+    rw [htarget] at hz'
+    exact hz'
   · have hge : x.height ≤ i := Nat.le_of_not_gt hi
     have hge1 : x.height ≤ i + 1 := by omega
     let q : Nat := n + (i - x.height)
@@ -423,7 +464,12 @@ theorem splice_reduces
       omega
     rw [splice_oneLift_ge H x V n hcut hge]
     rw [splice_cut_ge H x V n hcut hge]
-    rw [h0, h1]
+    have hsp :
+        spliceIndex H w i ≤ spliceIndex H w (i + 1) :=
+      Nat.le_of_lt (hstrict (Nat.lt_succ_self i))
+    have htarget :=
+      V.liftTo_level_congr H (by omega) hsp h0.symm h1.symm
+    rw [← htarget]
     rw [V.liftTo_succ H q
       (TreeLevel (T := T) (V.cut q))]
 
