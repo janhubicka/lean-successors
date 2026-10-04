@@ -64,6 +64,36 @@ def refl (U : FatTree H) : ReductionWitness H U U where
     intro i
     rw [U.liftTo_succ H i (TreeLevel (T := T) (U.cut i))]
 
+/-- Restrict an infinite reduction witness to the first `n` rows.
+The target finite initial segment ends at the image of the source terminal
+cut. -/
+def initialSegment
+    {V U : FatTree H}
+    (w : ReductionWitness H V U) (n : Nat) :
+    FiniteFatTree.ReductionWitness H
+      (V.initialSegment H n)
+      (U.initialSegment H (w.index n)) where
+  index := fun i =>
+    ⟨w.index i.1,
+      by
+        have hi : i.1 ≤ n := Nat.le_of_lt_succ i.2
+        exact Nat.lt_succ_of_le
+          (w.index_strict.monotone hi)⟩
+  index_strict := by
+    intro i j hij
+    exact w.index_strict (by
+      change i.1 < j.1
+      exact hij)
+  cut_eq := by
+    intro i
+    exact w.cut_eq i.1
+  lift_subset := by
+    intro i
+    have h := w.lift_subset i.1
+    rw [V.initialSegment_oneLift H n i]
+    rw [U.initialSegment_liftTo H (w.index n)]
+    simpa using h
+
 /-- Iterate the one-block inclusions of a reduction witness while
 retaining the actual subset reached at each selected cut.
 
