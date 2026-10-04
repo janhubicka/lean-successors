@@ -138,6 +138,28 @@ jobs:
           print('PASS: all 7 A3 axiom reports use only standard Lean axioms')
           PY
 
+      - name: Check fat-tree A4 bridge axioms
+        if: always()
+        run: |
+          set -o pipefail
+          lake env lean scripts/CheckFatTreeA4.lean 2>&1 | tee proof-audit/fat-tree-a4-axioms.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text = Path('proof-audit/fat-tree-a4-axioms.log').read_text()
+          entries = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
+          if len(entries) != 1:
+              raise SystemExit(f'Expected 1 A4 bridge axiom report, received {len(entries)}')
+          allowed = {'propext', 'Classical.choice', 'Quot.sound'}
+          for entry in entries:
+              found = {x.strip() for x in entry.split(',') if x.strip()}
+              if found - allowed:
+                  raise SystemExit(f'Unexpected A4 bridge proof axioms: {found - allowed}')
+          if 'sorryAx' in text or re.search(r'\berror:', text):
+              raise SystemExit('A4 bridge audit contains an error or an admitted proof')
+          print('PASS: A4 one-row bridge uses only standard Lean axioms')
+          PY
+
       - name: Check localized manuscript patches
         if: always()
         run: |
