@@ -125,6 +125,12 @@ def initialSegment
         exact hi0
       exact ⟨i.1, lt_of_lt_of_le hi hn⟩
     have h := w.lift_subset iv
+    have hsrc0 : src i.castSucc = iv.castSucc := by
+      apply Fin.ext
+      rfl
+    have hsrc1 : src i.succ = iv.succ := by
+      apply Fin.ext
+      rfl
     change
       (V.initialSegment H n hn).oneLift H i
           (TreeLevel (T := T)
@@ -140,7 +146,23 @@ def initialSegment
     rw [V.initialSegment_cut_dep H n hn i.castSucc]
     rw [U.initialSegment_liftTo H m hm]
     rw [U.initialSegment_cut_dep H m hm (idx i.castSucc)]
-    simpa [src, idx, iv, vn, m, VS, US] using h
+    change
+      V.oneLift H iv
+          (TreeLevel (T := T) (V.cut (src i.castSucc))) ⊆
+        U.liftTo H
+          (w.index (src i.castSucc))
+          (w.index (src i.succ))
+          (by
+            exact le_of_lt
+              (w.index_strict (by
+                rw [hsrc0, hsrc1]
+                exact Fin.lt_iff_val_lt_val.mpr (by
+                  change i.1 < i.1 + 1
+                  omega))))
+          (TreeLevel (T := T)
+            (U.cut (w.index (src i.castSucc))))
+    rw [hsrc0, hsrc1]
+    exact h
 
 /-- Iterate the one-block inclusions of a finite reduction witness.
 
