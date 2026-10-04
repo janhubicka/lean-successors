@@ -227,7 +227,7 @@ theorem liftSteps_add (U : FatTree H)
       U.liftSteps H (i + a) b (U.liftSteps H i a X) := by
   induction a generalizing i X with
   | zero =>
-      rfl
+      simp
   | succ a ih =>
       rw [Nat.succ_add, liftSteps_succ, liftSteps_succ]
       simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
