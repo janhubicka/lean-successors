@@ -90,13 +90,6 @@ def initialSegment (U : FatTree H) (n : Nat) : FiniteFatTree H where
 @[simp] theorem initialSegment_terminalCut (U : FatTree H) (n : Nat) :
     (U.initialSegment H n).terminalCut = U.cut n := rfl
 
-/-- Every cut of an infinite fat tree's finite initial segment is the
-corresponding ambient cut. -/
-theorem initialSegment_cut (U : FatTree H)
-    (n : Nat) (i : Fin ((U.initialSegment H n).height + 1)) :
-    (U.initialSegment H n).cut i = U.cut i.1 := by
-  rfl
-
 /-- The paper's `u_i⁺`: the canonical total extension of row `i`. -/
 noncomputable def rowExtension (U : FatTree H) (i : Nat) : MMap H :=
   H.canonicalExtension ((U.row i).representative H) (U.cut i)
@@ -185,20 +178,6 @@ def initialSegment (U : FiniteFatTree H) (n : Nat) (hn : n ≤ U.height) :
     (i : Fin (n + 1)) :
     (U.initialSegment H n hn).cut i =
       U.cut ⟨i.1, by omega⟩ := rfl
-
-/-- Cut projection with the dependent index type carried by the
-initial-segment object itself. -/
-theorem initialSegment_cut_dep (U : FiniteFatTree H)
-    (n : Nat) (hn : n ≤ U.height)
-    (i : Fin ((U.initialSegment H n hn).height + 1)) :
-    (U.initialSegment H n hn).cut i =
-      U.cut
-        (⟨i.1, by
-          have hi : i.1 ≤ n := by
-            simpa using Nat.le_of_lt_succ i.2
-          exact Nat.lt_succ_of_le (hi.trans hn)⟩ :
-          Fin (U.height + 1)) := by
-  rfl
 
 @[simp] theorem initialSegment_terminalCut (U : FiniteFatTree H)
     (n : Nat) (hn : n ≤ U.height) :
