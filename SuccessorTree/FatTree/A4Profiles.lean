@@ -1,4 +1,5 @@
 import SuccessorTree.FatTree.A4Trace
+import SuccessorTree.ShapeDirectLine
 import Mathlib.Data.Fintype.Pi
 
 /-!
@@ -123,6 +124,50 @@ noncomputable instance exactFanProfileFintype
   letI :=
     exactTraceFintype H y n hn
   exact fanProfileFintype H (fun q : FiniteFatTree.ExactTrace H y n hn => q.1)
+
+/-- An exact finite-prefix trace is an exact one-moving word from
+its source cut to the terminal cut of the prefix. -/
+def exactTraceToAMExact
+    (y : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : FiniteFatTree.ExactTrace H y n hn) :
+    AMExact H
+      (FiniteFatTree.traceSourceCut H y n hn)
+      (FiniteFatTree.traceTargetCut H y) :=
+  ⟨q.1, q.rowEndLevel H⟩
+
+theorem exactTraceToAMExact_injective
+    (y : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ y.height) :
+    Function.Injective (exactTraceToAMExact H y n hn) := by
+  intro q r hqr
+  apply Subtype.ext
+  exact congrArg Subtype.val hqr
+
+/-- Compose an exact word ending at the trace source cut with an exact trace.
+This is the Lean version of the manuscript composite `p q` in the finite
+family `C = {p q : p in R, q in Q}`. -/
+noncomputable def traceComposite
+    {c : Nat}
+    (y : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : AMExact H c
+      (FiniteFatTree.traceSourceCut H y n hn))
+    (p : FiniteFatTree.ExactTrace H y n hn) :
+    AM H c 1 :=
+  H.composeAcross q p.1
+
+theorem traceComposite_representative_agrees
+    {c : Nat}
+    (y : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : AMExact H c
+      (FiniteFatTree.traceSourceCut H y n hn))
+    (p : FiniteFatTree.ExactTrace H y n hn)
+    (x : T) (hx : LevelTree.lev x ≤ c) :
+    (traceComposite H y n hn q p).representative H x =
+      p.1.representative H (q.1.representative H x) := by
+  exact H.composeAcross_representative_agrees q p.1 x hx
 
 /-- A raw exact-trace update canonically yields a finite successor
 fan. The existential successor choices in IsRawTraceUpdate are made
