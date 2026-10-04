@@ -62,8 +62,14 @@ theorem terminalCut_eq_of_extendsStem
     {x : FiniteFatTree H} {W : FatTree H}
     (h : ExtendsStem H x W) :
     W.cut x.height = x.terminalCut := by
-  simpa [FiniteFatTree.terminalCut] using
-    h.1 (Fin.last x.height)
+  let last : Fin (x.height + 1) :=
+    ⟨x.height, Nat.lt_succ_self x.height⟩
+  have hlast : Fin.last x.height = last := Fin.ext rfl
+  calc
+    W.cut x.height = x.cut (Fin.last x.height) :=
+      h.1 (Fin.last x.height)
+    _ = x.cut last := by rw [hlast]
+    _ = x.terminalCut := rfl
 
 /-- The data-level prefix representation is exactly equivalent to the
 literal finite initial-segment equality used in the manuscript. -/
@@ -71,11 +77,14 @@ theorem initialSegment_eq_of_extendsStem
     {x : FiniteFatTree H} {W : FatTree H}
     (h : ExtendsStem H x W) :
     W.initialSegment H x.height = x := by
-  refine FiniteFatTree.ext_pointwise H rfl ?_ ?_
+  refine FiniteFatTree.ext_pointwise H
+    (U := W.initialSegment H x.height) (V := x) rfl ?_ ?_
   · intro i
-    simpa using h.1 i
+    change W.cut i.1 = x.cut i
+    exact h.1 i
   · intro i
-    simpa using h.2 i
+    change HEq (W.row i.1) (x.row i)
+    exact h.2 i
 
 /-- A stem occurring at cut `n` has terminal cut exactly `U.cut n`. -/
 theorem terminalCut_eq_of_stemAt
@@ -173,32 +182,9 @@ theorem leFin_initialSegment_of_extendsStem
     {x : FiniteFatTree H} {W : FatTree H}
     (h : ExtendsStem H x W) :
     FiniteFatTree.LeFin H x (W.initialSegment H x.height) := by
-  constructor
-  · refine ⟨{
-      index := fun i => i
-      index_strict := by
-        intro i j hij
-        exact hij
-      cut_eq := ?_
-      lift_subset := ?_
-    }⟩
-    · intro i
-      change x.cut i = W.cut i.1
-      exact (h.1 i).symm
-    · intro i
-      have hcut0 :
-          (W.initialSegment H x.height).cut i.castSucc =
-            x.cut i.castSucc := by
-        change W.cut i.1 = x.cut i.castSucc
-        exact h.1 i.castSucc
-      rw [(W.initialSegment H x.height).liftTo_succ H i
-        (TreeLevel (T := T)
-          ((W.initialSegment H x.height).cut i.castSucc))]
-      rw [W.initialSegment_oneLift H x.height i]
-      rw [hcut0]
-      rw [oneLift_eq_of_extendsStem H h i]
-  · have ht := terminalCut_eq_of_extendsStem H h
-    simpa [FiniteFatTree.initialSegment_terminalCut] using ht.symm
+  have hp := initialSegment_eq_of_extendsStem H h
+  rw [hp]
+  exact FiniteFatTree.leFin_refl H x
 
 /-- A depth-cone refinement preserves which finite stems occur at
 that depth. -/
