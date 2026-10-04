@@ -35,7 +35,7 @@ theorem residueZ_eq_residueT_add_one (q : ℕ) :
     residueZ q = residueT q + 1 := by
   rw [residueT]
   have h11 : (1 + 1 : ResidueAlgebra q) = 0 :=
-    CharTwo.add_self_eq_zero.mpr rfl
+    CharTwo.add_self_eq_zero 1
   calc
     residueZ q = residueZ q + 0 := by simp
     _ = residueZ q + (1 + 1) := by rw [h11]
@@ -119,7 +119,9 @@ theorem coeff_residueWeightGenerating_eq_card_filter
   classical
   unfold residueWeightGenerating
   rw [AddMonoidAlgebra.coeff_sum]
-  simp_rw [residueZ_pow, AddMonoidAlgebra.coeff_single]
+  simp_rw [residueZ_pow]
+  rw [Finset.sum_apply]
+  simp_rw [AddMonoidAlgebra.coeff_single]
   rw [Finset.card_eq_sum_ones, Nat.cast_sum, Finset.sum_filter]
   apply Finset.sum_congr rfl
   intro x hx
