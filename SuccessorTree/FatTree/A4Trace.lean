@@ -41,6 +41,12 @@ def traceSourceCut (y : FiniteFatTree H)
 def traceTargetCut (y : FiniteFatTree H) : Nat :=
   y.terminalCut
 
+@[simp] theorem traceSourceCut_height
+    (y : FiniteFatTree H) :
+    traceSourceCut H y y.height le_rfl = y.terminalCut := by
+  rfl
+
+
 /-- Appending one row preserves every previously selected trace source
 cut. -/
 theorem traceSourceCut_appendRow
