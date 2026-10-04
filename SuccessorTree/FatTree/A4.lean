@@ -140,26 +140,29 @@ theorem appendRow_row_old
     (g : AM H x.terminalCut 1)
     (i : Fin x.height) :
     HEq ((appendRow H x g).row i.castSucc) (x.row i) := by
-  change HEq
-    (FatTree.castRow H
-      (by
-        simp [appendCut, i.2, Nat.le_of_lt i.2])
-      (x.row i))
-    (x.row i)
-  exact FatTree.castRow_heq H _ (x.row i)
+  have hc :
+      x.cut i.castSucc = appendCut H x g i.1 := by
+    have h :=
+      appendCut_old H x g (i := i.1) (Nat.le_of_lt i.2)
+    have hi :
+        (⟨i.1, by omega⟩ : Fin (x.height + 1)) =
+          i.castSucc := Fin.ext rfl
+    rw [h, hi]
+  have hcast := FatTree.castRow_heq H hc (x.row i)
+  simpa [appendRow, i.2] using hcast
 
 /-- The last row of an appended tree is the row that was appended. -/
 theorem appendRow_row_last
     (x : FiniteFatTree H)
     (g : AM H x.terminalCut 1) :
     HEq ((appendRow H x g).row (Fin.last x.height)) g := by
-  change HEq
-    (FatTree.castRow H
-      (by
-        simp [appendCut, FiniteFatTree.terminalCut])
-      g)
-    g
-  exact FatTree.castRow_heq H _ g
+  have hc :
+      x.terminalCut = appendCut H x g x.height := by
+    have h := appendCut_old H x g (i := x.height) le_rfl
+    rw [h]
+    rfl
+  have hcast := FatTree.castRow_heq H hc g
+  simpa [appendRow] using hcast
 
 /-- Appending a row literally preserves the original finite prefix. -/
 theorem appendRow_initialSegment
@@ -174,15 +177,28 @@ theorem appendRow_initialSegment
     (U := (appendRow H x g).initialSegment H x.height hxle)
     (V := x) rfl ?_ ?_
   · intro i
-    change (appendRow H x g).cut i.1 = x.cut i
-    let ii : Fin (x.height + 1) := ⟨i.1, i.2⟩
-    have hc := appendRow_cut_old H x g ii
-    simpa [ii] using hc
+    let ii : Fin (x.height + 1) :=
+      ⟨i.1, by simpa using i.2⟩
+    have hseg :
+        ((appendRow H x g).initialSegment H x.height hxle).cut i =
+          (appendRow H x g).cut ii.castSucc := by
+      rfl
+    calc
+      ((appendRow H x g).initialSegment H x.height hxle).cut i =
+          (appendRow H x g).cut ii.castSucc := hseg
+      _ = x.cut ii := appendRow_cut_old H x g ii
+      _ = x.cut i := by
+        congr 1
+        apply Fin.ext
+        rfl
   · intro i
-    change HEq ((appendRow H x g).row i.1) (x.row i)
-    let ii : Fin x.height := ⟨i.1, i.2⟩
-    have hr := appendRow_row_old H x g ii
-    simpa [ii] using hr
+    let ii : Fin x.height := ⟨i.1, by simpa using i.2⟩
+    have hseg :
+        HEq
+          (((appendRow H x g).initialSegment H x.height hxle).row i)
+          ((appendRow H x g).row ii.castSucc) := by
+      rfl
+    exact hseg.trans (appendRow_row_old H x g ii)
 
 end FiniteFatTree
 
