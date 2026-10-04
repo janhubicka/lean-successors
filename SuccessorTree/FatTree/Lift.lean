@@ -6,6 +6,11 @@ import SuccessorTree.FatTree.Basic
 This is the recursive `Lift_U(X,k)` operation from the manuscript.  We keep
 its source index explicit in Lean; the paper can infer it from the level on
 which `X` lives because the cut is strictly increasing.
+
+Besides the level bookkeeping, this file proves the locality fact needed for
+composition of fat-tree reductions: a lifted node remembers its unique
+ancestor on the starting cut.  Consequently an inclusion proved for the whole
+starting level automatically restricts to any subset of that level.
 -/
 
 namespace SuccessorTree
@@ -25,9 +30,72 @@ def TreeLevel (n : Nat) : Set T :=
 def ImmediateSuccessors (X : Set T) : Set T :=
   {y | ∃ x ∈ X, x ⋖ y}
 
+private theorem list_map_eq_self_of_mem_eq
+    {α : Type u} (p : List α) (f : α → α)
+    (h : ∀ x ∈ p, f x = x) :
+    p.map f = p := by
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : f x = x := h x (by simp)
+      have hxs : ∀ y ∈ xs, f y = y := by
+        intro y hy
+        exact h y (by simp [hy])
+      simp only [List.map_cons]
+      rw [hx, ih hxs]
+
+namespace MMap
+
+/-- If an M-map fixes everything strictly below level `n`, then every
+level-`n` node lies below its image.  This is the tree-theoretic reason that
+fat-tree lifts remember their starting ancestor. -/
+theorem le_apply_of_fixesBelow
+    (H : SMTree S) (F : MMap H) {n : Nat}
+    (hF : F.FixesBelow H n)
+    {x : T} (hx : LevelTree.lev x = n) :
+    x ≤ F x := by
+  cases n with
+  | zero =>
+      exact F.map.root_le' hx
+  | succ n =>
+      have hnle : n ≤ LevelTree.lev x := by omega
+      let p := LevelTree.ancestor x n hnle
+      have hpx : p ≤ x := LevelTree.ancestor_le x n hnle
+      have hpLevel : LevelTree.lev p = n :=
+        LevelTree.level_ancestor x n hnle
+      have hcov : p ⋖ x := by
+        apply LevelTree.covBy_of_le_level_succ hpx
+        omega
+      obtain ⟨params, c, hsucc⟩ := S.s3 hcov
+      have hpfix : F p = p := by
+        apply hF p
+        omega
+      have hparams : params.map F = params := by
+        apply list_map_eq_self_of_mem_eq
+        intro y hy
+        apply hF y
+        have hylt := S.parameter_level_lt hsucc hy
+        omega
+      obtain ⟨d, hd, hdx⟩ := F.map.weak_succ' hsucc
+      have hd' : S.succ p params c = some d := by
+        simpa [hpfix, hparams] using hd
+      have hdeq : d = x :=
+        Option.some.inj (hd'.symm.trans hsucc)
+      simpa [hdeq] using hdx
+
+end MMap
+
 namespace FatTree
 
 variable (H : SMTree S)
+
+/-- Immediate successors are monotone in the starting set. -/
+theorem immediateSuccessors_mono
+    {X Y : Set T} (hXY : X ⊆ Y) :
+    ImmediateSuccessors (T := T) X ⊆ ImmediateSuccessors (T := T) Y := by
+  intro z hz
+  rcases hz with ⟨x, hx, hxz⟩
+  exact ⟨x, hXY hx, hxz⟩
 
 /-- Immediate successors of a set on level `n` lie on level `n+1`. -/
 theorem immediateSuccessors_subset_level
@@ -45,6 +113,34 @@ theorem immediateSuccessors_subset_level
 noncomputable def oneLift (U : FatTree H) (i : Nat) (X : Set T) : Set T :=
   U.rowExtension H i '' ImmediateSuccessors (T := T) X
 
+/-- One-step lifting is monotone in its starting set. -/
+theorem oneLift_mono (U : FatTree H) (i : Nat)
+    {X Y : Set T} (hXY : X ⊆ Y) :
+    U.oneLift H i X ⊆ U.oneLift H i Y := by
+  intro z hz
+  rcases hz with ⟨y, hy, rfl⟩
+  exact ⟨y, immediateSuccessors_mono hXY hy, rfl⟩
+
+/-- The canonical row extension fixes everything strictly below its source
+cut. -/
+theorem rowExtension_fixesBelow (U : FatTree H) (i : Nat) :
+    (U.rowExtension H i).FixesBelow H (U.cut i) := by
+  intro x hx
+  calc
+    U.rowExtension H i x =
+        (U.row i).representative H x :=
+      U.rowExtension_agrees H i x (Nat.le_of_lt hx)
+    _ = x :=
+      (U.row i).representative_fixesBelow H x hx
+
+/-- A source-cut node lies below its image under the canonical row
+extension. -/
+theorem le_rowExtension_at_cut (U : FatTree H) (i : Nat)
+    {x : T} (hx : LevelTree.lev x = U.cut i) :
+    x ≤ U.rowExtension H i x := by
+  exact (U.rowExtension H i).le_apply_of_fixesBelow
+    H (U.rowExtension_fixesBelow H i) hx
+
 /-- The parenthetical level claim in Definition `def:lift`. -/
 theorem oneLift_subset_nextLevel (U : FatTree H) (i : Nat)
     {X : Set T} (hX : X ⊆ TreeLevel (T := T) (U.cut i)) :
@@ -61,6 +157,53 @@ theorem oneLift_subset_nextLevel (U : FatTree H) (i : Nat)
     _ = H.levelMap (U.rowExtension H i).map (U.cut i + 1) := by rw [hzlev]
     _ = U.cut (i + 1) := U.rowExtension_level_succ H i
 
+/-- Every node produced by one lift lies above a member of the starting set. -/
+theorem oneLift_descends (U : FatTree H) (i : Nat)
+    {X : Set T} (hX : X ⊆ TreeLevel (T := T) (U.cut i))
+    {z : T} (hz : z ∈ U.oneLift H i X) :
+    ∃ x ∈ X, x ≤ z := by
+  rcases hz with ⟨y, hy, rfl⟩
+  rcases hy with ⟨x, hx, hxy⟩
+  refine ⟨x, hx, ?_⟩
+  have hxLevel : LevelTree.lev x = U.cut i := hX hx
+  have hxrow : x ≤ U.rowExtension H i x :=
+    U.le_rowExtension_at_cut H i hxLevel
+  have hmap :
+      U.rowExtension H i x ≤ U.rowExtension H i y :=
+    (U.rowExtension H i).map.map_le_of_le hxy.le
+  exact hxrow.trans hmap
+
+/-- Source locality for one row.
+
+If a node lies in the lift of the whole source level and lies above a member
+of `X`, then it already lies in the lift of `X`. -/
+theorem oneLift_mem_of_mem_full_of_source
+    (U : FatTree H) (i : Nat)
+    {X : Set T} (hX : X ⊆ TreeLevel (T := T) (U.cut i))
+    {z : T}
+    (hz :
+      z ∈ U.oneLift H i (TreeLevel (T := T) (U.cut i)))
+    (hsource : ∃ x ∈ X, x ≤ z) :
+    z ∈ U.oneLift H i X := by
+  rcases hz with ⟨y, hy, rfl⟩
+  rcases hy with ⟨x₀, hx₀Level, hx₀y⟩
+  rcases hsource with ⟨x, hx, hxz⟩
+  have hxLevel : LevelTree.lev x = U.cut i := hX hx
+  have hx₀Level' : LevelTree.lev x₀ = U.cut i := hx₀Level
+  have hx₀row : x₀ ≤ U.rowExtension H i x₀ :=
+    U.le_rowExtension_at_cut H i hx₀Level'
+  have hx₀z :
+      x₀ ≤ U.rowExtension H i y :=
+    hx₀row.trans ((U.rowExtension H i).map.map_le_of_le hx₀y.le)
+  have hxx₀ : x = x₀ := by
+    rcases LevelTree.comparable_below hxz hx₀z with h | h
+    · exact LevelTree.same_level_of_le h
+        (hxLevel.trans hx₀Level'.symm)
+    · exact (LevelTree.same_level_of_le h
+        (hx₀Level'.trans hxLevel.symm)).symm
+  refine ⟨y, ?_, rfl⟩
+  exact ⟨x₀, by simpa [hxx₀] using hx, hx₀y⟩
+
 /-- Iterate the one-step lift for a prescribed number of fat-tree rows. -/
 noncomputable def liftSteps (U : FatTree H) :
     (i steps : Nat) → Set T → Set T
@@ -75,6 +218,19 @@ noncomputable def liftSteps (U : FatTree H) :
     (i steps : Nat) (X : Set T) :
     U.liftSteps H i (steps + 1) X =
       U.liftSteps H (i + 1) steps (U.oneLift H i X) := rfl
+
+/-- Iterated lifting is monotone in its starting set. -/
+theorem liftSteps_mono (U : FatTree H)
+    (i steps : Nat) {X Y : Set T}
+    (hXY : X ⊆ Y) :
+    U.liftSteps H i steps X ⊆ U.liftSteps H i steps Y := by
+  induction steps generalizing i X Y with
+  | zero =>
+      exact hXY
+  | succ steps ih =>
+      exact ih (i := i + 1)
+        (X := U.oneLift H i X) (Y := U.oneLift H i Y)
+        (U.oneLift_mono H i hXY)
 
 /-- Lifting preserves the intended cut level. -/
 theorem liftSteps_subset_level (U : FatTree H)
@@ -91,6 +247,82 @@ theorem liftSteps_subset_level (U : FatTree H)
         U.oneLift_subset_nextLevel H i hX
       have hrec := ih (i := i + 1) (X := U.oneLift H i X) hnext
       simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hrec
+
+/-- Every iterated lift node lies above a member of its starting set. -/
+theorem liftSteps_descends (U : FatTree H)
+    (i steps : Nat) {X : Set T}
+    (hX : X ⊆ TreeLevel (T := T) (U.cut i))
+    {z : T} (hz : z ∈ U.liftSteps H i steps X) :
+    ∃ x ∈ X, x ≤ z := by
+  induction steps generalizing i X z with
+  | zero =>
+      exact ⟨z, hz, le_rfl⟩
+  | succ steps ih =>
+      have hnext :
+          U.oneLift H i X ⊆
+            TreeLevel (T := T) (U.cut (i + 1)) :=
+        U.oneLift_subset_nextLevel H i hX
+      change
+        z ∈ U.liftSteps H (i + 1) steps (U.oneLift H i X) at hz
+      rcases ih (i := i + 1) (X := U.oneLift H i X)
+          hnext hz with ⟨y, hy, hyz⟩
+      rcases U.oneLift_descends H i hX hy with
+        ⟨x, hx, hxy⟩
+      exact ⟨x, hx, hxy.trans hyz⟩
+
+/-- Locality for an iterated lift.
+
+The endpoint of a lift determines its source ancestor.  Therefore if `z`
+is obtained by lifting a level set `Y`, and `z` lies above some member of
+another level set `X` on the same starting cut, then `z` is already
+obtained by lifting `X`. -/
+theorem liftSteps_mem_of_mem_of_source (U : FatTree H)
+    (i steps : Nat) {X Y : Set T}
+    (hX : X ⊆ TreeLevel (T := T) (U.cut i))
+    (hY : Y ⊆ TreeLevel (T := T) (U.cut i))
+    {z : T}
+    (hz : z ∈ U.liftSteps H i steps Y)
+    (hsource : ∃ x ∈ X, x ≤ z) :
+    z ∈ U.liftSteps H i steps X := by
+  induction steps generalizing i X Y z with
+  | zero =>
+      rcases hsource with ⟨x, hx, hxz⟩
+      have hxLevel : LevelTree.lev x = U.cut i := hX hx
+      have hzLevel : LevelTree.lev z = U.cut i := hY hz
+      have hzx : z = x :=
+        LevelTree.same_level_of_le hxz (hxLevel.trans hzLevel.symm)
+      simpa [hzx] using hx
+  | succ steps ih =>
+      have hXnext :
+          U.oneLift H i X ⊆
+            TreeLevel (T := T) (U.cut (i + 1)) :=
+        U.oneLift_subset_nextLevel H i hX
+      have hYnext :
+          U.oneLift H i Y ⊆
+            TreeLevel (T := T) (U.cut (i + 1)) :=
+        U.oneLift_subset_nextLevel H i hY
+      change
+        z ∈ U.liftSteps H (i + 1) steps (U.oneLift H i Y) at hz
+      rcases U.liftSteps_descends H (i + 1) steps hYnext hz with
+        ⟨y, hy, hyz⟩
+      rcases hsource with ⟨x, hx, hxz⟩
+      have hxLevel : LevelTree.lev x = U.cut i := hX hx
+      have hyLevel : LevelTree.lev y = U.cut (i + 1) := hYnext hy
+      have hxy : x ≤ y := by
+        rcases LevelTree.comparable_below hxz hyz with h | h
+        · exact h
+        · have hlev := LevelTree.level_le_of_le h
+          have hcut := U.cut_lt_succ H i
+          omega
+      have hyFull :
+          y ∈ U.oneLift H i (TreeLevel (T := T) (U.cut i)) := by
+        exact U.oneLift_mono H i hY hy
+      have hyX : y ∈ U.oneLift H i X :=
+        U.oneLift_mem_of_mem_full_of_source H i hX hyFull
+          ⟨x, hx, hxy⟩
+      exact ih (i := i + 1)
+        (X := U.oneLift H i X) (Y := U.oneLift H i Y)
+        hXnext hYnext hz ⟨y, hyX, hyz⟩
 
 /-- Paper notation `Lift_U(X,k)`, with the source cut `i` explicit. -/
 noncomputable def liftTo (U : FatTree H)
@@ -113,6 +345,35 @@ theorem liftTo_subset_level (U : FatTree H)
   have h := U.liftSteps_subset_level H i (k - i) hX
   have hidx : i + (k - i) = k := by omega
   simpa [hidx] using h
+
+/-- `liftTo` is monotone in the starting set. -/
+theorem liftTo_mono (U : FatTree H)
+    (i k : Nat) (hik : i ≤ k)
+    {X Y : Set T} (hXY : X ⊆ Y) :
+    U.liftTo H i k hik X ⊆ U.liftTo H i k hik Y := by
+  exact U.liftSteps_mono H i (k - i) hXY
+
+/-- Every `liftTo` endpoint lies above a member of its starting set. -/
+theorem liftTo_descends (U : FatTree H)
+    (i k : Nat) (hik : i ≤ k)
+    {X : Set T}
+    (hX : X ⊆ TreeLevel (T := T) (U.cut i))
+    {z : T} (hz : z ∈ U.liftTo H i k hik X) :
+    ∃ x ∈ X, x ≤ z := by
+  exact U.liftSteps_descends H i (k - i) hX hz
+
+/-- Source locality in the paper's `Lift_U(X,k)` notation. -/
+theorem liftTo_mem_of_mem_of_source (U : FatTree H)
+    (i k : Nat) (hik : i ≤ k)
+    {X Y : Set T}
+    (hX : X ⊆ TreeLevel (T := T) (U.cut i))
+    (hY : Y ⊆ TreeLevel (T := T) (U.cut i))
+    {z : T}
+    (hz : z ∈ U.liftTo H i k hik Y)
+    (hsource : ∃ x ∈ X, x ≤ z) :
+    z ∈ U.liftTo H i k hik X := by
+  exact U.liftSteps_mem_of_mem_of_source H i (k - i)
+    hX hY hz hsource
 
 /-- The empty set stays empty under lifting. -/
 @[simp] theorem oneLift_empty (U : FatTree H) (i : Nat) :
