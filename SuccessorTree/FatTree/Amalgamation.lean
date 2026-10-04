@@ -86,18 +86,6 @@ theorem initialSegment_eq_of_extendsStem
     change HEq (W.row i.1) (x.row i)
     exact h.2 i
 
-/-- Literal finite-prefix equality gives the data-level stem predicate. -/
-theorem extendsStem_of_initialSegment_eq
-    {x : FiniteFatTree H} {W : FatTree H}
-    (h : W.initialSegment H x.height = x) :
-    ExtendsStem H x W := by
-  subst x
-  constructor
-  · intro i
-    rfl
-  · intro i
-    exact HEq.rfl
-
 /-- A sufficiently deep cone refinement preserves every shorter literal
 stem fixed by the ambient tree. -/
 theorem extendsStem_of_depthCone
@@ -106,24 +94,24 @@ theorem extendsStem_of_depthCone
     (hC : InDepthCone H q A C)
     (hxq : x.height ≤ q) :
     ExtendsStem H x C := by
-  have hCAq :
-      C.initialSegment H q = A.initialSegment H q :=
-    initialSegment_eq_of_extendsStem H hC.2
-  have hCAx :
-      C.initialSegment H x.height =
-        A.initialSegment H x.height := by
-    calc
-      C.initialSegment H x.height =
-          (C.initialSegment H q).initialSegment H x.height hxq :=
-        (C.initialSegment_initialSegment H q x.height hxq).symm
-      _ = (A.initialSegment H q).initialSegment H x.height hxq := by
-        rw [hCAq]
-      _ = A.initialSegment H x.height :=
-        A.initialSegment_initialSegment H q x.height hxq
-  have hAx :
-      A.initialSegment H x.height = x :=
-    initialSegment_eq_of_extendsStem H hxA
-  exact extendsStem_of_initialSegment_eq H (hCAx.trans hAx)
+  constructor
+  · intro i
+    let j : Fin ((A.initialSegment H q).height + 1) :=
+      ⟨i.1, by
+        change i.1 < q + 1
+        have hi : i.1 ≤ x.height := Nat.le_of_lt_succ i.2
+        omega⟩
+    have hc := hC.2.1 j
+    change C.cut i.1 = A.cut i.1 at hc
+    exact hc.trans (hxA.1 i)
+  · intro i
+    let j : Fin ((A.initialSegment H q).height) :=
+      ⟨i.1, by
+        change i.1 < q
+        exact i.2.trans_le hxq⟩
+    have hr := hC.2.2 j
+    change HEq (C.row i.1) (A.row i.1) at hr
+    exact HEq.trans hr (hxA.2 i)
 
 /-- A stem occurring at cut `n` has terminal cut exactly `U.cut n`. -/
 theorem terminalCut_eq_of_stemAt
