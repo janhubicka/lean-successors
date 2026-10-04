@@ -154,10 +154,7 @@ theorem traceLift_appendRow
   have hpref :
       z.liftSteps H n (y.height - n) (by omega)
         (TreeLevel (T := T)
-          (traceSourceCut H z n (by
-            dsimp [z]
-            rw [appendRow_height]
-            omega))) =
+          (traceSourceCut H z n (by omega))) =
         traceLift H y n hn := by
     dsimp [z]
     exact traceLift_prefix_appendRow H y h n hn
