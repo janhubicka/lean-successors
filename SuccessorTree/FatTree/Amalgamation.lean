@@ -30,10 +30,13 @@ the manuscript condition that the depth is `n`. -/
 def StemAt (x : FiniteFatTree H) (U : FatTree H) (n : Nat) : Prop :=
   FiniteFatTree.LeFin H x (U.initialSegment H n)
 
-/-- An infinite fat tree literally extends a finite stem when the
-corresponding initial segment is equal to that stem. -/
+/-- Exact finite-prefix agreement, expressed by the mathematical data
+rather than equality of dependent records with proof fields.  This is the
+Lean representation of saying that the first `x.height` rows of `W`
+are literally the finite fat tree `x`. -/
 def ExtendsStem (x : FiniteFatTree H) (W : FatTree H) : Prop :=
-  W.initialSegment H x.height = x
+  (∀ i : Fin (x.height + 1), W.cut i.1 = x.cut i) ∧
+  (∀ i : Fin x.height, HEq (W.row i.1) (x.row i))
 
 /-- Membership in the manuscript basic open set `[x,U]`. -/
 def InNeighborhood
@@ -41,53 +44,26 @@ def InNeighborhood
   FatTree.Reduces H W U ∧ ExtendsStem H x W
 
 /-- Membership in `[n,U]`: refine `U` while keeping its first `n`
-rows literally fixed. -/
+rows exactly fixed. -/
 def InDepthCone (n : Nat) (U V : FatTree H) : Prop :=
   FatTree.Reduces H V U ∧
-    V.initialSegment H n = U.initialSegment H n
+    ExtendsStem H (U.initialSegment H n) V
 
-/-- Literal stem extension identifies every cut through the terminal
-cut of the finite stem. -/
+/-- Exact stem extension identifies every cut through the terminal cut. -/
 theorem cut_eq_of_extendsStem
     {x : FiniteFatTree H} {W : FatTree H}
     (h : ExtendsStem H x W)
     (i : Fin (x.height + 1)) :
-    W.cut i.1 = x.cut i := by
-  have hp := h
-  change W.initialSegment H x.height = x at hp
-  have hc :
-      (W.initialSegment H x.height).cut i = x.cut i := by
-    simpa only [hp]
-  exact hc
+    W.cut i.1 = x.cut i :=
+  h.1 i
 
-/-- In particular, literal stem extension identifies the terminal cut. -/
+/-- In particular, exact stem extension identifies the terminal cut. -/
 theorem terminalCut_eq_of_extendsStem
     {x : FiniteFatTree H} {W : FatTree H}
     (h : ExtendsStem H x W) :
     W.cut x.height = x.terminalCut := by
-  have hp := h
-  change W.initialSegment H x.height = x at hp
-  have hc :
-      (W.initialSegment H x.height).terminalCut = x.terminalCut := by
-    simpa only [hp]
-  simpa using hc
-
-/-- Before the terminal cut, one-step Lift of an infinite tree extending
-`x` agrees with one-step Lift in the finite stem. -/
-theorem oneLift_eq_of_extendsStem
-    {x : FiniteFatTree H} {W : FatTree H}
-    (h : ExtendsStem H x W)
-    (i : Fin x.height) (X : Set T) :
-    W.oneLift H i.1 X = x.oneLift H i X := by
-  have hi :=
-    W.initialSegment_oneLift H x.height i X
-  have hp := h
-  change W.initialSegment H x.height = x at hp
-  have hfin :
-      (W.initialSegment H x.height).oneLift H i X =
-        x.oneLift H i X := by
-    simpa only [hp]
-  exact hi.symm.trans hfin
+  simpa [FiniteFatTree.terminalCut] using
+    h.1 (Fin.last x.height)
 
 /-- A stem occurring at cut `n` has terminal cut exactly `U.cut n`. -/
 theorem terminalCut_eq_of_stemAt
@@ -106,31 +82,6 @@ theorem stemAt_unique
     U.cut m = x.terminalCut :=
       (terminalCut_eq_of_stemAt H hm).symm
     _ = U.cut n := terminalCut_eq_of_stemAt H hn
-
-/-- A depth-cone refinement preserves which finite stems occur at
-that depth. -/
-theorem stemAt_of_depthCone
-    {x : FiniteFatTree H} {U V : FatTree H} {n : Nat}
-    (hx : StemAt H x U n)
-    (hV : InDepthCone H n U V) :
-    StemAt H x V n := by
-  unfold StemAt at hx ⊢
-  rw [hV.2]
-  exact hx
-
-/-- A member of a basic neighbourhood witnesses that the stem has
-finite depth in the ambient fat tree. -/
-theorem exists_stemAt_of_neighborhood
-    {x : FiniteFatTree H} {U W : FatTree H}
-    (hW : InNeighborhood H x U W) :
-    ∃ n : Nat, StemAt H x U n := by
-  rcases FiniteFatTree.exists_initialSegment_leFin_of_reduces
-      H hW.1 x.height with ⟨n, hn⟩
-  refine ⟨n, ?_⟩
-  have hp := hW.2
-  change W.initialSegment H x.height = x at hp
-  rw [hp] at hn
-  exact hn
 
 /-- Finite depth transports along an infinite fat-tree reduction. -/
 theorem exists_stemAt_of_reduces
