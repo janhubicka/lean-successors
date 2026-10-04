@@ -419,5 +419,110 @@ theorem liftTo_mem_of_mem_of_source (U : FatTree H)
 
 end FatTree
 
+namespace FiniteFatTree
+
+variable (H : SMTree S)
+
+/-- A canonical finite row extension fixes everything below its source cut. -/
+theorem rowExtension_fixesBelow (U : FiniteFatTree H)
+    (i : Fin U.height) :
+    (U.rowExtension H i).FixesBelow H (U.cut i.castSucc) := by
+  intro x hx
+  calc
+    U.rowExtension H i x =
+        (U.row i).representative H x :=
+      U.rowExtension_agrees H i x (Nat.le_of_lt hx)
+    _ = x :=
+      (U.row i).representative_fixesBelow H x hx
+
+/-- A source-cut node lies below its image under a finite row extension. -/
+theorem le_rowExtension_at_cut (U : FiniteFatTree H)
+    (i : Fin U.height) {x : T}
+    (hx : LevelTree.lev x = U.cut i.castSucc) :
+    x ≤ U.rowExtension H i x := by
+  exact (U.rowExtension H i).le_apply_of_fixesBelow
+    H (U.rowExtension_fixesBelow H i) hx
+
+/-- One step of lift inside a finite fat tree. -/
+noncomputable def oneLift (U : FiniteFatTree H)
+    (i : Fin U.height) (X : Set T) : Set T :=
+  U.rowExtension H i '' FatTree.ImmediateSuccessors (T := T) X
+
+/-- Finite one-step lifting is monotone in the starting set. -/
+theorem oneLift_mono (U : FiniteFatTree H)
+    (i : Fin U.height) {X Y : Set T} (hXY : X ⊆ Y) :
+    U.oneLift H i X ⊆ U.oneLift H i Y := by
+  intro z hz
+  rcases hz with ⟨y, hy, rfl⟩
+  exact ⟨y, FatTree.immediateSuccessors_mono H hXY hy, rfl⟩
+
+/-- A finite one-row lift lands exactly on the next cut level. -/
+theorem oneLift_subset_nextLevel (U : FiniteFatTree H)
+    (i : Fin U.height) {X : Set T}
+    (hX : X ⊆ FatTree.TreeLevel (T := T) (U.cut i.castSucc)) :
+    U.oneLift H i X ⊆
+      FatTree.TreeLevel (T := T) (U.cut i.succ) := by
+  intro y hy
+  rcases hy with ⟨z, hz, rfl⟩
+  have hzlev : LevelTree.lev z = U.cut i.castSucc + 1 :=
+    FatTree.immediateSuccessors_subset_level H hX hz
+  change LevelTree.lev (U.rowExtension H i z) = U.cut i.succ
+  calc
+    LevelTree.lev (U.rowExtension H i z) =
+        H.levelMap (U.rowExtension H i).map (LevelTree.lev z) :=
+      (H.levelMap_eq (U.rowExtension H i).map (a := z)).symm
+    _ = H.levelMap (U.rowExtension H i).map
+          (U.cut i.castSucc + 1) := by rw [hzlev]
+    _ = U.cut i.succ := U.rowExtension_level_succ H i
+
+/-- Every node produced by one finite lift lies above a source node. -/
+theorem oneLift_descends (U : FiniteFatTree H)
+    (i : Fin U.height) {X : Set T}
+    (hX : X ⊆ FatTree.TreeLevel (T := T) (U.cut i.castSucc))
+    {z : T} (hz : z ∈ U.oneLift H i X) :
+    ∃ x ∈ X, x ≤ z := by
+  rcases hz with ⟨y, hy, rfl⟩
+  rcases hy with ⟨x, hx, hxy⟩
+  refine ⟨x, hx, ?_⟩
+  have hxLevel : LevelTree.lev x = U.cut i.castSucc := hX hx
+  have hxrow : x ≤ U.rowExtension H i x :=
+    U.le_rowExtension_at_cut H i hxLevel
+  have hmap :
+      U.rowExtension H i x ≤ U.rowExtension H i y :=
+    (U.rowExtension H i).map.map_le_of_le hxy.le
+  exact hxrow.trans hmap
+
+/-- Source locality for one finite row. -/
+theorem oneLift_mem_of_mem_full_of_source
+    (U : FiniteFatTree H) (i : Fin U.height)
+    {X : Set T}
+    (hX : X ⊆ FatTree.TreeLevel (T := T) (U.cut i.castSucc))
+    {z : T}
+    (hz :
+      z ∈ U.oneLift H i
+        (FatTree.TreeLevel (T := T) (U.cut i.castSucc)))
+    (hsource : ∃ x ∈ X, x ≤ z) :
+    z ∈ U.oneLift H i X := by
+  rcases hz with ⟨y, hy, rfl⟩
+  rcases hy with ⟨x₀, hx₀Level, hx₀y⟩
+  rcases hsource with ⟨x, hx, hxz⟩
+  have hxLevel : LevelTree.lev x = U.cut i.castSucc := hX hx
+  have hx₀Level' : LevelTree.lev x₀ = U.cut i.castSucc := hx₀Level
+  have hx₀row : x₀ ≤ U.rowExtension H i x₀ :=
+    U.le_rowExtension_at_cut H i hx₀Level'
+  have hx₀z :
+      x₀ ≤ U.rowExtension H i y :=
+    hx₀row.trans ((U.rowExtension H i).map.map_le_of_le hx₀y.le)
+  have hxx₀ : x = x₀ := by
+    rcases LevelTree.comparable_below hxz hx₀z with h | h
+    · exact LevelTree.same_level_of_le h
+        (hxLevel.trans hx₀Level'.symm)
+    · exact (LevelTree.same_level_of_le h
+        (hx₀Level'.trans hxLevel.symm)).symm
+  refine ⟨y, ?_, rfl⟩
+  exact ⟨x₀, by simpa [hxx₀] using hx, hx₀y⟩
+
+end FiniteFatTree
+
 end SMTree
 end SuccessorTree
