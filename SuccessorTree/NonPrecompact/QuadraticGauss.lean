@@ -116,7 +116,8 @@ theorem f2Sign_quadratic_pair
   rw [← f2Sign_add, ← f2Sign_add]
   congr 1
   rw [← hpolar z w]
-  ring_nf
+  have htwo : (2 : F2) = 0 := by norm_num
+  simp [htwo]
 
 /-- Translation of the second variable in the squared Gauss sum. -/
 theorem sum_f2Sign_translate_second
