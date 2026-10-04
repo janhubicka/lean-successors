@@ -124,6 +124,7 @@ def FixedTerminalCode (d : Nat) :=
 
 noncomputable instance fixedTerminalCodeFintype (d : Nat) :
     Fintype (FixedTerminalCode (T := T) d) := by
+  classical
   letI node : Fintype (InitialNode T d) := initialNodeFintype T d
   letI nodeOpt : Fintype (Option (InitialNode T d)) := inferInstance
   letI rowMap :
