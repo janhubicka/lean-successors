@@ -130,6 +130,41 @@ noncomputable instance fixedTerminalCodeFintype (d : Nat) :
 def FixedTerminal (d : Nat) :=
   {U : FiniteFatTree H // U.terminalCut = d}
 
+/-- Encode a finite fat tree ending at cut `d` in a fixed finite
+ambient code space.  Positions beyond the actual height are padded by
+`none`. -/
+noncomputable def fixedTerminalCode (d : Nat)
+    (U : FixedTerminal H d) :
+    FixedTerminalCode (T := T) H d := by
+  have hheight : U.1.height ≤ d := by
+    have h := U.1.height_le_terminalCut H
+    simpa [U.2] using h
+  let h : Fin (d + 1) :=
+    ⟨U.1.height, Nat.lt_succ_of_le hheight⟩
+  refine ⟨h, ?_, ?_⟩
+  · intro j
+    by_cases hj : j.1 ≤ U.1.height
+    · let i : Fin (U.1.height + 1) :=
+        ⟨j.1, Nat.lt_succ_of_le hj⟩
+      have hcut : U.1.cut i ≤ d := by
+        have hle := U.1.cut_le_terminalCut H i
+        simpa [U.2] using hle
+      exact some ⟨U.1.cut i, Nat.lt_succ_of_le hcut⟩
+    · exact none
+  · intro j
+    by_cases hj : j.1 < U.1.height
+    · let i : Fin U.1.height := ⟨j.1, hj⟩
+      have hnext : U.1.cut i.succ ≤ d := by
+        have hle := U.1.cut_le_terminalCut H i.succ
+        simpa [U.2] using hle
+      have hend : (U.1.row i).rowEndLevel H < d := by
+        have hrow := U.1.row_cut i
+        omega
+      exact some
+        (uniformRowCode H (U.1.cut i.castSucc) d
+          ⟨U.1.row i, hend⟩)
+    · exact none
+
 /-- The manuscript's finitary order on finite fat trees: reduction with the
 same terminal ambient cut. -/
 def LeFin (X Y : FiniteFatTree H) : Prop :=
