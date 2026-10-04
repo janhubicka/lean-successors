@@ -1,4 +1,5 @@
 import SuccessorTree.FatTree.A4Trace
+import SuccessorTree.FatTree.A4Persistence
 
 open SuccessorTree
 
@@ -32,3 +33,8 @@ open SuccessorTree
 #print axioms SMTree.FiniteFatTree.ExactTrace.exists_raw_predecessor
 #check SMTree.FiniteFatTree.isExactTrace_appendRow_iff
 #print axioms SMTree.FiniteFatTree.isExactTrace_appendRow_iff
+
+#check SMTree.FatTree.fusionComplete
+#print axioms SMTree.FatTree.fusionComplete
+#check SMTree.FatTree.oneBlockLarge_exact_persistent_closed
+#print axioms SMTree.FatTree.oneBlockLarge_exact_persistent_closed
