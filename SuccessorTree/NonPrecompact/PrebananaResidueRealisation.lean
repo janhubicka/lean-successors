@@ -208,11 +208,16 @@ theorem exists_prebanana_residue_block_assembly
       (Finset.disjoint_left.mp (hreservedDisjoint i))
         hxr ((hchosen i).2.1 hxi)
 
+  have hchosenDisjointFinset :
+      ((Finset.univ : Finset (Fin m)) : Set (Fin m)).PairwiseDisjoint
+        chosen := by
+    simpa using hchosenDisjoint
+
   have hsumSelected :
       (∑ x ∈ selected, (a x : ZMod (2 ^ k))) =
         ∑ i, r i := by
     dsimp [selected]
-    rw [Finset.sum_biUnion hchosenDisjoint]
+    rw [Finset.sum_biUnion hchosenDisjointFinset]
     apply Finset.sum_congr rfl
     intro i hi
     exact (hchosen i).2.2
