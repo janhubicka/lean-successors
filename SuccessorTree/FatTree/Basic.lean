@@ -162,19 +162,19 @@ def prefix (U : FiniteFatTree H) (n : Nat) (hn : n ≤ U.height) :
     intro i
     simpa using U.row_cut (⟨i.1, by omega⟩ : Fin U.height)
 
-@[simp] theorem prefix_height (U : FiniteFatTree H)
+@[simp] theorem initialSegment_height (U : FiniteFatTree H)
     (n : Nat) (hn : n ≤ U.height) :
-    (U.prefix H n hn).height = n := rfl
+    (U.initialSegment H n hn).height = n := rfl
 
-@[simp] theorem prefix_cut (U : FiniteFatTree H)
+@[simp] theorem initialSegment_cut (U : FiniteFatTree H)
     (n : Nat) (hn : n ≤ U.height)
     (i : Fin (n + 1)) :
-    (U.prefix H n hn).cut i =
+    (U.initialSegment H n hn).cut i =
       U.cut ⟨i.1, by omega⟩ := rfl
 
-@[simp] theorem prefix_terminalCut (U : FiniteFatTree H)
+@[simp] theorem initialSegment_terminalCut (U : FiniteFatTree H)
     (n : Nat) (hn : n ≤ U.height) :
-    (U.prefix H n hn).terminalCut =
+    (U.initialSegment H n hn).terminalCut =
       U.cut ⟨n, by omega⟩ := rfl
 
 /-- The canonical total extension of a finite fat-tree row. -/
