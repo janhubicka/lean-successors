@@ -154,6 +154,52 @@ theorem ext_data {U V : FiniteFatTree H}
           subst vr
           rfl
 
+/-- Pointwise extensionality for finite fat trees.  Explicit casts
+avoid repeatedly eliminating the dependency of rows on cut functions. -/
+theorem ext_pointwise {U V : FiniteFatTree H}
+    (hheight : U.height = V.height)
+    (hcut : ∀ i : Fin (U.height + 1),
+      U.cut i =
+        V.cut (Fin.cast (congrArg (fun n => n + 1) hheight) i))
+    (hrow : ∀ i : Fin U.height,
+      HEq (U.row i) (V.row (Fin.cast hheight i))) :
+    U = V := by
+  cases U with
+  | mk uh uc uz ur urc =>
+      cases V with
+      | mk vh vc vz vr vrc =>
+          dsimp at hheight hcut hrow
+          subst vh
+          have hc : uc = vc := by
+            funext i
+            simpa using hcut i
+          subst vc
+          have hr : ur = vr := by
+            funext i
+            exact eq_of_heq (by simpa using hrow i)
+          subst vr
+          rfl
+
+/-- Transport a cut coordinate across equality of finite fat trees. -/
+theorem cut_eq_of_eq {U V : FiniteFatTree H}
+    (h : U = V) (i : Fin (V.height + 1)) :
+    U.cut
+        (Fin.cast
+          (congrArg (fun Z : FiniteFatTree H => Z.height + 1) h).symm i) =
+      V.cut i := by
+  cases h
+  rfl
+
+/-- Transport a one-step Lift across equality of finite fat trees. -/
+theorem oneLift_eq_of_eq {U V : FiniteFatTree H}
+    (h : U = V) (i : Fin V.height) (X : Set T) :
+    U.oneLift H
+        (Fin.cast
+          (congrArg (fun Z : FiniteFatTree H => Z.height) h).symm i) X =
+      V.oneLift H i X := by
+  cases h
+  rfl
+
 /-- The first `n` rows of a finite fat tree, retaining the cut after
 the last retained row. -/
 def initialSegment (U : FiniteFatTree H) (n : Nat) (hn : n ≤ U.height) :
