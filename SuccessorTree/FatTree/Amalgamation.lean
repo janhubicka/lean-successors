@@ -94,13 +94,22 @@ theorem extendsStem_of_initialSegment_eq
     {x : FiniteFatTree H} {W : FatTree H}
     (h : W.initialSegment H x.height = x) :
     ExtendsStem H x W := by
-  have h' : x = W.initialSegment H x.height := h.symm
-  subst x
   constructor
   · intro i
-    rfl
+    have hc :=
+      FiniteFatTree.cut_eq_of_eq H h i
+    change W.cut _ = x.cut i at hc
+    have hcast :
+        (Fin.cast
+          (congrArg
+            (fun Z : FiniteFatTree H => Z.height + 1) h).symm i).1 =
+          i.1 := rfl
+    simpa [hcast] using hc
   · intro i
-    rfl
+    have hr :=
+      FiniteFatTree.row_heq_of_eq H h i
+    change HEq (W.row _) (x.row i) at hr
+    exact hr
 
 /-- A sufficiently deep cone refinement preserves every shorter literal
 stem fixed by the ambient tree. -/
