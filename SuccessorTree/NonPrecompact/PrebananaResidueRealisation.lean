@@ -144,4 +144,100 @@ theorem leftover_nonempty_and_sum_eq
     apply add_left_cancel
     exact hsplit'.trans htarget.symm
 
+
+/-- Assemble the residue-correct batch choices into disjoint blocks, with all
+remaining atoms forming one final nonempty block of the prescribed residue.
+
+This is the finite bookkeeping step in the manuscript's pre-BANANA residue
+realisation lemma.  The batches are the disjoint q-atom batches, while
+the reserved set consists of atoms intentionally left for the final block. -/
+theorem exists_prebanana_residue_block_assembly
+    {k m : ℕ} {ι : Type*} [DecidableEq ι]
+    (atoms reserved : Finset ι)
+    (batch : Fin m → Finset ι)
+    (a : ι → ℕ)
+    (r : Fin m → ZMod (2 ^ k))
+    (last : ZMod (2 ^ k))
+    (hcard : ∀ i, (batch i).card = 2 ^ k)
+    (ha : ∀ i x, x ∈ batch i → Odd (a x))
+    (hbatchAtoms : ∀ i, batch i ⊆ atoms)
+    (hbatchDisjoint :
+      (Set.univ : Set (Fin m)).PairwiseDisjoint batch)
+    (hreserved : reserved.Nonempty)
+    (hreservedAtoms : reserved ⊆ atoms)
+    (hreservedDisjoint : ∀ i, Disjoint reserved (batch i))
+    (htotal :
+      (∑ x ∈ atoms, (a x : ZMod (2 ^ k))) = 0)
+    (hrsum : (∑ i, r i) + last = 0) :
+    ∃ chosen : Fin m → Finset ι,
+      let selected :=
+        (Finset.univ : Finset (Fin m)).biUnion chosen
+      (∀ i,
+          (chosen i).Nonempty ∧
+          chosen i ⊆ batch i ∧
+          (∑ x ∈ chosen i, (a x : ZMod (2 ^ k))) = r i) ∧
+      (Set.univ : Set (Fin m)).PairwiseDisjoint chosen ∧
+      selected ⊆ atoms ∧
+      Disjoint reserved selected ∧
+      (atoms \ selected).Nonempty ∧
+      (∑ x ∈ atoms \ selected, (a x : ZMod (2 ^ k))) = last := by
+  obtain ⟨chosen, hchosen⟩ :=
+    exists_nonempty_odd_subset_sum_family
+      batch a hcard ha r
+
+  let selected : Finset ι :=
+    (Finset.univ : Finset (Fin m)).biUnion chosen
+
+  have hchosenDisjoint :
+      (Set.univ : Set (Fin m)).PairwiseDisjoint chosen := by
+    intro i hi j hj hij
+    exact
+      (hbatchDisjoint hi hj hij).mono
+        (hchosen i).2.1 (hchosen j).2.1
+
+  have hselectedAtoms : selected ⊆ atoms := by
+    intro x hx
+    rcases Finset.mem_biUnion.mp hx with ⟨i, hi, hxi⟩
+    exact hbatchAtoms i ((hchosen i).2.1 hxi)
+
+  have hreservedSelected : Disjoint reserved selected := by
+    rw [Finset.disjoint_left]
+    intro x hxr hxs
+    rcases Finset.mem_biUnion.mp hxs with ⟨i, hi, hxi⟩
+    exact
+      (Finset.disjoint_left.mp (hreservedDisjoint i))
+        hxr ((hchosen i).2.1 hxi)
+
+  have hchosenDisjointFinset :
+      ((Finset.univ : Finset (Fin m)) : Set (Fin m)).PairwiseDisjoint
+        chosen := by
+    simpa using hchosenDisjoint
+
+  have hsumSelected :
+      (∑ x ∈ selected, (a x : ZMod (2 ^ k))) =
+        ∑ i, r i := by
+    dsimp [selected]
+    rw [Finset.sum_biUnion hchosenDisjointFinset]
+    apply Finset.sum_congr rfl
+    intro i hi
+    exact (hchosen i).2.2
+
+  have htarget :
+      (∑ x ∈ selected, (a x : ZMod (2 ^ k))) + last = 0 := by
+    rw [hsumSelected]
+    exact hrsum
+
+  obtain ⟨hleftNonempty, hleftSum⟩ :=
+    leftover_nonempty_and_sum_eq
+      atoms selected reserved
+      (fun x => (a x : ZMod (2 ^ k))) last
+      hselectedAtoms hreserved hreservedAtoms
+      hreservedSelected htotal htarget
+
+  refine ⟨chosen, ?_⟩
+  dsimp
+  refine ⟨hchosen, hchosenDisjoint, ?_, ?_, hleftNonempty, hleftSum⟩
+  · exact hselectedAtoms
+  · exact hreservedSelected
+
 end SuccessorTree.NonPrecompact
