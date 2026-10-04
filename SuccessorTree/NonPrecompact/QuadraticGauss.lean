@@ -70,4 +70,27 @@ theorem sum_f2Sign_linear_eq_zero
     norm_num at hneg
   simpa [ψ] using (AddChar.sum_eq_zero_of_ne_one hψ)
 
+
+/-- For a bilinear form with injective right adjoint, the sign-character
+sum in the first variable is zero away from the zero second variable and
+is the full cardinality at zero. -/
+theorem sum_f2Sign_bilinear_fixed
+    {V : Type*} [AddCommGroup V] [Module F2 V] [Fintype V]
+    (b : V →ₗ[F2] V →ₗ[F2] F2)
+    (hnondeg : Function.Injective b.flip)
+    (w : V) :
+    (∑ x : V, f2Sign (b x w)) =
+      if w = 0 then (Fintype.card V : ℤ) else 0 := by
+  by_cases hw : w = 0
+  · subst w
+    simp [f2Sign]
+  · rw [if_neg hw]
+    have hlin : b.flip w ≠ 0 := by
+      intro hzero
+      apply hw
+      apply hnondeg
+      simpa using hzero
+    simpa [LinearMap.flip_apply] using
+      sum_f2Sign_linear_eq_zero (b.flip w) hlin
+
 end SuccessorTree.NonPrecompact
