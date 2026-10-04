@@ -120,7 +120,7 @@ theorem coeff_residueWeightGenerating_eq_card_filter
   unfold residueWeightGenerating
   rw [AddMonoidAlgebra.coeff_sum]
   simp_rw [residueZ_pow]
-  rw [Finset.sum_apply]
+  rw [Fintype.sum_apply]
   simp_rw [AddMonoidAlgebra.coeff_single]
   rw [Finset.card_eq_sum_ones, Nat.cast_sum, Finset.sum_filter]
   apply Finset.sum_congr rfl
