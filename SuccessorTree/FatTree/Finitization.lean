@@ -324,6 +324,19 @@ theorem leFin_lower_finite (Y : FiniteFatTree H) :
   exact hX.2
 
 
+/-- Forward half of A2(2): an infinite fat-tree reduction induces
+finite `≤fin` reductions on every initial segment. -/
+theorem exists_initialSegment_leFin_of_reduces
+    {V U : FatTree H}
+    (hVU : FatTree.Reduces H V U) (n : Nat) :
+    ∃ m : Nat,
+      LeFin H (V.initialSegment H n) (U.initialSegment H m) := by
+  rcases hVU with ⟨w⟩
+  refine ⟨w.index n, ?_⟩
+  constructor
+  · exact ⟨w.initialSegment H n⟩
+  · simpa using w.cut_eq n
+
 /-- A2(3), in prefix form: a finite reduction restricts to every source
 prefix, and the corresponding target prefix ends at the image of that
 terminal cut. -/
