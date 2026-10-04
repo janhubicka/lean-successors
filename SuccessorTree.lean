@@ -57,3 +57,5 @@ import SuccessorTree.NonPrecompact.PrebananaResidueAmbient
 import SuccessorTree.NonPrecompact.FolkmanPersistence
 
 import SuccessorTree.CopyRamsey
+
+import SuccessorTree.NonPrecompact.QuadraticGauss
