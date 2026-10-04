@@ -172,7 +172,15 @@ theorem splice_row_lt
     {i : Nat} (hi : i < x.height) :
     HEq ((splice H x V n hcut).row i)
       (x.row ⟨i, hi⟩) := by
-  simp [splice, hi, castRow_heq]
+  let ix : Fin x.height := ⟨i, hi⟩
+  have hc :
+      x.cut ix = (splice H x V n hcut).cut i := by
+    simpa [ix] using
+      (splice_cut_lt H x V n hcut hi).symm
+  have hcast :
+      HEq (castRow H hc (x.row ix)) (x.row ix) :=
+    castRow_heq H hc (x.row ix)
+  simpa [splice, hi, ix] using hcast
 
 /-- At and after the splice point, rows are the shifted rows of the infinite
 tail. -/
@@ -182,8 +190,16 @@ theorem splice_row_ge
     {i : Nat} (hi : x.height ≤ i) :
     HEq ((splice H x V n hcut).row i)
       (V.row (n + (i - x.height))) := by
+  let q : Nat := n + (i - x.height)
+  have hc :
+      V.cut q = (splice H x V n hcut).cut i := by
+    simpa [q] using
+      (splice_cut_ge H x V n hcut hi).symm
+  have hcast :
+      HEq (castRow H hc (V.row q)) (V.row q) :=
+    castRow_heq H hc (V.row q)
   have hnot : ¬ i < x.height := Nat.not_lt_of_ge hi
-  simp [splice, hnot, castRow_heq]
+  simpa [splice, hnot, q] using hcast
 
 end FatTree
 
