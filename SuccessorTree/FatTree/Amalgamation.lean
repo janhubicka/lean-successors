@@ -135,6 +135,83 @@ theorem canonicalExtension_eq_of_row_heq
   cases huv'
   rfl
 
+/-- Exact stem agreement identifies the canonical row extensions. -/
+theorem rowExtension_eq_of_extendsStem
+    {x : FiniteFatTree H} {W : FatTree H}
+    (h : ExtendsStem H x W)
+    (i : Fin x.height) :
+    W.rowExtension H i.1 = x.rowExtension H i := by
+  unfold FatTree.rowExtension FiniteFatTree.rowExtension
+  exact canonicalExtension_eq_of_row_heq H
+    (h.1 i.castSucc) (h.2 i)
+
+/-- Before the terminal cut, one-step Lift of an infinite tree extending
+`x` agrees with one-step Lift in the finite stem. -/
+theorem oneLift_eq_of_extendsStem
+    {x : FiniteFatTree H} {W : FatTree H}
+    (h : ExtendsStem H x W)
+    (i : Fin x.height) (X : Set T) :
+    W.oneLift H i.1 X = x.oneLift H i X := by
+  unfold FatTree.oneLift FiniteFatTree.oneLift
+  rw [rowExtension_eq_of_extendsStem H h i]
+
+/-- Exact stem agreement gives the identity finite reduction from the stem
+to the corresponding initial segment of the infinite tree. -/
+theorem leFin_initialSegment_of_extendsStem
+    {x : FiniteFatTree H} {W : FatTree H}
+    (h : ExtendsStem H x W) :
+    FiniteFatTree.LeFin H x (W.initialSegment H x.height) := by
+  constructor
+  · refine ⟨{
+      index := fun i => i
+      index_strict := by
+        intro i j hij
+        exact hij
+      cut_eq := ?_
+      lift_subset := ?_
+    }⟩
+    · intro i
+      change x.cut i = W.cut i.1
+      exact (h.1 i).symm
+    · intro i
+      have hcut0 :
+          (W.initialSegment H x.height).cut i.castSucc =
+            x.cut i.castSucc := by
+        change W.cut i.1 = x.cut i.castSucc
+        exact h.1 i.castSucc
+      rw [(W.initialSegment H x.height).liftTo_succ H i
+        (TreeLevel (T := T)
+          ((W.initialSegment H x.height).cut i.castSucc))]
+      rw [W.initialSegment_oneLift H x.height i]
+      rw [hcut0]
+      rw [oneLift_eq_of_extendsStem H h i]
+  · have ht := terminalCut_eq_of_extendsStem H h
+    simpa [FiniteFatTree.initialSegment_terminalCut] using ht.symm
+
+/-- A depth-cone refinement preserves which finite stems occur at
+that depth. -/
+theorem stemAt_of_depthCone
+    {x : FiniteFatTree H} {U V : FatTree H} {n : Nat}
+    (hx : StemAt H x U n)
+    (hV : InDepthCone H n U V) :
+    StemAt H x V n := by
+  unfold StemAt at hx ⊢
+  exact FiniteFatTree.leFin_trans H hx
+    (leFin_initialSegment_of_extendsStem H hV.2)
+
+/-- A member of a basic neighbourhood witnesses that the stem has
+finite depth in the ambient fat tree. -/
+theorem exists_stemAt_of_neighborhood
+    {x : FiniteFatTree H} {U W : FatTree H}
+    (hW : InNeighborhood H x U W) :
+    ∃ n : Nat, StemAt H x U n := by
+  rcases FiniteFatTree.exists_initialSegment_leFin_of_reduces
+      H hW.1 x.height with ⟨n, hn⟩
+  refine ⟨n, ?_⟩
+  unfold StemAt
+  exact FiniteFatTree.leFin_trans H
+    (leFin_initialSegment_of_extendsStem H hW.2) hn
+
 /-- Splice a finite fat tree `x` onto the tail of an infinite fat tree
 `V`, starting the tail at cut `n`.  The compatibility hypothesis is
 exactly equality of the terminal cut of `x` with `V.cut n`. -/
