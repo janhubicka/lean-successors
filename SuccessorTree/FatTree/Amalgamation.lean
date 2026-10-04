@@ -201,6 +201,78 @@ theorem splice_row_ge
   have hnot : ¬ i < x.height := Nat.not_lt_of_ge hi
   simpa [splice, hnot, q] using hcast
 
+/-- Cut-index map for the reduction from a splice to its ambient tail.
+Before the splice it follows the finite reduction witness; from the splice
+cut onward it is the shifted identity on the tail. -/
+def spliceIndex
+    {x : FiniteFatTree H} {V : FatTree H} {n : Nat}
+    (w : FiniteFatTree.ReductionWitness H x (V.initialSegment H n)) :
+    Nat → Nat :=
+  fun i =>
+    if hi : i < x.height then
+      (w.index (⟨i, by omega⟩ : Fin (x.height + 1))).1
+    else
+      n + (i - x.height)
+
+/-- The splice-index map is strictly increasing when the finite witness
+preserves the common terminal cut. -/
+theorem spliceIndex_strict
+    {x : FiniteFatTree H} {V : FatTree H} {n : Nat}
+    (w : FiniteFatTree.ReductionWitness H x (V.initialSegment H n))
+    (hterm : x.terminalCut = (V.initialSegment H n).terminalCut) :
+    StrictMono (spliceIndex H w) := by
+  have hlast :=
+    w.index_last_eq_last H hterm
+  apply strictMono_nat_of_lt_succ
+  intro i
+  by_cases hi : i < x.height
+  · by_cases hnext : i + 1 < x.height
+    · let a : Fin (x.height + 1) := ⟨i, by omega⟩
+      let b : Fin (x.height + 1) := ⟨i + 1, by omega⟩
+      have hab : a < b := by
+        exact Fin.lt_def.mpr (by
+          change i < i + 1
+          omega)
+      have hw := w.index_strict hab
+      change (w.index a).1 < (w.index b).1 at hw
+      simpa [spliceIndex, hi, hnext, a, b] using hw
+    · have heq : i + 1 = x.height := by omega
+      let a : Fin (x.height + 1) := ⟨i, by omega⟩
+      have halast : a < Fin.last x.height := by
+        exact Fin.lt_def.mpr (by
+          change i < x.height
+          exact hi)
+      have hw := w.index_strict halast
+      have hwval :
+          (w.index a).1 < n := by
+        rw [hlast] at hw
+        exact hw
+      simpa [spliceIndex, hi, hnext, heq, a] using hwval
+  · have hge : x.height ≤ i := Nat.le_of_not_gt hi
+    have hnext : ¬ i + 1 < x.height := by omega
+    simp [spliceIndex, hi, hnext]
+    omega
+
+/-- The splice-index map sends every splice cut to the corresponding cut of
+the ambient tail. -/
+theorem splice_cut_eq_index
+    {x : FiniteFatTree H} {V : FatTree H} {n : Nat}
+    (hcut : x.terminalCut = V.cut n)
+    (w : FiniteFatTree.ReductionWitness H x (V.initialSegment H n))
+    (i : Nat) :
+    (splice H x V n hcut).cut i =
+      V.cut (spliceIndex H w i) := by
+  by_cases hi : i < x.height
+  · let a : Fin (x.height + 1) := ⟨i, by omega⟩
+    have hw := w.cut_eq a
+    change
+      x.cut a =
+        V.cut (w.index a).1 at hw
+    simpa [spliceIndex, hi, a] using hw
+  · have hge : x.height ≤ i := Nat.le_of_not_gt hi
+    rw [splice_cut_ge H x V n hcut hge]
+    simp [spliceIndex, hi]
+
 end FatTree
 
 end SMTree
