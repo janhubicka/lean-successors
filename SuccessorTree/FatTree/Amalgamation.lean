@@ -46,6 +46,38 @@ def InDepthCone (n : Nat) (U V : FatTree H) : Prop :=
   FatTree.Reduces H V U ∧
     V.initialSegment H n = U.initialSegment H n
 
+/-- Literal stem extension identifies every cut through the terminal
+cut of the finite stem. -/
+theorem cut_eq_of_extendsStem
+    {x : FiniteFatTree H} {W : FatTree H}
+    (h : ExtendsStem H x W)
+    (i : Fin (x.height + 1)) :
+    W.cut i.1 = x.cut i := by
+  have hc := congrArg
+    (fun y : FiniteFatTree H => y.cut i) h
+  simpa [ExtendsStem] using hc
+
+/-- In particular, literal stem extension identifies the terminal cut. -/
+theorem terminalCut_eq_of_extendsStem
+    {x : FiniteFatTree H} {W : FatTree H}
+    (h : ExtendsStem H x W) :
+    W.cut x.height = x.terminalCut := by
+  have hc := congrArg FiniteFatTree.terminalCut h
+  simpa [ExtendsStem, FatTree.initialSegment_terminalCut] using hc
+
+/-- Before the terminal cut, one-step Lift of an infinite tree extending
+`x` agrees with one-step Lift in the finite stem. -/
+theorem oneLift_eq_of_extendsStem
+    {x : FiniteFatTree H} {W : FatTree H}
+    (h : ExtendsStem H x W)
+    (i : Fin x.height) (X : Set T) :
+    W.oneLift H i.1 X = x.oneLift H i X := by
+  have hi :=
+    W.initialSegment_oneLift H x.height i X
+  unfold ExtendsStem at h
+  rw [h] at hi
+  exact hi.symm
+
 /-- A stem occurring at cut `n` has terminal cut exactly `U.cut n`. -/
 theorem terminalCut_eq_of_stemAt
     {x : FiniteFatTree H} {U : FatTree H} {n : Nat}
