@@ -834,6 +834,40 @@ theorem ExactTrace.exists_raw_predecessor
   · exact hthetaZ.symm
 
 
+/-- Exact finite-prefix trace update, in the bidirectional manuscript form.
+
+An admissible row is an exact trace through `y ⌢ h` iff it is obtained from
+some exact trace through `y` by a raw successor-table update followed by
+the canonical appended row.  This is the formal equality
+`Q_{y⌢h} = Q_y[h]`. -/
+theorem isExactTrace_appendRow_iff
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height)
+    (theta : AM H
+      (traceSourceCut H (appendRow H y h) n (by
+        rw [appendRow_height]
+        omega)) 1) :
+    IsExactTrace H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega) theta ↔
+      ∃ q : ExactTrace H y n hn,
+        IsRawTraceCandidate H y h n hn q theta := by
+  constructor
+  · intro htheta
+    let Theta : ExactTrace H (appendRow H y h) n (by
+        rw [appendRow_height]
+        omega) :=
+      ⟨theta, htheta⟩
+    obtain ⟨q, hupdate⟩ :=
+      Theta.exists_raw_predecessor H y h n hn
+    refine ⟨q, htheta.1, ?_⟩
+    intro a ha
+    exact hupdate a ha
+  · rintro ⟨q, hraw⟩
+    exact isExactTrace_of_raw_candidate H y h n hn q theta hraw
+
+
 end FiniteFatTree
 
 end SMTree
