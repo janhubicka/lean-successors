@@ -30,7 +30,8 @@ theorem odd_of_gauss_congruence
     dsimp [s]
     simpa using hneg.pow d
   have hsM : s * (M : ℤ) ≡ (M : ℤ) [ZMOD 2] := by
-    exact hs.mul Int.ModEq.rfl
+    simpa using
+      hs.mul (Int.ModEq.rfl : (M : ℤ) ≡ (M : ℤ) [ZMOD 2])
 
   have hfactor :
       (-2 : ℤ) ^ d * (M : ℤ) = c * (s * (M : ℤ)) := by
