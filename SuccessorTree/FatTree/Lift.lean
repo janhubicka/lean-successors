@@ -546,10 +546,9 @@ noncomputable def liftTo (U : FiniteFatTree H)
     (a : Fin (U.height + 1)) (X : Set T) :
     U.liftTo H a a le_rfl X = X := by
   unfold liftTo
-  have hzero :
-      U.liftSteps H a.1 0 (by omega) X = X :=
-    U.liftSteps_zero H a.1 (by omega) X
-  convert hzero using 1 <;> simp
+  have hdiff : a.1 - a.1 = 0 := Nat.sub_self a.1
+  cases hdiff
+  rfl
 
 /-- Crossing adjacent finite cut indices is exactly one row lift. -/
 theorem liftTo_succ (U : FiniteFatTree H)
@@ -560,15 +559,15 @@ theorem liftTo_succ (U : FiniteFatTree H)
           omega) X =
       U.oneLift H i X := by
   unfold liftTo
-  have hone :
-      U.liftSteps H i.1 1 (by omega) X =
-        U.oneLift H i X := by
-    change
-      U.oneLift H
-        (⟨i.1, by omega⟩ : Fin U.height) X =
-        U.oneLift H i X
-    congr
-  convert hone using 1 <;> simp
+  have hdiff : i.succ.1 - i.castSucc.1 = 1 := by
+    change i.1 + 1 - i.1 = 1
+    omega
+  cases hdiff
+  change
+    U.oneLift H
+      (⟨i.1, by omega⟩ : Fin U.height) X =
+      U.oneLift H i X
+  congr
 
 end FiniteFatTree
 
