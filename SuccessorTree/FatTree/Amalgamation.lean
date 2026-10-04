@@ -351,6 +351,82 @@ theorem splice_cut_eq_index
     rw [splice_cut_ge H x V n hcut hge]
     simp [spliceIndex, hi]
 
+/-- Before the splice point, the next splice index agrees with the
+next index of the finite reduction witness, including the boundary row. -/
+theorem spliceIndex_succ_eq_of_lt
+    {x : FiniteFatTree H} {V : FatTree H} {n : Nat}
+    (w : FiniteFatTree.ReductionWitness H x (V.initialSegment H n))
+    (hterm : x.terminalCut = (V.initialSegment H n).terminalCut)
+    {i : Nat} (hi : i < x.height) :
+    spliceIndex H w (i + 1) =
+      (w.index ((⟨i, hi⟩ : Fin x.height).succ)).1 := by
+  let ix : Fin x.height := ⟨i, hi⟩
+  by_cases hnext : i + 1 < x.height
+  · have hidx :
+        (⟨i + 1, by omega⟩ : Fin (x.height + 1)) =
+          ix.succ := Fin.ext rfl
+    simp [spliceIndex, hnext, ix, hidx]
+  · have heq : i + 1 = x.height := by omega
+    have hixlast : ix.succ = Fin.last x.height := by
+      apply Fin.ext
+      exact heq
+    have hlast := w.index_last_eq_last H hterm
+    have hval : (w.index ix.succ).1 = n := by
+      rw [hixlast, hlast]
+      rfl
+    simpa [spliceIndex, hnext, heq] using hval.symm
+
+/-- Splicing a finite stem occurring at cut `n` onto the tail of `V`
+produces an infinite fat subtree of `V`.  This is the structural
+concatenation lemma used in A3(1). -/
+theorem splice_reduces
+    {x : FiniteFatTree H} {V : FatTree H} {n : Nat}
+    (hstem : StemAt H x V n) :
+    FatTree.Reduces H
+      (splice H x V n (terminalCut_eq_of_stemAt H hstem)) V := by
+  let hcut : x.terminalCut = V.cut n :=
+    terminalCut_eq_of_stemAt H hstem
+  rcases hstem.1 with ⟨w⟩
+  have hterm :
+      x.terminalCut = (V.initialSegment H n).terminalCut := hstem.2
+  have hstrict : StrictMono (spliceIndex H w) :=
+    spliceIndex_strict H w hterm
+  refine ⟨{
+    index := spliceIndex H w
+    index_strict := hstrict
+    cut_eq := splice_cut_eq_index H hcut w
+    lift_subset := ?_
+  }⟩
+  intro i
+  by_cases hi : i < x.height
+  · let ix : Fin x.height := ⟨i, hi⟩
+    have hw := w.lift_subset ix
+    rw [V.initialSegment_liftTo H n] at hw
+    rw [V.initialSegment_cut H n (w.index ix.castSucc)] at hw
+    have h0 :
+        spliceIndex H w i = (w.index ix.castSucc).1 := by
+      simp [spliceIndex, hi, ix]
+    have h1 :
+        spliceIndex H w (i + 1) = (w.index ix.succ).1 :=
+      spliceIndex_succ_eq_of_lt H w hterm hi
+    rw [splice_oneLift_lt H x V n hcut hi]
+    rw [splice_cut_lt H x V n hcut hi]
+    simpa [ix, h0, h1] using hw
+  · have hge : x.height ≤ i := Nat.le_of_not_gt hi
+    have hge1 : x.height ≤ i + 1 := by omega
+    let q : Nat := n + (i - x.height)
+    have h0 : spliceIndex H w i = q := by
+      simp [spliceIndex, hi, q]
+    have hnot1 : ¬ i + 1 < x.height := Nat.not_lt_of_ge hge1
+    have h1 : spliceIndex H w (i + 1) = q + 1 := by
+      simp [spliceIndex, hnot1, q]
+      omega
+    rw [splice_oneLift_ge H x V n hcut hge]
+    rw [splice_cut_ge H x V n hcut hge]
+    rw [h0, h1]
+    rw [V.liftTo_succ H q
+      (TreeLevel (T := T) (V.cut q))]
+
 end FatTree
 
 end SMTree
