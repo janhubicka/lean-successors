@@ -61,3 +61,5 @@ import SuccessorTree.CopyRamsey
 import SuccessorTree.NonPrecompact.QuadraticGauss
 
 import SuccessorTree.NonPrecompact.QuadraticMoments
+
+import SuccessorTree.NonPrecompact.QuadraticArithmetic
