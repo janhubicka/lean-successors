@@ -1063,6 +1063,61 @@ theorem a3_one_nonempty
   · unfold ExtendsStem W
     exact splice_initialSegment H x V n hcut
 
+/-- Todorčević A3(2) for the fat-tree space.
+
+If `V ≤ U` and `[x,V]` is nonempty, there is a refinement `U'` which
+keeps the prefix of `U` through the depth of `x`, has nonempty
+`[x,U']`, and whose `x`-neighbourhood is contained in `[x,V]`. -/
+theorem a3_two_amalgamation
+    {x : FiniteFatTree H} {V U : FatTree H}
+    (hVU : FatTree.Reduces H V U)
+    (hne : ∃ W : FatTree H, InNeighborhood H x V W) :
+    ∃ (m : Nat) (U' : FatTree H),
+      StemAt H x U m ∧
+      InDepthCone H m U U' ∧
+      (∃ W : FatTree H, InNeighborhood H x U' W) ∧
+      (∀ W : FatTree H,
+        InNeighborhood H x U' W →
+          InNeighborhood H x V W) := by
+  rcases hne with ⟨W₀, hW₀⟩
+  rcases exists_stemAt_of_neighborhood H hW₀ with
+    ⟨n, hxV⟩
+  rcases exists_stemAt_of_reduces H hxV hVU with
+    ⟨m, hxU⟩
+  have hcut : V.cut n = U.cut m := by
+    calc
+      V.cut n = x.terminalCut :=
+        (terminalCut_eq_of_stemAt H hxV).symm
+      _ = U.cut m :=
+        terminalCut_eq_of_stemAt H hxU
+  let p : FiniteFatTree H := U.initialSegment H m
+  have hpV : p.terminalCut = V.cut n := by
+    dsimp [p]
+    simpa using hcut.symm
+  let U' : FatTree H := splice H p V n hpV
+  have hU'reduces : FatTree.Reduces H U' U := by
+    dsimp [U']
+    exact splice_prefix_tail_reduces H hVU hcut
+  have hU'prefix :
+      U'.initialSegment H m = U.initialSegment H m := by
+    have hs := splice_initialSegment H p V n hpV
+    dsimp [U', p] at hs ⊢
+    simpa using hs
+  have hdepth : InDepthCone H m U U' :=
+    ⟨hU'reduces, hU'prefix⟩
+  have hnonempty :
+      ∃ W : FatTree H, InNeighborhood H x U' W :=
+    a3_one_nonempty H hxU hdepth
+  refine ⟨m, U', hxU, hdepth, hnonempty, ?_⟩
+  intro W hWU'
+  have hxp : x.terminalCut = p.terminalCut := by
+    exact hxU.2
+  have hWV : FatTree.Reduces H W V := by
+    dsimp [U'] at hWU'
+    exact neighborhood_reduces_attached_tail H
+      hpV hxV hxp hWU'
+  exact ⟨hWV, hWU'.2⟩
+
 end FatTree
 
 end SMTree
