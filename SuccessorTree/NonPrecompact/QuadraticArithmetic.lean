@@ -3,6 +3,9 @@ import Mathlib
 /-!
 # Integer arithmetic for the quadratic Gauss sum
 
+This file intentionally uses the standard Mathlib import so the ordinary
+integer ring and power lemmas are available to the standalone utility proof.
+
 A small arithmetic step from the symplectic quadratic-residue proof:
 an integer whose square is 2^(2d) is ±2^d.
 -/
