@@ -116,7 +116,8 @@ theorem f2Sign_quadratic_pair
   rw [← f2Sign_add, ← f2Sign_add]
   congr 1
   rw [← hpolar z w]
-  have htwo : (2 : F2) = 0 := by norm_num
+  have htwo : (2 : F2) = 0 := by
+    exact ZMod.natCast_self 2
   simp [htwo]
 
 /-- Translation of the second variable in the squared Gauss sum. -/
