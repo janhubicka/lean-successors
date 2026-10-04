@@ -125,6 +125,43 @@ noncomputable instance exactFanProfileFintype
     exactTraceFintype H y n hn
   exact fanProfileFintype H (fun q : FiniteFatTree.ExactTrace H y n hn => q.1)
 
+/-- Starred Hales--Jewett simultaneously homogenizes every coordinate
+of a finite profile.  This is the pure finite combinatorial core of the
+manuscript's good-pair argument. -/
+theorem finiteProfileStarHJ
+    {α : Type*} {C : Type*} {κ : Type*}
+    [Fintype α] [Fintype C] [Fintype κ]
+    (colour : List α → C → κ) :
+    ∃ L : StarLine α,
+      ∀ a : α, ∀ i : C,
+        colour (L.eval a) i = colour L.star i := by
+  classical
+  letI : Fintype (C → κ) := Pi.fintype
+  obtain ⟨L, hL⟩ :=
+    HalesJewett.starHJ_finite
+      (α := α) (κ := C → κ) colour
+  refine ⟨L, ?_⟩
+  intro a i
+  exact congrFun (hL a) i
+
+/-- In particular, a word-colouring by the complete exact-trace fan profile
+has a line on which the entire profile is constant. -/
+theorem exactFanProfileStarHJ
+    {α : Type*} [Fintype α]
+    (y : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ y.height)
+    (colour : List α → ExactFanProfile H y n hn) :
+    ∃ L : StarLine α,
+      ∀ a : α,
+        colour (L.eval a) = colour L.star := by
+  classical
+  letI := exactTraceFintype H y n hn
+  letI := exactFanProfileFintype H y n hn
+  exact HalesJewett.starHJ_finite
+    (α := α)
+    (κ := ExactFanProfile H y n hn)
+    colour
+
 /-- An exact finite-prefix trace is an exact one-moving word from
 its source cut to the terminal cut of the prefix. -/
 def exactTraceToAMExact
