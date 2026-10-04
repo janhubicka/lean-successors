@@ -99,7 +99,7 @@ noncomputable instance boundedRowFintype (d : Nat) :
   letI fibers :
       ∀ n : Fin d, Fintype {a : AM H n.1 1 // a.rowEndLevel H < d} :=
     fun n => boundedRowFiberFintype H n.1 d
-  infer_instance
+  exact Sigma.instFintype
 
 /-- The manuscript's finitary order on finite fat trees: reduction with the
 same terminal ambient cut. -/
