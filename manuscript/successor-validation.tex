@@ -78,5 +78,14 @@
     \leanpartial{#1}{#2}%
   \endgroup
 }
+% Fat-tree A4 one-row bridge snapshot. Actions run 37190600176 checked
+% the append-one-row/prefix bridge separately; full all-trace A4 is unfinished.
+\newcommand{\successorfatafourpartial}[2]{%
+  \begingroup
+    \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+    \renewcommand{\leancommit}{19b88d7116716891bdef58d9c927d6399745c039}%
+    \leanpartial{#1}{#2}%
+  \endgroup
+}
 % All new inline review notes are enclosed by \ifshowvalidation ... \fi.
 % Use \showvalidationfalse after loading this overlay for a circulation copy.
