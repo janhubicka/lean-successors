@@ -79,21 +79,27 @@ def initialSegment
   let m : Nat := (w.index vn).1
   have hm : m ≤ U.height :=
     Nat.le_of_lt_succ (w.index vn).2
-  let src : Fin (n + 1) → Fin (V.height + 1) :=
-    fun i =>
-      ⟨i.1, Nat.lt_succ_of_le
-        ((Nat.le_of_lt_succ i.2).trans hn)⟩
-  let idx : Fin (n + 1) → Fin (m + 1) :=
-    fun i =>
-      ⟨(w.index (src i)).1,
-        Nat.lt_succ_of_le
-          (w.index_strict.monotone (by
-            change i.1 ≤ n
-            exact Nat.le_of_lt_succ i.2))⟩
-  change
-    ReductionWitness H
-      (V.initialSegment H n hn)
-      (U.initialSegment H m hm)
+  let VS : FiniteFatTree H := V.initialSegment H n hn
+  let US : FiniteFatTree H := U.initialSegment H m hm
+  let src : Fin (VS.height + 1) → Fin (V.height + 1) :=
+    fun i => by
+      have hi : i.1 ≤ n := by
+        have hi0 := Nat.le_of_lt_succ i.2
+        change i.1 ≤ n at hi0
+        exact hi0
+      exact ⟨i.1, Nat.lt_succ_of_le (hi.trans hn)⟩
+  let idx : Fin (VS.height + 1) → Fin (US.height + 1) :=
+    fun i => by
+      have hi : src i ≤ vn := by
+        change i.1 ≤ n
+        have hi0 := Nat.le_of_lt_succ i.2
+        change i.1 ≤ n at hi0
+        exact hi0
+      refine ⟨(w.index (src i)).1, ?_⟩
+      change (w.index (src i)).1 < m + 1
+      exact Nat.lt_succ_of_le
+        (w.index_strict.monotone hi)
+  change ReductionWitness H VS US
   refine {
     index := idx
     index_strict := ?_
@@ -106,21 +112,40 @@ def initialSegment
       change i.1 < j.1
       exact hij)
   · intro i
+    dsimp [VS, US]
     rw [V.initialSegment_cut_dep H n hn i]
     rw [U.initialSegment_cut_dep H m hm (idx i)]
-    simpa [src, idx] using w.cut_eq (src i)
+    simpa [src, idx, vn, m] using w.cut_eq (src i)
   · intro i
-    let iv : Fin V.height :=
-      ⟨i.1, by
-        have hi : i.1 < n := by
-          simpa using i.2
-        exact lt_of_lt_of_le hi hn⟩
+    let iv : Fin V.height := by
+      have hi : i.1 < n := by
+        have hi0 := i.2
+        change i.1 < n at hi0
+        exact hi0
+      exact ⟨i.1, lt_of_lt_of_le hi hn⟩
     have h := w.lift_subset iv
+    change
+      VS.oneLift H i
+          (TreeLevel (T := T) (VS.cut i.castSucc)) ⊆
+        US.liftTo H (idx i.castSucc) (idx i.succ)
+          (le_of_lt (by
+            exact (show StrictMono idx from by
+              intro a b hab
+              change (w.index (src a)).1 < (w.index (src b)).1
+              exact w.index_strict (by
+                change a.1 < b.1
+                exact hab))
+              (by
+                change i.1 < i.1 + 1
+                omega)))
+          (TreeLevel (T := T) (US.cut (idx i.castSucc)))
+    rw [show VS = V.initialSegment H n hn by rfl]
     rw [V.initialSegment_oneLift H n hn i]
     rw [V.initialSegment_cut_dep H n hn i.castSucc]
+    rw [show US = U.initialSegment H m hm by rfl]
     rw [U.initialSegment_liftTo H m hm]
     rw [U.initialSegment_cut_dep H m hm (idx i.castSucc)]
-    simpa [src, idx, iv, vn, m] using h
+    simpa [src, idx, iv, vn, m, VS, US] using h
 
 /-- Iterate the one-block inclusions of a finite reduction witness.
 
