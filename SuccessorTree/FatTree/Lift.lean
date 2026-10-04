@@ -774,6 +774,18 @@ noncomputable def liftTo (U : FiniteFatTree H)
     (X : Set T) : Set T :=
   U.liftSteps H a.1 (b.1 - a.1) (by omega) X
 
+/-- Endpoint equality transports a finite lift.  This packages the
+proof-irrelevance bookkeeping for the dependent interval bound. -/
+theorem liftTo_congr (U : FiniteFatTree H)
+    {a b a' b' : Fin (U.height + 1)}
+    (hab : a ≤ b) (hab' : a' ≤ b')
+    (ha : a = a') (hb : b = b')
+    (X : Set T) :
+    U.liftTo H a b hab X = U.liftTo H a' b' hab' X := by
+  subst a'
+  subst b'
+  rfl
+
 @[simp] theorem liftTo_same (U : FiniteFatTree H)
     (a : Fin (U.height + 1)) (X : Set T) :
     U.liftTo H a a le_rfl X = X := by
