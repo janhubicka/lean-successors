@@ -37,25 +37,25 @@ open SuccessorTree
 #print axioms SMTree.FatTree.oneLift_mem_of_mem_full_of_source
 #print axioms SMTree.FatTree.liftSteps_mem_of_mem_of_source
 
-#check SMTree.FatTree.ReductionWitness
-#check SMTree.FatTree.ReductionWitness.index_zero
-#check SMTree.FatTree.ReductionWitness.liftSteps_subset_liftTo
-#check SMTree.FatTree.ReductionWitness.liftTo_subset_liftTo
-#check SMTree.FatTree.ReductionWitness.trans
-#check SMTree.FatTree.reduces_refl
-#check SMTree.FatTree.reduces_trans
+#check @SMTree.FatTree.ReductionWitness
+#check @SMTree.FatTree.ReductionWitness.index_zero
+#check @SMTree.FatTree.ReductionWitness.liftSteps_subset_liftTo
+#check @SMTree.FatTree.ReductionWitness.liftTo_subset_liftTo
+#check @SMTree.FatTree.ReductionWitness.trans
+#check @SMTree.FatTree.reduces_refl
+#check @SMTree.FatTree.reduces_trans
 #print axioms SMTree.FatTree.ReductionWitness.index_zero
 
 #print axioms SMTree.FatTree.ReductionWitness.trans
 #print axioms SMTree.FatTree.reduces_trans
 
-#check SMTree.FiniteFatTree.ReductionWitness
-#check SMTree.FiniteFatTree.ReductionWitness.refl
-#check SMTree.FiniteFatTree.reduces_refl
-#check SMTree.FiniteFatTree.ReductionWitness.liftSteps_subset_liftTo
-#check SMTree.FiniteFatTree.ReductionWitness.liftTo_subset_liftTo
-#check SMTree.FiniteFatTree.ReductionWitness.trans
-#check SMTree.FiniteFatTree.reduces_trans
+#check @SMTree.FiniteFatTree.ReductionWitness
+#check @SMTree.FiniteFatTree.ReductionWitness.refl
+#check @SMTree.FiniteFatTree.reduces_refl
+#check @SMTree.FiniteFatTree.ReductionWitness.liftSteps_subset_liftTo
+#check @SMTree.FiniteFatTree.ReductionWitness.liftTo_subset_liftTo
+#check @SMTree.FiniteFatTree.ReductionWitness.trans
+#check @SMTree.FiniteFatTree.reduces_trans
 #print axioms SMTree.FiniteFatTree.ReductionWitness.trans
 #print axioms SMTree.FiniteFatTree.reduces_trans
 
