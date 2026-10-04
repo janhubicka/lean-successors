@@ -425,9 +425,14 @@ variable (H : SMTree S)
 
 /-- Row extensions commute with taking a finite prefix. -/
 theorem initialSegment_rowExtension (U : FiniteFatTree H)
-    (n : Nat) (hn : n ≤ U.height) (i : Fin n) :
+    (n : Nat) (hn : n ≤ U.height)
+    (i : Fin (U.initialSegment H n hn).height) :
     (U.initialSegment H n hn).rowExtension H i =
-      U.rowExtension H (⟨i.1, by omega⟩ : Fin U.height) := by
+      U.rowExtension H
+        (⟨i.1, by
+          have hi : i.1 < n := by
+            simpa using i.2
+          exact lt_of_lt_of_le hi hn⟩ : Fin U.height) := by
   rfl
 
 /-- A canonical finite row extension fixes everything below its source cut. -/
@@ -458,9 +463,14 @@ noncomputable def oneLift (U : FiniteFatTree H)
 /-- One-step lift is unchanged when computed inside a prefix that
 still contains the selected row. -/
 theorem initialSegment_oneLift (U : FiniteFatTree H)
-    (n : Nat) (hn : n ≤ U.height) (i : Fin n) (X : Set T) :
+    (n : Nat) (hn : n ≤ U.height)
+    (i : Fin (U.initialSegment H n hn).height) (X : Set T) :
     (U.initialSegment H n hn).oneLift H i X =
-      U.oneLift H (⟨i.1, by omega⟩ : Fin U.height) X := by
+      U.oneLift H
+        (⟨i.1, by
+          have hi : i.1 < n := by
+            simpa using i.2
+          exact lt_of_lt_of_le hi hn⟩ : Fin U.height) X := by
   unfold oneLift
   rw [U.initialSegment_rowExtension H n hn i]
 
@@ -835,18 +845,28 @@ noncomputable def liftTo (U : FiniteFatTree H)
 /-- Finite interval lifts commute with taking an initial segment. -/
 theorem initialSegment_liftTo (U : FiniteFatTree H)
     (n : Nat) (hn : n ≤ U.height)
-    (a b : Fin (n + 1)) (hab : a ≤ b) (X : Set T) :
+    (a b : Fin ((U.initialSegment H n hn).height + 1))
+    (hab : a ≤ b) (X : Set T) :
     (U.initialSegment H n hn).liftTo H a b hab X =
       U.liftTo H
-        (⟨a.1, by omega⟩ : Fin (U.height + 1))
-        (⟨b.1, by omega⟩ : Fin (U.height + 1))
+        (⟨a.1, by
+          have ha : a.1 ≤ n := by
+            simpa using Nat.le_of_lt_succ a.2
+          omega⟩ : Fin (U.height + 1))
+        (⟨b.1, by
+          have hb : b.1 ≤ n := by
+            simpa using Nat.le_of_lt_succ b.2
+          omega⟩ : Fin (U.height + 1))
         (by
           change a.1 ≤ b.1
           exact hab)
         X := by
   unfold liftTo
   exact U.initialSegment_liftSteps H n hn a.1 (b.1 - a.1)
-    (by omega) X
+    (by
+      have hb : b.1 ≤ n := by
+        simpa using Nat.le_of_lt_succ b.2
+      omega) X
 
 /-- Endpoint equality transports a finite lift.  This packages the
 proof-irrelevance bookkeeping for the dependent interval bound. -/
@@ -1010,7 +1030,7 @@ variable (H : SMTree S)
 /-- Canonical row extension agrees whether an infinite fat tree is viewed
 directly or through a finite initial segment containing the row. -/
 theorem initialSegment_rowExtension (U : FatTree H)
-    (n : Nat) (i : Fin n) :
+    (n : Nat) (i : Fin (U.initialSegment H n).height) :
     (U.initialSegment H n).rowExtension H i =
       U.rowExtension H i.1 := by
   rfl
@@ -1018,7 +1038,7 @@ theorem initialSegment_rowExtension (U : FatTree H)
 /-- One-step Lift agrees with the ambient infinite fat tree on an initial
 segment. -/
 theorem initialSegment_oneLift (U : FatTree H)
-    (n : Nat) (i : Fin n) (X : Set T) :
+    (n : Nat) (i : Fin (U.initialSegment H n).height) (X : Set T) :
     (U.initialSegment H n).oneLift H i X =
       U.oneLift H i.1 X := by
   unfold FiniteFatTree.oneLift FatTree.oneLift
@@ -1064,15 +1084,19 @@ theorem initialSegment_liftSteps (U : FatTree H)
 /-- Interval Lift on a finite initial segment agrees with interval Lift in
 the ambient infinite fat tree. -/
 theorem initialSegment_liftTo (U : FatTree H)
-    (n : Nat) (a b : Fin (n + 1)) (hab : a ≤ b)
-    (X : Set T) :
+    (n : Nat)
+    (a b : Fin ((U.initialSegment H n).height + 1))
+    (hab : a ≤ b) (X : Set T) :
     (U.initialSegment H n).liftTo H a b hab X =
       U.liftTo H a.1 b.1 (by
         change a.1 ≤ b.1
         exact hab) X := by
   unfold FiniteFatTree.liftTo FatTree.liftTo
   exact U.initialSegment_liftSteps H n a.1 (b.1 - a.1)
-    (by omega) X
+    (by
+      have hb : b.1 ≤ n := by
+        simpa using Nat.le_of_lt_succ b.2
+      omega) X
 
 end FatTree
 
