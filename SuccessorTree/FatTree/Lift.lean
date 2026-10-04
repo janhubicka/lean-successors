@@ -343,6 +343,21 @@ noncomputable def liftTo (U : FatTree H)
     (i k : Nat) (hik : i ≤ k) (X : Set T) : Set T :=
   U.liftSteps H i (k - i) X
 
+/-- Equality of interval endpoints transports an infinite Lift,
+including the canonical full source level.  This packages proof-irrelevance
+bookkeeping for reduction witnesses. -/
+theorem liftTo_level_congr (U : FatTree H)
+    {i k i' k' : Nat}
+    (hik : i ≤ k) (hik' : i' ≤ k')
+    (hi : i = i') (hk : k = k') :
+    U.liftTo H i k hik
+        (TreeLevel (T := T) (U.cut i)) =
+      U.liftTo H i' k' hik'
+        (TreeLevel (T := T) (U.cut i')) := by
+  subst i'
+  subst k'
+  rfl
+
 /-- Lifting across exactly one fat-tree row is the one-step lift. -/
 theorem liftTo_succ (U : FatTree H) (i : Nat) (X : Set T) :
     U.liftTo H i (i + 1) (by omega) X = U.oneLift H i X := by
