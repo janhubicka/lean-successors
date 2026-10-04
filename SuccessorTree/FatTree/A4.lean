@@ -164,6 +164,36 @@ theorem appendRow_row_last
   have hcast := FatTree.castRow_heq H hc g
   simpa [appendRow] using hcast
 
+/-- The canonical extension of the appended last row is literally the
+canonical extension of the row that was appended. -/
+theorem appendRow_rowExtension_last
+    (x : FiniteFatTree H)
+    (g : AM H x.terminalCut 1) :
+    (appendRow H x g).rowExtension H (Fin.last x.height) =
+      H.canonicalExtension (g.representative H) x.terminalCut := by
+  have hcut :
+      (appendRow H x g).cut (Fin.last x.height).castSucc =
+        x.terminalCut := by
+    simpa [FiniteFatTree.terminalCut] using
+      appendRow_cut_old H x g (Fin.last x.height)
+  have hrow :
+      HEq ((appendRow H x g).row (Fin.last x.height)) g :=
+    appendRow_row_last H x g
+  unfold FiniteFatTree.rowExtension
+  exact FatTree.canonicalExtension_eq_of_row_heq H hcut hrow
+
+/-- The last one-step Lift after appending g is therefore the image of
+the successor fan under the canonical extension g-plus. -/
+theorem appendRow_oneLift_last
+    (x : FiniteFatTree H)
+    (g : AM H x.terminalCut 1)
+    (X : Set T) :
+    (appendRow H x g).oneLift H (Fin.last x.height) X =
+      H.canonicalExtension (g.representative H) x.terminalCut ''
+        ImmediateSuccessors (T := T) X := by
+  unfold FiniteFatTree.oneLift
+  rw [appendRow_rowExtension_last H x g]
+
 /-- Appending a row literally preserves the original finite prefix. -/
 theorem appendRow_initialSegment
     (x : FiniteFatTree H)
