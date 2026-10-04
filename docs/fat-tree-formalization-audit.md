@@ -124,11 +124,21 @@ clauses, using only the standard Lean axioms and no `sorryAx`.
 
 ## A.4 status
 
-A.4 is the remaining fat-tree Ramsey-space axiom.  Its formalization has
-started with the concrete one-row finite-extension bridge; the full all-trace
-persistence/fusion argument is not yet green and must not be marked verified.
-The manuscript's distinction between canonical composites and arbitrary
-geometric one-block reductions remains essential here.
+A.4 is the remaining fat-tree Ramsey-space axiom.  The finite bridge and
+complete finite-prefix trace update are now checked.  Exact trace families are
+finite; appending one row satisfies the exact Lift recursion; raw successor
+tables yield exact appended traces; and the converse direction is obtained by
+shape-splitting an arbitrary exact appended trace back to the old terminal
+cut.  Thus the manuscript identity Q_{y⌢h}=Q_y[h] is now formalized in both
+directions without assuming an admissible extension of the raw table.
+
+Actions run 37197761609 checked eight A4 bridge/trace reports using only
+propext, Classical.choice and Quot.sound, with no sorryAx.
+
+The remaining A4 work is the simultaneous finite successor-fan profile
+stabilisation, persistence of large trace families, and the final all-trace
+fusion covering every geometric one-block reduction.  Until those are green,
+A4 itself remains partial.
 
 ## EA boundary
 
