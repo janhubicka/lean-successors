@@ -192,6 +192,239 @@ theorem exists_lower_moving_level_once
       hDG x (by omega)
     simpa [hcompX] using hle
 
+namespace MMap
+
+/-- If an admissible map fixes all levels strictly below `n`, then a node
+on level `n` lies below its image. -/
+theorem le_apply_at_cut
+    (H : SMTree S) (F : MMap H) (n : Nat)
+    (hF : F.FixesBelow H n)
+    {x : T} (hx : LevelTree.lev x = n) :
+    x ≤ F x :=
+  mmap_le_apply_of_fixesBelow H F hF hx
+
+end MMap
+
+/-- The admissible target cuts in Proposition `prop:shape-split`.
+
+For source level zero every target between zero and the current top is
+allowed.  Above zero the cut must lie strictly above the image of the
+preceding source level. -/
+def SplitCut (H : SMTree S) (F : MMap H) (n m : Nat) : Prop :=
+  m ≤ H.levelMap F.map n ∧
+    match n with
+    | 0 => True
+    | k + 1 => H.levelMap F.map k < m
+
+private theorem exists_lower_root_once_factor
+    (H : SMTree S) (F : MMap H)
+    (hlt : 0 < H.levelMap F.map 0) :
+    ∃ G D : MMap H,
+      D.FixesBelow H (H.levelMap F.map 0 - 1) ∧
+      (∀ x : T, LevelTree.lev x ≤ 0 → D (G x) = F x) ∧
+      H.levelMap G.map 0 = H.levelMap F.map 0 - 1 := by
+  let t : Nat := H.levelMap F.map 0
+  obtain ⟨a, ha⟩ := H.level_nonempty 0
+  have hFa : LevelTree.lev (F a) = t := by
+    dsimp [t]
+    simpa [ha] using (H.levelMap_eq F.map (a := a)).symm
+  have hpos : 0 < LevelTree.lev (F a) := by
+    rw [hFa]
+    simpa [t] using hlt
+  have hskip : F.map.Skips (t - 1) := by
+    intro hmem
+    rw [← H.range_levelMap F.map] at hmem
+    rcases hmem with ⟨k, hk⟩
+    have hmono :=
+      (H.levelMap_strictMono F.map).monotone (Nat.zero_le k)
+    rw [hk] at hmono
+    dsimp [t] at hmono
+    omega
+  have hskipFa :
+      F.map.Skips (LevelTree.lev (F a) - 1) := by
+    simpa [hFa] using hskip
+  obtain ⟨F1, F2, hF1, hF2, hF2skip0, hagree⟩ :=
+    H.m2 0 F.map F.mem a ha hpos hskipFa
+  let G : MMap H := ⟨F1, hF1⟩
+  let D : MMap H := ⟨F2, hF2⟩
+  have hDskip : D.map.SkipsOnly (t - 1) := by
+    simpa [D, hFa] using hF2skip0
+  have hcomp : D (G a) = F a :=
+    hagree a (by omega)
+  have htarget : LevelTree.lev (G a) = t - 1 := by
+    have hlev :
+        LevelTree.lev (D (G a)) =
+          if LevelTree.lev (G a) < t - 1
+          then LevelTree.lev (G a)
+          else LevelTree.lev (G a) + 1 := by
+      calc
+        LevelTree.lev (D (G a)) =
+            H.levelMap D.map (LevelTree.lev (G a)) :=
+          (H.levelMap_eq D.map (a := G a)).symm
+        _ = _ :=
+          H.levelMap_of_skipsOnly D.map (t - 1) hDskip
+            (LevelTree.lev (G a))
+    rw [hcomp, hFa] at hlev
+    split at hlev <;> omega
+  have hGtop : H.levelMap G.map 0 = t - 1 := by
+    calc
+      H.levelMap G.map 0 = LevelTree.lev (G a) := by
+        simpa [ha] using H.levelMap_eq G.map (a := a)
+      _ = t - 1 := htarget
+  have hDfix : D.FixesBelow H (t - 1) := by
+    intro x hx
+    exact H.eq_id_below_skip D.map (t - 1) hDskip hx
+  exact ⟨G, D, by simpa [t] using hDfix, hagree, by simpa [t] using hGtop⟩
+
+/-- Full factor form of Proposition `prop:shape-split`.
+
+The prefix map `P` agrees with `F` strictly below the moving source
+level and lands that level exactly on the chosen target cut `m`.
+The outer factor `Q` fixes everything below `m` and satisfies
+`Q (P x) = F x` through the moving source level. -/
+theorem exists_shapeSplit_factor
+    (H : SMTree S) (F : MMap H) (n m : Nat)
+    (hcut : SplitCut H F n m) :
+    ∃ P Q : MMap H,
+      (∀ x : T, LevelTree.lev x < n → P x = F x) ∧
+      H.levelMap P.map n = m ∧
+      Q.FixesBelow H m ∧
+      (∀ x : T, LevelTree.lev x ≤ n → Q (P x) = F x) := by
+  have main :
+      ∀ top : Nat, ∀ K : MMap H,
+        H.levelMap K.map n = top →
+        SplitCut H K n m →
+        ∃ P Q : MMap H,
+          (∀ x : T, LevelTree.lev x < n → P x = K x) ∧
+          H.levelMap P.map n = m ∧
+          Q.FixesBelow H m ∧
+          (∀ x : T, LevelTree.lev x ≤ n → Q (P x) = K x) := by
+    intro top
+    induction top using Nat.strong_induction_on with
+    | h top ih =>
+        intro K hKtop hKcut
+        have hmtop : m ≤ top := by
+          exact hKcut.1.trans_eq hKtop
+        by_cases hEq : m = top
+        · refine ⟨K, MMap.id H, ?_, ?_, ?_, ?_⟩
+          · intro x hx
+            rfl
+          · exact hKtop.trans hEq.symm
+          · exact MMap.id_fixesBelow H m
+          · intro x hx
+            rfl
+        · have hmlt : m < top := by omega
+          cases n with
+          | zero =>
+              change m ≤ H.levelMap K.map 0 ∧ True at hKcut
+              have htopPos : 0 < H.levelMap K.map 0 := by
+                rw [hKtop]
+                omega
+              obtain ⟨G, D, hDfixTop, hDG, hGtop0⟩ :=
+                exists_lower_root_once_factor H K htopPos
+              have hGtop : H.levelMap G.map 0 = top - 1 := by
+                rw [hGtop0, hKtop]
+              have hsmall : top - 1 < top := by omega
+              have hmG : m ≤ top - 1 := by omega
+              have hGcut : SplitCut H G 0 m := by
+                exact ⟨by simpa [hGtop] using hmG, trivial⟩
+              obtain ⟨P, Q, hPagree, hPtop, hQfix, hQP⟩ :=
+                ih (top - 1) hsmall G hGtop hGcut
+              have hDfixm : D.FixesBelow H m := by
+                intro x hx
+                apply hDfixTop x
+                have hmTop : m ≤ top - 1 := by omega
+                exact lt_of_lt_of_le hx hmTop
+              let R : MMap H := MMap.comp H D Q
+              refine ⟨P, R, ?_, hPtop, ?_, ?_⟩
+              · intro x hx
+                omega
+              · exact MMap.comp_fixesBelow H D Q m hDfixm hQfix
+              · intro x hx
+                change D (Q (P x)) = K x
+                rw [hQP x hx]
+                exact hDG x hx
+          | succ k =>
+              change
+                m ≤ H.levelMap K.map (k + 1) ∧
+                  H.levelMap K.map k < m at hKcut
+              have hgap :
+                  H.levelMap K.map k + 1 <
+                    H.levelMap K.map (k + 1) := by
+                rw [hKtop]
+                omega
+              obtain ⟨G, D, hGagree, hDskip0, hDG, hGtop0⟩ :=
+                H.exists_lower_gap_once_factor K k hgap
+              have hGtop :
+                  H.levelMap G.map (k + 1) = top - 1 := by
+                rw [hGtop0, hKtop]
+              have hGk :
+                  H.levelMap G.map k = H.levelMap K.map k := by
+                obtain ⟨a, ha⟩ := H.level_nonempty k
+                calc
+                  H.levelMap G.map k = LevelTree.lev (G a) := by
+                    simpa [ha] using H.levelMap_eq G.map (a := a)
+                  _ = LevelTree.lev (K a) := by
+                    rw [hGagree a (by omega)]
+                  _ = H.levelMap K.map k := by
+                    simpa [ha] using (H.levelMap_eq K.map (a := a)).symm
+              have hsmall : top - 1 < top := by omega
+              have hmG : m ≤ top - 1 := by omega
+              have hGcut : SplitCut H G (k + 1) m := by
+                refine ⟨?_, ?_⟩
+                · simpa [hGtop] using hmG
+                · simpa [hGk] using hKcut.2
+              obtain ⟨P, Q, hPagree, hPtop, hQfix, hQP⟩ :=
+                ih (top - 1) hsmall G hGtop hGcut
+              have hDskip :
+                  D.map.SkipsOnly (top - 1) := by
+                simpa [hKtop] using hDskip0
+              have hDfixTop : D.FixesBelow H (top - 1) := by
+                intro x hx
+                exact H.eq_id_below_skip D.map (top - 1) hDskip hx
+              have hDfixm : D.FixesBelow H m := by
+                intro x hx
+                apply hDfixTop x
+                have hmTop : m ≤ top - 1 := by omega
+                exact lt_of_lt_of_le hx hmTop
+              let R : MMap H := MMap.comp H D Q
+              refine ⟨P, R, ?_, hPtop, ?_, ?_⟩
+              · intro x hx
+                calc
+                  P x = G x := hPagree x hx
+                  _ = K x := hGagree x (by omega)
+              · exact MMap.comp_fixesBelow H D Q m hDfixm hQfix
+              · intro x hx
+                change D (Q (P x)) = K x
+                rw [hQP x hx]
+                exact hDG x hx
+  exact main (H.levelMap F.map n) F rfl hcut
+
+/-- Top-level consequence of a shape split: the new top image lies below
+the old top image, and its level is the chosen split cut. -/
+theorem shapeSplit_top_le_level
+    (H : SMTree S)
+    (F P Q : MMap H) (n m : Nat)
+    (hPtop : H.levelMap P.map n = m)
+    (hQfix : Q.FixesBelow H m)
+    (hQP : ∀ x : T, LevelTree.lev x ≤ n → Q (P x) = F x)
+    {x : T} (hx : LevelTree.lev x = n) :
+    P x ≤ F x ∧ LevelTree.lev (P x) = m := by
+  have hPlev :
+      LevelTree.lev (P x) = m := by
+    calc
+      LevelTree.lev (P x) =
+          H.levelMap P.map n := by
+        simpa [hx] using (H.levelMap_eq P.map (a := x)).symm
+      _ = m := hPtop
+  have hle0 :
+      P x ≤ Q (P x) :=
+    Q.le_apply_at_cut H m hQfix hPlev
+  have hle : P x ≤ F x := by
+    rw [hQP x (by omega)] at hle0
+    exact hle0
+  exact ⟨hle, hPlev⟩
+
 /-- Lower the moving source level to an arbitrary admissible intermediate
 target level. -/
 theorem exists_truncate_moving_level
