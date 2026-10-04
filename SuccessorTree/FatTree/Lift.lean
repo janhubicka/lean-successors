@@ -773,6 +773,21 @@ theorem liftSteps_congr_start (U : FiniteFatTree H)
   subst j
   rfl
 
+/-- A single finite lift step is exactly the corresponding one-step
+Lift. -/
+theorem liftSteps_one (U : FiniteFatTree H)
+    (i : Nat) (h : i + 1 ≤ U.height) (X : Set T) :
+    U.liftSteps H i 1 h X =
+      U.oneLift H (⟨i, by omega⟩ : Fin U.height) X := by
+  calc
+    U.liftSteps H i 1 h X =
+        U.liftSteps H (i + 1) 0 (by omega)
+          (U.oneLift H (⟨i, by omega⟩ : Fin U.height) X) := by
+      simpa using U.liftSteps_succ H i 0 h X
+    _ = U.oneLift H (⟨i, by omega⟩ : Fin U.height) X :=
+      U.liftSteps_zero H (i + 1) (by omega)
+        (U.oneLift H (⟨i, by omega⟩ : Fin U.height) X)
+
 /-- Finite lifts compose over adjacent intervals of row indices. -/
 theorem liftSteps_add (U : FiniteFatTree H)
     (i a b : Nat) (h : i + (a + b) ≤ U.height)
