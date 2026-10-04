@@ -108,17 +108,25 @@ noncomputable def step
     rw [H.levelMap_comp E.toMMap P.toMMap (U.cut a)]
     rw [P.topLevel]
     have hEtop :
-        H.levelMap E.toMMap.map r = r + 1 := by
-      rw [H.levelMap_of_skipsOnly E.toMMap.map r E.skips]
+        H.levelMap E.toMMap.map (U.cut (a + i)) =
+          U.cut (a + i) + 1 := by
+      rw [H.levelMap_of_skipsOnly E.toMMap.map
+        (U.cut (a + i)) E.skips]
       simp
-    rw [show U.cut (a + i) = r by rfl, hEtop]
     have hRsucc :
-        H.levelMap R.map (r + 1) = U.cut (a + i + 1) := by
-      simpa [R, r, Nat.add_assoc] using
+        H.levelMap R.map (U.cut (a + i) + 1) =
+          U.cut (a + i + 1) := by
+      simpa [R, Nat.add_assoc] using
         U.rowExtension_level_succ H (a + i)
-    rw [hRsucc]
-    congr 2
-    omega
+    calc
+      H.levelMap R.map
+          (H.levelMap E.toMMap.map (U.cut (a + i))) =
+          H.levelMap R.map (U.cut (a + i) + 1) := by
+            rw [hEtop]
+      _ = U.cut (a + i + 1) := hRsucc
+      _ = U.cut (a + (i + 1)) := by
+        congr 1
+        omega
   refine {
     toMMap := Q
     fixesBelow := hQfix
@@ -149,13 +157,13 @@ noncomputable def step
     U.liftTo_succ H (a + i)
       (U.liftTo H a (a + i) (by omega)
         (TreeLevel (T := T) (U.cut a)))
-  change
-    R (E.toMMap (P x)) ∈
-      U.liftTo H a (a + (i + 1)) (by omega)
-        (TreeLevel (T := T) (U.cut a))
-  rw [show a + (i + 1) = a + i + 1 by omega]
-  rw [hsplit, hlast]
-  exact hone
+  have htarget :
+      R (E.toMMap (P x)) ∈
+        U.liftTo H a (a + i + 1) (by omega)
+          (TreeLevel (T := T) (U.cut a)) := by
+    rw [hsplit, hlast]
+    exact hone
+  simpa only [Nat.add_assoc] using htarget
 
 @[simp] theorem step_apply
     (U : FatTree H) (a i : Nat)
@@ -164,7 +172,7 @@ noncomputable def step
     (x : T) :
     (step H U a i P E) x =
       U.rowExtension H (a + i) (E.toMMap (P x)) := by
-  rfl
+  simp [step]
 
 /-- A history step moves every base-level history point upward in the
 underlying tree. -/
@@ -179,11 +187,11 @@ theorem le_step
   have hPlev : LevelTree.lev (P x) = r := by
     simpa [r] using P.level_apply H U a i hx
   have hPR : P x ≤ R (P x) := by
-    exact U.le_rowExtension_at_cut H (a + i) (P x) hPlev
+    exact U.le_rowExtension_at_cut H (a + i) hPlev
   have hRE :
       R (P x) ≤ R (E.toMMap (P x)) := by
     exact R.map.map_le_of_le (H.letter_covBy E hPlev).le
-  exact hPR.trans hRE
+  simpa [step_apply] using hPR.trans hRE
 
 end TraceHistoryState
 
