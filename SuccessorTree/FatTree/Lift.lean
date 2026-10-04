@@ -983,5 +983,61 @@ theorem liftTo_mem_of_mem_of_source (U : FiniteFatTree H)
 
 end FiniteFatTree
 
+namespace FatTree
+
+variable (H : SMTree S)
+
+/-- Canonical row extension agrees whether an infinite fat tree is viewed
+directly or through a finite initial segment containing the row. -/
+theorem initialSegment_rowExtension (U : FatTree H)
+    (n : Nat) (i : Fin n) :
+    (U.initialSegment H n).rowExtension H i =
+      U.rowExtension H i.1 := by
+  rfl
+
+/-- One-step Lift agrees with the ambient infinite fat tree on an initial
+segment. -/
+theorem initialSegment_oneLift (U : FatTree H)
+    (n : Nat) (i : Fin n) (X : Set T) :
+    (U.initialSegment H n).oneLift H i X =
+      U.oneLift H i.1 X := by
+  unfold FiniteFatTree.oneLift FatTree.oneLift
+  rw [U.initialSegment_rowExtension H n i]
+
+/-- Multi-row Lift inside an initial segment is the same operation as in the
+ambient infinite fat tree. -/
+theorem initialSegment_liftSteps (U : FatTree H)
+    (n i steps : Nat) (h : i + steps ≤ n) (X : Set T) :
+    (U.initialSegment H n).liftSteps H i steps h X =
+      U.liftSteps H i steps X := by
+  induction steps generalizing i X with
+  | zero =>
+      rfl
+  | succ steps ih =>
+      rw [FiniteFatTree.liftSteps_succ, FatTree.liftSteps_succ]
+      have hone :
+          (U.initialSegment H n).oneLift H
+              (⟨i, by omega⟩ : Fin n) X =
+            U.oneLift H i X :=
+        U.initialSegment_oneLift H n (⟨i, by omega⟩ : Fin n) X
+      rw [hone]
+      exact ih (i := i + 1) (by omega)
+        (X := U.oneLift H i X)
+
+/-- Interval Lift on a finite initial segment agrees with interval Lift in
+the ambient infinite fat tree. -/
+theorem initialSegment_liftTo (U : FatTree H)
+    (n : Nat) (a b : Fin (n + 1)) (hab : a ≤ b)
+    (X : Set T) :
+    (U.initialSegment H n).liftTo H a b hab X =
+      U.liftTo H a.1 b.1 (by
+        change a.1 ≤ b.1
+        exact hab) X := by
+  unfold FiniteFatTree.liftTo FatTree.liftTo
+  exact U.initialSegment_liftSteps H n a.1 (b.1 - a.1)
+    (by omega) X
+
+end FatTree
+
 end SMTree
 end SuccessorTree
