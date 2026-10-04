@@ -1057,8 +1057,7 @@ theorem a3_one_nonempty
   let W : FatTree H := splice H x V n hcut
   refine ⟨W, ?_, ?_⟩
   · exact splice_reduces H hxV
-  · unfold ExtendsStem W
-    exact splice_extendsStem H x V n hcut
+  · exact splice_extendsStem H x V n hcut
 
 /-- Todorčević A3(2) for the fat-tree space.
 
@@ -1096,10 +1095,9 @@ theorem a3_two_amalgamation
     dsimp [U']
     exact splice_prefix_tail_reduces H hVU hcut
   have hU'prefix :
-      U'.initialSegment H m = U.initialSegment H m := by
-    have hs := splice_initialSegment H p V n hpV
-    dsimp [U', p] at hs ⊢
-    simpa using hs
+      ExtendsStem H (U.initialSegment H m) U' := by
+    dsimp [U', p]
+    exact splice_extendsStem H (U.initialSegment H m) V n hpV
   have hdepth : InDepthCone H m U U' :=
     ⟨hU'reduces, hU'prefix⟩
   have hnonempty :
