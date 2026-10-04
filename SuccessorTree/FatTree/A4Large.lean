@@ -136,6 +136,17 @@ def OneBlockLarge
     ∃ g : AM H x.terminalCut 1,
       g ∈ O ∧ OneBlockOccurs H x V g
 
+/-- The full one-block space is large below every ambient tree:
+each stem-preserving refinement contributes its own ambient next row. -/
+theorem oneBlockLarge_univ
+    (x : FiniteFatTree H) (U : FatTree H) :
+    OneBlockLarge H x U Set.univ := by
+  intro V hVU hxV
+  let g : AM H x.terminalCut 1 :=
+    ambientNextRow H x V hxV
+  exact ⟨g, Set.mem_univ g,
+    ambientNextRow_occurs H x V hxV⟩
+
 /-- Largeness is monotone under refinements that preserve the fixed stem. -/
 theorem oneBlockLarge_mono
     {x : FiniteFatTree H} {U V : FatTree H}
