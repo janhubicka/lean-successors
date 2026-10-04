@@ -112,17 +112,14 @@ theorem ext_of_initialSegments_eq {U V : FatTree H}
     have ht := congrArg FiniteFatTree.terminalCut (h i)
     simpa using ht
   · intro i
-    let j : Fin (i + 1) :=
-      ⟨i, Nat.lt_succ_self i⟩
-    have hp := h (i + 1)
-    have hr :
-        HEq
-          ((U.initialSegment H (i + 1)).row j)
-          ((V.initialSegment H (i + 1)).row j) := by
-      cases hp
-      rfl
-    change HEq (U.row j.1) (V.row j.1) at hr
-    simpa [j] using hr
+    let j : Fin ((V.initialSegment H (i + 1)).height) :=
+      ⟨i, by
+        change i < i + 1
+        exact Nat.lt_succ_self i⟩
+    have hr :=
+      FiniteFatTree.row_heq_of_eq H (h (i + 1)) j
+    change HEq (U.row i) (V.row i) at hr
+    exact hr
 
 /-- A1(2): unequal infinite fat trees are separated by a finite
 approximation. -/
