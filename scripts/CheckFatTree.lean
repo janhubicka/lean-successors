@@ -28,5 +28,6 @@ open SuccessorTree
 
 #check SMTree.FatTree.ReductionWitness
 #check SMTree.FatTree.ReductionWitness.index_zero
+#check SMTree.FatTree.ReductionWitness.liftSteps_subset_liftTo
 #check SMTree.FatTree.reduces_refl
 #print axioms SMTree.FatTree.ReductionWitness.index_zero
