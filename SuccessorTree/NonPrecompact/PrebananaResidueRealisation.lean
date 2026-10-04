@@ -1,4 +1,5 @@
 import SuccessorTree.NonPrecompact.SubsetSums
+import SuccessorTree.NonPrecompact.ColouringWrappers
 
 /-!
 # Nonempty odd subset sums for pre-BANANA residue realisation
@@ -17,6 +18,45 @@ remaining weights which cancels it.
 namespace SuccessorTree.NonPrecompact
 
 open scoped BigOperators
+
+
+/-- The mod-two reduction of a sum of odd integer weights is the parity of
+the number of selected weights.  This is the finite parity bridge used when
+pre-BANANA residue blocks are turned into marked blocks. -/
+theorem residueParityHom_sum_eq_card_of_odd
+    {k : ℕ} {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (a : ι → ℕ)
+    (ha : ∀ i ∈ s, Odd (a i)) :
+    residueParityHom k
+        (∑ i ∈ s, (a i : ZMod (2 ^ (k + 1)))) =
+      (s.card : F2) := by
+  calc
+    residueParityHom k
+        (∑ i ∈ s, (a i : ZMod (2 ^ (k + 1)))) =
+        ∑ i ∈ s, residueParityHom k
+          (a i : ZMod (2 ^ (k + 1))) := by
+      exact map_sum (residueParityHom k)
+        (fun i => (a i : ZMod (2 ^ (k + 1)))) s
+    _ = ∑ i ∈ s, (1 : F2) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [residueParityHom_natCast]
+      exact (ha i hi).natCast_zmod_two
+    _ = (s.card : F2) := by
+      simp
+
+/-- If a block of odd weights has prescribed residue, the parity of the
+block cardinality is the parity of that residue. -/
+theorem card_parity_eq_residueParityHom_of_odd_sum
+    {k : ℕ} {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (a : ι → ℕ)
+    (ha : ∀ i ∈ s, Odd (a i))
+    (r : ZMod (2 ^ (k + 1)))
+    (hsum :
+      (∑ i ∈ s, (a i : ZMod (2 ^ (k + 1)))) = r) :
+    (s.card : F2) = residueParityHom k r := by
+  rw [← hsum]
+  exact (residueParityHom_sum_eq_card_of_odd s a ha).symm
 
 /-- Exactly `2^k` odd weights have a nonempty subset with any prescribed
 sum modulo `2^k`. -/
