@@ -851,11 +851,15 @@ theorem initialSegment_liftTo (U : FiniteFatTree H)
       U.liftTo H
         (⟨a.1, by
           have ha : a.1 ≤ n := by
-            simpa using Nat.le_of_lt_succ a.2
+            have ha0 := Nat.le_of_lt_succ a.2
+            change a.1 ≤ n at ha0
+            exact ha0
           omega⟩ : Fin (U.height + 1))
         (⟨b.1, by
           have hb : b.1 ≤ n := by
-            simpa using Nat.le_of_lt_succ b.2
+            have hb0 := Nat.le_of_lt_succ b.2
+            change b.1 ≤ n at hb0
+            exact hb0
           omega⟩ : Fin (U.height + 1))
         (by
           change a.1 ≤ b.1
@@ -865,7 +869,9 @@ theorem initialSegment_liftTo (U : FiniteFatTree H)
   exact U.initialSegment_liftSteps H n hn a.1 (b.1 - a.1)
     (by
       have hb : b.1 ≤ n := by
-        simpa using Nat.le_of_lt_succ b.2
+        have hb0 := Nat.le_of_lt_succ b.2
+        change b.1 ≤ n at hb0
+        exact hb0
       omega) X
 
 /-- Endpoint equality transports a finite lift.  This packages the
@@ -1095,7 +1101,9 @@ theorem initialSegment_liftTo (U : FatTree H)
   exact U.initialSegment_liftSteps H n a.1 (b.1 - a.1)
     (by
       have hb : b.1 ≤ n := by
-        simpa using Nat.le_of_lt_succ b.2
+        have hb0 := Nat.le_of_lt_succ b.2
+        change b.1 ≤ n at hb0
+        exact hb0
       omega) X
 
 end FatTree
