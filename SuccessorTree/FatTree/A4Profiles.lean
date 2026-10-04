@@ -97,6 +97,105 @@ noncomputable instance fanProfileFintype
     fun i => RawSuccessorFan.fintype H (trace i)
   infer_instance
 
+/-- A raw exact-trace update canonically yields a finite successor
+fan. The existential successor choices in IsRawTraceUpdate are made
+only on the finite source level; below it the table is the identity. -/
+noncomputable def rawSuccessorFanOfUpdate
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : FiniteFatTree.ExactTrace H y n hn)
+    (theta : FiniteFatTree.ExactTrace H
+      (FiniteFatTree.appendRow H y h) n (by
+        rw [FiniteFatTree.appendRow_height]
+        omega))
+    (hupdate :
+      FiniteFatTree.IsRawTraceUpdate H y h n hn q theta) :
+    RawSuccessorFan H q.1 := by
+  classical
+  let c0 : Nat := FiniteFatTree.traceSourceCut H y n hn
+  have hct :
+      c0 ≤ q.1.rowEndLevel H := by
+    calc
+      c0 ≤ FiniteFatTree.traceTargetCut H y :=
+        FiniteFatTree.traceSourceCut_le_target H y n hn
+      _ = q.1.rowEndLevel H :=
+        (q.rowEndLevel H).symm
+  let chosen : InitialNode T c0 → T := fun x =>
+    if hx : LevelTree.lev x.1 = c0 then
+      Classical.choose (hupdate x.1 hx)
+    else
+      x.1
+  have chosen_bound :
+      ∀ x : InitialNode T c0,
+        LevelTree.lev (chosen x) ≤ q.1.rowEndLevel H + 1 := by
+    intro x
+    by_cases hx : LevelTree.lev x.1 = c0
+    · let hz := Classical.choose_spec (hupdate x.1 hx)
+      have hqlev :
+          LevelTree.lev (q.1.representative H x.1) =
+            q.1.rowEndLevel H := by
+        calc
+          LevelTree.lev (q.1.representative H x.1) =
+              H.levelMap (q.1.representative H).map
+                (LevelTree.lev x.1) :=
+            (H.levelMap_eq (q.1.representative H).map
+              (a := x.1)).symm
+          _ = H.levelMap (q.1.representative H).map c0 := by
+            rw [hx]
+          _ = q.1.rowEndLevel H := rfl
+      have hzlev :=
+        LevelTree.covBy_level_eq hz.1
+      dsimp [chosen]
+      rw [dif_pos hx]
+      rw [hzlev, hqlev]
+    · have hxlt : LevelTree.lev x.1 < c0 := by
+        omega
+      dsimp [chosen]
+      rw [dif_neg hx]
+      omega
+  refine {
+    toFun := fun x => ⟨chosen x, chosen_bound x⟩
+    eq_id_below := ?_
+    top_covBy := ?_
+  }
+  · intro x hx
+    have hne : LevelTree.lev x.1 ≠ c0 := by omega
+    dsimp [chosen]
+    rw [dif_neg hne]
+  · intro x hx
+    let hz := Classical.choose_spec (hupdate x.1 hx)
+    dsimp [chosen]
+    rw [dif_pos hx]
+    exact hz.1
+
+/-- The fan chosen from a raw update records the same top-level successor
+which appears in that update. -/
+theorem rawSuccessorFanOfUpdate_realizes
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : FiniteFatTree.ExactTrace H y n hn)
+    (theta : FiniteFatTree.ExactTrace H
+      (FiniteFatTree.appendRow H y h) n (by
+        rw [FiniteFatTree.appendRow_height]
+        omega))
+    (hupdate :
+      FiniteFatTree.IsRawTraceUpdate H y h n hn q theta)
+    (x : T)
+    (hx : LevelTree.lev x =
+      FiniteFatTree.traceSourceCut H y n hn) :
+    theta.1.representative H x =
+      H.canonicalExtension (h.representative H) y.terminalCut
+        ((rawSuccessorFanOfUpdate H y h n hn q theta hupdate).toFun
+          ⟨x, by omega⟩).1 := by
+  classical
+  let hz := Classical.choose_spec (hupdate x hx)
+  change theta.1.representative H x =
+    H.canonicalExtension (h.representative H) y.terminalCut
+      (Classical.choose (hupdate x hx))
+  exact hz.2
+
 end FatTree
 end SMTree
 end SuccessorTree
