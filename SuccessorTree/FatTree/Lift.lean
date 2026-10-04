@@ -446,7 +446,7 @@ theorem le_rowExtension_at_cut (U : FiniteFatTree H)
 /-- One step of lift inside a finite fat tree. -/
 noncomputable def oneLift (U : FiniteFatTree H)
     (i : Fin U.height) (X : Set T) : Set T :=
-  U.rowExtension H i '' FatTree.ImmediateSuccessors (T := T) X
+  U.rowExtension H i '' ImmediateSuccessors (T := T) X
 
 /-- Finite one-step lifting is monotone in the starting set. -/
 theorem oneLift_mono (U : FiniteFatTree H)
@@ -454,18 +454,18 @@ theorem oneLift_mono (U : FiniteFatTree H)
     U.oneLift H i X ⊆ U.oneLift H i Y := by
   intro z hz
   rcases hz with ⟨y, hy, rfl⟩
-  exact ⟨y, FatTree.immediateSuccessors_mono H hXY hy, rfl⟩
+  exact ⟨y, FatTree.immediateSuccessors_mono hXY hy, rfl⟩
 
 /-- A finite one-row lift lands exactly on the next cut level. -/
 theorem oneLift_subset_nextLevel (U : FiniteFatTree H)
     (i : Fin U.height) {X : Set T}
-    (hX : X ⊆ FatTree.TreeLevel (T := T) (U.cut i.castSucc)) :
+    (hX : X ⊆ TreeLevel (T := T) (U.cut i.castSucc)) :
     U.oneLift H i X ⊆
-      FatTree.TreeLevel (T := T) (U.cut i.succ) := by
+      TreeLevel (T := T) (U.cut i.succ) := by
   intro y hy
   rcases hy with ⟨z, hz, rfl⟩
   have hzlev : LevelTree.lev z = U.cut i.castSucc + 1 :=
-    FatTree.immediateSuccessors_subset_level H hX hz
+    FatTree.immediateSuccessors_subset_level hX hz
   change LevelTree.lev (U.rowExtension H i z) = U.cut i.succ
   calc
     LevelTree.lev (U.rowExtension H i z) =
@@ -478,7 +478,7 @@ theorem oneLift_subset_nextLevel (U : FiniteFatTree H)
 /-- Every node produced by one finite lift lies above a source node. -/
 theorem oneLift_descends (U : FiniteFatTree H)
     (i : Fin U.height) {X : Set T}
-    (hX : X ⊆ FatTree.TreeLevel (T := T) (U.cut i.castSucc))
+    (hX : X ⊆ TreeLevel (T := T) (U.cut i.castSucc))
     {z : T} (hz : z ∈ U.oneLift H i X) :
     ∃ x ∈ X, x ≤ z := by
   rcases hz with ⟨y, hy, rfl⟩
@@ -496,11 +496,11 @@ theorem oneLift_descends (U : FiniteFatTree H)
 theorem oneLift_mem_of_mem_full_of_source
     (U : FiniteFatTree H) (i : Fin U.height)
     {X : Set T}
-    (hX : X ⊆ FatTree.TreeLevel (T := T) (U.cut i.castSucc))
+    (hX : X ⊆ TreeLevel (T := T) (U.cut i.castSucc))
     {z : T}
     (hz :
       z ∈ U.oneLift H i
-        (FatTree.TreeLevel (T := T) (U.cut i.castSucc)))
+        (TreeLevel (T := T) (U.cut i.castSucc)))
     (hsource : ∃ x ∈ X, x ≤ z) :
     z ∈ U.oneLift H i X := by
   rcases hz with ⟨y, hy, rfl⟩
@@ -545,12 +545,18 @@ noncomputable def liftTo (U : FiniteFatTree H)
 @[simp] theorem liftTo_same (U : FiniteFatTree H)
     (a : Fin (U.height + 1)) (X : Set T) :
     U.liftTo H a a le_rfl X = X := by
-  simp [liftTo]
+  unfold liftTo
+  have hdiff : a.1 - a.1 = 0 := Nat.sub_self a.1
+  rw [hdiff]
+  rfl
 
 /-- Crossing adjacent finite cut indices is exactly one row lift. -/
 theorem liftTo_succ (U : FiniteFatTree H)
     (i : Fin U.height) (X : Set T) :
-    U.liftTo H i.castSucc i.succ (by omega) X =
+    U.liftTo H i.castSucc i.succ
+        (by
+          change i.1 ≤ i.1 + 1
+          omega) X =
       U.oneLift H i X := by
   unfold liftTo
   have hdiff : i.succ.1 - i.castSucc.1 = 1 := by
