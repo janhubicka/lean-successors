@@ -247,7 +247,6 @@ theorem traceLift_appendRow
     _ = (appendRow H y h).oneLift H (Fin.last y.height)
           (traceLift H y n hn) := by
       dsimp [z]
-      congr 2
 
 /-- In manuscript notation, the previous theorem says that the new trace
 Lift is h-plus applied to the successor fan of the old trace Lift. -/
