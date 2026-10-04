@@ -902,13 +902,23 @@ theorem neighborhood_reduces_attached_tail
       · have heq : j + 1 = x.height := by omega
         let ja : Fin (x.height + 1) := ⟨j, by omega⟩
         have hjaLast : ja < Fin.last x.height :=
-          Fin.lt_def.mpr (by simpa [heq] using hj)
+          Fin.lt_def.mpr (by
+            change j < x.height
+            exact hj)
         have ha := a.index_strict hjaLast
-        have haval : (a.index ja).1 < n := by
-          rw [haLast] at ha
+        have haVal :
+            (a.index ja).1 <
+              (a.index (Fin.last x.height)).1 := by
           exact ha
+        have hlastVal :
+            (a.index (Fin.last x.height)).1 = n := by
+          rw [haLast]
+          rfl
+        have haval : (a.index ja).1 < n := by
+          omega
         have hbzero : b.index (j + 1) = p.height := by
-          simpa [heq] using hbAt
+          rw [heq]
+          exact hbAt
         calc
           β j = (a.index ja).1 := by simp [β, hj, ja]
           _ < n := haval
@@ -922,11 +932,21 @@ theorem neighborhood_reduces_attached_tail
       have hbj : p.height ≤ b.index j := by
         rw [← hbAt]
         exact b.index_strict.monotone hge
-      have hb := b.index_strict (Nat.lt_succ_self j)
-      have hbj1 : p.height ≤ b.index (j + 1) := by
-        exact hbj.trans (Nat.le_of_lt hb)
-      simp [β, hj, hnext]
-      omega
+      have hb : b.index j < b.index (j + 1) :=
+        b.index_strict (Nat.lt_succ_self j)
+      have hbj1 : p.height ≤ b.index (j + 1) :=
+        hbj.trans (Nat.le_of_lt hb)
+      have hsub :
+          b.index j - p.height <
+            b.index (j + 1) - p.height := by
+        omega
+      calc
+        β j = n + (b.index j - p.height) := by
+          simp [β, hj]
+        _ < n + (b.index (j + 1) - p.height) :=
+          Nat.add_lt_add_left hsub n
+        _ = β (j + 1) := by
+          simp [β, hnext]
   have hβstep : ∀ j : Nat, β j < β (j + 1) := fun j =>
     hβstrict (Nat.lt_succ_self j)
   refine ⟨{
@@ -964,7 +984,10 @@ theorem neighborhood_reduces_attached_tail
       rw [V.initialSegment_liftTo H n] at haLift
       rw [V.initialSegment_cut H n (a.index ji.castSucc)] at haLift
       rw [oneLift_eq_of_extendsStem H hW.2 ji]
-      rw [cut_eq_of_extendsStem H hW.2 ji.castSucc]
+      have hWcutj : W.cut j = x.cut ji.castSucc := by
+        simpa [ji] using
+          cut_eq_of_extendsStem H hW.2 ji.castSucc
+      rw [hWcutj]
       have h0 : β j = (a.index ji.castSucc).1 := by
         simp [β, hj, ji]
       have h1 : β (j + 1) = (a.index ji.succ).1 := by
@@ -979,11 +1002,16 @@ theorem neighborhood_reduces_attached_tail
           have hjiLast : ji.succ = Fin.last x.height := by
             apply Fin.ext
             exact heq
-          have haval : (a.index ji.succ).1 = n := by
-            rw [hjiLast, haLast]
+          have hlastVal :
+              (a.index (Fin.last x.height)).1 = n := by
+            rw [haLast]
             rfl
+          have haval : (a.index ji.succ).1 = n := by
+            rw [hjiLast]
+            exact hlastVal
           have hbzero : b.index (j + 1) = p.height := by
-            simpa [heq] using hbAt
+            rw [heq]
+            exact hbAt
           calc
             β (j + 1) =
                 n + (b.index (j + 1) - p.height) := by
