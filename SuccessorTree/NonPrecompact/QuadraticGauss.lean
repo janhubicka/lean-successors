@@ -36,7 +36,9 @@ theorem f2_eq_zero_or_one (a : F2) : a = 0 ∨ a = 1 := by
     simpa using h
   · right
     apply ZMod.val_injective
-    simpa using h
+    calc
+      a.val = 1 := h
+      _ = (1 : F2).val := by norm_num
 
 theorem f2Sign_add (a b : F2) :
     f2Sign (a + b) = f2Sign a * f2Sign b := by
