@@ -86,6 +86,45 @@ theorem initialSegment_eq_of_extendsStem
     change HEq (W.row i.1) (x.row i)
     exact h.2 i
 
+/-- Literal finite-prefix equality gives the data-level stem predicate. -/
+theorem extendsStem_of_initialSegment_eq
+    {x : FiniteFatTree H} {W : FatTree H}
+    (h : W.initialSegment H x.height = x) :
+    ExtendsStem H x W := by
+  subst x
+  constructor
+  · intro i
+    rfl
+  · intro i
+    exact HEq.rfl
+
+/-- A sufficiently deep cone refinement preserves every shorter literal
+stem fixed by the ambient tree. -/
+theorem extendsStem_of_depthCone
+    {x : FiniteFatTree H} {A C : FatTree H} {q : Nat}
+    (hxA : ExtendsStem H x A)
+    (hC : InDepthCone H q A C)
+    (hxq : x.height ≤ q) :
+    ExtendsStem H x C := by
+  have hCAq :
+      C.initialSegment H q = A.initialSegment H q :=
+    initialSegment_eq_of_extendsStem H hC.2
+  have hCAx :
+      C.initialSegment H x.height =
+        A.initialSegment H x.height := by
+    calc
+      C.initialSegment H x.height =
+          (C.initialSegment H q).initialSegment H x.height hxq :=
+        (C.initialSegment_initialSegment H q x.height hxq).symm
+      _ = (A.initialSegment H q).initialSegment H x.height hxq := by
+        rw [hCAq]
+      _ = A.initialSegment H x.height :=
+        A.initialSegment_initialSegment H q x.height hxq
+  have hAx :
+      A.initialSegment H x.height = x :=
+    initialSegment_eq_of_extendsStem H hxA
+  exact extendsStem_of_initialSegment_eq H (hCAx.trans hAx)
+
 /-- A stem occurring at cut `n` has terminal cut exactly `U.cut n`. -/
 theorem terminalCut_eq_of_stemAt
     {x : FiniteFatTree H} {U : FatTree H} {n : Nat}
