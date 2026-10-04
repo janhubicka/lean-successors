@@ -188,11 +188,14 @@ theorem index_le_cut (U : FiniteFatTree H) :
           k ≤ U.cut i.castSucc := by
         have := ih (Nat.le_of_lt hklt)
         simpa [i] using this
+      have hprev' :
+          k ≤ U.cut (⟨k, by omega⟩ : Fin (U.height + 1)) := by
+        simpa [i] using hprev
       have hstep := U.cut_lt_succ H i
       change
         U.cut (⟨k, by omega⟩ : Fin (U.height + 1)) <
           U.cut (⟨k + 1, by omega⟩ : Fin (U.height + 1)) at hstep
-      omega
+      exact Nat.succ_le_of_lt (lt_of_le_of_lt hprev' hstep)
 
 /-- Height is bounded by the terminal cut. -/
 theorem height_le_terminalCut (U : FiniteFatTree H) :
