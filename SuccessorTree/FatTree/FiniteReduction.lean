@@ -99,18 +99,19 @@ def initialSegment
       change (w.index (src i)).1 < m + 1
       exact Nat.lt_succ_of_le
         (w.index_strict.monotone hi)
-  change ReductionWitness H VS US
-  refine {
-    index := idx
-    index_strict := ?_
-    cut_eq := ?_
-    lift_subset := ?_
-  }
-  · intro i j hij
+  have hidx : StrictMono idx := by
+    intro i j hij
     change (w.index (src i)).1 < (w.index (src j)).1
     exact w.index_strict (by
       change i.1 < j.1
       exact hij)
+  change ReductionWitness H VS US
+  refine {
+    index := idx
+    index_strict := hidx
+    cut_eq := ?_
+    lift_subset := ?_
+  }
   · intro i
     dsimp [VS, US]
     rw [V.initialSegment_cut_dep H n hn i]
@@ -125,24 +126,18 @@ def initialSegment
       exact ⟨i.1, lt_of_lt_of_le hi hn⟩
     have h := w.lift_subset iv
     change
-      VS.oneLift H i
-          (TreeLevel (T := T) (VS.cut i.castSucc)) ⊆
-        US.liftTo H (idx i.castSucc) (idx i.succ)
-          (le_of_lt (by
-            exact (show StrictMono idx from by
-              intro a b hab
-              change (w.index (src a)).1 < (w.index (src b)).1
-              exact w.index_strict (by
-                change a.1 < b.1
-                exact hab))
-              (by
-                change i.1 < i.1 + 1
-                omega)))
-          (TreeLevel (T := T) (US.cut (idx i.castSucc)))
-    rw [show VS = V.initialSegment H n hn by rfl]
+      (V.initialSegment H n hn).oneLift H i
+          (TreeLevel (T := T)
+            ((V.initialSegment H n hn).cut i.castSucc)) ⊆
+        (U.initialSegment H m hm).liftTo H
+          (idx i.castSucc) (idx i.succ)
+          (le_of_lt (hidx (by
+            change i.1 < i.1 + 1
+            omega)))
+          (TreeLevel (T := T)
+            ((U.initialSegment H m hm).cut (idx i.castSucc)))
     rw [V.initialSegment_oneLift H n hn i]
     rw [V.initialSegment_cut_dep H n hn i.castSucc]
-    rw [show US = U.initialSegment H m hm by rfl]
     rw [U.initialSegment_liftTo H m hm]
     rw [U.initialSegment_cut_dep H m hm (idx i.castSucc)]
     simpa [src, idx, iv, vn, m, VS, US] using h
