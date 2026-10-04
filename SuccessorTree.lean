@@ -67,3 +67,5 @@ import SuccessorTree.NonPrecompact.QuadraticArithmetic
 import SuccessorTree.NonPrecompact.QuadraticCongruence
 
 import SuccessorTree.NonPrecompact.QuadraticMiddleCongruence
+
+import SuccessorTree.NonPrecompact.QuadraticResidueCollapse
