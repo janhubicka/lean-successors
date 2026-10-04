@@ -118,7 +118,6 @@ theorem fixedTraceGoodRows_base
         simpa [FiniteFatTree.traceTargetCut] using baseTraceSource H y
       · intro a ha
         rw [FiniteFatTree.traceLift_eq_liftSteps H y y.height le_rfl]
-        simp only [Nat.sub_self, FiniteFatTree.liftSteps_zero]
         have hid :
             id.representative H a = a := by
           exact MMap.toAM_one_representative_agrees
