@@ -119,7 +119,7 @@ theorem coeff_residueWeightGenerating_eq_card_filter
   classical
   unfold residueWeightGenerating
   change
-    (Finsupp.applyAddHom r)
+    (Finsupp.applyAddHom r : (ZMod q →₀ F2) →+ F2)
       (∑ x : V, residueZ q ^ Q x) =
       (((Finset.univ : Finset V).filter
         (fun x => (Q x : ZMod q) = r)).card : F2)
