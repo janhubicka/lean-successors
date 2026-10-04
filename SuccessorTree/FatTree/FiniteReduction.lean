@@ -1,4 +1,4 @@
-import SuccessorTree.FatTree.Lift
+import SuccessorTree.FatTree.Reduction
 
 /-!
 # Finite fat-tree reduction witnesses
@@ -69,87 +69,52 @@ def initialSegment
     ReductionWitness H
       (V.initialSegment H n hn)
       (U.initialSegment H
-        (w.index (⟨n, by omega⟩ : Fin (V.height + 1))).1
-        (by
-          exact Nat.le_of_lt_succ
-            (w.index (⟨n, by omega⟩ :
-              Fin (V.height + 1))).2)) where
-  index := fun i =>
-    ⟨(w.index
-        (⟨i.1, by omega⟩ : Fin (V.height + 1))).1,
-      by
-        have hi : i.1 ≤ n := Nat.le_of_lt_succ i.2
-        have hmono :=
-          w.index_strict.monotone
-            (show
-              (⟨i.1, by omega⟩ : Fin (V.height + 1)) ≤
-                (⟨n, by omega⟩ : Fin (V.height + 1)) by
-              exact hi)
-        exact Nat.lt_succ_of_le hmono⟩
-  index_strict := by
-    intro i j hij
+        (w.index (⟨n, Nat.lt_succ_of_le hn⟩ :
+          Fin (V.height + 1))).1
+        (Nat.le_of_lt_succ
+          (w.index (⟨n, Nat.lt_succ_of_le hn⟩ :
+            Fin (V.height + 1))).2)) := by
+  let vn : Fin (V.height + 1) :=
+    ⟨n, Nat.lt_succ_of_le hn⟩
+  let m : Nat := (w.index vn).1
+  have hm : m ≤ U.height :=
+    Nat.le_of_lt_succ (w.index vn).2
+  let src : Fin (n + 1) → Fin (V.height + 1) :=
+    fun i =>
+      ⟨i.1, Nat.lt_succ_of_le
+        ((Nat.le_of_lt_succ i.2).trans hn)⟩
+  let idx : Fin (n + 1) → Fin (m + 1) :=
+    fun i =>
+      ⟨(w.index (src i)).1,
+        Nat.lt_succ_of_le
+          (w.index_strict.monotone (by
+            change i.1 ≤ n
+            exact Nat.le_of_lt_succ i.2))⟩
+  change
+    ReductionWitness H
+      (V.initialSegment H n hn)
+      (U.initialSegment H m hm)
+  refine {
+    index := idx
+    index_strict := ?_
+    cut_eq := ?_
+    lift_subset := ?_
+  }
+  · intro i j hij
+    change (w.index (src i)).1 < (w.index (src j)).1
     exact w.index_strict (by
       change i.1 < j.1
       exact hij)
-  cut_eq := by
-    intro i
-    exact w.cut_eq
-      (⟨i.1, by omega⟩ : Fin (V.height + 1))
-  lift_subset := by
-    intro i
-    let iv : Fin V.height := ⟨i.1, by omega⟩
+  · intro i
+    have h := w.cut_eq (src i)
+    simpa [src, idx] using h
+  · intro i
+    let iv : Fin V.height :=
+      ⟨i.1, lt_of_lt_of_le i.2 hn⟩
     have h := w.lift_subset iv
     rw [V.initialSegment_oneLift H n hn i]
-    have htarget :
-        (U.initialSegment H
-          (w.index (⟨n, by omega⟩ :
-            Fin (V.height + 1))).1
-          (by
-            exact Nat.le_of_lt_succ
-              (w.index (⟨n, by omega⟩ :
-                Fin (V.height + 1))).2)).liftTo H
-          (⟨(w.index
-              (⟨i.castSucc.1, by omega⟩ :
-                Fin (V.height + 1))).1, by
-              have hi : i.castSucc.1 ≤ n := by omega
-              exact Nat.lt_succ_of_le
-                (w.index_strict.monotone hi)⟩)
-          (⟨(w.index
-              (⟨i.succ.1, by omega⟩ :
-                Fin (V.height + 1))).1, by
-              have hi : i.succ.1 ≤ n := by omega
-              exact Nat.lt_succ_of_le
-                (w.index_strict.monotone hi)⟩)
-          (by
-            exact le_of_lt
-              (w.index_strict (by
-                change i.1 < i.1 + 1
-                omega)))
-          (TreeLevel (T := T)
-            (U.cut
-              (w.index
-                (⟨i.castSucc.1, by omega⟩ :
-                  Fin (V.height + 1))))) =
-        U.liftTo H
-          (w.index
-            (⟨i.castSucc.1, by omega⟩ :
-              Fin (V.height + 1)))
-          (w.index
-            (⟨i.succ.1, by omega⟩ :
-              Fin (V.height + 1)))
-          (by
-            exact le_of_lt
-              (w.index_strict (by
-                change i.1 < i.1 + 1
-                omega)))
-          (TreeLevel (T := T)
-            (U.cut
-              (w.index
-                (⟨i.castSucc.1, by omega⟩ :
-                  Fin (V.height + 1))))) := by
-      apply U.initialSegment_liftTo H
-    rw [htarget]
-    simpa [iv] using h
+    rw [U.initialSegment_liftTo H m hm]
+    simpa [src, idx, iv, vn, m] using h
 
 /-- Iterate the one-block inclusions of a finite reduction witness.
 
@@ -425,5 +390,39 @@ theorem reduces_trans {V U W : FiniteFatTree H}
 
 end FiniteFatTree
 
+namespace FatTree.ReductionWitness
+
+variable (H : SMTree S)
+
+/-- Restrict an infinite reduction witness to the first `n` rows.
+The target finite initial segment ends at the image of the source terminal
+cut. -/
+def initialSegment
+    {V U : FatTree H}
+    (w : FatTree.ReductionWitness H V U) (n : Nat) :
+    FiniteFatTree.ReductionWitness H
+      (V.initialSegment H n)
+      (U.initialSegment H (w.index n)) where
+  index := fun i =>
+    ⟨w.index i.1,
+      Nat.lt_succ_of_le
+        (w.index_strict.monotone
+          (Nat.le_of_lt_succ i.2))⟩
+  index_strict := by
+    intro i j hij
+    exact w.index_strict (by
+      change i.1 < j.1
+      exact hij)
+  cut_eq := by
+    intro i
+    exact w.cut_eq i.1
+  lift_subset := by
+    intro i
+    have h := w.lift_subset i.1
+    rw [V.initialSegment_oneLift H n i]
+    rw [U.initialSegment_liftTo H (w.index n)]
+    simpa using h
+
+end FatTree.ReductionWitness
 end SMTree
 end SuccessorTree
