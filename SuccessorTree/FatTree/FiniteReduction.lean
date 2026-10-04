@@ -60,6 +60,97 @@ def refl (U : FiniteFatTree H) : ReductionWitness H U U where
     rw [U.liftTo_succ H i
       (TreeLevel (T := T) (U.cut i.castSucc))]
 
+/-- Restrict a finite reduction witness to an initial segment.
+The target prefix ends at the image of the retained terminal cut. -/
+def prefix
+    {V U : FiniteFatTree H}
+    (w : ReductionWitness H V U)
+    (n : Nat) (hn : n ≤ V.height) :
+    ReductionWitness H
+      (V.prefix H n hn)
+      (U.prefix H
+        (w.index (⟨n, by omega⟩ : Fin (V.height + 1))).1
+        (by
+          exact Nat.le_of_lt_succ
+            (w.index (⟨n, by omega⟩ :
+              Fin (V.height + 1))).2)) where
+  index := fun i =>
+    ⟨(w.index
+        (⟨i.1, by omega⟩ : Fin (V.height + 1))).1,
+      by
+        have hi : i.1 ≤ n := Nat.le_of_lt_succ i.2
+        have hmono :=
+          w.index_strict.monotone
+            (show
+              (⟨i.1, by omega⟩ : Fin (V.height + 1)) ≤
+                (⟨n, by omega⟩ : Fin (V.height + 1)) by
+              exact hi)
+        exact Nat.lt_succ_of_le hmono⟩
+  index_strict := by
+    intro i j hij
+    exact w.index_strict (by
+      change i.1 < j.1
+      exact hij)
+  cut_eq := by
+    intro i
+    exact w.cut_eq
+      (⟨i.1, by omega⟩ : Fin (V.height + 1))
+  lift_subset := by
+    intro i
+    let iv : Fin V.height := ⟨i.1, by omega⟩
+    have h := w.lift_subset iv
+    rw [V.prefix_oneLift H n hn i]
+    have htarget :
+        (U.prefix H
+          (w.index (⟨n, by omega⟩ :
+            Fin (V.height + 1))).1
+          (by
+            exact Nat.le_of_lt_succ
+              (w.index (⟨n, by omega⟩ :
+                Fin (V.height + 1))).2)).liftTo H
+          (⟨(w.index
+              (⟨i.castSucc.1, by omega⟩ :
+                Fin (V.height + 1))).1, by
+              have hi : i.castSucc.1 ≤ n := by omega
+              exact Nat.lt_succ_of_le
+                (w.index_strict.monotone hi)⟩)
+          (⟨(w.index
+              (⟨i.succ.1, by omega⟩ :
+                Fin (V.height + 1))).1, by
+              have hi : i.succ.1 ≤ n := by omega
+              exact Nat.lt_succ_of_le
+                (w.index_strict.monotone hi)⟩)
+          (by
+            exact le_of_lt
+              (w.index_strict (by
+                change i.1 < i.1 + 1
+                omega)))
+          (TreeLevel (T := T)
+            (U.cut
+              (w.index
+                (⟨i.castSucc.1, by omega⟩ :
+                  Fin (V.height + 1))))) =
+        U.liftTo H
+          (w.index
+            (⟨i.castSucc.1, by omega⟩ :
+              Fin (V.height + 1)))
+          (w.index
+            (⟨i.succ.1, by omega⟩ :
+              Fin (V.height + 1)))
+          (by
+            exact le_of_lt
+              (w.index_strict (by
+                change i.1 < i.1 + 1
+                omega)))
+          (TreeLevel (T := T)
+            (U.cut
+              (w.index
+                (⟨i.castSucc.1, by omega⟩ :
+                  Fin (V.height + 1))))) := by
+      apply U.prefix_liftTo H
+    rw [htarget]
+    simpa [iv] using h
+
 /-- Iterate the one-block inclusions of a finite reduction witness.
 
 The terminal cut is available in the type through the bound
