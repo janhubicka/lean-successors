@@ -172,7 +172,7 @@ theorem splice_row_lt
     {i : Nat} (hi : i < x.height) :
     HEq ((splice H x V n hcut).row i)
       (x.row ⟨i, hi⟩) := by
-  simp [splice, hi]
+  simp [splice, hi, castRow_heq]
 
 /-- At and after the splice point, rows are the shifted rows of the infinite
 tail. -/
@@ -183,7 +183,7 @@ theorem splice_row_ge
     HEq ((splice H x V n hcut).row i)
       (V.row (n + (i - x.height))) := by
   have hnot : ¬ i < x.height := Nat.not_lt_of_ge hi
-  simp [splice, hnot]
+  simp [splice, hnot, castRow_heq]
 
 end FatTree
 
