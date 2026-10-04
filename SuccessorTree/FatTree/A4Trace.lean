@@ -1,5 +1,6 @@
 import SuccessorTree.FatTree.A4
 import SuccessorTree.FatTree.Finitization
+import SuccessorTree.ShapeSplit
 
 /-!
 # Exact finite traces for fat-tree A4
@@ -90,6 +91,18 @@ theorem traceLift_eq_liftSteps
       y.liftSteps H n (y.height - n) (by omega)
         (TreeLevel (T := T) (traceSourceCut H y n hn)) := by
   rfl
+
+/-- Every endpoint of a finite trace Lift lies on the terminal cut of
+the finite fat tree. -/
+theorem traceLift_subset_targetLevel
+    (y : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ y.height) :
+    traceLift H y n hn ⊆
+      TreeLevel (T := T) (traceTargetCut H y) := by
+  unfold traceLift traceTargetCut
+  apply y.liftTo_subset_level H
+  intro a ha
+  exact ha
 
 /-- The old part of a trace Lift is unchanged after appending one row. -/
 theorem traceLift_prefix_appendRow
@@ -652,6 +665,172 @@ noncomputable def ExactTrace.extendByLetter
     refine ⟨e.toMMap (q.1.representative H a), ?_, rfl⟩
     exact ⟨q.1.representative H a, hqmem,
       H.letter_covBy e hqlev⟩
+
+/-- Reverse exact-trace update.
+
+Every exact trace through the appended tree has a predecessor exact trace
+through the old finite tree.  Pointwise, the new trace is obtained by
+choosing immediate successors of the predecessor trace and then applying
+the canonical extension of the appended row.  This is the missing reverse
+inclusion in the manuscript identity `Q_{y⌢h}=Q_y[h]`. -/
+theorem ExactTrace.exists_raw_predecessor
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height)
+    (theta : ExactTrace H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega)) :
+    ∃ q : ExactTrace H y n hn,
+      IsRawTraceUpdate H y h n hn q theta := by
+  let c0 : Nat := traceSourceCut H y n hn
+  let c1 : Nat :=
+    traceSourceCut H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega)
+  let d : Nat := traceTargetCut H y
+  have hsrc : c1 = c0 := by
+    dsimp [c0, c1]
+    exact traceSourceCut_appendRow H y h n hn
+  let theta0 : AM H c0 1 :=
+    castTraceRow H hsrc theta.1
+  have hcd : c0 ≤ d := by
+    dsimp [c0, d]
+    exact traceSourceCut_le_target H y n hn
+  have hdhtop : d ≤ h.rowEndLevel H := by
+    change y.terminalCut ≤ h.topLevel H
+    exact H.levelMap_id_le (h.representative H).map y.terminalCut
+  have hthetaTop : theta0.topLevel H = h.rowEndLevel H + 1 := by
+    change theta0.rowEndLevel H = h.rowEndLevel H + 1
+    calc
+      theta0.rowEndLevel H = theta.1.rowEndLevel H := by
+        simp [theta0]
+      _ = h.rowEndLevel H + 1 :=
+        theta.appendRow_rowEnd H y h n hn
+  have hdt : d ≤ theta0.topLevel H := by
+    rw [hthetaTop]
+    omega
+  obtain ⟨qrow, hqtop, hqle⟩ :=
+    exists_truncate_oneRow H theta0 d hcd hdt
+  have hqExact : IsExactTrace H y n hn qrow := by
+    refine ⟨?_, ?_⟩
+    · change qrow.topLevel H = traceTargetCut H y
+      simpa [d] using hqtop
+    · intro a ha
+      have ha1 : LevelTree.lev a = c1 := by
+        dsimp [c0] at ha
+        exact ha.trans hsrc.symm
+      have hthetaFan :=
+        theta.appendRow_image_mem_fan H y h n hn a ha1
+      rcases hthetaFan with
+        ⟨z, ⟨t, htLift, htz⟩, hthetaZ⟩
+      have htLevel :
+          LevelTree.lev t = d := by
+        have htTarget :=
+          traceLift_subset_targetLevel H y n hn htLift
+        exact htTarget
+      have hqLevel :
+          LevelTree.lev (qrow.representative H a) = d := by
+        calc
+          LevelTree.lev (qrow.representative H a) =
+              H.levelMap (qrow.representative H).map c0 := by
+            simpa [ha] using
+              (H.levelMap_eq (qrow.representative H).map (a := a)).symm
+          _ = qrow.topLevel H := rfl
+          _ = d := hqtop
+      have htheta0Eq :
+          theta0.representative H a = theta.1.representative H a := by
+        simp [theta0]
+      have hqTheta :
+          qrow.representative H a ≤ theta.1.representative H a := by
+        have hq0 := hqle a (by
+          dsimp [c0]
+          exact ha)
+        rwa [htheta0Eq] at hq0
+      let C : MMap H :=
+        H.canonicalExtension (h.representative H) y.terminalCut
+      have hCfix : C.FixesBelow H d := by
+        intro x hx
+        have hxd : LevelTree.lev x < y.terminalCut := by
+          simpa [d] using hx
+        dsimp [C]
+        rw [H.canonicalExtension_agrees
+          (h.representative H) y.terminalCut x (Nat.le_of_lt hxd)]
+        exact h.representative_fixesBelow H x hxd
+      have htC : t ≤ C t :=
+        C.le_apply_at_cut H d hCfix (by simpa [d] using htLevel)
+      have hCmono : C t ≤ C z :=
+        C.map.map_le_of_le htz.le
+      have htTheta :
+          t ≤ theta.1.representative H a := by
+        rw [hthetaZ]
+        exact htC.trans hCmono
+      have hqt : qrow.representative H a = t := by
+        rcases LevelTree.comparable_below hqTheta htTheta with h | h
+        · exact LevelTree.same_level_of_le h
+            (hqLevel.trans htLevel.symm)
+        · exact (LevelTree.same_level_of_le h
+            (htLevel.trans hqLevel.symm)).symm
+      rw [hqt]
+      exact htLift
+  let q : ExactTrace H y n hn := ⟨qrow, hqExact⟩
+  refine ⟨q, ?_⟩
+  intro a ha
+  have ha1 : LevelTree.lev a = c1 := by
+    dsimp [c0] at ha
+    exact ha.trans hsrc.symm
+  have hthetaFan :=
+    theta.appendRow_image_mem_fan H y h n hn a ha1
+  rcases hthetaFan with
+    ⟨z, ⟨t, htLift, htz⟩, hthetaZ⟩
+  have htLevel :
+      LevelTree.lev t = d :=
+    traceLift_subset_targetLevel H y n hn htLift
+  have hqLevel :
+      LevelTree.lev (q.1.representative H a) = d := by
+    calc
+      LevelTree.lev (q.1.representative H a) =
+          H.levelMap (q.1.representative H).map c0 := by
+        simpa [ha] using
+          (H.levelMap_eq (q.1.representative H).map (a := a)).symm
+      _ = q.1.topLevel H := rfl
+      _ = d := hqtop
+  have htheta0Eq :
+      theta0.representative H a = theta.1.representative H a := by
+    simp [theta0]
+  have hqTheta :
+      q.1.representative H a ≤ theta.1.representative H a := by
+    have hq0 := hqle a (by
+      dsimp [c0]
+      exact ha)
+    rwa [htheta0Eq] at hq0
+  let C : MMap H :=
+    H.canonicalExtension (h.representative H) y.terminalCut
+  have hCfix : C.FixesBelow H d := by
+    intro x hx
+    have hxd : LevelTree.lev x < y.terminalCut := by
+      simpa [d] using hx
+    dsimp [C]
+    rw [H.canonicalExtension_agrees
+      (h.representative H) y.terminalCut x (Nat.le_of_lt hxd)]
+    exact h.representative_fixesBelow H x hxd
+  have htC : t ≤ C t :=
+    C.le_apply_at_cut H d hCfix (by simpa [d] using htLevel)
+  have hCmono : C t ≤ C z :=
+    C.map.map_le_of_le htz.le
+  have htTheta :
+      t ≤ theta.1.representative H a := by
+    rw [hthetaZ]
+    exact htC.trans hCmono
+  have hqt : q.1.representative H a = t := by
+    rcases LevelTree.comparable_below hqTheta htTheta with h | h
+    · exact LevelTree.same_level_of_le h
+        (hqLevel.trans htLevel.symm)
+    · exact (LevelTree.same_level_of_le h
+        (htLevel.trans hqLevel.symm)).symm
+  refine ⟨z, ?_, ?_⟩
+  · simpa [hqt] using htz
+  · exact hthetaZ
+
 
 end FiniteFatTree
 
