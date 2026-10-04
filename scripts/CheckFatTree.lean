@@ -1,3 +1,4 @@
+import SuccessorTree.FatTree.Reduction
 import SuccessorTree.FatTree.Finitization
 
 open SuccessorTree
