@@ -73,3 +73,4 @@ import SuccessorTree.FatTree.A4Profiles
 
 import SuccessorTree.FatTree.A4Factor
 import SuccessorTree.FatTree.A4Good
+import SuccessorTree.FatTree.A4History
