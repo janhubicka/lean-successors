@@ -123,7 +123,20 @@ def FixedTerminalCode (d : Nat) :=
 
 noncomputable instance fixedTerminalCodeFintype (d : Nat) :
     Fintype (FixedTerminalCode (T := T) d) := by
-  letI : Fintype (InitialNode T d) := initialNodeFintype T d
+  letI node : Fintype (InitialNode T d) := initialNodeFintype T d
+  letI nodeOpt : Fintype (Option (InitialNode T d)) := inferInstance
+  letI rowMap :
+      Fintype (InitialNode T d → Option (InitialNode T d)) := inferInstance
+  letI rowOpt :
+      Fintype (Option (InitialNode T d → Option (InitialNode T d))) :=
+    inferInstance
+  letI cutOpt : Fintype (Option (Fin (d + 1))) := inferInstance
+  letI cutMap :
+      Fintype (Fin (d + 1) → Option (Fin (d + 1))) := inferInstance
+  letI rows :
+      Fintype
+        (Fin d → Option (InitialNode T d → Option (InitialNode T d))) :=
+    inferInstance
   unfold FixedTerminalCode
   infer_instance
 
@@ -192,11 +205,17 @@ theorem fixedTerminalCode_injective (d : Nat) :
   have hUd : uh ≤ d := by
     have h :=
       (FiniteFatTree.mk uh uc uz ur urc).height_le_terminalCut H
-    simpa [FiniteFatTree.terminalCut, hUt] using h
+    calc
+      uh ≤ uc ⟨uh, Nat.lt_succ_self uh⟩ := by
+        simpa [FiniteFatTree.terminalCut] using h
+      _ = d := hUt
   have hVd : uh ≤ d := by
     have h :=
       (FiniteFatTree.mk uh vc vz vr vrc).height_le_terminalCut H
-    simpa [FiniteFatTree.terminalCut, hVt] using h
+    calc
+      uh ≤ vc ⟨uh, Nat.lt_succ_self uh⟩ := by
+        simpa [FiniteFatTree.terminalCut] using h
+      _ = d := hVt
   have hcut : uc = vc := by
     funext i
     have hi : i.1 ≤ uh := Nat.le_of_lt_succ i.2
@@ -207,11 +226,17 @@ theorem fixedTerminalCode_injective (d : Nat) :
     have hUc : uc i ≤ d := by
       have h :=
         (FiniteFatTree.mk uh uc uz ur urc).cut_le_terminalCut H i
-      simpa [FiniteFatTree.terminalCut, hUt] using h
+      calc
+        uc i ≤ uc ⟨uh, Nat.lt_succ_self uh⟩ := by
+          simpa [FiniteFatTree.terminalCut] using h
+        _ = d := hUt
     have hVc : vc i ≤ d := by
       have h :=
         (FiniteFatTree.mk uh vc vz vr vrc).cut_le_terminalCut H i
-      simpa [FiniteFatTree.terminalCut, hVt] using h
+      calc
+        vc i ≤ vc ⟨uh, Nat.lt_succ_self uh⟩ := by
+          simpa [FiniteFatTree.terminalCut] using h
+        _ = d := hVt
     have hs :
         some (⟨uc i, Nat.lt_succ_of_le hUc⟩ : Fin (d + 1)) =
           some (⟨vc i, Nat.lt_succ_of_le hVc⟩ : Fin (d + 1)) := by
@@ -225,20 +250,29 @@ theorem fixedTerminalCode_injective (d : Nat) :
     have hr := congrFun hrows j
     have hUend : (ur i).rowEndLevel H < d := by
       have hrc := urc i
-      have hterminal :
-          uc i.succ ≤ d := by
+      have hterminal : uc i.succ ≤ d := by
         have h :=
           (FiniteFatTree.mk uh uc uz ur urc).cut_le_terminalCut H i.succ
-        simpa [FiniteFatTree.terminalCut, hUt] using h
+        calc
+          uc i.succ ≤ uc ⟨uh, Nat.lt_succ_self uh⟩ := by
+            simpa [FiniteFatTree.terminalCut] using h
+          _ = d := hUt
       omega
     have hVend : (vr i).rowEndLevel H < d := by
       have hrc := vrc i
-      have hterminal :
-          uc i.succ ≤ d := by
+      have hterminal : uc i.succ ≤ d := by
         have h :=
           (FiniteFatTree.mk uh uc vz vr vrc).cut_le_terminalCut H i.succ
-        simpa [FiniteFatTree.terminalCut, hVt] using h
+        calc
+          uc i.succ ≤ uc ⟨uh, Nat.lt_succ_self uh⟩ := by
+            simpa [FiniteFatTree.terminalCut] using h
+          _ = d := hVt
       omega
+    let i0 : Fin uh := ⟨i.1, i.2⟩
+    have hi0 : i0 = i := Fin.ext rfl
+    have hbase :
+        (⟨i.1, Nat.lt_succ_of_lt i.2⟩ : Fin (uh + 1)) =
+          i.castSucc := Fin.ext rfl
     have hs :
         some
             (uniformRowCode H (uc i.castSucc) d
@@ -246,7 +280,7 @@ theorem fixedTerminalCode_injective (d : Nat) :
           some
             (uniformRowCode H (uc i.castSucc) d
               ⟨vr i, hVend⟩) := by
-      simpa [fixedTerminalCode, j, i.2] using hr
+      simpa [fixedTerminalCode, j, i0, hi0, hbase, i.2] using hr
     have hb :=
       uniformRowCode_injective H (uc i.castSucc) d
         (Option.some.inj hs)
