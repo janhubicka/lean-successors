@@ -26,7 +26,7 @@ namespace FiniteFatTree
 variable (H : SMTree S)
 
 /-- Natural-number cut function for adjoining one row to a finite fat tree. -/
-private def appendCut
+private noncomputable def appendCut
     (x : FiniteFatTree H)
     (g : AM H x.terminalCut 1)
     (i : Nat) : Nat :=
@@ -64,7 +64,7 @@ noncomputable def appendRow
     · have hieq : i.1 = x.height := by omega
       have hc :
           x.terminalCut = c i.1 := by
-        subst hieq
+        rw [hieq]
         simp [c, appendCut, FiniteFatTree.terminalCut]
       exact FatTree.castRow H hc g
   refine {
@@ -140,8 +140,12 @@ theorem appendRow_row_old
     (g : AM H x.terminalCut 1)
     (i : Fin x.height) :
     HEq ((appendRow H x g).row i.castSucc) (x.row i) := by
-  simp only [appendRow]
-  have hi : i.1 < x.height := i.2
+  change HEq
+    (FatTree.castRow H
+      (by
+        simp [appendCut, i.2, Nat.le_of_lt i.2])
+      (x.row i))
+    (x.row i)
   exact FatTree.castRow_heq H _ (x.row i)
 
 /-- The last row of an appended tree is the row that was appended. -/
@@ -149,16 +153,25 @@ theorem appendRow_row_last
     (x : FiniteFatTree H)
     (g : AM H x.terminalCut 1) :
     HEq ((appendRow H x g).row (Fin.last x.height)) g := by
-  simp only [appendRow]
+  change HEq
+    (FatTree.castRow H
+      (by
+        simp [appendCut, FiniteFatTree.terminalCut])
+      g)
+    g
   exact FatTree.castRow_heq H _ g
 
 /-- Appending a row literally preserves the original finite prefix. -/
 theorem appendRow_initialSegment
     (x : FiniteFatTree H)
     (g : AM H x.terminalCut 1) :
-    (appendRow H x g).initialSegment H x.height (by omega) = x := by
+    (appendRow H x g).initialSegment H x.height
+      (by rw [appendRow_height]; omega) = x := by
+  let hxle : x.height ≤ (appendRow H x g).height := by
+    rw [appendRow_height]
+    omega
   refine FiniteFatTree.ext_pointwise H
-    (U := (appendRow H x g).initialSegment H x.height (by omega))
+    (U := (appendRow H x g).initialSegment H x.height hxle)
     (V := x) rfl ?_ ?_
   · intro i
     change (appendRow H x g).cut i.1 = x.cut i
