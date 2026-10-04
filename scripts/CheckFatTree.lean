@@ -48,3 +48,7 @@ open SuccessorTree
 
 #print axioms SMTree.FatTree.ReductionWitness.trans
 #print axioms SMTree.FatTree.reduces_trans
+
+#check SMTree.FiniteFatTree.ReductionWitness
+#check SMTree.FiniteFatTree.ReductionWitness.refl
+#check SMTree.FiniteFatTree.reduces_refl
