@@ -555,7 +555,7 @@ theorem liftSteps_mono (U : FiniteFatTree H)
   | succ steps ih =>
       rw [U.liftSteps_succ H i steps h X,
           U.liftSteps_succ H i steps h Y]
-      exact ih (i := i + 1)
+      exact ih (i := i + 1) (by omega)
         (X := U.oneLift H (⟨i, by omega⟩ : Fin U.height) X)
         (Y := U.oneLift H (⟨i, by omega⟩ : Fin U.height) Y)
         (U.oneLift_mono H (⟨i, by omega⟩ : Fin U.height) hXY)
