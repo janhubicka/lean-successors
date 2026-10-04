@@ -330,9 +330,13 @@ theorem exists_shapeSplit_factor
                 exact ⟨by simpa [hGtop] using hmG, trivial⟩
               obtain ⟨P, Q, hPagree, hPtop, hQfix, hQP⟩ :=
                 ih (top - 1) hsmall G hGtop hGcut
-              have hDfixm : D.FixesBelow H m := by
+              have hDfixTop' : D.FixesBelow H (top - 1) := by
                 intro x hx
                 apply hDfixTop x
+                simpa [hKtop] using hx
+              have hDfixm : D.FixesBelow H m := by
+                intro x hx
+                apply hDfixTop' x
                 have hmTop : m ≤ top - 1 := by omega
                 exact lt_of_lt_of_le hx hmTop
               let R : MMap H := MMap.comp H D Q
