@@ -57,46 +57,79 @@ def splice
   · by_cases hpos : 0 < x.height
     · simpa [c, hpos] using x.cut_zero
     · have hh : x.height = 0 := Nat.eq_zero_of_not_pos hpos
+      have hlast :
+          (Fin.last x.height : Fin (x.height + 1)) =
+            (0 : Fin (x.height + 1)) := by
+        apply Fin.ext
+        simp [hh]
       have hx0 : x.terminalCut = 0 := by
-        subst hh
-        simpa [FiniteFatTree.terminalCut] using x.cut_zero
+        unfold FiniteFatTree.terminalCut
+        rw [hlast]
+        exact x.cut_zero
       have hv0 : V.cut n = 0 := hcut.symm.trans hx0
       simp [c, hpos, hv0]
   · intro i
     by_cases hi : i < x.height
     · let ix : Fin x.height := ⟨i, hi⟩
+      have hrow :
+          HEq (r i) (x.row ix) := by
+        simp [r, c, hi, ix]
+      have hend :
+          (r i).rowEndLevel H =
+            (x.row ix).rowEndLevel H := by
+        cases hrow
+        rfl
       have hr := x.row_cut ix
       by_cases hnext : i + 1 < x.height
-      · have hs :
-            ix.succ =
+      · calc
+          (r i).rowEndLevel H + 1 =
+              (x.row ix).rowEndLevel H + 1 := by rw [hend]
+          _ = x.cut ix.succ := hr
+          _ = x.cut
               (⟨i + 1, Nat.lt_succ_of_lt hnext⟩ :
-                Fin (x.height + 1)) := Fin.ext rfl
-        rw [hs] at hr
-        simpa [r, c, hi, hnext, ix] using hr
-      · have heq : i + 1 = x.height := by omega
-        have hs :
-            ix.succ =
-              (⟨x.height, Nat.lt_succ_self x.height⟩ :
                 Fin (x.height + 1)) := by
+                congr 1
+                apply Fin.ext
+                rfl
+          _ = c (i + 1) := by
+                simp [c, hnext]
+      · have heq : i + 1 = x.height := by omega
+        have hlast :
+            ix.succ = Fin.last x.height := by
           apply Fin.ext
           exact heq
-        have hprefix :
-            (r i).rowEndLevel H + 1 = x.terminalCut := by
-          rw [← hs]
-          simpa [r, c, hi, ix] using hr
         calc
-          (r i).rowEndLevel H + 1 = x.terminalCut := hprefix
+          (r i).rowEndLevel H + 1 =
+              (x.row ix).rowEndLevel H + 1 := by rw [hend]
+          _ = x.cut ix.succ := hr
+          _ = x.terminalCut := by
+                unfold FiniteFatTree.terminalCut
+                rw [hlast]
           _ = V.cut n := hcut
           _ = c (i + 1) := by
-            simp [c, hnext, heq]
+                simp [c, hnext, heq]
     · have hnext : ¬ i + 1 < x.height := by omega
       let q : Nat := n + (i - x.height)
+      have hrow :
+          HEq (r i) (V.row q) := by
+        simp [r, c, hi, q]
+      have hend :
+          (r i).rowEndLevel H =
+            (V.row q).rowEndLevel H := by
+        cases hrow
+        rfl
       have hq := V.row_cut q
       have hidx :
           n + (i + 1 - x.height) = q + 1 := by
         dsimp [q]
         omega
-      simpa [r, c, hi, hnext, q, hidx] using hq
+      calc
+        (r i).rowEndLevel H + 1 =
+            (V.row q).rowEndLevel H + 1 := by rw [hend]
+        _ = V.cut (q + 1) := hq
+        _ = c (i + 1) := by
+              simp [c, hnext, q, hidx]
+
 
 @[simp] theorem splice_cut_lt
     (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
