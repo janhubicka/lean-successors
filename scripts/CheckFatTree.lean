@@ -67,5 +67,9 @@ open SuccessorTree
 #print axioms SMTree.FiniteFatTree.leFin_trans
 #check SMTree.FiniteFatTree.leFin_lower_finite
 #print axioms SMTree.FiniteFatTree.leFin_lower_finite
+#check SMTree.FiniteFatTree.reduces_iff_initialSegment_leFin
+#print axioms SMTree.FiniteFatTree.reduces_iff_initialSegment_leFin
+#check SMTree.FiniteFatTree.leFin_prefix
+#print axioms SMTree.FiniteFatTree.leFin_prefix
 
 #check @SMTree.FiniteFatTree.ext_data
