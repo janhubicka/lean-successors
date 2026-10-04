@@ -109,7 +109,7 @@ def initialSegment
     change Fin (n + 1) at i
     rw [V.initialSegment_cut H n hn i]
     rw [U.initialSegment_cut H m hm (idx i)]
-    exact w.cut_eq (src i)
+    simpa [src, idx] using w.cut_eq (src i)
   · intro i
     change Fin n at i
     let iv : Fin V.height :=
