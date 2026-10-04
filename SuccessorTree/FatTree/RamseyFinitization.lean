@@ -21,7 +21,7 @@ namespace FatTree
 
 variable (H : SMTree S)
 
-private abbrev S0 := approximationSystem H
+private noncomputable def S0 := approximationSystem H
 
 /-- Forget the level tag of a typed finite approximation.  The level is
 recoverable from the height of the underlying finite fat tree. -/
@@ -40,7 +40,7 @@ theorem finiteApproxTree_injective :
       n = A.height := hA.symm
       _ = B.height := congrArg FiniteFatTree.height hab
       _ = m := hB
-  subst m
+  cases hnm
   apply Sigma.ext rfl
   apply Subtype.ext
   exact hab
@@ -59,7 +59,7 @@ theorem tree_eq_initialSegment_of_isInitial
     (hab : (S0 H).IsInitial a b) :
     ∃ hnm : n ≤ m,
       a.1 = b.1.initialSegment H n
-        (by simpa [b.2] using hnm) := by
+        (by exact hnm.trans_eq b.2.symm) := by
   change n ≤ m ∧
     ∃ X : FatTree H,
       exactApprox H n X = a ∧ exactApprox H m X = b at hab
@@ -80,9 +80,12 @@ theorem tree_eq_initialSegment_of_isInitial
     _ = (X.initialSegment H m).initialSegment H n hnm :=
       hprefix.symm
     _ = b.1.initialSegment H n
-        (by simpa [b.2] using hnm) := by
+        (by exact hnm.trans_eq b.2.symm) := by
       exact FiniteFatTree.initialSegment_congr H hb n
-        (by simp) (by simpa [b.2] using hnm)
+        (by
+          change n ≤ m
+          exact hnm)
+        (hnm.trans_eq b.2.symm)
 
 /-- The concrete A2 theorems packaged in Todorčević's typed interface. -/
 noncomputable def finitization :
@@ -133,13 +136,13 @@ noncomputable def finitization :
     rcases FiniteFatTree.leFin_prefix H hbc' n
         (by simpa [b.2] using hnm) with
       ⟨j, hj, hfin⟩
+    have hjk : j ≤ k := hj.trans_eq c.2
     let dTree : FiniteFatTree H :=
       c.1.initialSegment H j hj
     let d : (S0 H).Approx j :=
       ⟨dTree, rfl⟩
     refine ⟨j, d, ?_, ?_⟩
-    · refine ⟨?_, completeExact H c, ?_, exactApprox_completeExact H c⟩
-      · simpa [c.2] using hj
+    · refine ⟨hjk, completeExact H c, ?_, exactApprox_completeExact H c⟩
       · apply Subtype.ext
         have hc :
             (completeExact H c).initialSegment H k = c.1 := by
@@ -148,16 +151,11 @@ noncomputable def finitization :
             (completeExact H c).initialSegment H j =
               c.1.initialSegment H j hj := by
           have hprefix :=
-            (completeExact H c).initialSegment_initialSegment H k j
-              (by
-                change j ≤ k
-                exact hj)
+            (completeExact H c).initialSegment_initialSegment H k j hjk
           calc
             (completeExact H c).initialSegment H j =
                 ((completeExact H c).initialSegment H k).initialSegment H j
-                  (by
-                    change j ≤ k
-                    exact hj) := hprefix.symm
+                  hjk := hprefix.symm
             _ = c.1.initialSegment H j hj := by
               exact FiniteFatTree.initialSegment_congr H hc j _ _
         exact hseg
