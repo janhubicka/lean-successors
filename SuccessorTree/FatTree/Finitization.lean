@@ -22,6 +22,54 @@ namespace FiniteFatTree
 
 variable (H : SMTree S)
 
+/-- Finite code for a one-row approximation whose last image level is
+strictly below a fixed ambient cut. -/
+noncomputable def boundedRowCode (n d : Nat)
+    (a : {a : AM H n 1 // a.rowEndLevel H < d}) :
+    InitialNode T n → InitialNode T d := by
+  intro x
+  let F : MMap H := a.1.representative H
+  have htop := a.1.representative_top H
+  have hval := congrArg Subtype.val htop
+  change F.restrictLe H n = a.1.1 at hval
+  have hx : a.1.1 x = F x.1 := by
+    exact (congrFun hval x).symm
+  refine ⟨a.1.1 x, ?_⟩
+  have hlev :
+      LevelTree.lev (F x.1) ≤ H.levelMap F.map n := by
+    calc
+      LevelTree.lev (F x.1) =
+          H.levelMap F.map (LevelTree.lev x.1) :=
+        (H.levelMap_eq F.map (a := x.1)).symm
+      _ ≤ H.levelMap F.map n :=
+        (H.levelMap_strictMono F.map).monotone x.2
+  have hend : H.levelMap F.map n = a.1.rowEndLevel H := rfl
+  rw [hx, hend]
+  exact Nat.le_of_lt (hlev.trans_lt a.2)
+
+/-- The bounded row code is injective: a realized finite row is determined
+by its values on the finite source initial segment. -/
+theorem boundedRowCode_injective (n d : Nat) :
+    Function.Injective (boundedRowCode H n d) := by
+  classical
+  intro a b hab
+  apply Subtype.ext
+  apply Subtype.ext
+  apply Subtype.ext
+  funext x
+  have hx := congrFun hab x
+  exact congrArg Subtype.val hx
+
+/-- For fixed source cut and ambient terminal bound there are only finitely
+many possible one-row approximations. -/
+theorem boundedRows_finite (n d : Nat) :
+    Set.Finite {a : AM H n 1 | a.rowEndLevel H < d} := by
+  classical
+  rw [← Set.finite_coe_iff]
+  exact Finite.of_injective
+    (boundedRowCode H n d)
+    (boundedRowCode_injective H n d)
+
 /-- The manuscript's finitary order on finite fat trees: reduction with the
 same terminal ambient cut. -/
 def LeFin (X Y : FiniteFatTree H) : Prop :=
