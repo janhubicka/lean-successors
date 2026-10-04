@@ -32,6 +32,7 @@ OPTIONAL_RULES = {
     'fat-tree-lift',
     'fat-tree-reduction',
     'fat-tree-finitization',
+    'fat-tree-amalgamation',
 }
 
 # The exact anchors below were read in the recoverable Library main.tex.
@@ -94,7 +95,7 @@ The formal theorem also works below an arbitrary prescribed subspace.}
 \fi
 '''),
     ('fat-tree-definition', r'\begin{definition}[Fat subtree]', r'''
-\successorleanverified{SuccessorTree/FatTree/Basic.lean}{FatTree.cut\_strictMono}
+\successorfatleanverified{SuccessorTree/FatTree/Basic.lean}{FatTree.cut\_strictMono}
 \ifshowvalidation
 \todo[inline]{Řehořek: The fat-tree data are formalized for both finite and
 infinite height. It is cleaner to record the row condition as
@@ -105,7 +106,7 @@ $q$, keep all $q+1$ cuts, including the terminal cut.}
 \fi
 '''),
     ('fat-tree-lift', r'\label{def:lift}', r'''
-\successorleanverified{SuccessorTree/FatTree/Lift.lean}{FatTree.liftTo\_mem\_of\_mem\_of\_source}
+\successorfatleanverified{SuccessorTree/FatTree/Lift.lean}{FatTree.liftTo\_mem\_of\_mem\_of\_source}
 \ifshowvalidation
 \todo[inline]{Řehořek: Here $u_i^+$ must mean the canonical extension from
 Proposition~\ref{prop:canonical}, not an arbitrary total representative of
@@ -117,7 +118,7 @@ cut.}
 \fi
 '''),
     ('fat-tree-reduction', r'\label{def:subfatsubtrees}', r'''
-\successorleanverified{SuccessorTree/FatTree/FiniteReduction.lean}{FiniteFatTree.reduces\_trans}
+\successorfatleanverified{SuccessorTree/FatTree/FiniteReduction.lean}{FiniteFatTree.reduces\_trans}
 \ifshowvalidation
 \todo[inline]{Řehořek: Reflexivity and transitivity of the fat-subtree order
 are checked for both finite and infinite trees. The finite witness map is
@@ -130,17 +131,31 @@ needed.}
 \fi
 '''),
     ('fat-tree-finitization', r'\label{item:A2}', r'''
-\successorleanpartial{SuccessorTree/FatTree/Finitization.lean}{FiniteFatTree.leFin\_trans}
+\successorfatleanverified{SuccessorTree/FatTree/Finitization.lean}{A2(1)--A2(3)}
 \ifshowvalidation
-\todo[inline]{Řehořek: The proposed finite order
-$x\leq_{\rm fin}y\iff x\leq y$ with equal terminal cuts is checked to be a
-quasi-order. Formalization also bounds the height by the terminal cut and is
-reducing A2(1) to explicit finite codes for rows. Do not yet call
-A2(1)--(3) direct from the definition: lower-cone finiteness and the two
-approximation clauses should receive their own finite-code proofs.}
+\todo[inline]{Řehořek: All three A2 clauses are Lean-checked. The current
+claim that A2(2) and A2(3) follow directly from the definition should be
+expanded slightly. For A2(1), fix the terminal cut $d$: height is at most
+$d$, every row ending below $d$ is encoded by a map between finite initial
+segments of $T$, and hence only finitely many finite fat trees end at $d$.
+For the converse in A2(2), equality of terminal cuts and injectivity of the
+ambient cut make the target indices of the finite witnesses coherent; these
+assemble to one strictly increasing infinite witness. A2(3) is restriction
+of a finite reduction witness to an initial segment, retaining the terminal
+cut. No EA hypothesis is used.}
 \fi
 '''),
-    ('validation-boundary', r'\label{sec:finite-direct}', r'''
+    ('fat-tree-amalgamation', r'\label{item:A3}', r'''
+\successorfatleanpartial{SuccessorTree/FatTree/Amalgamation.lean}{FatTree.splice}
+\ifshowvalidation
+\todo[inline]{Řehořek: The concatenation used in A3 is being formalized as
+an explicit splice of a finite fat tree to an infinite tail at a matching
+terminal cut. The cut/row projections are the first obligations. Do not mark
+A3(1) or A3(2) verified until the splice reduction and neighbourhood
+inclusion statements are proved. This construction uses no EA hypothesis.}
+\fi
+'''),
+        ('validation-boundary', r'\label{sec:finite-direct}', r'''
 \successorleaninterface{SuccessorTree/Tree.lean}{LevelTree}
 \ifshowvalidation
 \todo[inline]{Řehořek: Validation scope: the finite-dimensional theorem is
@@ -204,6 +219,8 @@ the terminal cut in finite height.
 \begin{enumerate}[label=(A\arabic*)]
 \item \label{item:A2} There is a quasi-ordering $\finleq$ on
 $\mathcal{AR}$ satisfying the finitization clauses.
+\item \label{item:A3} Amalgamation is witnessed by concatenating a finite
+stem with an infinite tail at a matching cut.
 \end{enumerate}
 
 % [Uninspected material omitted from this test fixture.]
