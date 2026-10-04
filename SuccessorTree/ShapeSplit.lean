@@ -124,7 +124,7 @@ theorem exists_lower_moving_level_once
             H.levelMap_of_skipsOnly D.map (t - 1) hDskip
               (LevelTree.lev (G a))
       rw [hcomp, hFa] at hlev
-      omega
+      split at hlev <;> omega
     have hGtop : H.levelMap G.map 0 = t - 1 := by
       calc
         H.levelMap G.map 0 = LevelTree.lev (G a) := by
