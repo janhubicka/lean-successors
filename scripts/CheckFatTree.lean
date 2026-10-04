@@ -6,13 +6,24 @@ open SuccessorTree
 #check SMTree.FiniteFatTree
 #check SMTree.FatTree.cut_strictMono
 #check SMTree.FatTree.rowExtension_level_succ
+#check SMTree.MMap.le_apply_of_fixesBelow
+#check SMTree.FatTree.rowExtension_fixesBelow
 #check SMTree.FatTree.oneLift_subset_nextLevel
+#check SMTree.FatTree.oneLift_descends
+#check SMTree.FatTree.oneLift_mem_of_mem_full_of_source
 #check SMTree.FatTree.liftSteps_subset_level
+#check SMTree.FatTree.liftSteps_descends
+#check SMTree.FatTree.liftSteps_mem_of_mem_of_source
 #check SMTree.FatTree.liftTo_subset_level
+#check SMTree.FatTree.liftTo_descends
+#check SMTree.FatTree.liftTo_mem_of_mem_of_source
 
 #print axioms SMTree.FatTree.cut_strictMono
 #print axioms SMTree.FatTree.rowExtension_level_succ
-#print axioms SMTree.FatTree.liftSteps_subset_level
+#print axioms SMTree.MMap.le_apply_of_fixesBelow
+#print axioms SMTree.FatTree.oneLift_mem_of_mem_full_of_source
+#print axioms SMTree.FatTree.liftSteps_mem_of_mem_of_source
+
 #check SMTree.FatTree.ReductionWitness
 #check SMTree.FatTree.ReductionWitness.index_zero
 #check SMTree.FatTree.reduces_refl
