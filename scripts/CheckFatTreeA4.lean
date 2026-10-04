@@ -1,4 +1,4 @@
-import SuccessorTree.FatTree.A4
+import SuccessorTree.FatTree.A4Trace
 
 open SuccessorTree
 
@@ -11,3 +11,8 @@ open SuccessorTree
 #check SMTree.FiniteFatTree.appendRow_initialSegment
 
 #print axioms SMTree.FiniteFatTree.appendRow_initialSegment
+
+#check SMTree.FiniteFatTree.IsExactTrace
+#check SMTree.FiniteFatTree.ExactTrace
+#check SMTree.FiniteFatTree.exactTraces_finite
+#print axioms SMTree.FiniteFatTree.exactTraces_finite
