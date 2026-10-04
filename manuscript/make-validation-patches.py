@@ -185,6 +185,29 @@ REFERENCE = r'''\theoremstyle{remark}
 
 % [Uninspected material omitted from this test fixture.]
 
+\begin{definition}[Fat subtree]
+Let $\SNtree$ be an $(\S,\M)$-tree and $n\in\omega+1$.
+A fat subtree of height $n$ is a sequence with a cut function.
+\end{definition}
+
+\begin{definition}[Lift of a set]
+\label{def:lift}
+The operation $\operatorname{Lift}$ is defined recursively.
+\end{definition}
+
+\begin{definition}[Fat subtree of a fat subtree]
+\label{def:subfatsubtrees}
+The reduction is witnessed by a strictly increasing map of cuts, including
+the terminal cut in finite height.
+\end{definition}
+
+\begin{enumerate}[label=(A\arabic*)]
+\item \label{item:A2} There is a quasi-ordering $\finleq$ on
+$\mathcal{AR}$ satisfying the finitization clauses.
+\end{enumerate}
+
+% [Uninspected material omitted from this test fixture.]
+
 \subsection{A direct finite-dimensional proof}\label{sec:finite-direct}
 The finite-dimensional theorem follows from the preceding finite-trace and large-set arguments without the full fat-tree Ellentuck theorem. The distinction between canonical composites and arbitrary geometric reductions is essential.
 
