@@ -25,7 +25,7 @@ private abbrev S0 := approximationSystem H
 
 /-- Forget the level tag of a typed finite approximation.  The level is
 recoverable from the height of the underlying finite fat tree. -/
-def finiteApproxTree :
+noncomputable def finiteApproxTree :
     (S0 H).FiniteApprox → FiniteFatTree H
   | ⟨_, a⟩ => a.1
 
@@ -41,8 +41,9 @@ theorem finiteApproxTree_injective :
       _ = B.height := congrArg FiniteFatTree.height hab
       _ = m := hB
   subst m
-  subst B
-  rfl
+  apply Sigma.ext rfl
+  apply Subtype.ext
+  exact hab
 
 /-- Typed A2 order: forget the level tags and use the concrete finite
 fat-tree order. -/
@@ -59,6 +60,9 @@ theorem tree_eq_initialSegment_of_isInitial
     ∃ hnm : n ≤ m,
       a.1 = b.1.initialSegment H n
         (by simpa [b.2] using hnm) := by
+  change n ≤ m ∧
+    ∃ X : FatTree H,
+      exactApprox H n X = a ∧ exactApprox H m X = b at hab
   rcases hab with ⟨hnm, X, hXa, hXb⟩
   refine ⟨hnm, ?_⟩
   have ha :
@@ -145,11 +149,15 @@ noncomputable def finitization :
               c.1.initialSegment H j hj := by
           have hprefix :=
             (completeExact H c).initialSegment_initialSegment H k j
-              (by simpa [c.2] using hj)
+              (by
+                change j ≤ k
+                exact hj)
           calc
             (completeExact H c).initialSegment H j =
                 ((completeExact H c).initialSegment H k).initialSegment H j
-                  (by simpa [c.2] using hj) := hprefix.symm
+                  (by
+                    change j ≤ k
+                    exact hj) := hprefix.symm
             _ = c.1.initialSegment H j hj := by
               exact FiniteFatTree.initialSegment_congr H hc j _ _
         exact hseg
