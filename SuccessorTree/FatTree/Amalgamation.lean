@@ -585,6 +585,170 @@ theorem splice_reduces
     rw [V.liftTo_succ H q
       (TreeLevel (T := T) (V.cut q))]
 
+/-- If a reduction witness hits the same ambient cut at source index
+`n` and ambient index `m`, then its index map sends `n` to `m`. -/
+theorem reduction_index_eq_of_cut_eq
+    {V U : FatTree H}
+    (w : FatTree.ReductionWitness H V U)
+    {n m : Nat} (hcut : V.cut n = U.cut m) :
+    w.index n = m := by
+  apply U.cut_injective H
+  calc
+    U.cut (w.index n) = V.cut n := (w.cut_eq n).symm
+    _ = U.cut m := hcut
+
+/-- Index map for the splice consisting of the first `m` rows of `U`
+followed by the tail of a reduction `V ≤ U` starting at row `n`. -/
+def prefixTailIndex
+    {V U : FatTree H}
+    (w : FatTree.ReductionWitness H V U)
+    (n m : Nat) : Nat → Nat :=
+  fun i =>
+    if hi : i < m then i
+    else w.index (n + (i - m))
+
+/-- The prefix-tail index is strictly increasing once the common splice cut
+is aligned by the original reduction witness. -/
+theorem prefixTailIndex_strict
+    {V U : FatTree H}
+    (w : FatTree.ReductionWitness H V U)
+    {n m : Nat} (hnm : w.index n = m) :
+    StrictMono (prefixTailIndex H w n m) := by
+  apply strictMono_nat_of_lt_succ
+  intro i
+  by_cases hi : i < m
+  · by_cases hnext : i + 1 < m
+    · simp [prefixTailIndex, hi, hnext]
+    · have heq : i + 1 = m := by omega
+      have hnot : ¬ i + 1 < m := hnext
+      calc
+        prefixTailIndex H w n m i = i := by
+          simp [prefixTailIndex, hi]
+        _ < m := hi
+        _ = w.index n := hnm.symm
+        _ = prefixTailIndex H w n m (i + 1) := by
+          simp [prefixTailIndex, hnot, heq]
+  · have hge : m ≤ i := Nat.le_of_not_gt hi
+    have hnext : ¬ i + 1 < m := by omega
+    let q : Nat := n + (i - m)
+    have hq : n + (i + 1 - m) = q + 1 := by
+      dsimp [q]
+      omega
+    have hw := w.index_strict (Nat.lt_succ_self q)
+    simpa [prefixTailIndex, hi, hnext, q, hq] using hw
+
+/-- Cut alignment for the ambient-prefix/reduced-tail splice. -/
+theorem prefixTail_cut_eq
+    {V U : FatTree H}
+    (w : FatTree.ReductionWitness H V U)
+    {n m : Nat} (hcut : V.cut n = U.cut m)
+    (i : Nat) :
+    (splice H (U.initialSegment H m) V n
+      (by simpa using hcut.symm)).cut i =
+      U.cut (prefixTailIndex H w n m i) := by
+  by_cases hi : i < m
+  · rw [splice_cut_lt H (U.initialSegment H m) V n
+      (by simpa using hcut.symm) (by simpa using hi)]
+    change U.cut i = U.cut (prefixTailIndex H w n m i)
+    simp [prefixTailIndex, hi]
+  · have hge : m ≤ i := Nat.le_of_not_gt hi
+    rw [splice_cut_ge H (U.initialSegment H m) V n
+      (by simpa using hcut.symm) (by simpa using hge)]
+    let q : Nat := n + (i - m)
+    have hw := w.cut_eq q
+    change V.cut q = U.cut (prefixTailIndex H w n m i)
+    rw [hw]
+    simp [prefixTailIndex, hi, q]
+
+/-- Keeping the first `m` rows of `U` and then attaching the tail of a
+reduction `V ≤ U` at a common cut again gives a reduction of `U`.
+This is the structural construction used in A3(2). -/
+theorem splice_prefix_tail_reduces
+    {V U : FatTree H}
+    (hVU : FatTree.Reduces H V U)
+    {n m : Nat} (hcut : V.cut n = U.cut m) :
+    FatTree.Reduces H
+      (splice H (U.initialSegment H m) V n
+        (by simpa using hcut.symm)) U := by
+  rcases hVU with ⟨w⟩
+  have hnm : w.index n = m :=
+    reduction_index_eq_of_cut_eq H w hcut
+  have hstrict : StrictMono (prefixTailIndex H w n m) :=
+    prefixTailIndex_strict H w hnm
+  refine ⟨{
+    index := prefixTailIndex H w n m
+    index_strict := hstrict
+    cut_eq := prefixTail_cut_eq H w hcut
+    lift_subset := ?_
+  }⟩
+  intro i
+  by_cases hi : i < m
+  · let ix : Fin m := ⟨i, hi⟩
+    let hsplice :
+        (U.initialSegment H m).terminalCut = V.cut n := by
+      simpa using hcut.symm
+    rw [splice_oneLift_lt H (U.initialSegment H m) V n
+      hsplice (by simpa using hi)]
+    rw [U.initialSegment_oneLift H m ix]
+    rw [splice_cut_lt H (U.initialSegment H m) V n
+      hsplice (by simpa using hi)]
+    change
+      U.oneLift H i (TreeLevel (T := T) (U.cut i)) ⊆
+        U.liftTo H
+          (prefixTailIndex H w n m i)
+          (prefixTailIndex H w n m (i + 1))
+          _
+          (TreeLevel (T := T)
+            (U.cut (prefixTailIndex H w n m i)))
+    have h0 : prefixTailIndex H w n m i = i := by
+      simp [prefixTailIndex, hi]
+    have h1 : prefixTailIndex H w n m (i + 1) = i + 1 := by
+      by_cases hnext : i + 1 < m
+      · simp [prefixTailIndex, hnext]
+      · have heq : i + 1 = m := by omega
+        simp [prefixTailIndex, hnext, heq, hnm]
+    have hsp :
+        prefixTailIndex H w n m i ≤
+          prefixTailIndex H w n m (i + 1) :=
+      Nat.le_of_lt (hstrict (Nat.lt_succ_self i))
+    have htarget :=
+      U.liftTo_level_congr H (by omega) hsp h0.symm h1.symm
+    rw [← htarget]
+    rw [U.liftTo_succ H i
+      (TreeLevel (T := T) (U.cut i))]
+  · have hge : m ≤ i := Nat.le_of_not_gt hi
+    let q : Nat := n + (i - m)
+    have hnext : ¬ i + 1 < m := by omega
+    have hq : n + (i + 1 - m) = q + 1 := by
+      dsimp [q]
+      omega
+    let hsplice :
+        (U.initialSegment H m).terminalCut = V.cut n := by
+      simpa using hcut.symm
+    rw [splice_oneLift_ge H (U.initialSegment H m) V n
+      hsplice (by simpa using hge)]
+    rw [splice_cut_ge H (U.initialSegment H m) V n
+      hsplice (by simpa using hge)]
+    have hw := w.lift_subset q
+    have h0 :
+        prefixTailIndex H w n m i = w.index q := by
+      simp [prefixTailIndex, hi, q]
+    have h1 :
+        prefixTailIndex H w n m (i + 1) = w.index (q + 1) := by
+      simp [prefixTailIndex, hnext, q, hq]
+    have habw : w.index q ≤ w.index (q + 1) :=
+      Nat.le_of_lt (w.index_strict (Nat.lt_succ_self q))
+    have hsp :
+        prefixTailIndex H w n m i ≤
+          prefixTailIndex H w n m (i + 1) :=
+      Nat.le_of_lt (hstrict (Nat.lt_succ_self i))
+    have htarget :=
+      U.liftTo_level_congr H habw hsp h0.symm h1.symm
+    intro z hz
+    have hz' := hw hz
+    rw [htarget] at hz'
+    exact hz'
+
 /-- Todorčević A3(1) for the fat-tree space: every depth-cone refinement
 contains an infinite fat tree extending the prescribed finite stem. -/
 theorem a3_one_nonempty
