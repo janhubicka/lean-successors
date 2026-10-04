@@ -393,6 +393,27 @@ theorem traceSourceCut_le_target
   unfold traceSourceCut traceTargetCut
   exact y.cut_le_terminalCut H (traceSourceIndex H y n hn)
 
+/-- Manuscript trace-update relation.
+
+The intermediate successor table is deliberately *raw finite data*: for each
+source-level point it chooses an immediate successor of the old trace value,
+whose image under the canonical appended row is the new trace value.  No
+admissible total M-map extending this table is required.  This matches the
+manuscript's successor-table set \(\mathscr E(q)\). -/
+def IsRawTraceUpdate
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : ExactTrace H y n hn)
+    (theta : ExactTrace H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega)) : Prop :=
+  ∀ a : T, LevelTree.lev a = traceSourceCut H y n hn →
+    ∃ z : T,
+      q.1.representative H a ⋖ z ∧
+      theta.1.representative H a =
+        H.canonicalExtension (h.representative H) y.terminalCut z
+
 /-- Forward exact-trace update.
 
 Given an exact trace `q` through `y`, a one-level successor letter `e`
