@@ -53,14 +53,28 @@ theorem appendRow_ambientNextRow
     (V := U.initialSegment H (x.height + 1))
     rfl ?_ ?_
   · intro i
-    change FiniteFatTree.appendCut H x g i.1 = U.cut i.1
+    change
+      (FiniteFatTree.appendRow H x g).cut i = U.cut i.1
+    have hibound : i.1 < x.height + 2 := by
+      simpa [FiniteFatTree.appendRow_height] using i.2
     by_cases hi : i.1 ≤ x.height
-    · rw [FiniteFatTree.appendCut_old H x g hi]
-      let ix : Fin (x.height + 1) :=
+    · let ix : Fin (x.height + 1) :=
         ⟨i.1, Nat.lt_succ_of_le hi⟩
-      simpa [ix] using (hxU.1 ix).symm
+      have hiEq : i = ix.castSucc := by
+        apply Fin.ext
+        rfl
+      rw [hiEq, FiniteFatTree.appendRow_cut_old]
+      exact (hxU.1 ix).symm
     · have hieq : i.1 = x.height + 1 := by omega
-      rw [hieq, FiniteFatTree.appendCut_new H x g]
+      have hiLast :
+          i = Fin.last (x.height + 1) := by
+        apply Fin.ext
+        exact hieq
+      rw [hiLast]
+      change
+        (FiniteFatTree.appendRow H x g).terminalCut =
+          U.cut (x.height + 1)
+      rw [FiniteFatTree.appendRow_terminalCut]
       have hgEnd :
           g.rowEndLevel H = (U.row x.height).rowEndLevel H := by
         simp [g, ambientNextRow, FatTree.castRow_rowEndLevel]
@@ -70,6 +84,8 @@ theorem appendRow_ambientNextRow
     change
       HEq ((FiniteFatTree.appendRow H x g).row i)
         (U.row i.1)
+    have hibound : i.1 < x.height + 1 := by
+      simpa [FiniteFatTree.appendRow_height] using i.2
     by_cases hi : i.1 < x.height
     · let ix : Fin x.height := ⟨i.1, hi⟩
       have hiEq : i = ix.castSucc := Fin.ext rfl
