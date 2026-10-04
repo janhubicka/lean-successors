@@ -323,6 +323,27 @@ theorem leFin_lower_finite (Y : FiniteFatTree H) :
   intro X hX
   exact hX.2
 
+
+/-- A2(3), in prefix form: a finite reduction restricts to every source
+prefix, and the corresponding target prefix ends at the image of that
+terminal cut. -/
+theorem leFin_prefix
+    {Y Z : FiniteFatTree H}
+    (hYZ : LeFin H Y Z)
+    (n : Nat) (hn : n ≤ Y.height) :
+    ∃ (m : Nat) (hm : m ≤ Z.height),
+      LeFin H (Y.prefix H n hn) (Z.prefix H m hm) := by
+  rcases hYZ.1 with ⟨w⟩
+  let yn : Fin (Y.height + 1) := ⟨n, by omega⟩
+  let zn : Fin (Z.height + 1) := w.index yn
+  let m : Nat := zn.1
+  have hm : m ≤ Z.height := Nat.le_of_lt_succ zn.2
+  refine ⟨m, hm, ?_⟩
+  constructor
+  · exact ⟨w.prefix H n hn⟩
+  · have hc := w.cut_eq yn
+    simpa [FiniteFatTree.prefix_terminalCut, yn, zn, m] using hc
+
 end FiniteFatTree
 
 end SMTree
