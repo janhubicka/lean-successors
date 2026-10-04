@@ -174,7 +174,7 @@ theorem splice_row_lt
       (x.row ⟨i, hi⟩) := by
   let ix : Fin x.height := ⟨i, hi⟩
   have hc :
-      x.cut ix = (splice H x V n hcut).cut i := by
+      x.cut ix.castSucc = (splice H x V n hcut).cut i := by
     simpa [ix] using
       (splice_cut_lt H x V n hcut hi).symm
   have hcast :
