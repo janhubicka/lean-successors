@@ -384,6 +384,143 @@ noncomputable instance exactTraceFinite
     Finite (ExactTrace H y n hn) := by
   exact (exactTraces_finite H y n hn).to_subtype
 
+/-- The selected source cut of a trace never lies above its terminal
+cut. -/
+theorem traceSourceCut_le_target
+    (y : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ y.height) :
+    traceSourceCut H y n hn ≤ traceTargetCut H y := by
+  unfold traceSourceCut traceTargetCut
+  exact y.cut_le_terminalCut H (traceSourceIndex H y n hn)
+
+/-- Forward exact-trace update.
+
+Given an exact trace `q` through `y`, a one-level successor letter `e`
+at the old terminal cut, and the next ambient row `h`, the literal
+composite `h⁺ ∘ e ∘ q` is an exact trace through `y ⌢ h`.
+This is the constructive inclusion `Q_y[h] ⊆ Q_{y⌢h}` from the manuscript. -/
+noncomputable def ExactTrace.extendByLetter
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height)
+    (q : ExactTrace H y n hn)
+    (e : OneLevelLetter H y.terminalCut) :
+    ExactTrace H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega) := by
+  let c0 : Nat := traceSourceCut H y n hn
+  let d : Nat := y.terminalCut
+  let C : MMap H :=
+    H.canonicalExtension (h.representative H) d
+  let F : MMap H :=
+    MMap.comp H C
+      (MMap.comp H e.toMMap (q.1.representative H))
+  have hcd : c0 ≤ d := by
+    dsimp [c0, d]
+    exact traceSourceCut_le_target H y n hn
+  have hCfix : C.FixesBelow H c0 := by
+    intro x hx
+    have hxd : LevelTree.lev x < d :=
+      lt_of_lt_of_le hx hcd
+    dsimp [C]
+    rw [H.canonicalExtension_agrees
+      (h.representative H) d x (Nat.le_of_lt hxd)]
+    exact h.representative_fixesBelow H x hxd
+  have hefix : e.toMMap.FixesBelow H c0 := by
+    intro x hx
+    exact e.eq_id_below H (lt_of_lt_of_le hx hcd)
+  have hqfix :
+      (q.1.representative H).FixesBelow H c0 := by
+    exact q.1.representative_fixesBelow H
+  have hinner :
+      (MMap.comp H e.toMMap
+        (q.1.representative H)).FixesBelow H c0 :=
+    MMap.comp_fixesBelow H e.toMMap
+      (q.1.representative H) c0 hefix hqfix
+  have hFfix : F.FixesBelow H c0 := by
+    exact MMap.comp_fixesBelow H C
+      (MMap.comp H e.toMMap (q.1.representative H))
+      c0 hCfix hinner
+  let theta : AM H c0 1 :=
+    F.toAM H c0 1 hFfix
+  have hsrc :
+      traceSourceCut H (appendRow H y h) n (by
+        rw [appendRow_height]
+        omega) = c0 := by
+    dsimp [c0]
+    exact traceSourceCut_appendRow H y h n hn
+  have hthetaTop :
+      theta.rowEndLevel H = h.rowEndLevel H + 1 := by
+    change theta.topLevel H = h.rowEndLevel H + 1
+    rw [show theta.topLevel H = H.levelMap F.map c0 by
+      exact MMap.toAM_one_topLevel H F c0 hFfix]
+    obtain ⟨a, ha⟩ := H.level_nonempty c0
+    have hqa :
+        LevelTree.lev (q.1.representative H a) = d := by
+      calc
+        LevelTree.lev (q.1.representative H a) =
+            H.levelMap (q.1.representative H).map c0 := by
+          simpa [ha] using
+            (H.levelMap_eq (q.1.representative H).map (a := a)).symm
+        _ = q.1.rowEndLevel H := rfl
+        _ = traceTargetCut H y := q.rowEndLevel H
+        _ = d := rfl
+    have hea :
+        LevelTree.lev (e.toMMap (q.1.representative H a)) =
+          d + 1 := by
+      exact e.level_succ_at H hqa
+    calc
+      H.levelMap F.map c0 =
+          LevelTree.lev (F a) := by
+        simpa [ha] using H.levelMap_eq F.map (a := a)
+      _ =
+          LevelTree.lev
+            (C (e.toMMap (q.1.representative H a))) := rfl
+      _ =
+          H.levelMap C.map
+            (LevelTree.lev
+              (e.toMMap (q.1.representative H a))) := by
+        exact
+          (H.levelMap_eq C.map
+            (a := e.toMMap (q.1.representative H a))).symm
+      _ = H.levelMap C.map (d + 1) := by rw [hea]
+      _ =
+          H.levelMap (h.representative H).map d + 1 := by
+        dsimp [C]
+        exact H.canonicalExtension_level_succ
+          (h.representative H) d d le_rfl
+      _ = h.rowEndLevel H + 1 := rfl
+  rw [hsrc]
+  refine ⟨theta, ?_, ?_⟩
+  · calc
+      theta.rowEndLevel H = h.rowEndLevel H + 1 := hthetaTop
+      _ = traceTargetCut H (appendRow H y h) :=
+        (traceTargetCut_appendRow H y h).symm
+  · intro a ha
+    have htheta :
+        theta.representative H a = F a :=
+      MMap.toAM_one_representative_agrees
+        H F c0 hFfix a (by omega)
+    have hqmem :
+        q.1.representative H a ∈ traceLift H y n hn := by
+      apply q.image_mem_lift H a
+      exact ha
+    have hqlev :
+        LevelTree.lev (q.1.representative H a) = d := by
+      calc
+        LevelTree.lev (q.1.representative H a) =
+            H.levelMap (q.1.representative H).map c0 := by
+          simpa [ha] using
+            (H.levelMap_eq (q.1.representative H).map (a := a)).symm
+        _ = q.1.rowEndLevel H := rfl
+        _ = traceTargetCut H y := q.rowEndLevel H
+        _ = d := rfl
+    rw [traceLift_appendRow_fan H y h n hn]
+    rw [htheta]
+    refine ⟨e.toMMap (q.1.representative H a), ?_, rfl⟩
+    exact ⟨q.1.representative H a, hqmem,
+      H.letter_covBy e hqlev⟩
+
 end FiniteFatTree
 
 end SMTree
