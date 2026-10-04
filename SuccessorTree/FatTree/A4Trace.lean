@@ -81,6 +81,137 @@ noncomputable def traceLift (y : FiniteFatTree H)
       exact hn)
     (TreeLevel (T := T) (traceSourceCut H y n hn))
 
+/-- The trace Lift is the iterated Lift through exactly the rows
+between the selected source index and the terminal cut. -/
+theorem traceLift_eq_liftSteps
+    (y : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ y.height) :
+    traceLift H y n hn =
+      y.liftSteps H n (y.height - n) (by omega)
+        (TreeLevel (T := T) (traceSourceCut H y n hn)) := by
+  rfl
+
+/-- The old part of a trace Lift is unchanged after appending one row. -/
+theorem traceLift_prefix_appendRow
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height) :
+    (appendRow H y h).liftSteps H n (y.height - n) (by
+      rw [appendRow_height]
+      omega)
+      (TreeLevel (T := T)
+        (traceSourceCut H (appendRow H y h) n (by
+          rw [appendRow_height]
+          omega))) =
+      traceLift H y n hn := by
+  let z := appendRow H y h
+  have hm : y.height ≤ z.height := by
+    dsimp [z]
+    rw [appendRow_height]
+    omega
+  have hsrc :
+      traceSourceCut H z n (by
+        dsimp [z]
+        rw [appendRow_height]
+        omega) =
+        traceSourceCut H y n hn := by
+    dsimp [z]
+    exact traceSourceCut_appendRow H y h n hn
+  have hseg :
+      z.initialSegment H y.height hm = y := by
+    dsimp [z]
+    exact appendRow_initialSegment H y h
+  have hlift :=
+    z.initialSegment_liftSteps H y.height hm
+      n (y.height - n) (by omega)
+      (TreeLevel (T := T)
+        (traceSourceCut H z n (by
+          dsimp [z]
+          rw [appendRow_height]
+          omega)))
+  rw [hseg] at hlift
+  rw [hsrc] at hlift
+  rw [traceLift_eq_liftSteps H y n hn]
+  exact hlift.symm
+
+/-- Exact geometric recursion for finite-prefix traces: appending one row
+applies precisely the new row Lift to the old trace Lift. -/
+theorem traceLift_appendRow
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height) :
+    traceLift H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega) =
+      (appendRow H y h).oneLift H (Fin.last y.height)
+        (traceLift H y n hn) := by
+  let z := appendRow H y h
+  have htotal :
+      z.height - n = (y.height - n) + 1 := by
+    dsimp [z]
+    rw [appendRow_height]
+    omega
+  rw [traceLift_eq_liftSteps H z n]
+  have hcongr :=
+    z.liftSteps_congr_steps H n
+      (z.height - n) ((y.height - n) + 1)
+      (by omega) (by
+        dsimp [z]
+        rw [appendRow_height]
+        omega)
+      htotal
+      (TreeLevel (T := T)
+        (traceSourceCut H z n (by
+          dsimp [z]
+          rw [appendRow_height]
+          omega)))
+  rw [hcongr]
+  rw [z.liftSteps_add H n (y.height - n) 1]
+  have hidx : n + (y.height - n) = y.height := by omega
+  rw [hidx]
+  have hpref :
+      z.liftSteps H n (y.height - n) (by
+        dsimp [z]
+        rw [appendRow_height]
+        omega)
+        (TreeLevel (T := T)
+          (traceSourceCut H z n (by
+            dsimp [z]
+            rw [appendRow_height]
+            omega))) =
+        traceLift H y n hn := by
+    dsimp [z]
+    exact traceLift_prefix_appendRow H y h n hn
+  rw [hpref]
+  rw [z.liftSteps_succ H y.height 0 (by
+    dsimp [z]
+    rw [appendRow_height]
+    omega)]
+  rw [z.liftSteps_zero H (y.height + 1)]
+  change
+    z.oneLift H (⟨y.height, by
+      dsimp [z]
+      rw [appendRow_height]
+      omega⟩ : Fin z.height)
+      (traceLift H y n hn) =
+      z.oneLift H (Fin.last y.height)
+        (traceLift H y n hn)
+  congr 2
+
+/-- In manuscript notation, the previous theorem says that the new trace
+Lift is h-plus applied to the successor fan of the old trace Lift. -/
+theorem traceLift_appendRow_fan
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height) :
+    traceLift H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega) =
+      H.canonicalExtension (h.representative H) y.terminalCut ''
+        ImmediateSuccessors (T := T) (traceLift H y n hn) := by
+  rw [traceLift_appendRow H y h n hn]
+  exact appendRow_oneLift_last H y h (traceLift H y n hn)
+
 /-- Exact trace predicate used by the all-trace A4 proof.
 
 The representative is read only on the source level, where it agrees with the
