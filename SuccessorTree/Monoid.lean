@@ -102,6 +102,39 @@ theorem level_nonempty (H : SMTree S) (k : Nat) :
   rcases hk with ⟨a, ha⟩
   exact ⟨D a, ha⟩
 
+/-- M3 prunes every positive level automatically.
+
+For a node `a` above level zero, duplicate its incoming successor edge at
+the level of `a` itself.  The duplicated edge is an immediate successor of
+`a`.  Thus a separate pruning hypothesis is needed, if at all, only for
+level-zero nodes. -/
+theorem exists_immediateSuccessor_of_level_pos
+    (H : SMTree S) (a : T) (ha : 0 < LevelTree.lev a) :
+    ∃ b : T, a ⋖ b := by
+  let n : Nat := LevelTree.lev a - 1
+  have hnlt : n < LevelTree.lev a := by
+    dsimp [n]
+    omega
+  have hnle : n ≤ LevelTree.lev a := Nat.le_of_lt hnlt
+  let p : T := LevelTree.ancestor a n hnle
+  have hpa : p ≤ a :=
+    LevelTree.ancestor_le a n hnle
+  have hpLevel : LevelTree.lev p = n :=
+    LevelTree.level_ancestor a n hnle
+  have haSucc : LevelTree.lev a = LevelTree.lev p + 1 := by
+    rw [hpLevel]
+    dsimp [n]
+    omega
+  have hpaCov : p ⋖ a :=
+    LevelTree.covBy_of_le_level_succ hpa haSucc
+  obtain ⟨params, c, hsucc⟩ := S.s3 hpaCov
+  obtain ⟨D, hDM, hskip, hdup⟩ :=
+    H.m3 n (LevelTree.lev a) hnlt
+  have hdupA :
+      S.succ a params c = some (D a) :=
+    hdup p a params c a hpLevel rfl hsucc le_rfl
+  exact ⟨D a, S.covBy_of_succ_eq_some hdupA⟩
+
 /-- The paper's total level function \(\widetilde F\), now justified by
 `level_nonempty`. -/
 noncomputable def levelMap (H : SMTree S) (F : ShapeMap S) (n : Nat) : Nat :=
