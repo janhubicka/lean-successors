@@ -67,6 +67,15 @@ theorem castRow_heq
   cases h
   rfl
 
+/-- Canonical extension is invariant under explicit transport of a
+row along equality of its source cut. -/
+@[simp] theorem canonicalExtension_castRow
+    {a b : Nat} (h : a = b) (u : AM H a 1) :
+    H.canonicalExtension ((castRow H h u).representative H) b =
+      H.canonicalExtension (u.representative H) a := by
+  cases h
+  rfl
+
 /-- Splice a finite fat tree `x` onto the tail of an infinite fat tree
 `V`, starting the tail at cut `n`.  The compatibility hypothesis is
 exactly equality of the terminal cut of `x` with `V.cut n`. -/
@@ -224,6 +233,51 @@ theorem splice_row_ge
     castRow_heq H hc (V.row q)
   have hnot : ¬ i < x.height := Nat.not_lt_of_ge hi
   simpa [splice, hnot, q] using hcast
+
+/-- Before the splice point, the canonical row extension is exactly
+the canonical extension of the corresponding finite stem row. -/
+theorem splice_rowExtension_lt
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n)
+    {i : Nat} (hi : i < x.height) :
+    (splice H x V n hcut).rowExtension H i =
+      x.rowExtension H ⟨i, hi⟩ := by
+  let ix : Fin x.height := ⟨i, hi⟩
+  unfold FatTree.rowExtension FiniteFatTree.rowExtension
+  simp [splice, hi, ix, canonicalExtension_castRow]
+
+/-- At and after the splice point, the canonical row extension is the
+corresponding shifted row extension of the tail. -/
+theorem splice_rowExtension_ge
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n)
+    {i : Nat} (hi : x.height ≤ i) :
+    (splice H x V n hcut).rowExtension H i =
+      V.rowExtension H (n + (i - x.height)) := by
+  have hnot : ¬ i < x.height := Nat.not_lt_of_ge hi
+  unfold FatTree.rowExtension
+  simp [splice, hnot, canonicalExtension_castRow]
+
+/-- One-step Lift before the splice is the one-step Lift of the finite stem. -/
+theorem splice_oneLift_lt
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n)
+    {i : Nat} (hi : i < x.height) (X : Set T) :
+    (splice H x V n hcut).oneLift H i X =
+      x.oneLift H ⟨i, hi⟩ X := by
+  unfold FatTree.oneLift FiniteFatTree.oneLift
+  rw [splice_rowExtension_lt H x V n hcut hi]
+
+/-- One-step Lift at and after the splice is the shifted one-step Lift of
+the infinite tail. -/
+theorem splice_oneLift_ge
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n)
+    {i : Nat} (hi : x.height ≤ i) (X : Set T) :
+    (splice H x V n hcut).oneLift H i X =
+      V.oneLift H (n + (i - x.height)) X := by
+  unfold FatTree.oneLift
+  rw [splice_rowExtension_ge H x V n hcut hi]
 
 /-- Cut-index map for the reduction from a splice to its ambient tail.
 Before the splice it follows the finite reduction witness; from the splice
