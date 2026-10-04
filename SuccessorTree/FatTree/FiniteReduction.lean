@@ -162,9 +162,10 @@ theorem liftSteps_subset_liftTo
             Fin (V.height + 1)) = v1 := by
         apply Fin.ext
         rfl
-      have hzTail' :
-          z ∈ U.liftTo H u1 (w.index vlast) hu1last Y1 := by
-        simpa [vi, v1, u1, vlast, hvrec, hvstart] using hzTail
+      have hzTail' := hzTail
+      rw [hvstart, hvrec] at hzTail'
+      change
+        z ∈ U.liftTo H u1 (w.index vlast) hu1last Y1 at hzTail'
       have hsplit :
           z ∈ U.liftTo H u0 (w.index vlast) hu0last Y := by
         rw [U.liftTo_split H u0 u1 (w.index vlast)
@@ -175,7 +176,9 @@ theorem liftSteps_subset_liftTo
             Fin (V.height + 1)) = v0 := by
         apply Fin.ext
         rfl
-      simpa [vi, v0, u0, vlast, hvbase] using hsplit
+      have houter := hsplit
+      rw [← hvbase] at houter
+      exact houter
 
 /-- A finite reduction witness carries the whole lift between any two selected
 cuts into the corresponding lift of the ambient finite fat tree. -/
@@ -224,7 +227,8 @@ theorem liftTo_subset_liftTo
         Fin (V.height + 1)) = b := by
     apply Fin.ext
     exact hnat
-  simpa [hstart, hend] using hz'
+  rw [hstart, hend] at hz'
+  exact hz'
 
 /-- Composition of finite fat-subtree reduction witnesses. -/
 def trans
