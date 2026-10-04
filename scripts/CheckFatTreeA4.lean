@@ -24,3 +24,7 @@ open SuccessorTree
 
 #check SMTree.FiniteFatTree.ExactTrace.appendRow_image_mem_fan
 #print axioms SMTree.FiniteFatTree.ExactTrace.appendRow_image_mem_fan
+
+#check SMTree.FiniteFatTree.IsRawTraceUpdate
+#check SMTree.FiniteFatTree.ExactTrace.extendByLetter
+#print axioms SMTree.FiniteFatTree.ExactTrace.extendByLetter
