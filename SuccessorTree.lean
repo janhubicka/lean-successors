@@ -56,6 +56,7 @@ import SuccessorTree.ShapeLocalPigeonhole
 import SuccessorTree.ShapeFiniteProduct
 import SuccessorTree.ShapeFiniteRamsey
 import SuccessorTree.FatTree.Basic
+import SuccessorTree.FatTree.Sequencing
 import SuccessorTree.FatTree.Lift
 import SuccessorTree.FatTree.Reduction
 import SuccessorTree.FatTree.FiniteReduction
