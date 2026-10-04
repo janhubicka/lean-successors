@@ -393,6 +393,25 @@ theorem traceSourceCut_le_target
   unfold traceSourceCut traceTargetCut
   exact y.cut_le_terminalCut H (traceSourceIndex H y n hn)
 
+/-- Transport a one-row finite approximation along equality of its
+source cut.  The underlying row data and its total representative do not
+change; only the dependent source-cut index is transported. -/
+def castTraceRow {a b : Nat} (h : a = b) (q : AM H a 1) : AM H b 1 := by
+  cases h
+  exact q
+
+@[simp] theorem castTraceRow_rowEndLevel
+    {a b : Nat} (h : a = b) (q : AM H a 1) :
+    (castTraceRow H h q).rowEndLevel H = q.rowEndLevel H := by
+  cases h
+  rfl
+
+@[simp] theorem castTraceRow_representative
+    {a b : Nat} (h : a = b) (q : AM H a 1) :
+    (castTraceRow H h q).representative H = q.representative H := by
+  cases h
+  rfl
+
 /-- Manuscript trace-update relation.
 
 The intermediate successor table is deliberately *raw finite data*: for each
@@ -514,33 +533,49 @@ noncomputable def ExactTrace.extendByLetter
         rw [H.canonicalExtension_level_at_prefix
           (h.representative H) d]
       _ = h.rowEndLevel H + 1 := rfl
-  cases hsrc
-  refine ⟨theta, ?_, ?_⟩
+  let c1 : Nat :=
+    traceSourceCut H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega)
+  let theta' : AM H c1 1 :=
+    castTraceRow H hsrc.symm theta
+  refine ⟨theta', ?_, ?_⟩
   · calc
-      theta.rowEndLevel H = h.rowEndLevel H + 1 := hthetaTop
+      theta'.rowEndLevel H = theta.rowEndLevel H := by
+        simp [theta']
+      _ = h.rowEndLevel H + 1 := hthetaTop
       _ = traceTargetCut H (appendRow H y h) :=
         (traceTargetCut_appendRow H y h).symm
   · intro a ha
+    have ha0 : LevelTree.lev a = c0 := by
+      exact ha.trans hsrc
     have htheta :
         theta.representative H a = F a :=
       MMap.toAM_one_representative_agrees
         H F c0 hFfix a (by omega)
+    have htheta' :
+        theta'.representative H a = F a := by
+      calc
+        theta'.representative H a =
+            theta.representative H a := by
+          simp [theta']
+        _ = F a := htheta
     have hqmem :
         q.1.representative H a ∈ traceLift H y n hn := by
       apply q.image_mem_lift H a
-      exact ha
+      exact ha0
     have hqlev :
         LevelTree.lev (q.1.representative H a) = d := by
       calc
         LevelTree.lev (q.1.representative H a) =
             H.levelMap (q.1.representative H).map c0 := by
-          simpa [ha] using
+          simpa [ha0] using
             (H.levelMap_eq (q.1.representative H).map (a := a)).symm
         _ = q.1.rowEndLevel H := rfl
         _ = traceTargetCut H y := q.rowEndLevel H
         _ = d := rfl
     rw [traceLift_appendRow_fan H y h n hn]
-    rw [htheta]
+    rw [htheta']
     refine ⟨e.toMMap (q.1.representative H a), ?_, rfl⟩
     exact ⟨q.1.representative H a, hqmem,
       H.letter_covBy e hqlev⟩
