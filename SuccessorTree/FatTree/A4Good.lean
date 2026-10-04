@@ -127,7 +127,7 @@ theorem fixedTraceGoodRows_base
               (FiniteFatTree.traceSourceCut H y y.height le_rfl))
             a (by omega)
         rw [hid]
-        exact ha
+        simpa [Nat.sub_self, TreeLevel] using ha
     have hgood := hh q0
     rw [cast_compose_base_exactTrace H y q0 h] at hgood
     exact hgood
