@@ -864,11 +864,17 @@ theorem liftTo_subset_level (U : FiniteFatTree H)
   have hres :=
     U.liftSteps_subset_level H a.1 (b.1 - a.1)
       (by omega) hstart
+  have habNat : a.1 ≤ b.1 := hab
+  have hidx : a.1 + (b.1 - a.1) = b.1 :=
+    Nat.add_sub_of_le habNat
+  have hendBound : a.1 + (b.1 - a.1) < U.height + 1 := by
+    rw [hidx]
+    exact b.2
   have hend :
-      (⟨a.1 + (b.1 - a.1), by omega⟩ :
+      (⟨a.1 + (b.1 - a.1), hendBound⟩ :
         Fin (U.height + 1)) = b := by
     apply Fin.ext
-    omega
+    exact hidx
   simpa [hend] using hres
 
 /-- Every endpoint of a finite `liftTo` lies above a node in the source set. -/
