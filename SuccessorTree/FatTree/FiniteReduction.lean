@@ -156,6 +156,7 @@ theorem liftSteps_subset_liftTo
           (⟨i + 1 + steps, by omega⟩ :
             Fin (V.height + 1)) = vlast := by
         apply Fin.ext
+        change i + 1 + steps = i + (steps + 1)
         omega
       have hvstart :
           (⟨i + 1, by omega⟩ :
