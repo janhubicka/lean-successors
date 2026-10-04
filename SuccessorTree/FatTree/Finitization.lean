@@ -165,6 +165,99 @@ noncomputable def fixedTerminalCode (d : Nat)
           ⟨U.1.row i, hend⟩)
     · exact none
 
+@[simp] theorem fixedTerminalCode_height (d : Nat)
+    (U : FixedTerminal H d) :
+    (fixedTerminalCode H d U).1.1 = U.1.height := by
+  simp [fixedTerminalCode]
+
+/-- The fixed-terminal code loses no finite fat-tree information. -/
+theorem fixedTerminalCode_injective (d : Nat) :
+    Function.Injective (fixedTerminalCode H d) := by
+  classical
+  intro U V hcode
+  have hheight : U.1.height = V.1.height := by
+    have h := congrArg
+      (fun c : FixedTerminalCode (T := T) H d => c.1.1) hcode
+    simpa using h
+  have hcuts := congrArg
+    (fun c : FixedTerminalCode (T := T) H d => c.2.1) hcode
+  have hrows := congrArg
+    (fun c : FixedTerminalCode (T := T) H d => c.2.2) hcode
+  have hcut : HEq U.1.cut V.1.cut := by
+    cases hheight
+    apply heq_of_eq
+    funext i
+    have hUd : U.1.height ≤ d := by
+      have h := U.1.height_le_terminalCut H
+      simpa [U.2] using h
+    have hVd : V.1.height ≤ d := by
+      have h := V.1.height_le_terminalCut H
+      simpa [V.2] using h
+    have hi : i.1 ≤ U.1.height := Nat.le_of_lt_succ i.2
+    have hid : i.1 ≤ d := hi.trans hUd
+    let j : Fin (d + 1) :=
+      ⟨i.1, Nat.lt_succ_of_le hid⟩
+    have hc := congrFun hcuts j
+    have hUc : U.1.cut i ≤ d := by
+      have h := U.1.cut_le_terminalCut H i
+      simpa [U.2] using h
+    have hVc : V.1.cut i ≤ d := by
+      have h := V.1.cut_le_terminalCut H i
+      simpa [V.2] using h
+    have hs :
+        some (⟨U.1.cut i, Nat.lt_succ_of_le hUc⟩ : Fin (d + 1)) =
+          some (⟨V.1.cut i, Nat.lt_succ_of_le hVc⟩ : Fin (d + 1)) := by
+      simpa [fixedTerminalCode, j, hi] using hc
+    exact congrArg Fin.val (Option.some.inj hs)
+  have hrow : HEq U.1.row V.1.row := by
+    cases hheight
+    have hcut' : U.1.cut = V.1.cut := eq_of_heq hcut
+    cases hcut'
+    apply heq_of_eq
+    funext i
+    have hUd : U.1.height ≤ d := by
+      have h := U.1.height_le_terminalCut H
+      simpa [U.2] using h
+    have hjd : i.1 < d := lt_of_lt_of_le i.2 hUd
+    let j : Fin d := ⟨i.1, hjd⟩
+    have hr := congrFun hrows j
+    have hUnext : U.1.cut i.succ ≤ d := by
+      have h := U.1.cut_le_terminalCut H i.succ
+      simpa [U.2] using h
+    have hVnext : V.1.cut i.succ ≤ d := by
+      have h := V.1.cut_le_terminalCut H i.succ
+      simpa [V.2] using h
+    have hUend : (U.1.row i).rowEndLevel H < d := by
+      have hrc := U.1.row_cut i
+      omega
+    have hVend : (V.1.row i).rowEndLevel H < d := by
+      have hrc := V.1.row_cut i
+      omega
+    have hs :
+        some
+            (uniformRowCode H (U.1.cut i.castSucc) d
+              ⟨U.1.row i, hUend⟩) =
+          some
+            (uniformRowCode H (U.1.cut i.castSucc) d
+              ⟨V.1.row i, hVend⟩) := by
+      simpa [fixedTerminalCode, j, i.2] using hr
+    have hb :=
+      uniformRowCode_injective H (U.1.cut i.castSucc) d
+        (Option.some.inj hs)
+    exact congrArg Subtype.val hb
+  apply Subtype.ext
+  exact FiniteFatTree.ext_data H hheight hcut hrow
+
+/-- There are only finitely many finite fat trees ending at a prescribed
+terminal ambient cut. -/
+theorem fixedTerminal_finite (d : Nat) :
+    Set.Finite {U : FiniteFatTree H | U.terminalCut = d} := by
+  classical
+  rw [← Set.finite_coe_iff]
+  exact Finite.of_injective
+    (fixedTerminalCode H d)
+    (fixedTerminalCode_injective H d)
+
 /-- The manuscript's finitary order on finite fat trees: reduction with the
 same terminal ambient cut. -/
 def LeFin (X Y : FiniteFatTree H) : Prop :=
