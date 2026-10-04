@@ -118,13 +118,23 @@ theorem coeff_residueWeightGenerating_eq_card_filter
         (fun x => (Q x : ZMod q) = r)).card : F2) := by
   classical
   unfold residueWeightGenerating
+  let coeffHom : ResidueAlgebra q →+ F2 where
+    toFun := fun y => y.coeff r
+    map_zero' := by simp
+    map_add' := by simp
   change
-    (Finsupp.applyAddHom r : (ZMod q →₀ F2) →+ F2)
-      (∑ x : V, residueZ q ^ Q x) =
+    coeffHom (∑ x : V, residueZ q ^ Q x) =
       (((Finset.univ : Finset V).filter
         (fun x => (Q x : ZMod q) = r)).card : F2)
   rw [map_sum]
-  simp_rw [residueZ_pow, AddMonoidAlgebra.coeff_single]
+  simp_rw [residueZ_pow]
+  change
+    (∑ x : V,
+      (AddMonoidAlgebra.single (Q x • (1 : ZMod q)) 1 :
+        ResidueAlgebra q).coeff r) =
+      (((Finset.univ : Finset V).filter
+        (fun x => (Q x : ZMod q) = r)).card : F2)
+  simp_rw [AddMonoidAlgebra.coeff_single]
   rw [Finset.card_eq_sum_ones, Nat.cast_sum, Finset.sum_filter]
   apply Finset.sum_congr rfl
   intro x hx
