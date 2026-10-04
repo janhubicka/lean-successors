@@ -55,7 +55,7 @@ theorem appendRow_ambientNextRow
   · intro i
     change
       (FiniteFatTree.appendRow H x g).cut i = U.cut i.1
-    have hibound : i.1 < x.height + 2 := by
+    have hibound : i.1 ≤ x.height + 1 := by
       simpa [FiniteFatTree.appendRow_height] using i.2
     by_cases hi : i.1 ≤ x.height
     · let ix : Fin (x.height + 1) :=
