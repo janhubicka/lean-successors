@@ -73,6 +73,7 @@ jobs:
           PY
 
       - name: Check fat-tree structural statements and axioms
+        if: always()
         run: |
           set -o pipefail
           lake env lean scripts/CheckFatTree.lean 2>&1 | tee proof-audit/fat-tree-axioms.log
