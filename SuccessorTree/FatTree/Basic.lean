@@ -147,6 +147,36 @@ theorem ext_data {U V : FiniteFatTree H}
           subst vr
           rfl
 
+/-- The first `n` rows of a finite fat tree, retaining the cut after
+the last retained row. -/
+def prefix (U : FiniteFatTree H) (n : Nat) (hn : n ≤ U.height) :
+    FiniteFatTree H where
+  height := n
+  cut := fun i =>
+    U.cut ⟨i.1, by omega⟩
+  cut_zero := by
+    simpa using U.cut_zero
+  row := fun i =>
+    U.row ⟨i.1, by omega⟩
+  row_cut := by
+    intro i
+    simpa using U.row_cut (⟨i.1, by omega⟩ : Fin U.height)
+
+@[simp] theorem prefix_height (U : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ U.height) :
+    (U.prefix H n hn).height = n := rfl
+
+@[simp] theorem prefix_cut (U : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ U.height)
+    (i : Fin (n + 1)) :
+    (U.prefix H n hn).cut i =
+      U.cut ⟨i.1, by omega⟩ := rfl
+
+@[simp] theorem prefix_terminalCut (U : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ U.height) :
+    (U.prefix H n hn).terminalCut =
+      U.cut ⟨n, by omega⟩ := rfl
+
 /-- The canonical total extension of a finite fat-tree row. -/
 noncomputable def rowExtension (U : FiniteFatTree H)
     (i : Fin U.height) : MMap H :=
