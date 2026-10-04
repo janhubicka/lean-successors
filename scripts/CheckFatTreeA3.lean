@@ -18,9 +18,13 @@ open SuccessorTree
 #check SMTree.FatTree.spliceIndex_strict
 #check SMTree.FatTree.splice_cut_eq_index
 #check SMTree.FatTree.splice_reduces
+#check SMTree.FatTree.a3_one_nonempty
+#check SMTree.FatTree.a3_two_amalgamation
 
 #print axioms SMTree.FatTree.stemAt_unique
 #print axioms SMTree.FatTree.splice_cut_lt
 #print axioms SMTree.FatTree.splice_row_lt
 #print axioms SMTree.FatTree.spliceIndex_strict
 #print axioms SMTree.FatTree.splice_reduces
+#print axioms SMTree.FatTree.a3_one_nonempty
+#print axioms SMTree.FatTree.a3_two_amalgamation
