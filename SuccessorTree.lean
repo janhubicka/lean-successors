@@ -51,6 +51,7 @@ import SuccessorTree.NonPrecompact.PrebananaEppaObstruction
 import SuccessorTree.NonPrecompact.PrebananaResidueRealisation
 
 import SuccessorTree.NonPrecompact.PrebananaCopyDegree
+import SuccessorTree.NonPrecompact.PrebananaPartitionEmbedding
 
 import SuccessorTree.NonPrecompact.FolkmanPersistence
 
