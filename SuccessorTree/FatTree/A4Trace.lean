@@ -425,6 +425,12 @@ def castTraceRow {a b : Nat} (h : a = b) (q : AM H a 1) : AM H b 1 := by
   cases h
   rfl
 
+theorem castTraceRow_heq
+    {a b : Nat} (h : a = b) (q : AM H a 1) :
+    HEq (castTraceRow H h q) q := by
+  cases h
+  rfl
+
 /-- Raw successor-table data for an admissible candidate trace.
 
 Unlike `ExactTrace.extendByLetter`, this does not assume that the successor
