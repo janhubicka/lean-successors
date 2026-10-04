@@ -190,6 +190,19 @@ theorem cut_eq_of_eq {U V : FiniteFatTree H}
   cases h
   rfl
 
+/-- Transport a row coordinate across equality of finite fat
+trees.  Heterogeneous equality avoids exposing the dependent source-cut
+index carried by the row type. -/
+theorem row_heq_of_eq {U V : FiniteFatTree H}
+    (h : U = V) (i : Fin V.height) :
+    HEq
+      (U.row
+        (Fin.cast
+          (congrArg (fun Z : FiniteFatTree H => Z.height) h).symm i))
+      (V.row i) := by
+  cases h
+  rfl
+
 /-- The first `n` rows of a finite fat tree, retaining the cut after
 the last retained row. -/
 def initialSegment (U : FiniteFatTree H) (n : Nat) (hn : n ≤ U.height) :
