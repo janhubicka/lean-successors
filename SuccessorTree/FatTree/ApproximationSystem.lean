@@ -1,4 +1,5 @@
 import SuccessorTree.FatTree.Amalgamation
+import SuccessorTree.ShapeAction
 import SuccessorTree.FatTree.Sequencing
 import RamseySpace.Basic
 
@@ -36,6 +37,47 @@ def exactApprox (n : Nat) (U : FatTree H) : ExactApprox H n :=
 /-- The unique typed approximation of height zero. -/
 def emptyExactApprox : ExactApprox H 0 :=
   ⟨FatTree.empty H, rfl⟩
+
+/-- The identity infinite fat tree.  Its cut is the identity on
+levels and every row is the identity one-level finite word. -/
+noncomputable def identityFatTree : FatTree H where
+  cut := fun i => i
+  cut_zero := rfl
+  row := fun i => AM.id1 H i
+  row_cut := by
+    intro i
+    have h :
+        (AM.id1 H i).rowEndLevel H = i := by
+      simpa [AM.rowEndLevel, AM.topLevel] using
+        AM.id1_topLevel H i
+    omega
+
+@[simp] theorem identityFatTree_cut (i : Nat) :
+    (identityFatTree H).cut i = i := rfl
+
+/-- Complete a finite fat tree by attaching the identity tail at its terminal
+cut. -/
+noncomputable def completeFinite (x : FiniteFatTree H) : FatTree H :=
+  splice H x (identityFatTree H) x.terminalCut (by rfl)
+
+/-- The prescribed finite tree is literally the corresponding initial
+segment of its completion. -/
+theorem completeFinite_initialSegment (x : FiniteFatTree H) :
+    (completeFinite H x).initialSegment H x.height = x := by
+  exact splice_initialSegment H x (identityFatTree H)
+    x.terminalCut (by rfl)
+
+/-- Complete an exact-height approximation. -/
+noncomputable def completeExact {n : Nat} (x : ExactApprox H n) :
+    FatTree H :=
+  completeFinite H x.1
+
+theorem exactApprox_completeExact {n : Nat} (x : ExactApprox H n) :
+    exactApprox H n (completeExact H x) = x := by
+  rcases x with ⟨x, hx⟩
+  cases hx
+  apply Subtype.ext
+  exact completeFinite_initialSegment H x
 
 /-- Literal A1(1) in typed approximation form. -/
 theorem exactApprox_zero (U : FatTree H) :
@@ -89,6 +131,14 @@ def approximationSystemOfCompletion
   coherent := by
     intro U V n h m hm
     exact exactApprox_coherent H h m hm
+
+
+/-- The concrete Todorčević A1 approximation system of fat trees. -/
+noncomputable def approximationSystem :
+    RamseySpace.ApproximationSystem :=
+  approximationSystemOfCompletion H
+    (fun x => completeExact H x)
+    (fun x => exactApprox_completeExact H x)
 
 end FatTree
 
