@@ -142,7 +142,12 @@ theorem exactTraceToAMExact_injective
     Function.Injective (exactTraceToAMExact H y n hn) := by
   intro q r hqr
   apply Subtype.ext
-  exact congrArg Subtype.val hqr
+  change q.1 = r.1
+  exact congrArg
+    (fun z : AMExact H
+      (FiniteFatTree.traceSourceCut H y n hn)
+      (FiniteFatTree.traceTargetCut H y) => z.1)
+    hqr
 
 /-- Compose an exact word ending at the trace source cut with an exact trace.
 This is the Lean version of the manuscript composite `p q` in the finite
