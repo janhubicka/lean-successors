@@ -536,6 +536,16 @@ noncomputable def liftSteps (U : FiniteFatTree H) :
     (i : Nat) (h : i + 0 ≤ U.height) (X : Set T) :
     U.liftSteps H i 0 h X = X := rfl
 
+/-- Changing the numerical step count along an equality only transports
+the dependent height proof; the resulting lift is unchanged. -/
+theorem liftSteps_congr_steps (U : FiniteFatTree H)
+    (i s t : Nat)
+    (hs : i + s ≤ U.height) (ht : i + t ≤ U.height)
+    (hst : s = t) (X : Set T) :
+    U.liftSteps H i s hs X = U.liftSteps H i t ht X := by
+  subst t
+  rfl
+
 /-- Lift between two finite cut indices. -/
 noncomputable def liftTo (U : FiniteFatTree H)
     (a b : Fin (U.height + 1)) (hab : a ≤ b)
@@ -546,9 +556,12 @@ noncomputable def liftTo (U : FiniteFatTree H)
     (a : Fin (U.height + 1)) (X : Set T) :
     U.liftTo H a a le_rfl X = X := by
   unfold liftTo
-  have hdiff : a.1 - a.1 = 0 := Nat.sub_self a.1
-  cases hdiff
-  rfl
+  calc
+    U.liftSteps H a.1 (a.1 - a.1) (by omega) X =
+        U.liftSteps H a.1 0 (by omega) X :=
+      U.liftSteps_congr_steps H a.1 (a.1 - a.1) 0
+        (by omega) (by omega) (Nat.sub_self a.1) X
+    _ = X := U.liftSteps_zero H a.1 (by omega) X
 
 /-- Crossing adjacent finite cut indices is exactly one row lift. -/
 theorem liftTo_succ (U : FiniteFatTree H)
@@ -562,12 +575,18 @@ theorem liftTo_succ (U : FiniteFatTree H)
   have hdiff : i.succ.1 - i.castSucc.1 = 1 := by
     change i.1 + 1 - i.1 = 1
     omega
-  cases hdiff
-  change
-    U.oneLift H
-      (⟨i.1, by omega⟩ : Fin U.height) X =
-      U.oneLift H i X
-  congr
+  calc
+    U.liftSteps H i.1 (i.succ.1 - i.castSucc.1) (by omega) X =
+        U.liftSteps H i.1 1 (by omega) X :=
+      U.liftSteps_congr_steps H i.1
+        (i.succ.1 - i.castSucc.1) 1
+        (by omega) (by omega) hdiff X
+    _ = U.oneLift H i X := by
+      change
+        U.oneLift H
+          (⟨i.1, by omega⟩ : Fin U.height) X =
+          U.oneLift H i X
+      congr
 
 end FiniteFatTree
 
