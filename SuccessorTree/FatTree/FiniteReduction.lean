@@ -63,6 +63,25 @@ theorem index_last_eq_last
     _ = U.terminalCut := hterm
     _ = U.cut (Fin.last U.height) := rfl
 
+/-- A finite reduction cannot increase the number of rows. -/
+theorem height_le
+    {V U : FiniteFatTree H}
+    (w : ReductionWitness H V U) :
+    V.height ≤ U.height := by
+  have hcard :
+      Fintype.card (Fin (V.height + 1)) ≤
+        Fintype.card (Fin (U.height + 1)) :=
+    Fintype.card_le_of_injective w.index w.index_strict.injective
+  simpa using hcard
+
+/-- Ordinary finite reduction therefore also cannot increase height. -/
+theorem height_le_of_reduces
+    {V U : FiniteFatTree H}
+    (h : Reduces H V U) :
+    V.height ≤ U.height := by
+  rcases h with ⟨w⟩
+  exact w.height_le H
+
 /-- Identity is a finite reduction witness. -/
 def refl (U : FiniteFatTree H) : ReductionWitness H U U where
   index := fun i => i
