@@ -123,17 +123,13 @@ theorem exactAvoidNext_avoids
   intro g hg
   have hav :=
     (Classical.choose_spec (exists_exact_avoidance H hnot)).2 g hg
-  have hidx : q + 1 = x.height + i + 1 := by
-    dsimp [q]
-    omega
   change
     ¬ StemAt H (FiniteFatTree.appendRow H x g)
       (exactAvoidNext H hbad i A).1
       (x.height + i + 1)
   unfold exactAvoidNext
   dsimp only
-  rw [← hidx]
-  exact hav
+  simpa [q] using hav
 
 noncomputable def exactAvoidStage
     {x : FiniteFatTree H} {U : FatTree H}
