@@ -127,6 +127,13 @@ theorem liftSteps_subset_liftTo
         (w.index i) (w.index (i + 1))
         (w.index (i + (steps + 1))) h01 h1last Y]
       have hend : i + 1 + steps = i + (steps + 1) := by omega
+      change
+        z ∈ U.liftSteps H (w.index (i + 1))
+          (w.index (i + (steps + 1)) - w.index (i + 1))
+          (U.liftTo H (w.index i) (w.index (i + 1)) h01 Y)
+      change
+        z ∈ U.liftSteps H (w.index (i + 1))
+          (w.index (i + 1 + steps) - w.index (i + 1)) Y1 at hzTail
       simpa only [hend, Y1] using hzTail
 
 /-- A reduction witness carries the whole lift between any two selected
