@@ -345,6 +345,251 @@ theorem exists_saturated
           exact ih (measure K') hlt K' rfl
   exact main (measure start) start rfl
 
+
+/-- Advance by an arbitrary next letter, recording its profile whether or not
+it has been seen before.  This is the transition used for finite-extension
+reachability. -/
+noncomputable def advanceAny
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (E : OneLevelLetter H (U.cut (a + K.index))) :
+    ProfileCollector H U a trace := by
+  classical
+  let alpha := currentProfile H U a trace K E
+  let Pnext :=
+    TraceHistoryState.step H U a K.index K.state E
+  refine {
+    index := K.index + 1
+    state := Pnext
+    seen := insert alpha K.seen
+    occurrence := ?_
+  }
+  intro beta hbeta
+  by_cases hEq : beta = alpha
+  · subst beta
+    exact ProfileOccurrence.current H U a trace hend K.state E
+  · have hOld : beta ∈ K.seen := by
+      simpa [hEq] using hbeta
+    exact ProfileOccurrence.advance H U a trace hend
+      K.state (K.occurrence beta hOld) E
+
+@[simp] theorem advanceAny_seen
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (E : OneLevelLetter H (U.cut (a + K.index))) :
+    (advanceAny H U a trace hend K E).seen =
+      insert (currentProfile H U a trace K E) K.seen := by
+  rfl
+
+/-- Finite history extension between collectors. -/
+inductive ReachableFrom
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K₀ : ProfileCollector H U a trace) :
+    ProfileCollector H U a trace → Prop
+  | refl :
+      ReachableFrom U a trace hend K₀ K₀
+  | step {K : ProfileCollector H U a trace} :
+      ReachableFrom U a trace hend K₀ K →
+      (E : OneLevelLetter H (U.cut (a + K.index))) →
+      ReachableFrom U a trace hend K₀
+        (advanceAny H U a trace hend K E)
+
+theorem reachable_trans
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    {K L M : ProfileCollector H U a trace}
+    (hKL : ReachableFrom H U a trace hend K L)
+    (hLM : ReachableFrom H U a trace hend L M) :
+    ReachableFrom H U a trace hend K M := by
+  induction hLM with
+  | refl => exact hKL
+  | @step P hLP E ih =>
+      exact ReachableFrom.step ih E
+
+/-- Seen profiles only increase along a finite extension. -/
+theorem reachable_seen_mono
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    {K L : ProfileCollector H U a trace}
+    (hKL : ReachableFrom H U a trace hend K L) :
+    K.seen ⊆ L.seen := by
+  induction hKL with
+  | refl =>
+      exact fun _ h => h
+  | @step P hKP E ih =>
+      intro alpha halpha
+      rw [advanceAny_seen]
+      exact Finset.mem_insert_of_mem (ih halpha)
+
+/-- If a finite extension has acquired some profile outside the starting
+collector, there is a first step where this happens.  Before that step the
+seen set is still contained in the starting one. -/
+theorem reachable_first_new
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    {K L : ProfileCollector H U a trace}
+    (hKL : ReachableFrom H U a trace hend K L)
+    (hnew : ¬ L.seen ⊆ K.seen) :
+    ∃ (P : ProfileCollector H U a trace)
+      (E : OneLevelLetter H (U.cut (a + P.index))),
+        ReachableFrom H U a trace hend K P ∧
+        P.seen ⊆ K.seen ∧
+        currentProfile H U a trace P E ∉ K.seen := by
+  induction hKL with
+  | refl =>
+      exfalso
+      exact hnew (fun _ h => h)
+  | @step P hKP E ih =>
+      by_cases hPsub : P.seen ⊆ K.seen
+      · refine ⟨P, E, hKP, hPsub, ?_⟩
+        intro hprof
+        apply hnew
+        intro alpha halpha
+        rw [advanceAny_seen] at halpha
+        rcases Finset.mem_insert.mp halpha with hEq | hOld
+        · simpa [hEq] using hprof
+        · exact hPsub hOld
+      · exact ih hPsub
+
+/-- Inserting a genuinely new profile with \`advanceAny\` strictly lowers the
+finite missing-profile count. -/
+theorem missingCount_advanceAny_lt
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (E : OneLevelLetter H (U.cut (a + K.index)))
+    (hnew : currentProfile H U a trace K E ∉ K.seen) :
+    missingCount H trace (advanceAny H U a trace hend K E) <
+      missingCount H trace K := by
+  classical
+  letI : Fintype (FanProfile H C trace) :=
+    fanProfileFintype H trace
+  let alpha := currentProfile H U a trace K E
+  have halpha :
+      alpha ∈ (Finset.univ \ K.seen :
+        Finset (FanProfile H C trace)) := by
+    simp [alpha, hnew]
+  unfold missingCount
+  rw [advanceAny_seen]
+  have hdiff :
+      (Finset.univ \ insert alpha K.seen :
+        Finset (FanProfile H C trace)) =
+        (Finset.univ \ K.seen).erase alpha := by
+    ext beta
+    simp [and_assoc, and_left_comm, and_comm]
+  rw [hdiff]
+  exact Finset.card_erase_lt_of_mem halpha
+
+/-- Manuscript-strength saturation: no finite history extension can introduce
+a profile which has not already been witnessed. -/
+def GloballySaturated
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace) : Prop :=
+  ∀ L : ProfileCollector H U a trace,
+    ReachableFrom H U a trace hend K L →
+      L.seen ⊆ K.seen
+
+/-- Every collector has a finite extension which is globally saturated.
+The induction measure is the number of profiles not yet seen. -/
+theorem exists_globallySaturated_from
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K₀ : ProfileCollector H U a trace) :
+    ∃ K : ProfileCollector H U a trace,
+      ReachableFrom H U a trace hend K₀ K ∧
+      GloballySaturated H U a trace hend K := by
+  classical
+  let measure (K : ProfileCollector H U a trace) : Nat :=
+    missingCount H trace K
+  have main :
+      ∀ N : Nat,
+        ∀ K : ProfileCollector H U a trace,
+          measure K = N →
+            ∃ L : ProfileCollector H U a trace,
+              ReachableFrom H U a trace hend K L ∧
+              GloballySaturated H U a trace hend L := by
+    intro N
+    induction N using Nat.strong_induction_on with
+    | h N ih =>
+        intro K hKN
+        by_cases hglobal :
+            GloballySaturated H U a trace hend K
+        · exact ⟨K, ReachableFrom.refl, hglobal⟩
+        · unfold GloballySaturated at hglobal
+          push_neg at hglobal
+          rcases hglobal with ⟨M, hKM, alpha, halphaM, halphaK⟩
+          have hMnew : ¬ M.seen ⊆ K.seen := by
+            intro hsub
+            exact halphaK (hsub halphaM)
+          rcases reachable_first_new H U a trace hend hKM hMnew with
+            ⟨P, E, hKP, hPsub, hEnewK⟩
+          have hKsubP : K.seen ⊆ P.seen :=
+            reachable_seen_mono H U a trace hend hKP
+          have hseenEq : P.seen = K.seen :=
+            Finset.Subset.antisymm hPsub hKsubP
+          have hEnewP :
+              currentProfile H U a trace P E ∉ P.seen := by
+            simpa [hseenEq] using hEnewK
+          let P' := advanceAny H U a trace hend P E
+          have hPP' :
+              ReachableFrom H U a trace hend P P' := by
+            exact ReachableFrom.step ReachableFrom.refl E
+          have hKP' :
+              ReachableFrom H U a trace hend K P' :=
+            reachable_trans H U a trace hend hKP hPP'
+          have hmeasureEq : measure P = measure K := by
+            unfold measure
+            unfold missingCount
+            rw [hseenEq]
+          have hlt : measure P' < N := by
+            have hstep :=
+              missingCount_advanceAny_lt
+                H U a trace hend P E hEnewP
+            rw [hmeasureEq, hKN] at hstep
+            exact hstep
+          rcases ih (measure P') hlt P' rfl with
+            ⟨L, hP'L, hLsat⟩
+          exact ⟨L,
+            reachable_trans H U a trace hend hKP' hP'L,
+            hLsat⟩
+  exact main (measure K₀) K₀ rfl
+
+/-- In particular there is a globally maximal finite profile history starting
+from the identity history. -/
+theorem exists_globallySaturated
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a) :
+    ∃ K : ProfileCollector H U a trace,
+      ReachableFrom H U a trace hend
+        (initial H U a trace) K ∧
+      GloballySaturated H U a trace hend K :=
+  exists_globallySaturated_from H U a trace hend
+    (initial H U a trace)
+
 end ProfileCollector
 
 end FatTree
