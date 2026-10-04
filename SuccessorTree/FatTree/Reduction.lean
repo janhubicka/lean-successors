@@ -64,6 +64,70 @@ def refl (U : FatTree H) : ReductionWitness H U U where
     intro i
     rw [U.liftTo_succ H i (TreeLevel (T := T) (U.cut i))]
 
+/-- Iterate the one-block inclusions of a reduction witness while
+retaining the actual subset reached at each selected cut.
+
+The source-locality lemma for `Lift` is the key point: the manuscript
+definition stores inclusions only for whole levels, but those inclusions
+automatically restrict to the subset reached by the preceding blocks. -/
+theorem liftSteps_subset_liftTo
+    {V U : FatTree H}
+    (w : ReductionWitness H V U)
+    (i steps : Nat)
+    {X Y : Set T}
+    (hX : X ⊆ TreeLevel (T := T) (V.cut i))
+    (hY : Y ⊆ TreeLevel (T := T) (U.cut (w.index i)))
+    (hXY : X ⊆ Y) :
+    V.liftSteps H i steps X ⊆
+      U.liftTo H (w.index i) (w.index (i + steps))
+        (w.index_strict.monotone (by omega)) Y := by
+  induction steps generalizing i X Y with
+  | zero =>
+      simpa [FatTree.liftTo] using hXY
+  | succ steps ih =>
+      have h01 : w.index i ≤ w.index (i + 1) :=
+        Nat.le_of_lt (w.index_strict (Nat.lt_succ_self i))
+      let Y1 : Set T :=
+        U.liftTo H (w.index i) (w.index (i + 1)) h01 Y
+      have hX1 :
+          V.oneLift H i X ⊆
+            TreeLevel (T := T) (V.cut (i + 1)) :=
+        V.oneLift_subset_nextLevel H i hX
+      have hY1 :
+          Y1 ⊆ TreeLevel (T := T) (U.cut (w.index (i + 1))) := by
+        dsimp [Y1]
+        exact U.liftTo_subset_level H
+          (w.index i) (w.index (i + 1)) h01 hY
+      have hX1Y1 : V.oneLift H i X ⊆ Y1 := by
+        intro z hz
+        have hzVfull :
+            z ∈ V.oneLift H i
+              (TreeLevel (T := T) (V.cut i)) :=
+          V.oneLift_mono H i hX hz
+        have hzUfull := w.lift_subset i hzVfull
+        rcases V.oneLift_descends H i hX hz with
+          ⟨x, hx, hxz⟩
+        have hsourceY : ∃ y ∈ Y, y ≤ z :=
+          ⟨x, hXY hx, hxz⟩
+        exact U.liftTo_mem_of_mem_of_source H
+          (w.index i) (w.index (i + 1)) h01
+          hY (fun _ h => h) hzUfull hsourceY
+      intro z hz
+      change
+        z ∈ V.liftSteps H (i + 1) steps
+          (V.oneLift H i X) at hz
+      have hzTail :=
+        ih (i := i + 1)
+          (X := V.oneLift H i X) (Y := Y1)
+          hX1 hY1 hX1Y1 hz
+      have h1last :
+          w.index (i + 1) ≤ w.index (i + (steps + 1)) :=
+        w.index_strict.monotone (by omega)
+      rw [U.liftTo_split H
+        (w.index i) (w.index (i + 1))
+        (w.index (i + (steps + 1))) h01 h1last Y]
+      simpa [Y1, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hzTail
+
 end ReductionWitness
 
 /-- The infinite fat-subtree relation is reflexive. -/
