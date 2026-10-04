@@ -1,4 +1,5 @@
 import SuccessorTree.FatTree.FiniteReduction
+import Mathlib.Data.Fintype.Sigma
 
 /-!
 # Finitization of the fat-tree order
