@@ -4,6 +4,10 @@ open SuccessorTree
 
 #check SMTree.FatTree
 #check SMTree.FiniteFatTree
+#check SMTree.FiniteFatTree.terminalCut
+#check SMTree.FatTree.initialSegment_terminalCut
+#check SMTree.FiniteFatTree.rowExtension
+#check SMTree.FiniteFatTree.rowExtension_level_succ
 #check SMTree.FatTree.cut_strictMono
 #check SMTree.FatTree.rowExtension_level_succ
 #check SMTree.MMap.le_apply_of_fixesBelow
