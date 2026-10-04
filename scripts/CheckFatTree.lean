@@ -1,4 +1,4 @@
-import SuccessorTree.FatTree.Reduction
+import SuccessorTree.FatTree.FiniteReduction
 
 open SuccessorTree
 
