@@ -26,6 +26,8 @@ FAT_PROOF_COMMIT = '90294490350f812dbad9ae8e19d2012c64e7dd5c'
 FAT_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37188688958'
 A3_PROOF_COMMIT = '90294490350f812dbad9ae8e19d2012c64e7dd5c'
 A3_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37188688958'
+A4_BRIDGE_COMMIT = '19b88d7116716891bdef58d9c927d6399745c039'
+A4_BRIDGE_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37190600176'
 SUPPORT_NAME = 'successor-validation.tex'
 
 # Some anchors occur only in particular manuscript revisions. Missing optional
@@ -38,6 +40,7 @@ OPTIONAL_RULES = {
     'fat-tree-sequencing',
     'fat-tree-finitization',
     'fat-tree-amalgamation',
+    'fat-tree-pigeonhole',
 }
 
 # The exact anchors below were read in the recoverable Library main.tex.
@@ -174,6 +177,19 @@ formalized here, so either weaken the sentence to inclusion or prove the
 reverse inclusion separately. No EA hypothesis is used.}
 \fi
 '''),
+    ('fat-tree-pigeonhole', r'\label{item:A4}', r'''
+\successorfatafourpartial{SuccessorTree/FatTree/A4.lean}{FiniteFatTree.appendRow\_initialSegment}
+\ifshowvalidation
+\todo[inline]{Řehořek: The finite one-row bridge for A4 is Lean-checked:
+adjoining an admissible row gives a genuine one-step finite fat-tree
+approximation and preserves the preceding prefix exactly. The full A4
+pigeonhole is not yet verified. In particular the successor-fan saturation,
+exact-trace update, persistence of large trace families, and the final
+all-trace fusion are still being formalized. Do not replace this orange
+marker by a green A4 marker until those geometric one-block reductions,
+not only canonical composites, are covered. No EA hypothesis is used.}
+\fi
+'''),
         ('validation-boundary', r'\label{sec:finite-direct}', r'''
 \successorleaninterface{SuccessorTree/Tree.lean}{LevelTree}
 \ifshowvalidation
@@ -240,6 +256,7 @@ the terminal cut in finite height.
 $\mathcal{AR}$ satisfying the finitization clauses.
 \item \label{item:A3} Amalgamation is witnessed by concatenating a finite
 stem with an infinite tail at a matching cut.
+\item \label{item:A4} Pigeonhole for one-step fat-tree approximations.
 \end{enumerate}
 
 % [Uninspected material omitted from this test fixture.]
@@ -391,6 +408,8 @@ def main() -> None:
         'fat_tree_proof_run': FAT_PROOF_RUN,
         'fat_tree_a3_proof_commit': A3_PROOF_COMMIT,
         'fat_tree_a3_proof_run': A3_PROOF_RUN,
+        'fat_tree_a4_bridge_commit': A4_BRIDGE_COMMIT,
+        'fat_tree_a4_bridge_run': A4_BRIDGE_RUN,
         'input_main_sha256': hashlib.sha256(source.encode()).hexdigest(),
         'patches': written, 'git_apply_check': 'passed for the stated input mode',
         'idempotence': 'passed', 'full_manuscript_latex_build': 'not performed',
