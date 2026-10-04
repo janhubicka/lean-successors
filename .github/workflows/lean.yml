@@ -81,8 +81,8 @@ jobs:
           import re
           text = Path('proof-audit/fat-tree-axioms.log').read_text()
           entries = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
-          if len(entries) != 12:
-              raise SystemExit(f'Expected 12 fat-tree axiom reports, received {len(entries)}')
+          if len(entries) != 14:
+              raise SystemExit(f'Expected 14 fat-tree axiom reports, received {len(entries)}')
           allowed = {'propext', 'Classical.choice', 'Quot.sound'}
           for entry in entries:
               found = {x.strip() for x in entry.split(',') if x.strip()}
@@ -90,7 +90,7 @@ jobs:
                   raise SystemExit(f'Unexpected fat-tree proof axioms: {found - allowed}')
           if 'sorryAx' in text or re.search(r'\berror:', text):
               raise SystemExit('Fat-tree proof audit contains an error or an admitted proof')
-          print('PASS: all 12 fat-tree axiom reports use only standard Lean axioms')
+          print('PASS: all 14 fat-tree axiom reports use only standard Lean axioms')
           PY
 
       - name: Check localized manuscript patches
