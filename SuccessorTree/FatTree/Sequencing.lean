@@ -21,18 +21,6 @@ namespace FiniteFatTree
 
 variable (H : SMTree S)
 
-/-- Equality of finite fat trees transports a row at the corresponding
-source index. -/
-theorem row_heq_of_eq {U V : FiniteFatTree H}
-    (h : U = V) (i : Fin V.height) :
-    HEq
-      (U.row
-        (Fin.cast
-          (congrArg (fun Z : FiniteFatTree H => Z.height) h).symm i))
-      (V.row i) := by
-  cases h
-  rfl
-
 /-- Taking a finite initial segment commutes with equality of the ambient
 finite fat trees. -/
 theorem initialSegment_congr {U V : FiniteFatTree H}
