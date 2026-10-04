@@ -178,43 +178,76 @@ theorem traceLift_appendRow
   have hzheight : z.height = y.height + 1 := by
     dsimp [z]
     exact appendRow_height H y h
+  have hzN : n ≤ z.height := by
+    rw [hzheight]
+    omega
+  let Xz : Set T :=
+    TreeLevel (T := T) (traceSourceCut H z n hzN)
   have htotal :
       z.height - n = (y.height - n) + 1 := by
     rw [hzheight]
     omega
-  rw [traceLift_eq_liftSteps H z n]
+  have hwhole : n + (z.height - n) ≤ z.height := by
+    omega
+  have hsplit : n + ((y.height - n) + 1) ≤ z.height := by
+    rw [hzheight]
+    omega
+  have hprefix : n + (y.height - n) ≤ z.height := by
+    rw [hzheight]
+    omega
+  have hlast : y.height + 1 ≤ z.height := by
+    rw [hzheight]
   have hcongr :=
     z.liftSteps_congr_steps H n
       (z.height - n) ((y.height - n) + 1)
-      (by
-        rw [hzheight]
-        omega)
-      (by
-        rw [hzheight]
-        omega)
-      htotal
-      (TreeLevel (T := T)
-        (traceSourceCut H z n (by omega)))
-  rw [hcongr]
-  rw [z.liftSteps_add H n (y.height - n) 1]
-  have hidx : n + (y.height - n) = y.height := by omega
-  rw [hidx]
+      hwhole hsplit htotal Xz
+  have hadd :=
+    z.liftSteps_add H n (y.height - n) 1 hsplit Xz
+  have hidx : n + (y.height - n) = y.height := by
+    omega
+  let P : Set T :=
+    z.liftSteps H n (y.height - n) hprefix Xz
+  have hstart :
+      z.liftSteps H (n + (y.height - n)) 1 (by omega) P =
+        z.liftSteps H y.height 1 hlast P := by
+    exact z.liftSteps_congr_start H
+      (n + (y.height - n)) y.height 1
+      (by omega) hlast hidx P
   have hpref :
-      z.liftSteps H n (y.height - n) (by omega)
-        (TreeLevel (T := T)
-          (traceSourceCut H z n (by omega))) =
-        traceLift H y n hn := by
-    dsimp [z]
-    exact traceLift_prefix_appendRow H y h n hn
-  rw [hpref]
-  rw [z.liftSteps_succ H y.height 0 (by omega)]
-  rw [z.liftSteps_zero H (y.height + 1)]
+      P = traceLift H y n hn := by
+    unfold P Xz
+    have hp := traceLift_prefix_appendRow H y h n hn
+    change
+      z.liftSteps H n (y.height - n) _
+          (TreeLevel (T := T) (traceSourceCut H z n _)) =
+        traceLift H y n hn at hp
+    exact hp
+  have hsub :
+      z.liftSteps H y.height 1 hlast P =
+        z.liftSteps H y.height 1 hlast (traceLift H y n hn) :=
+    congrArg (fun X => z.liftSteps H y.height 1 hlast X) hpref
+  have hone :=
+    z.liftSteps_one H y.height hlast (traceLift H y n hn)
+  rw [traceLift_eq_liftSteps H z n]
   change
-    z.oneLift H (⟨y.height, by omega⟩ : Fin z.height)
-      (traceLift H y n hn) =
-      z.oneLift H (Fin.last y.height)
+    z.liftSteps H n (z.height - n) _ Xz =
+      (appendRow H y h).oneLift H (Fin.last y.height)
         (traceLift H y n hn)
-  congr 2
+  calc
+    z.liftSteps H n (z.height - n) _ Xz =
+        z.liftSteps H n ((y.height - n) + 1) _ Xz :=
+      hcongr
+    _ = z.liftSteps H (n + (y.height - n)) 1 _ P := by
+      simpa [P] using hadd
+    _ = z.liftSteps H y.height 1 hlast P := hstart
+    _ = z.liftSteps H y.height 1 hlast (traceLift H y n hn) := hsub
+    _ = z.oneLift H
+          (⟨y.height, by omega⟩ : Fin z.height)
+          (traceLift H y n hn) := hone
+    _ = (appendRow H y h).oneLift H (Fin.last y.height)
+          (traceLift H y n hn) := by
+      dsimp [z]
+      congr 2
 
 /-- In manuscript notation, the previous theorem says that the new trace
 Lift is h-plus applied to the successor fan of the old trace Lift. -/
