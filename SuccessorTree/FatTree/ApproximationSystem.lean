@@ -141,6 +141,21 @@ noncomputable def approximationSystem :
     (fun x => completeExact H x)
     (fun x => exactApprox_completeExact H x)
 
+/-- The abstract depth-level neighbourhood is literally the
+manuscript's fat-tree depth cone. -/
+theorem mem_levelNeighborhood_iff_depthCone
+    (n : Nat) (U V : FatTree H) :
+    V ∈ (approximationSystem H).levelNeighborhood n U ↔
+      InDepthCone H n U V := by
+  constructor
+  · intro h
+    refine ⟨h.1, ?_⟩
+    exact congrArg Subtype.val h.2
+  · intro h
+    refine ⟨h.1, ?_⟩
+    apply Subtype.ext
+    exact h.2
+
 end FatTree
 
 end SMTree
