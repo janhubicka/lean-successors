@@ -150,14 +150,32 @@ theorem liftSteps_subset_liftTo
         omega
       have hu1last : u1 ≤ w.index vlast :=
         w.index_strict.monotone hv1last
-      rw [U.liftTo_split H u0 u1 (w.index vlast)
-        hu01 hu1last Y]
+      have hu0last : u0 ≤ w.index vlast :=
+        hu01.trans hu1last
       have hvrec :
           (⟨i + 1 + steps, by omega⟩ :
             Fin (V.height + 1)) = vlast := by
         apply Fin.ext
         omega
-      simpa [Y1, vi, v0, v1, u0, u1, vlast, hvrec] using hzTail
+      have hvstart :
+          (⟨i + 1, by omega⟩ :
+            Fin (V.height + 1)) = v1 := by
+        apply Fin.ext
+        rfl
+      have hzTail' :
+          z ∈ U.liftTo H u1 (w.index vlast) hu1last Y1 := by
+        simpa [vi, v1, u1, vlast, hvrec, hvstart] using hzTail
+      have hsplit :
+          z ∈ U.liftTo H u0 (w.index vlast) hu0last Y := by
+        rw [U.liftTo_split H u0 u1 (w.index vlast)
+          hu01 hu1last Y]
+        exact hzTail'
+      have hvbase :
+          (⟨i, by omega⟩ :
+            Fin (V.height + 1)) = v0 := by
+        apply Fin.ext
+        rfl
+      simpa [vi, v0, u0, vlast, hvbase] using hsplit
 
 /-- A finite reduction witness carries the whole lift between any two selected
 cuts into the corresponding lift of the ambient finite fat tree. -/
@@ -178,25 +196,35 @@ theorem liftTo_subset_liftTo
     change LevelTree.lev x = V.cut a at hx
     rw [← w.cut_eq a]
     exact hx
-  unfold FiniteFatTree.liftTo
   have h :=
     w.liftSteps_subset_liftTo H a.1 (b.1 - a.1)
       (by omega)
       (X := TreeLevel (T := T) (V.cut a))
       (Y := TreeLevel (T := T) (U.cut (w.index a)))
-      (by simpa using (fun _ hx => hx :
-        TreeLevel (T := T) (V.cut a) ⊆
-          TreeLevel (T := T) (V.cut a)))
-      (by simpa using (fun _ hx => hx :
-        TreeLevel (T := T) (U.cut (w.index a)) ⊆
-          TreeLevel (T := T) (U.cut (w.index a))))
+      (by
+        intro x hx
+        simpa using hx)
+      (by
+        intro x hx
+        simpa using hx)
       hlevels
+  intro z hz
+  change z ∈ V.liftSteps H a.1 (b.1 - a.1) (by omega)
+    (TreeLevel (T := T) (V.cut a)) at hz
+  have hz' := h hz
+  have hstart :
+      (⟨a.1, by omega⟩ : Fin (V.height + 1)) = a := by
+    apply Fin.ext
+    rfl
+  have habNat : a.1 ≤ b.1 := hab
+  have hnat : a.1 + (b.1 - a.1) = b.1 :=
+    Nat.add_sub_of_le habNat
   have hend :
       (⟨a.1 + (b.1 - a.1), by omega⟩ :
         Fin (V.height + 1)) = b := by
     apply Fin.ext
-    omega
-  simpa [hend] using h
+    exact hnat
+  simpa [hstart, hend] using hz'
 
 /-- Composition of finite fat-subtree reduction witnesses. -/
 def trans
