@@ -708,6 +708,62 @@ theorem liftSteps_congr_steps (U : FiniteFatTree H)
   subst t
   rfl
 
+/-- Changing the numerical start index along an equality only transports
+the dependent height proof; the resulting lift is unchanged. -/
+theorem liftSteps_congr_start (U : FiniteFatTree H)
+    (i j steps : Nat)
+    (hi : i + steps ≤ U.height) (hj : j + steps ≤ U.height)
+    (hij : i = j) (X : Set T) :
+    U.liftSteps H i steps hi X = U.liftSteps H j steps hj X := by
+  subst j
+  rfl
+
+/-- Finite lifts compose over adjacent intervals of row indices. -/
+theorem liftSteps_add (U : FiniteFatTree H)
+    (i a b : Nat) (h : i + (a + b) ≤ U.height)
+    (X : Set T) :
+    U.liftSteps H i (a + b) h X =
+      U.liftSteps H (i + a) b (by omega)
+        (U.liftSteps H i a (by omega) X) := by
+  induction a generalizing i X with
+  | zero =>
+      change
+        U.liftSteps H i b h X =
+          U.liftSteps H i b (by omega) X
+      rfl
+  | succ a ih =>
+      let ri : Fin U.height := ⟨i, by omega⟩
+      have hsum : (a + 1) + b = (a + b) + 1 := by omega
+      calc
+        U.liftSteps H i ((a + 1) + b) h X =
+            U.liftSteps H i ((a + b) + 1) (by omega) X :=
+          U.liftSteps_congr_steps H i
+            ((a + 1) + b) ((a + b) + 1)
+            h (by omega) hsum X
+        _ = U.liftSteps H (i + 1) (a + b) (by omega)
+              (U.oneLift H ri X) := by
+          simpa [ri] using
+            U.liftSteps_succ H i (a + b) (by omega) X
+        _ = U.liftSteps H ((i + 1) + a) b (by omega)
+              (U.liftSteps H (i + 1) a (by omega)
+                (U.oneLift H ri X)) :=
+          ih (i := i + 1) (by omega)
+            (X := U.oneLift H ri X)
+        _ = U.liftSteps H (i + (a + 1)) b (by omega)
+              (U.liftSteps H i (a + 1) (by omega) X) := by
+          have hinner :
+              U.liftSteps H (i + 1) a (by omega)
+                  (U.oneLift H ri X) =
+                U.liftSteps H i (a + 1) (by omega) X := by
+            symm
+            simpa [ri] using
+              U.liftSteps_succ H i a (by omega) X
+          rw [hinner]
+          exact U.liftSteps_congr_start H
+            ((i + 1) + a) (i + (a + 1)) b
+            (by omega) (by omega) (by omega)
+            (U.liftSteps H i (a + 1) (by omega) X)
+
 /-- Lift between two finite cut indices. -/
 noncomputable def liftTo (U : FiniteFatTree H)
     (a b : Fin (U.height + 1)) (hab : a ≤ b)
