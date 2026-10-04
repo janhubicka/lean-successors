@@ -522,6 +522,46 @@ theorem oneLift_mem_of_mem_full_of_source
   refine ⟨y, ?_, rfl⟩
   exact ⟨x₀, by simpa [hxx₀] using hx, hx₀y⟩
 
+/-- Iterate finite rows.  The bound records that the terminal cut is
+available; this is the finite analogue of `FatTree.liftSteps`. -/
+noncomputable def liftSteps (U : FiniteFatTree H) :
+    (i steps : Nat) → i + steps ≤ U.height → Set T → Set T
+  | _, 0, _, X => X
+  | i, steps + 1, h, X =>
+      let rowIndex : Fin U.height := ⟨i, by omega⟩
+      liftSteps U (i + 1) steps (by omega)
+        (U.oneLift H rowIndex X)
+
+@[simp] theorem liftSteps_zero (U : FiniteFatTree H)
+    (i : Nat) (h : i + 0 ≤ U.height) (X : Set T) :
+    U.liftSteps H i 0 h X = X := rfl
+
+/-- Lift between two finite cut indices. -/
+noncomputable def liftTo (U : FiniteFatTree H)
+    (a b : Fin (U.height + 1)) (hab : a ≤ b)
+    (X : Set T) : Set T :=
+  U.liftSteps H a.1 (b.1 - a.1) (by omega) X
+
+@[simp] theorem liftTo_same (U : FiniteFatTree H)
+    (a : Fin (U.height + 1)) (X : Set T) :
+    U.liftTo H a a le_rfl X = X := by
+  simp [liftTo]
+
+/-- Crossing adjacent finite cut indices is exactly one row lift. -/
+theorem liftTo_succ (U : FiniteFatTree H)
+    (i : Fin U.height) (X : Set T) :
+    U.liftTo H i.castSucc i.succ (by omega) X =
+      U.oneLift H i X := by
+  unfold liftTo
+  have hdiff : i.succ.1 - i.castSucc.1 = 1 := by
+    simp
+  rw [hdiff]
+  change
+    U.oneLift H
+      (⟨i.1, by omega⟩ : Fin U.height) X =
+      U.oneLift H i X
+  congr
+
 end FiniteFatTree
 
 end SMTree
