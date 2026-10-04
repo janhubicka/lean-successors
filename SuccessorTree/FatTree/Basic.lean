@@ -203,6 +203,53 @@ theorem height_le_terminalCut (U : FiniteFatTree H) :
   simpa [FiniteFatTree.terminalCut] using
     U.index_le_cut H U.height le_rfl
 
+/-- Finite cuts are monotone with their cut index. -/
+theorem cut_le_of_index_le (U : FiniteFatTree H)
+    {i j : Nat} (hi : i ≤ U.height) (hj : j ≤ U.height)
+    (hij : i ≤ j) :
+    U.cut (⟨i, Nat.lt_succ_of_le hi⟩ : Fin (U.height + 1)) ≤
+      U.cut (⟨j, Nat.lt_succ_of_le hj⟩ : Fin (U.height + 1)) := by
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hij
+  have aux :
+      ∀ k : Nat, (hk : i + k ≤ U.height) →
+        U.cut (⟨i, Nat.lt_succ_of_le hi⟩ : Fin (U.height + 1)) ≤
+          U.cut (⟨i + k, Nat.lt_succ_of_le hk⟩ :
+            Fin (U.height + 1)) := by
+    intro k
+    induction k with
+    | zero =>
+        intro hk
+        rfl
+    | succ k ih =>
+        intro hk
+        have hkprev : i + k ≤ U.height := by omega
+        have hklt : i + k < U.height := by omega
+        have hprev := ih hkprev
+        let q : Fin U.height := ⟨i + k, hklt⟩
+        have hstep := U.cut_lt_succ H q
+        have hstep' :
+            U.cut
+                (⟨i + k, Nat.lt_succ_of_le hkprev⟩ :
+                  Fin (U.height + 1)) ≤
+              U.cut
+                (⟨i + (k + 1), Nat.lt_succ_of_le hk⟩ :
+                  Fin (U.height + 1)) := by
+          exact Nat.le_of_lt (by
+            simpa [q, Nat.add_assoc] using hstep)
+        exact hprev.trans hstep'
+  exact aux k hj
+
+/-- Every finite cut is at most the terminal cut. -/
+theorem cut_le_terminalCut (U : FiniteFatTree H)
+    (i : Fin (U.height + 1)) :
+    U.cut i ≤ U.terminalCut := by
+  have h :=
+    U.cut_le_of_index_le H
+      (i := i.1) (j := U.height)
+      (Nat.le_of_lt_succ i.2) le_rfl
+      (Nat.le_of_lt_succ i.2)
+  simpa [FiniteFatTree.terminalCut] using h
+
 end FiniteFatTree
 
 end SMTree
