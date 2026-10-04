@@ -338,6 +338,79 @@ theorem exists_initialSegment_leFin_of_reduces
   · exact ⟨w.initialSegment H n⟩
   · simpa using w.cut_eq n
 
+/-- Converse half of A2(2): coherent finite `≤fin` reductions of
+all initial segments determine one infinite fat-tree reduction.  Coherence of
+the target indices is forced by equality of terminal cuts and injectivity of
+the ambient cut function. -/
+theorem reduces_of_initialSegment_leFin
+    {V U : FatTree H}
+    (hlocal :
+      ∀ n : Nat, ∃ m : Nat,
+        LeFin H (V.initialSegment H n) (U.initialSegment H m)) :
+    FatTree.Reduces H V U := by
+  classical
+  let φ : Nat → Nat := fun n => Classical.choose (hlocal n)
+  have hφ :
+      ∀ n : Nat,
+        LeFin H (V.initialSegment H n)
+          (U.initialSegment H (φ n)) := by
+    intro n
+    exact Classical.choose_spec (hlocal n)
+  have hcut : ∀ n : Nat, V.cut n = U.cut (φ n) := by
+    intro n
+    simpa [φ] using (hφ n).2
+  have hstrict : StrictMono φ := by
+    intro i j hij
+    by_contra hnot
+    have hji : φ j ≤ φ i := Nat.le_of_not_gt hnot
+    have hUle := (U.cut_strictMono H).monotone hji
+    have hVlt := V.cut_strictMono H hij
+    rw [hcut i, hcut j] at hVlt
+    exact (not_lt_of_ge hUle) hVlt
+  refine ⟨{
+    index := φ
+    index_strict := hstrict
+    cut_eq := hcut
+    lift_subset := ?_
+  }⟩
+  intro i
+  let ri : Fin (i + 1) := ⟨i, by omega⟩
+  rcases (hφ (i + 1)).1 with ⟨fw⟩
+  have hsCut := fw.cut_eq ri.castSucc
+  have heCut := fw.cut_eq ri.succ
+  change
+    V.cut i =
+      U.cut (fw.index ri.castSucc).1 at hsCut
+  change
+    V.cut (i + 1) =
+      U.cut (fw.index ri.succ).1 at heCut
+  have hstart : (fw.index ri.castSucc).1 = φ i := by
+    apply U.cut_injective H
+    calc
+      U.cut (fw.index ri.castSucc).1 = V.cut i := hsCut.symm
+      _ = U.cut (φ i) := hcut i
+  have hend : (fw.index ri.succ).1 = φ (i + 1) := by
+    apply U.cut_injective H
+    calc
+      U.cut (fw.index ri.succ).1 = V.cut (i + 1) := heCut.symm
+      _ = U.cut (φ (i + 1)) := hcut (i + 1)
+  have hfin := fw.lift_subset ri
+  rw [V.initialSegment_oneLift H (i + 1) ri] at hfin
+  rw [U.initialSegment_liftTo H (φ (i + 1))] at hfin
+  simpa [ri, hstart, hend] using hfin
+
+/-- A2(2) for infinite fat trees, expressed using the manuscript's finite
+initial segments and `≤fin`. -/
+theorem reduces_iff_initialSegment_leFin
+    (V U : FatTree H) :
+    FatTree.Reduces H V U ↔
+      ∀ n : Nat, ∃ m : Nat,
+        LeFin H (V.initialSegment H n) (U.initialSegment H m) := by
+  constructor
+  · intro h n
+    exact exists_initialSegment_leFin_of_reduces H h n
+  · exact reduces_of_initialSegment_leFin H
+
 /-- A2(3), in prefix form: a finite reduction restricts to every source
 prefix, and the corresponding target prefix ends at the image of that
 terminal cut. -/
