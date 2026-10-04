@@ -162,6 +162,34 @@ noncomputable def finitization :
       rw [ha]
       exact hfin
 
+
+/-- In the concrete fat-tree finitization, Todorčević depth is exactly the
+manuscript's terminal-cut occurrence relation.  The explicit minimality
+clause in \`HasDepth\` is automatic because the ambient cut is injective. -/
+theorem hasDepth_iff_stemAt
+    {n d : Nat}
+    (a : (S0 H).Approx n) (B : FatTree H) :
+    (finitization H).HasDepth a B d ↔
+      StemAt H a.1 B d := by
+  constructor
+  · intro hd
+    exact hd.1
+  · intro hstem
+    refine ⟨hstem, ?_⟩
+    intro e he hsmall
+    have htermD :
+        a.1.terminalCut = B.cut d :=
+      terminalCut_eq_of_stemAt H hstem
+    have htermE :
+        a.1.terminalCut = B.cut e := by
+      exact hsmall.2
+    have hcut : B.cut d = B.cut e :=
+      htermD.symm.trans htermE
+    have hde : d = e :=
+      B.cut_injective H hcut
+    omega
+
+
 end FatTree
 end SMTree
 end SuccessorTree
