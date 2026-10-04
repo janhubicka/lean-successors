@@ -423,6 +423,13 @@ namespace FiniteFatTree
 
 variable (H : SMTree S)
 
+/-- Row extensions commute with taking a finite prefix. -/
+theorem prefix_rowExtension (U : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ U.height) (i : Fin n) :
+    (U.prefix H n hn).rowExtension H i =
+      U.rowExtension H (⟨i.1, by omega⟩ : Fin U.height) := by
+  rfl
+
 /-- A canonical finite row extension fixes everything below its source cut. -/
 theorem rowExtension_fixesBelow (U : FiniteFatTree H)
     (i : Fin U.height) :
@@ -447,6 +454,15 @@ theorem le_rowExtension_at_cut (U : FiniteFatTree H)
 noncomputable def oneLift (U : FiniteFatTree H)
     (i : Fin U.height) (X : Set T) : Set T :=
   U.rowExtension H i '' ImmediateSuccessors (T := T) X
+
+/-- One-step lift is unchanged when computed inside a prefix that
+still contains the selected row. -/
+theorem prefix_oneLift (U : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ U.height) (i : Fin n) (X : Set T) :
+    (U.prefix H n hn).oneLift H i X =
+      U.oneLift H (⟨i.1, by omega⟩ : Fin U.height) X := by
+  unfold oneLift
+  rw [U.prefix_rowExtension H n hn i]
 
 /-- Finite one-step lifting is monotone in the starting set. -/
 theorem oneLift_mono (U : FiniteFatTree H)
@@ -767,6 +783,44 @@ theorem liftSteps_add (U : FiniteFatTree H)
             ((i + 1) + a) (i + (a + 1)) b
             (by omega) (by omega) (by omega)
             (U.liftSteps H i (a + 1) (by omega) X)
+
+/-- Iterated lift is unchanged when all selected rows lie inside a
+finite prefix. -/
+theorem prefix_liftSteps (U : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ U.height)
+    (i steps : Nat) (h : i + steps ≤ n) (X : Set T) :
+    (U.prefix H n hn).liftSteps H i steps h X =
+      U.liftSteps H i steps (h.trans hn) X := by
+  induction steps generalizing i X with
+  | zero =>
+      rfl
+  | succ steps ih =>
+      rw [(U.prefix H n hn).liftSteps_succ H i steps h X,
+          U.liftSteps_succ H i steps (h.trans hn) X]
+      have hone :
+          (U.prefix H n hn).oneLift H
+              (⟨i, by omega⟩ : Fin n) X =
+            U.oneLift H (⟨i, by omega⟩ : Fin U.height) X :=
+        U.prefix_oneLift H n hn (⟨i, by omega⟩ : Fin n) X
+      rw [hone]
+      exact ih (i := i + 1) (by omega)
+        (X := U.oneLift H (⟨i, by omega⟩ : Fin U.height) X)
+
+/-- Finite interval lifts commute with taking a prefix. -/
+theorem prefix_liftTo (U : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ U.height)
+    (a b : Fin (n + 1)) (hab : a ≤ b) (X : Set T) :
+    (U.prefix H n hn).liftTo H a b hab X =
+      U.liftTo H
+        (⟨a.1, by omega⟩ : Fin (U.height + 1))
+        (⟨b.1, by omega⟩ : Fin (U.height + 1))
+        (by
+          change a.1 ≤ b.1
+          exact hab)
+        X := by
+  unfold liftTo
+  exact U.prefix_liftSteps H n hn a.1 (b.1 - a.1)
+    (by omega) X
 
 /-- Lift between two finite cut indices. -/
 noncomputable def liftTo (U : FiniteFatTree H)
