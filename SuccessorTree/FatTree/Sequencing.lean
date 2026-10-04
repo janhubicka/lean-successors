@@ -80,6 +80,8 @@ theorem a1_one (U : FatTree H) :
   refine FiniteFatTree.ext_pointwise H
     (U := U.initialSegment H 0) (V := empty H) rfl ?_ ?_
   · intro i
+    have hi1 : i.1 < 1 := by
+      simpa only [FatTree.initialSegment] using i.2
     have hi : i.1 = 0 := by omega
     change U.cut i.1 = 0
     rw [hi, U.cut_zero]
@@ -111,7 +113,9 @@ theorem ext_of_initialSegments_eq {U V : FatTree H}
     simpa using ht
   · intro i
     let j : Fin ((V.initialSegment H (i + 1)).height) :=
-      ⟨i, by simp⟩
+      ⟨i, by
+        change i < i + 1
+        exact Nat.lt_succ_self i⟩
     have hr :=
       FiniteFatTree.row_heq_of_eq H (h (i + 1)) j
     simpa [j] using hr
@@ -135,7 +139,8 @@ theorem initialSegment_height_eq
     (h : U.initialSegment H n = V.initialSegment H m) :
     n = m := by
   have hh := congrArg FiniteFatTree.height h
-  simpa using hh
+  change n = m at hh
+  exact hh
 
 /-- A1(3): equal finite approximations have the same length and all previous
 approximations agree. -/
