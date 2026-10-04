@@ -97,6 +97,33 @@ noncomputable instance fanProfileFintype
     fun i => RawSuccessorFan.fintype H (trace i)
   infer_instance
 
+/-- The exact traces of one finite fat-tree prefix form a concrete
+finite type, not merely a finite set. -/
+noncomputable instance exactTraceFintype
+    (y : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ y.height) :
+    Fintype (FiniteFatTree.ExactTrace H y n hn) :=
+  Set.Finite.fintype
+    (FiniteFatTree.exactTraces_finite H y n hn)
+
+/-- The simultaneous raw successor-fan profile over every exact trace of a
+finite prefix.  This is the finite product alphabet used by the manuscript's
+all-trace stabilization step. -/
+abbrev ExactFanProfile
+    (y : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ y.height) :=
+  FanProfile H
+    (FiniteFatTree.ExactTrace H y n hn)
+    (fun q => q.1)
+
+noncomputable instance exactFanProfileFintype
+    (y : FiniteFatTree H)
+    (n : Nat) (hn : n ≤ y.height) :
+    Fintype (ExactFanProfile H y n hn) := by
+  letI :=
+    exactTraceFintype H y n hn
+  exact fanProfileFintype H (fun q : FiniteFatTree.ExactTrace H y n hn => q.1)
+
 /-- A raw exact-trace update canonically yields a finite successor
 fan. The existential successor choices in IsRawTraceUpdate are made
 only on the finite source level; below it the table is the identity. -/
