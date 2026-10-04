@@ -1,4 +1,4 @@
-import Mathlib.Algebra.BigOperators.ModEq
+import Mathlib
 
 /-!
 # Modular truncation of the quadratic binomial moment expansion
