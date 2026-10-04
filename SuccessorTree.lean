@@ -59,3 +59,5 @@ import SuccessorTree.NonPrecompact.FolkmanPersistence
 import SuccessorTree.CopyRamsey
 
 import SuccessorTree.NonPrecompact.QuadraticGauss
+
+import SuccessorTree.NonPrecompact.QuadraticArithmetic
