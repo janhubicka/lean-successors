@@ -228,6 +228,12 @@ abbrev FanProfile {c : Nat}
     (trace : C → AM H c 1) :=
   ∀ i : C, Option (RawSuccessorFan H (trace i))
 
+noncomputable instance fanProfileDecidableEq
+    {c : Nat} {C : Type*} [Fintype C]
+    (trace : C → AM H c 1) :
+    DecidableEq (FanProfile H C trace) :=
+  Classical.decEq _
+
 noncomputable instance fanProfileFintype
     {c : Nat} {C : Type*} [Fintype C]
     (trace : C → AM H c 1) :
