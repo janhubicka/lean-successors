@@ -94,4 +94,94 @@ theorem sum_f2Sign_bilinear_fixed
     simpa [LinearMap.flip_apply] using
       sum_f2Sign_linear_eq_zero (b.flip w) hlin
 
+
+/-- The integer Gauss sum attached to an F₂-valued function. -/
+def quadraticGaussSum
+    {V : Type*} [Fintype V]
+    (p : V → F2) : ℤ :=
+  ∑ z : V, f2Sign (p z)
+
+/-- The polar identity rewrites the product of two quadratic signs as a
+constant sign times the sign of the polar bilinear form. -/
+theorem f2Sign_quadratic_pair
+    {V : Type*} [AddCommGroup V] [Module F2 V]
+    (p : V → F2)
+    (b : V →ₗ[F2] V →ₗ[F2] F2)
+    (hpolar :
+      ∀ z w,
+        p (z + w) + p z + p w + p 0 = b z w)
+    (z w : V) :
+    f2Sign (p z) * f2Sign (p (z + w)) =
+      f2Sign (p w + p 0) * f2Sign (b z w) := by
+  rw [← f2Sign_add, ← f2Sign_add]
+  congr 1
+  rw [← hpolar z w]
+  ring
+
+/-- Translation of the second variable in the squared Gauss sum. -/
+theorem sum_f2Sign_translate_second
+    {V : Type*} [AddCommGroup V] [Fintype V]
+    (p : V → F2) (z : V) :
+    (∑ y : V, f2Sign (p z) * f2Sign (p y)) =
+      ∑ w : V, f2Sign (p z) * f2Sign (p (z + w)) := by
+  refine Fintype.sum_equiv (Equiv.subRight z) _ _ ?_
+  intro y
+  simp only [Equiv.subRight_apply]
+  congr 2
+  abel
+
+/-- For a nondegenerate polar form, the square of the quadratic sign Gauss
+sum is the cardinality of the underlying finite F₂-vector space. -/
+theorem quadraticGaussSum_sq_eq_card
+    {V : Type*} [AddCommGroup V] [Module F2 V] [Fintype V]
+    [DecidableEq V]
+    (p : V → F2)
+    (b : V →ₗ[F2] V →ₗ[F2] F2)
+    (hpolar :
+      ∀ z w,
+        p (z + w) + p z + p w + p 0 = b z w)
+    (hnondeg : Function.Injective b.flip) :
+    quadraticGaussSum p ^ 2 = (Fintype.card V : ℤ) := by
+  unfold quadraticGaussSum
+  rw [pow_two, Fintype.sum_mul_sum]
+
+  have hinner (w : V) :
+      (∑ z : V,
+        f2Sign (p z) * f2Sign (p (z + w))) =
+        f2Sign (p w + p 0) *
+          ∑ z : V, f2Sign (b z w) := by
+    calc
+      (∑ z : V,
+          f2Sign (p z) * f2Sign (p (z + w))) =
+          ∑ z : V,
+            f2Sign (p w + p 0) * f2Sign (b z w) := by
+        apply Finset.sum_congr rfl
+        intro z hz
+        exact f2Sign_quadratic_pair p b hpolar z w
+      _ = f2Sign (p w + p 0) *
+          ∑ z : V, f2Sign (b z w) := by
+        rw [Finset.mul_sum]
+
+  calc
+    (∑ z : V, ∑ y : V,
+        f2Sign (p z) * f2Sign (p y)) =
+        ∑ z : V, ∑ w : V,
+          f2Sign (p z) * f2Sign (p (z + w)) := by
+      apply Finset.sum_congr rfl
+      intro z hz
+      exact sum_f2Sign_translate_second p z
+    _ = ∑ w : V, ∑ z : V,
+          f2Sign (p z) * f2Sign (p (z + w)) := by
+      rw [Finset.sum_comm]
+    _ = ∑ w : V,
+          f2Sign (p w + p 0) *
+            (if w = 0 then (Fintype.card V : ℤ) else 0) := by
+      apply Finset.sum_congr rfl
+      intro w hw
+      rw [hinner w, sum_f2Sign_bilinear_fixed b hnondeg w]
+    _ = (Fintype.card V : ℤ) := by
+      have hp0 : p 0 + p 0 = 0 :=
+        CharTwo.add_self_eq_zero (p 0)
+      simp [hp0, f2Sign]
+
 end SuccessorTree.NonPrecompact
