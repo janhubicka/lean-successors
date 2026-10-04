@@ -125,8 +125,7 @@ noncomputable def step
             rw [hEtop]
       _ = U.cut (a + i + 1) := hRsucc
       _ = U.cut (a + (i + 1)) := by
-        congr 1
-        omega
+        rfl
   refine {
     toMMap := Q
     fixesBelow := hQfix
@@ -163,6 +162,10 @@ noncomputable def step
           (TreeLevel (T := T) (U.cut a)) := by
     rw [hsplit, hlast]
     exact hone
+  change
+    R (E.toMMap (P x)) ∈
+      U.liftTo H a (a + (i + 1)) (by omega)
+        (TreeLevel (T := T) (U.cut a))
   simpa only [Nat.add_assoc] using htarget
 
 @[simp] theorem step_apply
