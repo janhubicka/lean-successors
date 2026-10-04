@@ -105,9 +105,13 @@ theorem traceLift_prefix_appendRow
           omega))) =
       traceLift H y n hn := by
   let z := appendRow H y h
-  have hm : y.height ≤ z.height := by omega
+  have hm : y.height ≤ z.height := by
+    dsimp [z]
+    exact Nat.le_succ y.height
+  have hzN : n ≤ z.height := by
+    exact hn.trans hm
   have hsrc :
-      traceSourceCut H z n (by omega) =
+      traceSourceCut H z n hzN =
         traceSourceCut H y n hn := by
     dsimp [z]
     exact traceSourceCut_appendRow H y h n hn
@@ -115,15 +119,30 @@ theorem traceLift_prefix_appendRow
       z.initialSegment H y.height hm = y := by
     dsimp [z]
     exact appendRow_initialSegment H y h
+  let Xz : Set T :=
+    TreeLevel (T := T) (traceSourceCut H z n hzN)
   have hlift :=
     z.initialSegment_liftSteps H y.height hm
-      n (y.height - n) (by omega)
-      (TreeLevel (T := T)
-        (traceSourceCut H z n (by omega)))
-  rw [hseg] at hlift
-  rw [hsrc] at hlift
+      n (y.height - n) (by omega) Xz
+  have hsegLift :
+      (z.initialSegment H y.height hm).liftSteps H
+          n (y.height - n) (by omega) Xz =
+        y.liftSteps H n (y.height - n) (by omega) Xz := by
+    cases hseg
+    rfl
+  have hamb :
+      z.liftSteps H n (y.height - n) (by omega) Xz =
+        y.liftSteps H n (y.height - n) (by omega) Xz := by
+    exact hlift.symm.trans hsegLift
+  have hX :
+      Xz =
+        TreeLevel (T := T) (traceSourceCut H y n hn) := by
+    unfold Xz
+    rw [hsrc]
   rw [traceLift_eq_liftSteps H y n hn]
-  exact hlift.symm
+  dsimp [z] at hamb ⊢
+  rw [hX] at hamb
+  exact hamb
 
 /-- Exact geometric recursion for finite-prefix traces: appending one row
 applies precisely the new row Lift to the old trace Lift. -/
@@ -137,13 +156,23 @@ theorem traceLift_appendRow
       (appendRow H y h).oneLift H (Fin.last y.height)
         (traceLift H y n hn) := by
   let z := appendRow H y h
+  have hzheight : z.height = y.height + 1 := by
+    dsimp [z]
+    exact appendRow_height H y h
   have htotal :
-      z.height - n = (y.height - n) + 1 := by omega
+      z.height - n = (y.height - n) + 1 := by
+    rw [hzheight]
+    omega
   rw [traceLift_eq_liftSteps H z n]
   have hcongr :=
     z.liftSteps_congr_steps H n
       (z.height - n) ((y.height - n) + 1)
-      (by omega) (by omega)
+      (by
+        rw [hzheight]
+        omega)
+      (by
+        rw [hzheight]
+        omega)
       htotal
       (TreeLevel (T := T)
         (traceSourceCut H z n (by omega)))
