@@ -50,7 +50,8 @@ structure FiniteFatTree (H : SMTree S) where
 
 /-- The final cut of a finite fat tree.  Keeping it as named data is
 useful for A.2: the finitary order remembers this cut explicitly. -/
-def FiniteFatTree.terminalCut (U : FiniteFatTree H) : Nat :=
+def FiniteFatTree.terminalCut {H : SMTree S}
+    (U : FiniteFatTree H) : Nat :=
   U.cut ⟨U.height, Nat.lt_succ_self U.height⟩
 
 namespace FatTree
