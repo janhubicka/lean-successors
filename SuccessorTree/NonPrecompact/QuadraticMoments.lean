@@ -102,6 +102,8 @@ theorem selectedPairFiber_pred_iff
       (selectedRhs (fun i => 1 + c i) s,
         selectedRhs (fun i => 1 + e i) s) ↔
       ∀ i ∈ s, pairBit A B c e i x x = 1 := by
+  simp only [LinearMap.prod_apply, Function.prod_apply, Prod.mk.injEq,
+    Matrix.mulVecLin_apply]
   change
     ((selectedRows A s) *ᵥ x =
         selectedRhs (fun i => 1 + c i) s ∧
@@ -144,7 +146,7 @@ theorem bilinearWeight_self_eq_quadraticPairOnes_card
   intro i hi
   rcases f2_eq_zero_or_one (pairBit A B c e i x x) with h | h
   · simp [h]
-  · simp [h]
+  · simp [h, ZMod.val_one]
 
 /-- The selected pair fibre cardinality is a Boolean indicator sum over the
 ambient vector space. -/
@@ -156,7 +158,22 @@ theorem card_selectedPairFiber_eq_sum_indicator
     Nat.card (selectedPairFiber A B c e s) =
       ∑ x : Fin d → F2,
         if (∀ i ∈ s, pairBit A B c e i x x = 1) then 1 else 0 := by
-  rw [Nat.card_eq_fintype_card, Fintype.card_subtype]
+  classical
+  change
+    Nat.card {x : Fin d → F2 //
+      (LinearMap.prod
+        (selectedRows A s).mulVecLin
+        (selectedRows B s).mulVecLin) x =
+      (selectedRhs (fun i => 1 + c i) s,
+        selectedRhs (fun i => 1 + e i) s)} = _
+  letI := Fintype.ofFinite {x : Fin d → F2 //
+    (LinearMap.prod
+      (selectedRows A s).mulVecLin
+      (selectedRows B s).mulVecLin) x =
+    (selectedRhs (fun i => 1 + c i) s,
+      selectedRhs (fun i => 1 + e i) s)}
+  rw [Nat.card_eq_fintype_card, Fintype.card_subtype,
+    Finset.card_eq_sum_ones, Finset.sum_filter]
   apply Finset.sum_congr rfl
   intro x hx
   rw [if_congr (selectedPairFiber_pred_iff A B c e s x) rfl rfl]
@@ -178,7 +195,18 @@ theorem sum_powersetCard_indicator_eq_choose_weight
           (fun s => ∀ i ∈ s, pairBit A B c e i x x = 1) =
         ones.powersetCard k := by
     ext s
-    simp [ones, quadraticPairOnes, Finset.mem_powersetCard]
+    simp only [Finset.mem_filter, Finset.mem_powersetCard,
+      Finset.subset_univ, true_and]
+    constructor
+    · rintro ⟨hcard, hall⟩
+      refine ⟨?_, hcard⟩
+      intro i hi
+      simp [ones, quadraticPairOnes, hall i hi]
+    · rintro ⟨hsub, hcard⟩
+      refine ⟨hcard, ?_⟩
+      intro i hi
+      have hii := hsub hi
+      simpa [ones, quadraticPairOnes] using hii
   calc
     (∑ s ∈ (Finset.univ : Finset (Fin n)).powersetCard k,
         if (∀ i ∈ s, pairBit A B c e i x x = 1) then 1 else 0) =
