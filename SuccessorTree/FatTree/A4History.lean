@@ -162,11 +162,13 @@ noncomputable def step
           (TreeLevel (T := T) (U.cut a)) := by
     rw [hsplit, hlast]
     exact hone
-  change
-    R (E.toMMap (P x)) ∈
-      U.liftTo H a (a + (i + 1)) (by omega)
-        (TreeLevel (T := T) (U.cut a))
-  simpa only [Nat.add_assoc] using htarget
+  have htransport :=
+    U.liftTo_level_congr H
+      (i := a) (k := a + i + 1)
+      (i' := a) (k' := a + (i + 1))
+      (by omega) (by omega) rfl (by omega)
+  rw [← htransport]
+  exact htarget
 
 @[simp] theorem step_apply
     (U : FatTree H) (a i : Nat)
@@ -175,7 +177,9 @@ noncomputable def step
     (x : T) :
     (step H U a i P E) x =
       U.rowExtension H (a + i) (E.toMMap (P x)) := by
-  simp [step]
+  unfold step
+  dsimp only
+  rfl
 
 /-- A history step moves every base-level history point upward in the
 underlying tree. -/
