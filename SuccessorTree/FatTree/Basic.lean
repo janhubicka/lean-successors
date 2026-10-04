@@ -48,6 +48,11 @@ structure FiniteFatTree (H : SMTree S) where
   row_cut : ∀ i : Fin height,
     (row i).rowEndLevel H + 1 = cut i.succ
 
+/-- The final cut of a finite fat tree.  Keeping it as named data is
+useful for A.2: the finitary order remembers this cut explicitly. -/
+def FiniteFatTree.terminalCut (U : FiniteFatTree H) : Nat :=
+  U.cut ⟨U.height, Nat.lt_succ_self U.height⟩
+
 namespace FatTree
 
 variable (H : SMTree S)
@@ -80,6 +85,9 @@ def initialSegment (U : FatTree H) (n : Nat) : FiniteFatTree H where
   row_cut := by
     intro i
     simpa using U.row_cut i.1
+
+@[simp] theorem initialSegment_terminalCut (U : FatTree H) (n : Nat) :
+    (U.initialSegment H n).terminalCut = U.cut n := rfl
 
 /-- The paper's `u_i⁺`: the canonical total extension of row `i`. -/
 noncomputable def rowExtension (U : FatTree H) (i : Nat) : MMap H :=
@@ -117,6 +125,40 @@ end FatTree
 namespace FiniteFatTree
 
 variable (H : SMTree S)
+
+/-- The canonical total extension of a finite fat-tree row. -/
+noncomputable def rowExtension (U : FiniteFatTree H)
+    (i : Fin U.height) : MMap H :=
+  H.canonicalExtension ((U.row i).representative H) (U.cut i.castSucc)
+
+/-- A finite row extension agrees with the row on its prescribed prefix. -/
+theorem rowExtension_agrees (U : FiniteFatTree H)
+    (i : Fin U.height) (x : T)
+    (hx : LevelTree.lev x ≤ U.cut i.castSucc) :
+    U.rowExtension H i x = (U.row i).representative H x := by
+  exact H.canonicalExtension_agrees _ _ _ hx
+
+/-- The finite row extension has the same final image level as the row. -/
+theorem rowExtension_level_at_cut (U : FiniteFatTree H)
+    (i : Fin U.height) :
+    H.levelMap (U.rowExtension H i).map (U.cut i.castSucc) =
+      (U.row i).rowEndLevel H := by
+  exact H.canonicalExtension_level_at_prefix _ _
+
+/-- Immediate successors at one finite cut are sent to the next cut. -/
+theorem rowExtension_level_succ (U : FiniteFatTree H)
+    (i : Fin U.height) :
+    H.levelMap (U.rowExtension H i).map (U.cut i.castSucc + 1) =
+      U.cut i.succ := by
+  calc
+    H.levelMap (U.rowExtension H i).map (U.cut i.castSucc + 1) =
+        H.levelMap (U.rowExtension H i).map (U.cut i.castSucc) + 1 :=
+      H.canonicalExtension_level_succ
+        ((U.row i).representative H) (U.cut i.castSucc)
+        (U.cut i.castSucc) le_rfl
+    _ = (U.row i).rowEndLevel H + 1 := by
+      rw [U.rowExtension_level_at_cut H i]
+    _ = U.cut i.succ := U.row_cut i
 
 /-- Adjacent cuts in a finite fat tree are strictly increasing as well. -/
 theorem cut_lt_succ (U : FiniteFatTree H) (i : Fin U.height) :
