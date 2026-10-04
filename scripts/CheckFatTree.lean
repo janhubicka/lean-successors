@@ -1,4 +1,4 @@
-import SuccessorTree.FatTree.FiniteReduction
+import SuccessorTree.FatTree.Finitization
 
 open SuccessorTree
 
@@ -58,3 +58,8 @@ open SuccessorTree
 #check SMTree.FiniteFatTree.reduces_trans
 #print axioms SMTree.FiniteFatTree.ReductionWitness.trans
 #print axioms SMTree.FiniteFatTree.reduces_trans
+
+#check SMTree.FiniteFatTree.LeFin
+#check SMTree.FiniteFatTree.leFin_refl
+#check SMTree.FiniteFatTree.leFin_trans
+#print axioms SMTree.FiniteFatTree.leFin_trans
