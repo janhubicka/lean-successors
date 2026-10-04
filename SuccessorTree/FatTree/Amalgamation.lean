@@ -24,13 +24,22 @@ namespace FatTree
 
 variable (H : SMTree S)
 
-/-- Heterogeneous equality of one-row approximations preserves the
-last image level.  This packages the dependent source-cut transport used by
-the splice construction. -/
-theorem rowEndLevel_eq_of_heq
-    {a b : Nat} {u : AM H a 1} {v : AM H b 1}
-    (h : HEq u v) :
-    u.rowEndLevel H = v.rowEndLevel H := by
+/-- Transport a one-row approximation along an equality of its source
+cut.  Keeping this transport explicit avoids asking Lean to eliminate a
+heterogeneous equality between dependent approximation types. -/
+def castRow {a b : Nat} (h : a = b) (u : AM H a 1) : AM H b 1 := by
+  cases h
+  exact u
+
+@[simp] theorem castRow_rowEndLevel
+    {a b : Nat} (h : a = b) (u : AM H a 1) :
+    (castRow H h u).rowEndLevel H = u.rowEndLevel H := by
+  cases h
+  rfl
+
+theorem castRow_heq
+    {a b : Nat} (h : a = b) (u : AM H a 1) :
+    HEq (castRow H h u) u := by
   cases h
   rfl
 
@@ -49,15 +58,13 @@ def splice
   let r : (i : Nat) → AM H (c i) 1 := fun i => by
     by_cases hi : i < x.height
     · have hc :
-          c i = x.cut ⟨i, Nat.lt_succ_of_lt hi⟩ := by
+          x.cut ⟨i, Nat.lt_succ_of_lt hi⟩ = c i := by
         simp [c, hi]
-      rw [hc]
-      exact x.row ⟨i, hi⟩
+      exact castRow H hc (x.row ⟨i, hi⟩)
     · have hc :
-          c i = V.cut (n + (i - x.height)) := by
+          V.cut (n + (i - x.height)) = c i := by
         simp [c, hi]
-      rw [hc]
-      exact V.row (n + (i - x.height))
+      exact castRow H hc (V.row (n + (i - x.height)))
   refine {
     cut := c
     cut_zero := ?_
@@ -83,13 +90,10 @@ def splice
   · intro i
     by_cases hi : i < x.height
     · let ix : Fin x.height := ⟨i, hi⟩
-      have hrow :
-          HEq (r i) (x.row ix) := by
-        simp [r, c, hi, ix]
       have hend :
           (r i).rowEndLevel H =
-            (x.row ix).rowEndLevel H :=
-        rowEndLevel_eq_of_heq H hrow
+            (x.row ix).rowEndLevel H := by
+        simp [r, c, hi, ix, castRow_rowEndLevel]
       have hr := x.row_cut ix
       by_cases hnext : i + 1 < x.height
       · calc
@@ -119,13 +123,10 @@ def splice
                 simp [c, hnext, heq]
     · have hnext : ¬ i + 1 < x.height := by omega
       let q : Nat := n + (i - x.height)
-      have hrow :
-          HEq (r i) (V.row q) := by
-        simp [r, c, hi, q]
       have hend :
           (r i).rowEndLevel H =
-            (V.row q).rowEndLevel H :=
-        rowEndLevel_eq_of_heq H hrow
+            (V.row q).rowEndLevel H := by
+        simp [r, c, hi, q, castRow_rowEndLevel]
       have hq := V.row_cut q
       have hidx :
           n + (i + 1 - x.height) = q + 1 := by
