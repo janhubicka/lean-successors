@@ -405,9 +405,31 @@ theorem reduces_of_initialSegment_leFin
         (TreeLevel (T := T)
           (U.cut (fw.index ri.castSucc).1)) at hfin
   unfold FiniteFatTree.liftTo at hfin
-  rw [U.initialSegment_liftSteps H (φ (i + 1))] at hfin
+  let a : Nat := (fw.index ri.castSucc).1
+  let b : Nat := (fw.index ri.succ).1
+  have hb : b ≤ φ (i + 1) := by
+    have hb0 := Nat.le_of_lt_succ (fw.index ri.succ).2
+    change b ≤ φ (i + 1) at hb0
+    exact hb0
+  have hab : a ≤ b := by
+    exact Nat.le_of_lt (fw.index_strict (by
+      change ri.castSucc < ri.succ
+      exact Fin.lt_def.mpr (by
+        change i < i + 1
+        omega)))
+  have hbound : a + (b - a) ≤ φ (i + 1) := by
+    omega
+  have hlift :=
+    U.initialSegment_liftSteps H (φ (i + 1))
+      a (b - a) hbound
+      (TreeLevel (T := T) (U.cut a))
+  change
+    V.oneLift H i (TreeLevel (T := T) (V.cut i)) ⊆
+      (U.initialSegment H (φ (i + 1))).liftSteps H
+        a (b - a) _ (TreeLevel (T := T) (U.cut a)) at hfin
+  rw [hlift] at hfin
   unfold FatTree.liftTo
-  simpa only [hstart, hend] using hfin
+  simpa only [a, b, hstart, hend] using hfin
 
 /-- A2(2) for infinite fat trees, expressed using the manuscript's finite
 initial segments and `≤fin`. -/
