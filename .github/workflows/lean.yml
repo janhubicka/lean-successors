@@ -148,7 +148,7 @@ jobs:
           import re
           text = Path('proof-audit/fat-tree-a4-axioms.log').read_text()
           entries = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
-          if len(entries) != 8:
+          if len(entries) != 10:
               raise SystemExit(f'Expected 10 A4 bridge/trace/persistence axiom reports, received {len(entries)}')
           allowed = {'propext', 'Classical.choice', 'Quot.sound'}
           for entry in entries:
