@@ -74,6 +74,68 @@ theorem baseExactTrace_eq_id1
   unfold FiniteFatTree.traceTargetCut
   rw [FiniteFatTree.traceSourceCut_height H y]
 
+
+/-- At the base prefix, composing after any exact trace is just the row
+itself (after the harmless source-cut transport). -/
+theorem cast_compose_base_exactTrace
+    (y : FiniteFatTree H)
+    (q : FiniteFatTree.ExactTrace H y y.height le_rfl)
+    (h : AM H y.terminalCut 1) :
+    FiniteFatTree.castTraceRow H (baseTraceSource H y)
+        (H.composeAcross
+          (exactTraceToAMExact H y y.height le_rfl q) h) = h := by
+  have hq := baseExactTrace_eq_id1 H y q
+  have hsource := baseTraceSource H y
+  cases hsource
+  have hqid :
+      (exactTraceToAMExact H y y.height le_rfl q) =
+        (⟨AM.id1 H y.terminalCut, AM.id1_topLevel H y.terminalCut⟩ :
+          AMExact H y.terminalCut y.terminalCut) := by
+    apply Subtype.ext
+    exact hq
+  rw [hqid]
+  exact H.composeAcross_id1 y.terminalCut h
+
+/-- Thus the fixed-source good-row set starts exactly at the chosen colour
+class. -/
+theorem fixedTraceGoodRows_base
+    (y : FiniteFatTree H)
+    (O : Set (AM H y.terminalCut 1)) :
+    FixedTraceGoodRows H y.terminalCut y.height y le_rfl
+      (baseTraceSource H y) O = O := by
+  ext h
+  constructor
+  · intro hh
+    have q0 : FiniteFatTree.ExactTrace H y y.height le_rfl := by
+      let id : AM H
+          (FiniteFatTree.traceSourceCut H y y.height le_rfl) 1 :=
+        AM.id1 H
+          (FiniteFatTree.traceSourceCut H y y.height le_rfl)
+      refine ⟨id, ?_⟩
+      constructor
+      · rw [AM.id1_topLevel]
+        exact baseTraceSource H y
+      · intro a ha
+        unfold FiniteFatTree.traceLift
+        simp only [FiniteFatTree.traceSourceIndex]
+        rw [FiniteFatTree.liftTo_same]
+        have hid :
+            id.representative H a = a := by
+          exact MMap.toAM_one_representative_agrees
+            H (MMap.id H)
+            (FiniteFatTree.traceSourceCut H y y.height le_rfl)
+            (MMap.id_fixesBelow H
+              (FiniteFatTree.traceSourceCut H y y.height le_rfl))
+            a (by omega)
+        rw [hid]
+        exact ha
+    have hgood := hh q0
+    rw [cast_compose_base_exactTrace H y q0 h] at hgood
+    exact hgood
+  · intro hh q
+    rw [cast_compose_base_exactTrace H y q h]
+    exact hh
+
 end FatTree
 end SMTree
 end SuccessorTree
