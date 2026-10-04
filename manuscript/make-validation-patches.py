@@ -24,6 +24,16 @@ PROOF_COMMIT = '1856f22fa1c94a27b3b282945da7d0f962903cc6'
 PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37150740752'
 SUPPORT_NAME = 'successor-validation.tex'
 
+# Some anchors occur only in particular manuscript revisions. Missing optional
+# anchors are reported by absence of a generated patch rather than aborting.
+OPTIONAL_RULES = {
+    'one-moving-level',
+    'fat-tree-definition',
+    'fat-tree-lift',
+    'fat-tree-reduction',
+    'fat-tree-finitization',
+}
+
 # The exact anchors below were read in the recoverable Library main.tex.
 # The main theorem's statement is in an input file; we annotate its proof here.
 RULES = [
