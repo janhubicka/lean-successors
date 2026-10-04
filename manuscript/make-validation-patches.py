@@ -26,8 +26,8 @@ FAT_PROOF_COMMIT = '90294490350f812dbad9ae8e19d2012c64e7dd5c'
 FAT_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37188688958'
 A3_PROOF_COMMIT = '90294490350f812dbad9ae8e19d2012c64e7dd5c'
 A3_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37188688958'
-A4_BRIDGE_COMMIT = '19b88d7116716891bdef58d9c927d6399745c039'
-A4_BRIDGE_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37190600176'
+A4_BRIDGE_COMMIT = '64dc00f70042b6efd72823b3c28cac0fb96ac029'
+A4_BRIDGE_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37197761609'
 SUPPORT_NAME = 'successor-validation.tex'
 
 # Some anchors occur only in particular manuscript revisions. Missing optional
@@ -180,14 +180,15 @@ reverse inclusion separately. No EA hypothesis is used.}
     ('fat-tree-pigeonhole', r'\label{item:A4}', r'''
 \successorfatafourpartial{SuccessorTree/FatTree/A4.lean}{FiniteFatTree.appendRow\_initialSegment}
 \ifshowvalidation
-\todo[inline]{Řehořek: The finite one-row bridge for A4 is Lean-checked:
-adjoining an admissible row gives a genuine one-step finite fat-tree
-approximation and preserves the preceding prefix exactly. The full A4
-pigeonhole is not yet verified. In particular the successor-fan saturation,
-exact-trace update, persistence of large trace families, and the final
-all-trace fusion are still being formalized. Do not replace this orange
-marker by a green A4 marker until those geometric one-block reductions,
-not only canonical composites, are covered. No EA hypothesis is used.}
+\todo[inline]{Řehořek: The finite A4 bridge and the complete
+finite-prefix trace update are Lean-checked. In particular exact trace
+families are finite, appending a row has the exact Lift recursion, and both
+directions of $Q_{y\conc h}=Q_y[h]$ are verified using raw successor tables
+and Proposition~\ref{prop:shape-split}; no admissible extension of a raw
+table is assumed. The remaining unverified A4 work is simultaneous
+successor-fan profile stabilisation, persistence of large trace families,
+and the final all-trace fusion. Keep this marker orange until every geometric
+one-block reduction is covered. No EA hypothesis is used.}
 \fi
 '''),
         ('validation-boundary', r'\label{sec:finite-direct}', r'''
