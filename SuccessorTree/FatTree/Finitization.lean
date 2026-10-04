@@ -1,3 +1,4 @@
+import SuccessorTree.FatTree.Reduction
 import SuccessorTree.FatTree.FiniteReduction
 import Mathlib.Data.Fintype.Pi
 
