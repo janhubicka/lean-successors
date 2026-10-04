@@ -810,6 +810,105 @@ theorem liftTo_succ (U : FiniteFatTree H)
           U.oneLift H i X
       congr
 
+/-- A finite lift through an intermediate cut factors as the two
+successive lifts through that cut. -/
+theorem liftTo_split (U : FiniteFatTree H)
+    (a b c : Fin (U.height + 1))
+    (hab : a ≤ b) (hbc : b ≤ c) (X : Set T) :
+    U.liftTo H a c (hab.trans hbc) X =
+      U.liftTo H b c hbc (U.liftTo H a b hab X) := by
+  unfold liftTo
+  have hsum :
+      c.1 - a.1 = (b.1 - a.1) + (c.1 - b.1) := by
+    omega
+  have hmid : a.1 + (b.1 - a.1) = b.1 := by
+    omega
+  calc
+    U.liftSteps H a.1 (c.1 - a.1) (by omega) X =
+        U.liftSteps H a.1
+          ((b.1 - a.1) + (c.1 - b.1)) (by omega) X :=
+      U.liftSteps_congr_steps H a.1
+        (c.1 - a.1) ((b.1 - a.1) + (c.1 - b.1))
+        (by omega) (by omega) hsum X
+    _ = U.liftSteps H (a.1 + (b.1 - a.1))
+          (c.1 - b.1) (by omega)
+          (U.liftSteps H a.1 (b.1 - a.1) (by omega) X) :=
+      U.liftSteps_add H a.1 (b.1 - a.1) (c.1 - b.1)
+        (by omega) X
+    _ = U.liftSteps H b.1 (c.1 - b.1) (by omega)
+          (U.liftSteps H a.1 (b.1 - a.1) (by omega) X) :=
+      U.liftSteps_congr_start H
+        (a.1 + (b.1 - a.1)) b.1 (c.1 - b.1)
+        (by omega) (by omega) hmid
+        (U.liftSteps H a.1 (b.1 - a.1) (by omega) X)
+
+/-- Finite `liftTo` is monotone in its starting set. -/
+theorem liftTo_mono (U : FiniteFatTree H)
+    (a b : Fin (U.height + 1)) (hab : a ≤ b)
+    {X Y : Set T} (hXY : X ⊆ Y) :
+    U.liftTo H a b hab X ⊆ U.liftTo H a b hab Y := by
+  unfold liftTo
+  exact U.liftSteps_mono H a.1 (b.1 - a.1) (by omega) hXY
+
+/-- A finite lift lands on its terminal selected cut. -/
+theorem liftTo_subset_level (U : FiniteFatTree H)
+    (a b : Fin (U.height + 1)) (hab : a ≤ b)
+    {X : Set T}
+    (hX : X ⊆ TreeLevel (T := T) (U.cut a)) :
+    U.liftTo H a b hab X ⊆ TreeLevel (T := T) (U.cut b) := by
+  unfold liftTo
+  have hstart :
+      X ⊆ TreeLevel (T := T)
+        (U.cut (⟨a.1, by omega⟩ : Fin (U.height + 1))) := by
+    simpa using hX
+  have hres :=
+    U.liftSteps_subset_level H a.1 (b.1 - a.1)
+      (by omega) hstart
+  have hend :
+      (⟨a.1 + (b.1 - a.1), by omega⟩ :
+        Fin (U.height + 1)) = b := by
+    apply Fin.ext
+    omega
+  simpa [hend] using hres
+
+/-- Every endpoint of a finite `liftTo` lies above a node in the source set. -/
+theorem liftTo_descends (U : FiniteFatTree H)
+    (a b : Fin (U.height + 1)) (hab : a ≤ b)
+    {X : Set T}
+    (hX : X ⊆ TreeLevel (T := T) (U.cut a))
+    {z : T} (hz : z ∈ U.liftTo H a b hab X) :
+    ∃ x ∈ X, x ≤ z := by
+  unfold liftTo at hz
+  have hstart :
+      X ⊆ TreeLevel (T := T)
+        (U.cut (⟨a.1, by omega⟩ : Fin (U.height + 1))) := by
+    simpa using hX
+  exact U.liftSteps_descends H a.1 (b.1 - a.1)
+    (by omega) hstart hz
+
+/-- Source locality in finite `liftTo` notation. -/
+theorem liftTo_mem_of_mem_of_source (U : FiniteFatTree H)
+    (a b : Fin (U.height + 1)) (hab : a ≤ b)
+    {X Y : Set T}
+    (hX : X ⊆ TreeLevel (T := T) (U.cut a))
+    (hY : Y ⊆ TreeLevel (T := T) (U.cut a))
+    {z : T}
+    (hz : z ∈ U.liftTo H a b hab Y)
+    (hsource : ∃ x ∈ X, x ≤ z) :
+    z ∈ U.liftTo H a b hab X := by
+  unfold liftTo at hz ⊢
+  have hX0 :
+      X ⊆ TreeLevel (T := T)
+        (U.cut (⟨a.1, by omega⟩ : Fin (U.height + 1))) := by
+    simpa using hX
+  have hY0 :
+      Y ⊆ TreeLevel (T := T)
+        (U.cut (⟨a.1, by omega⟩ : Fin (U.height + 1))) := by
+    simpa using hY
+  exact U.liftSteps_mem_of_mem_of_source H
+    a.1 (b.1 - a.1) (by omega)
+    hX0 hY0 hz hsource
+
 end FiniteFatTree
 
 end SMTree
