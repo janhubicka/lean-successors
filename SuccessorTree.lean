@@ -58,6 +58,7 @@ import SuccessorTree.ShapeFiniteRamsey
 import SuccessorTree.FatTree.Basic
 import SuccessorTree.FatTree.Sequencing
 import SuccessorTree.FatTree.ApproximationSystem
+import SuccessorTree.FatTree.RamseyFinitization
 import SuccessorTree.FatTree.Closed
 import SuccessorTree.FatTree.Lift
 import SuccessorTree.FatTree.Reduction
