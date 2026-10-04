@@ -108,8 +108,7 @@ theorem traceLift_prefix_appendRow
   have hm : y.height ≤ z.height := by
     dsimp [z]
     exact Nat.le_succ y.height
-  have hzN : n ≤ z.height := by
-    exact hn.trans hm
+  have hzN : n ≤ z.height := hn.trans hm
   have hsrc :
       traceSourceCut H z n hzN =
         traceSourceCut H y n hn := by
@@ -121,28 +120,48 @@ theorem traceLift_prefix_appendRow
     exact appendRow_initialSegment H y h
   let Xz : Set T :=
     TreeLevel (T := T) (traceSourceCut H z n hzN)
-  have hlift :=
+  have hboundSeg :
+      n + (y.height - n) ≤
+        (z.initialSegment H y.height hm).height := by
+    change n + (y.height - n) ≤ y.height
+    omega
+  have hboundZ : n + (y.height - n) ≤ z.height := by
+    exact (by
+      have : n + (y.height - n) ≤ y.height := by omega
+      exact this.trans hm)
+  have hboundY : n + (y.height - n) ≤ y.height := by
+    omega
+  have hinside :=
     z.initialSegment_liftSteps H y.height hm
-      n (y.height - n) (by omega) Xz
-  have hsegLift :
-      (z.initialSegment H y.height hm).liftSteps H
-          n (y.height - n) (by omega) Xz =
-        y.liftSteps H n (y.height - n) (by omega) Xz := by
-    cases hseg
-    rfl
+      n (y.height - n) hboundSeg Xz
+  have htree :=
+    FiniteFatTree.liftSteps_congr_tree H hseg
+      n (y.height - n) hboundSeg hboundY Xz
   have hamb :
-      z.liftSteps H n (y.height - n) (by omega) Xz =
-        y.liftSteps H n (y.height - n) (by omega) Xz := by
-    exact hlift.symm.trans hsegLift
+      z.liftSteps H n (y.height - n) hboundZ Xz =
+        y.liftSteps H n (y.height - n) hboundY Xz :=
+    hinside.symm.trans htree
   have hX :
       Xz =
         TreeLevel (T := T) (traceSourceCut H y n hn) := by
     unfold Xz
     rw [hsrc]
+  have hamb' :
+      z.liftSteps H n (y.height - n) hboundZ
+          (TreeLevel (T := T) (traceSourceCut H y n hn)) =
+        y.liftSteps H n (y.height - n) hboundY
+          (TreeLevel (T := T) (traceSourceCut H y n hn)) := by
+    simpa [hX] using hamb
+  change
+    z.liftSteps H n (y.height - n) _
+        (TreeLevel (T := T) (traceSourceCut H z n _)) =
+      traceLift H y n hn
   rw [traceLift_eq_liftSteps H y n hn]
-  dsimp [z] at hamb ⊢
-  rw [hX] at hamb
-  exact hamb
+  have hsrc' :
+      TreeLevel (T := T) (traceSourceCut H z n hzN) =
+        TreeLevel (T := T) (traceSourceCut H y n hn) := by
+    rw [hsrc]
+  simpa [hsrc'] using hamb'
 
 /-- Exact geometric recursion for finite-prefix traces: appending one row
 applies precisely the new row Lift to the old trace Lift. -/
