@@ -60,3 +60,4 @@ import SuccessorTree.FatTree.Lift
 import SuccessorTree.FatTree.Reduction
 import SuccessorTree.FatTree.FiniteReduction
 import SuccessorTree.FatTree.Finitization
+import SuccessorTree.FatTree.Amalgamation
