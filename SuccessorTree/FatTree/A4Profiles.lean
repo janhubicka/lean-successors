@@ -246,7 +246,7 @@ theorem finiteProfileStarHJ
       ∀ a : α, ∀ i : C,
         colour (L.eval a) i = colour L.star i := by
   classical
-  letI : Fintype (C → κ) := Pi.fintype
+  letI : Fintype (C → κ) := Fintype.ofFinite _
   obtain ⟨L, hL⟩ :=
     HalesJewett.starHJ_finite
       (α := α) (κ := C → κ) colour
