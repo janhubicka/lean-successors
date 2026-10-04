@@ -51,6 +51,12 @@ noncomputable def boundedRowCode (n d : Nat)
     _ = a.1.rowEndLevel H := hend
     _ < d := a.2
 
+@[simp] theorem boundedRowCode_val (n d : Nat)
+    (a : {a : AM H n 1 // a.rowEndLevel H < d})
+    (x : InitialNode T n) :
+    (boundedRowCode H n d a x).1 = a.1.1.1 x := by
+  rfl
+
 /-- The bounded row code is injective: a realized finite row is determined
 by its values on the finite source initial segment. -/
 theorem boundedRowCode_injective (n d : Nat) :
@@ -62,7 +68,8 @@ theorem boundedRowCode_injective (n d : Nat) :
   apply Subtype.ext
   funext x
   have hx := congrFun hab x
-  simpa [boundedRowCode] using congrArg Subtype.val hx
+  have hxv := congrArg Subtype.val hx
+  simpa only [boundedRowCode_val] using hxv
 
 /-- For fixed source cut and ambient terminal bound there are only finitely
 many possible one-row approximations. -/
