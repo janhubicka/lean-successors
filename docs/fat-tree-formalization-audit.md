@@ -14,7 +14,10 @@ The formalization treats:
 - infinite and finite fat-tree reduction;
 - reflexivity and transitivity of reduction;
 - the proposed finitary order for Todorčević A.2;
-- the first finiteness ingredients for A.2(1).
+- all three A.2 clauses, including explicit lower-cone finiteness and the
+  converse finite-approximation characterization;
+- the finite-prefix splice construction used in the manuscript's A.3 proof
+  (currently still under formalization).
 
 The optional embedding Ellentuck axiom (EA) is not used in any of these
 definitions or proofs.
@@ -53,23 +56,42 @@ reduction witness is therefore a strictly increasing map on all q+1 cuts.
 The terminal-cut clause in the manuscript is essential and is preserved
 automatically when reduction witnesses are composed.
 
-### 5. A.2 is not all immediate
+### 5. A.2 needs real proofs, and they are now checked
 
 The proposed finite relation
 
     x <=fin y  iff  x <= y and terminalCut(x) = terminalCut(y)
 
-is a quasi-order.  Formalization also proves that the height of a finite fat
-tree is bounded by its terminal cut.
+is a quasi-order, and all three A.2 clauses are now Lean-checked and included
+in the axiom audit.
 
-The remaining finiteness clause A.2(1) should not be dismissed only by the
-phrase “the tree is finitely branching”.  The proof needs an explicit finite
-code: bounded one-row approximations are encoded by maps between finite
-initial tree segments, and a finite fat tree is then encoded by finitely many
-cuts and row codes.  This coding is the current formalization target.
+For A.2(1), fixing the terminal cut d bounds the height by d.  A one-row
+approximation ending below d is encoded by its map between finite initial
+segments of T.  Padding these row codes gives a single finite ambient code
+space for all finite fat trees ending at d.  This proves lower-cone finiteness.
 
-A.2(2) and A.2(3) should receive separate proofs after A.2(1); they have not
-yet been certified merely by the quasi-order proof.
+For the converse in A.2(2), the finite witnesses do not merely "follow from
+the definition".  Equality of terminal cuts identifies their target indices;
+injectivity of the ambient cut function forces these indices to be coherent.
+The coherent indices and one-block inclusions then assemble into a single
+infinite reduction witness.
+
+A.2(3) is proved by restricting a finite reduction witness to the requested
+initial segment; keeping the terminal cut in the finite witness is precisely
+what makes this restriction land in <=fin.
+
+Actions run 37181899053 checked these A.2 theorems together with the preceding
+fat-tree structural results.  All fourteen axiom reports used only propext,
+Classical.choice and Quot.sound, with no sorryAx.
+
+### 6. A.3 splice boundary
+
+The manuscript proves A.3 by concatenating a finite stem with an infinite
+tail.  This construction is now represented explicitly by FatTree.splice.
+Its terminal-cut compatibility is the only structural hypothesis, and the
+construction uses no EA assumption.  The cut and row projections and the
+reduction/neighbourhood consequences are being formalized next.  Until those
+are complete, A.3 remains partial rather than green.
 
 ## EA boundary
 
@@ -82,5 +104,5 @@ embedding theorem.
 ## Validation convention
 
 A green manuscript marker should be used only for statements which have
-passed the Lean build and the axiom audit.  The A.2 paragraph remains partial
-until the lower-finite and approximation clauses are formalized.
+passed the Lean build and the axiom audit.  A.2 now qualifies; A.3 remains
+partial until the splice reduction and neighbourhood statements are checked.
