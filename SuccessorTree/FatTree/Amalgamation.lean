@@ -24,6 +24,16 @@ namespace FatTree
 
 variable (H : SMTree S)
 
+/-- Heterogeneous equality of one-row approximations preserves the
+last image level.  This packages the dependent source-cut transport used by
+the splice construction. -/
+theorem rowEndLevel_eq_of_heq
+    {a b : Nat} {u : AM H a 1} {v : AM H b 1}
+    (h : HEq u v) :
+    u.rowEndLevel H = v.rowEndLevel H := by
+  cases h
+  rfl
+
 /-- Splice a finite fat tree `x` onto the tail of an infinite fat tree
 `V`, starting the tail at cut `n`.  The compatibility hypothesis is
 exactly equality of the terminal cut of `x` with `V.cut n`. -/
@@ -57,14 +67,15 @@ def splice
   · by_cases hpos : 0 < x.height
     · simpa [c, hpos] using x.cut_zero
     · have hh : x.height = 0 := Nat.eq_zero_of_not_pos hpos
-      have hlast :
-          (Fin.last x.height : Fin (x.height + 1)) =
-            (0 : Fin (x.height + 1)) := by
-        apply Fin.ext
-        simp [hh]
       have hx0 : x.terminalCut = 0 := by
         unfold FiniteFatTree.terminalCut
-        rw [hlast]
+        have htop :
+            (⟨x.height, Nat.lt_succ_self x.height⟩ :
+              Fin (x.height + 1)) =
+              (0 : Fin (x.height + 1)) := by
+          apply Fin.ext
+          simpa [hh]
+        rw [htop]
         exact x.cut_zero
       have hv0 : V.cut n = 0 := hcut.symm.trans hx0
       simp [c, hpos, hv0]
@@ -76,9 +87,8 @@ def splice
         simp [r, c, hi, ix]
       have hend :
           (r i).rowEndLevel H =
-            (x.row ix).rowEndLevel H := by
-        cases hrow
-        rfl
+            (x.row ix).rowEndLevel H :=
+        rowEndLevel_eq_of_heq H hrow
       have hr := x.row_cut ix
       by_cases hnext : i + 1 < x.height
       · calc
@@ -104,7 +114,7 @@ def splice
           _ = x.cut ix.succ := hr
           _ = x.terminalCut := by
                 unfold FiniteFatTree.terminalCut
-                rw [hlast]
+                rfl
           _ = V.cut n := hcut
           _ = c (i + 1) := by
                 simp [c, hnext, heq]
@@ -115,9 +125,8 @@ def splice
         simp [r, c, hi, q]
       have hend :
           (r i).rowEndLevel H =
-            (V.row q).rowEndLevel H := by
-        cases hrow
-        rfl
+            (V.row q).rowEndLevel H :=
+        rowEndLevel_eq_of_heq H hrow
       have hq := V.row_cut q
       have hidx :
           n + (i + 1 - x.height) = q + 1 := by
