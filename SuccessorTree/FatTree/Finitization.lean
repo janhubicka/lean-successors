@@ -284,6 +284,15 @@ theorem terminalCut_eq_of_leFin {X Y : FiniteFatTree H}
     (h : LeFin H X Y) : X.terminalCut = Y.terminalCut :=
   h.2
 
+
+/-- Todorčević A.2(1) for the manuscript's finite order: a fixed finite
+fat tree has only finitely many `≤fin` predecessors. -/
+theorem leFin_lower_finite (Y : FiniteFatTree H) :
+    Set.Finite {X : FiniteFatTree H | LeFin H X Y} := by
+  apply (fixedTerminal_finite H Y.terminalCut).subset
+  intro X hX
+  exact hX.2
+
 end FiniteFatTree
 
 end SMTree
