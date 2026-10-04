@@ -46,6 +46,23 @@ def Reduces (V U : FiniteFatTree H) : Prop :=
 
 namespace ReductionWitness
 
+/-- If a finite reduction preserves the terminal ambient cut, then
+its cut-index map sends the source terminal index to the target terminal
+index. -/
+theorem index_last_eq_last
+    {V U : FiniteFatTree H}
+    (w : ReductionWitness H V U)
+    (hterm : V.terminalCut = U.terminalCut) :
+    w.index (Fin.last V.height) = Fin.last U.height := by
+  apply U.cut_injective H
+  calc
+    U.cut (w.index (Fin.last V.height)) =
+        V.cut (Fin.last V.height) :=
+      (w.cut_eq (Fin.last V.height)).symm
+    _ = V.terminalCut := rfl
+    _ = U.terminalCut := hterm
+    _ = U.cut (Fin.last U.height) := rfl
+
 /-- Identity is a finite reduction witness. -/
 def refl (U : FiniteFatTree H) : ReductionWitness H U U where
   index := fun i => i
