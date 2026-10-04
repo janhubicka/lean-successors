@@ -234,13 +234,33 @@ theorem exists_lastBlock_exactTrace
     have hmLast : jmid ≤ Fin.last Z.height := by
       change m ≤ m + 1
       omega
+    let X0 : Set T := TreeLevel (T := T) (Z.cut j0)
+    let Y0 : Set T := Z.liftTo H j0 jmid h0m X0
     have hsplit :=
       Z.liftTo_split H j0 jmid (Fin.last Z.height)
-        h0m hmLast (TreeLevel (T := T) (Z.cut j0))
-    rw [hsplit] at hzZ'
-    rw [hjmid, hjlast, Z.liftTo_succ H jrow] at hzZ'
+        h0m hmLast X0
+    have hzSplit :
+        zlast ∈ Z.liftTo H jmid (Fin.last Z.height) hmLast Y0 := by
+      have hmem :=
+        congrArg (fun W : Set T => zlast ∈ W) hsplit
+      exact hmem.mp (by simpa [X0] using hzZ')
+    have hAdj : jrow.castSucc ≤ jrow.succ := by
+      change jrow.1 ≤ jrow.1 + 1
+      omega
+    have hOuterCongr :=
+      Z.liftTo_congr H hmLast hAdj hjmid hjlast Y0
+    have hzAdj :
+        zlast ∈ Z.liftTo H jrow.castSucc jrow.succ hAdj Y0 := by
+      have hmem :=
+        congrArg (fun W : Set T => zlast ∈ W) hOuterCongr
+      exact hmem.mp hzSplit
+    have hOneEq := Z.liftTo_succ H jrow Y0
+    have hzOne : zlast ∈ Z.oneLift H jrow Y0 := by
+      have hmem :=
+        congrArg (fun W : Set T => zlast ∈ W) hOneEq
+      exact hmem.mp hzAdj
 
-    rcases hzZ' with ⟨s, hs, hzs⟩
+    rcases hzOne with ⟨s, hs, hzs⟩
     rcases hs with ⟨t, ht, hts⟩
 
     have hInterLevel :
@@ -472,7 +492,9 @@ theorem exists_lastBlock_exactTrace
       HEq compCast comp := by
     change HEq (FiniteFatTree.castTraceRow H hsrc comp) comp
     exact FiniteFatTree.castTraceRow_heq H hsrc comp
-  exact HEq.trans (HEq.of_eq hEq) hcastHEq
+  have hEqHEq : HEq g compCast := by
+    rw [hEq]
+  exact hEqHEq.trans hcastHEq
 
 end FatTree
 end SMTree
