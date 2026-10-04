@@ -116,9 +116,14 @@ theorem f2Sign_quadratic_pair
   rw [← f2Sign_add, ← f2Sign_add]
   congr 1
   rw [← hpolar z w]
-  have htwo : (2 : F2) = 0 := by
-    exact ZMod.natCast_self 2
-  simp [htwo]
+  symm
+  calc
+    p w + p 0 + (p (z + w) + p z + p w + p 0) =
+        (p z + p (z + w)) + (p w + p w) + (p 0 + p 0) := by
+      abel
+    _ = p z + p (z + w) := by
+      rw [CharTwo.add_self_eq_zero, CharTwo.add_self_eq_zero]
+      simp
 
 /-- Translation of the second variable in the squared Gauss sum. -/
 theorem sum_f2Sign_translate_second
