@@ -16,8 +16,8 @@ The formalization treats:
 - the proposed finitary order for Todorčević A.2;
 - all three A.2 clauses, including explicit lower-cone finiteness and the
   converse finite-approximation characterization;
-- the finite-prefix splice construction used in the manuscript's A.3 proof
-  (currently still under formalization).
+- the finite-prefix splice construction used in the manuscript's A.3 proof;
+- both A.3 amalgamation clauses in basic-neighbourhood form.
 
 The optional embedding Ellentuck axiom (EA) is not used in any of these
 definitions or proofs.
@@ -84,14 +84,30 @@ Actions run 37181899053 checked these A.2 theorems together with the preceding
 fat-tree structural results.  All fourteen axiom reports used only propext,
 Classical.choice and Quot.sound, with no sorryAx.
 
-### 6. A.3 splice boundary
+### 6. A.3 is checked
 
 The manuscript proves A.3 by concatenating a finite stem with an infinite
-tail.  This construction is now represented explicitly by FatTree.splice.
+tail.  This construction is represented explicitly by `FatTree.splice`.
 Its terminal-cut compatibility is the only structural hypothesis, and the
-construction uses no EA assumption.  The cut and row projections and the
-reduction/neighbourhood consequences are being formalized next.  Until those
-are complete, A.3 remains partial rather than green.
+construction uses no EA assumption.
+
+A.3(1) is `a3_one_nonempty`: if `x` has depth `n` in `U`, every
+member of `[n,U]` admits the splice of `x` to its tail, producing a member
+of the required basic neighbourhood.
+
+A.3(2) is `a3_two_amalgamation`: for `V <= U` with nonempty `[x,V]`,
+the construction splices `U|m` to the tail of `V` at the common terminal
+cut and proves the resulting `U'` lies in `[m,U]`; every member of
+`[x,U']` is then rebased into `V`.  Thus the checked conclusion is the
+textbook inclusion `[x,U'] subseteq [x,V]`.
+
+The manuscript currently states the stronger equality of these two
+neighbourhoods.  That equality is unnecessary for A.3 and is not part of the
+formalized theorem, so the manuscript should either weaken this sentence to
+the required inclusion or supply a separate reverse-inclusion proof.
+
+Actions run 37187320737 checked seven A.3 reports, including both final
+clauses, using only the standard Lean axioms and no `sorryAx`.
 
 ## EA boundary
 
@@ -104,5 +120,4 @@ embedding theorem.
 ## Validation convention
 
 A green manuscript marker should be used only for statements which have
-passed the Lean build and the axiom audit.  A.2 now qualifies; A.3 remains
-partial until the splice reduction and neighbourhood statements are checked.
+passed the Lean build and the axiom audit.  A.2 and A.3 now qualify.
