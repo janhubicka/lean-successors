@@ -69,14 +69,15 @@ def splice
     · have hh : x.height = 0 := Nat.eq_zero_of_not_pos hpos
       have hx0 : x.terminalCut = 0 := by
         unfold FiniteFatTree.terminalCut
-        have htop :
-            (⟨x.height, Nat.lt_succ_self x.height⟩ :
-              Fin (x.height + 1)) =
+        have hlast0 :
+            Fin.last x.height =
               (0 : Fin (x.height + 1)) := by
           apply Fin.ext
           simpa [hh]
-        rw [htop]
-        exact x.cut_zero
+        calc
+          x.cut (Fin.last x.height) = x.cut 0 :=
+            congrArg x.cut hlast0
+          _ = 0 := x.cut_zero
       have hv0 : V.cut n = 0 := hcut.symm.trans hx0
       simp [c, hpos, hv0]
   · intro i
@@ -97,10 +98,8 @@ def splice
           _ = x.cut ix.succ := hr
           _ = x.cut
               (⟨i + 1, Nat.lt_succ_of_lt hnext⟩ :
-                Fin (x.height + 1)) := by
-                congr 1
-                apply Fin.ext
-                rfl
+                Fin (x.height + 1)) :=
+                congrArg x.cut (Fin.ext (by rfl))
           _ = c (i + 1) := by
                 simp [c, hnext]
       · have heq : i + 1 = x.height := by omega
@@ -114,7 +113,7 @@ def splice
           _ = x.cut ix.succ := hr
           _ = x.terminalCut := by
                 unfold FiniteFatTree.terminalCut
-                rfl
+                exact congrArg x.cut hlast
           _ = V.cut n := hcut
           _ = c (i + 1) := by
                 simp [c, hnext, heq]
