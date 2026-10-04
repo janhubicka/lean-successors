@@ -1,5 +1,4 @@
 import SuccessorTree.FatTree.FiniteReduction
-import Mathlib.Data.Fintype.Sigma
 
 /-!
 # Finitization of the fat-tree order
@@ -82,26 +81,54 @@ theorem boundedRows_finite (n d : Nat) :
     (boundedRowCode H n d)
     (boundedRowCode_injective H n d)
 
-/-- The subtype of rows with fixed source cut and bounded last image
-level is a concrete finite type. -/
-noncomputable instance boundedRowFiberFintype (n d : Nat) :
-    Fintype {a : AM H n 1 // a.rowEndLevel H < d} :=
-  Set.Finite.fintype (boundedRows_finite H n d)
+/-- Uniform finite code for a bounded row.  We pad a row outside its
+source initial segment by `none`, so all rows below terminal cut `d` live
+in the same finite function space. -/
+noncomputable def uniformRowCode (n d : Nat)
+    (a : {a : AM H n 1 // a.rowEndLevel H < d}) :
+    InitialNode T d → Option (InitialNode T d) := by
+  intro x
+  by_cases hx : LevelTree.lev x.1 ≤ n
+  · exact some (boundedRowCode H n d a ⟨x.1, hx⟩)
+  · exact none
 
-/-- A row below terminal cut `d`, tagged by its source cut.  Source cuts are
-strictly below `d` because every row advances to a strictly larger next
-cut. -/
-def BoundedRow (d : Nat) :=
-  Σ n : Fin d, {a : AM H n.1 1 // a.rowEndLevel H < d}
+/-- Padding does not lose information about a row with fixed source cut. -/
+theorem uniformRowCode_injective (n d : Nat) :
+    Function.Injective (uniformRowCode H n d) := by
+  classical
+  intro a b hab
+  apply boundedRowCode_injective H n d
+  funext x
+  have hnd : n ≤ d := by
+    have hle :
+        n ≤ a.1.rowEndLevel H := by
+      exact H.levelMap_id_le (a.1.representative H).map n
+    omega
+  let xd : InitialNode T d :=
+    ⟨x.1, x.2.trans hnd⟩
+  have hxcode := congrFun hab xd
+  have hs :
+      some (boundedRowCode H n d a x) =
+        some (boundedRowCode H n d b x) := by
+    simpa [uniformRowCode, xd, x.2] using hxcode
+  exact Option.some.inj hs
 
-noncomputable instance boundedRowFintype (d : Nat) :
-    Fintype (BoundedRow H d) := by
-  letI fibers :
-      ∀ n : Fin d, Fintype {a : AM H n.1 1 // a.rowEndLevel H < d} :=
-    fun n => boundedRowFiberFintype H n.1 d
-  change
-    Fintype (Σ n : Fin d, {a : AM H n.1 1 // a.rowEndLevel H < d})
-  exact Sigma.instFintype
+/-- A fixed finite ambient code space for fat trees whose terminal cut is
+`d`.  The first coordinate records the height, the second the selected cuts,
+and the third the uniformly padded row maps. -/
+def FixedTerminalCode (d : Nat) :=
+  Fin (d + 1) ×
+    (Fin (d + 1) → Option (Fin (d + 1))) ×
+    (Fin d → Option (InitialNode T d → Option (InitialNode T d)))
+
+noncomputable instance fixedTerminalCodeFintype (d : Nat) :
+    Fintype (FixedTerminalCode (T := T) H d) := by
+  unfold FixedTerminalCode
+  infer_instance
+
+/-- Finite fat trees with a prescribed terminal cut. -/
+def FixedTerminal (d : Nat) :=
+  {U : FiniteFatTree H // U.terminalCut = d}
 
 /-- The manuscript's finitary order on finite fat trees: reduction with the
 same terminal ambient cut. -/
