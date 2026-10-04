@@ -52,7 +52,7 @@ noncomputable def rowTransportLetter
 
 /-- The history before the transported letter: first apply the old history,
 then the canonical ambient row. -/
-def rowTransportBase
+noncomputable def rowTransportBase
     (U : FatTree H) (i : Nat) (P : MMap H) : MMap H :=
   MMap.comp H (U.rowExtension H i) P
 
@@ -190,7 +190,8 @@ theorem historyRealizesFan_rowTransport_iff
       apply list_map_eq_self_of_fixed H
       intro p hp
       apply U.rowExtension_fixesBelow H i
-      exact S.parameter_level_lt actual.succ_eq hp
+      have hplt := S.parameter_level_lt actual.succ_eq hp
+      simpa [hzlev] using hplt
     have hactualR :=
       H.succ_eq_of_consecutive_levels R.map hactual hlevels
     rw [hparams] at hactualR
