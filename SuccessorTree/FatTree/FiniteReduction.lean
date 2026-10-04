@@ -32,10 +32,13 @@ structure ReductionWitness (V U : FiniteFatTree H) where
   cut_eq : ∀ i : Fin (V.height + 1), V.cut i = U.cut (index i)
   lift_subset : ∀ i : Fin V.height,
     V.oneLift H i
-        (FatTree.TreeLevel (T := T) (V.cut i.castSucc)) ⊆
+        (TreeLevel (T := T) (V.cut i.castSucc)) ⊆
       U.liftTo H (index i.castSucc) (index i.succ)
-        (le_of_lt (index_strict (by omega)))
-        (FatTree.TreeLevel (T := T) (U.cut (index i.castSucc)))
+        (le_of_lt (index_strict
+          (by
+            change i.1 < i.1 + 1
+            omega)))
+        (TreeLevel (T := T) (U.cut (index i.castSucc)))
 
 /-- Finite fat-subtree reduction. -/
 def Reduces (V U : FiniteFatTree H) : Prop :=
@@ -55,7 +58,7 @@ def refl (U : FiniteFatTree H) : ReductionWitness H U U where
   lift_subset := by
     intro i
     rw [U.liftTo_succ H i
-      (FatTree.TreeLevel (T := T) (U.cut i.castSucc))]
+      (TreeLevel (T := T) (U.cut i.castSucc))]
 
 end ReductionWitness
 
