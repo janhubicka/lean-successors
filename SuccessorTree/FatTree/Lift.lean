@@ -560,6 +560,65 @@ theorem liftSteps_mono (U : FiniteFatTree H)
         (Y := U.oneLift H (⟨i, by omega⟩ : Fin U.height) Y)
         (U.oneLift_mono H (⟨i, by omega⟩ : Fin U.height) hXY)
 
+/-- A finite multi-row lift lands on the cut reached after the
+specified number of rows. -/
+theorem liftSteps_subset_level (U : FiniteFatTree H)
+    (i steps : Nat) (h : i + steps ≤ U.height)
+    {X : Set T}
+    (hX : X ⊆
+      TreeLevel (T := T) (U.cut (⟨i, by omega⟩ : Fin (U.height + 1)))) :
+    U.liftSteps H i steps h X ⊆
+      TreeLevel (T := T)
+        (U.cut (⟨i + steps, by omega⟩ : Fin (U.height + 1))) := by
+  induction steps generalizing i X with
+  | zero =>
+      simpa using hX
+  | succ steps ih =>
+      let ri : Fin U.height := ⟨i, by omega⟩
+      have hXri :
+          X ⊆ TreeLevel (T := T) (U.cut ri.castSucc) := by
+        simpa [ri] using hX
+      have hnext :
+          U.oneLift H ri X ⊆
+            TreeLevel (T := T) (U.cut ri.succ) :=
+        U.oneLift_subset_nextLevel H ri hXri
+      rw [U.liftSteps_succ H i steps h X]
+      have hrec :=
+        ih (i := i + 1) (by omega)
+          (X := U.oneLift H ri X)
+          (by simpa [ri] using hnext)
+      simpa [ri, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hrec
+
+/-- Every endpoint of a finite multi-row lift lies above a node from the
+starting set. -/
+theorem liftSteps_descends (U : FiniteFatTree H)
+    (i steps : Nat) (h : i + steps ≤ U.height)
+    {X : Set T}
+    (hX : X ⊆
+      TreeLevel (T := T) (U.cut (⟨i, by omega⟩ : Fin (U.height + 1))))
+    {z : T} (hz : z ∈ U.liftSteps H i steps h X) :
+    ∃ x ∈ X, x ≤ z := by
+  induction steps generalizing i X z with
+  | zero =>
+      exact ⟨z, hz, le_rfl⟩
+  | succ steps ih =>
+      let ri : Fin U.height := ⟨i, by omega⟩
+      have hXri :
+          X ⊆ TreeLevel (T := T) (U.cut ri.castSucc) := by
+        simpa [ri] using hX
+      have hnext :
+          U.oneLift H ri X ⊆
+            TreeLevel (T := T) (U.cut ri.succ) :=
+        U.oneLift_subset_nextLevel H ri hXri
+      rw [U.liftSteps_succ H i steps h X] at hz
+      rcases ih (i := i + 1) (by omega)
+          (X := U.oneLift H ri X)
+          (by simpa [ri] using hnext) hz with
+        ⟨y, hy, hyz⟩
+      rcases U.oneLift_descends H ri hXri hy with
+        ⟨x, hx, hxy⟩
+      exact ⟨x, hx, hxy.trans hyz⟩
+
 /-- Changing the numerical step count along an equality only transports
 the dependent height proof; the resulting lift is unchanged. -/
 theorem liftSteps_congr_steps (U : FiniteFatTree H)
