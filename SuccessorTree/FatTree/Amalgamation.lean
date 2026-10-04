@@ -122,6 +122,27 @@ def splice
   simpa using
     splice_cut_ge H x V n hcut (i := x.height) le_rfl
 
+/-- Before the splice point, the row is the corresponding row of the
+finite stem.  HEq records the definitional transport along the cut equality. -/
+theorem splice_row_lt
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n)
+    {i : Nat} (hi : i < x.height) :
+    HEq ((splice H x V n hcut).row i)
+      (x.row ⟨i, hi⟩) := by
+  simp [splice, hi]
+
+/-- At and after the splice point, rows are the shifted rows of the infinite
+tail. -/
+theorem splice_row_ge
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n)
+    {i : Nat} (hi : x.height ≤ i) :
+    HEq ((splice H x V n hcut).row i)
+      (V.row (n + (i - x.height))) := by
+  have hnot : ¬ i < x.height := Nat.not_lt_of_ge hi
+  simp [splice, hnot]
+
 end FatTree
 
 end SMTree
