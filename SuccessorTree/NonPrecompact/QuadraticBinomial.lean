@@ -63,10 +63,8 @@ theorem sum_neg_one_pow_eq_sum_binomial_moments
           (-2 : ℤ) ^ k * ∑ x : V, (Q x).choose k := by
       apply Finset.sum_congr rfl
       intro k hk
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro x hx
-      norm_cast
+      rw [Finset.sum_mul]
+      push_cast
       ring
 
 end SuccessorTree.NonPrecompact
