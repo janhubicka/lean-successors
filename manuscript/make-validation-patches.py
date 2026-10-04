@@ -22,10 +22,10 @@ import tempfile
 
 PROOF_COMMIT = '1856f22fa1c94a27b3b282945da7d0f962903cc6'
 PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37150740752'
-FAT_PROOF_COMMIT = '3c42b21e86adf0e3aca700e636c7a1fb6970f748'
-FAT_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37187320737'
-A3_PROOF_COMMIT = '3c42b21e86adf0e3aca700e636c7a1fb6970f748'
-A3_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37187320737'
+FAT_PROOF_COMMIT = '90294490350f812dbad9ae8e19d2012c64e7dd5c'
+FAT_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37188688958'
+A3_PROOF_COMMIT = '90294490350f812dbad9ae8e19d2012c64e7dd5c'
+A3_PROOF_RUN = 'https://github.com/janhubicka/lean-successors/actions/runs/37188688958'
 SUPPORT_NAME = 'successor-validation.tex'
 
 # Some anchors occur only in particular manuscript revisions. Missing optional
@@ -35,6 +35,7 @@ OPTIONAL_RULES = {
     'fat-tree-definition',
     'fat-tree-lift',
     'fat-tree-reduction',
+    'fat-tree-sequencing',
     'fat-tree-finitization',
     'fat-tree-amalgamation',
 }
@@ -134,7 +135,7 @@ then compose the interval lifts. No strengthening of the definition is
 needed.}
 \fi
 '''),
-    ('fat-tree-finitization', r'\label{item:A2}', r'''
+    ('fat-tree-sequencing', r'\\label{item:A1}', r'''\n\\successorfatleanverified{SuccessorTree/FatTree/Sequencing.lean}{FatTree.a1\\_one--a1\\_three}\n\\ifshowvalidation\n\\todo[inline]{Řehořek: All three A1 sequencing clauses are Lean-checked.\nThey are mathematically elementary, but equality of finite fat trees has\ndependent cut and row types, so the formal proof uses pointwise/heterogeneous\nextensionality rather than treating the sequence argument as definitional.\nNo additional hypothesis is needed.}\n\\fi\n'''),\n    ('fat-tree-finitization', r'\label{item:A2}', r'''
 \successorfatleanverified{SuccessorTree/FatTree/Finitization.lean}{A2(1)--A2(3)}
 \ifshowvalidation
 \todo[inline]{Řehořek: All three A2 clauses are Lean-checked. The current
