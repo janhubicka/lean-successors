@@ -797,7 +797,8 @@ theorem initialSegment_liftSteps (U : FiniteFatTree H)
   | succ steps ih =>
       have hseg :
           i + (steps + 1) ≤ (U.initialSegment H n hn).height := by
-        simpa using h
+        change i + (steps + 1) ≤ n
+        exact h
       have hamb : i + (steps + 1) ≤ U.height := h.trans hn
       have hs :=
         (U.initialSegment H n hn).liftSteps_succ H i steps hseg X
@@ -814,7 +815,7 @@ theorem initialSegment_liftSteps (U : FiniteFatTree H)
             (U.initialSegment H n hn).liftSteps H (i + 1) steps
               (by omega)
               ((U.initialSegment H n hn).oneLift H iseg X) := by
-                simpa [iseg] using hs
+                exact hs
         _ = (U.initialSegment H n hn).liftSteps H (i + 1) steps
               (by omega) (U.oneLift H iu X) := by
                 rw [hone]
@@ -823,7 +824,7 @@ theorem initialSegment_liftSteps (U : FiniteFatTree H)
                 exact ih (i := i + 1) (by omega)
                   (X := U.oneLift H iu X)
         _ = U.liftSteps H i (steps + 1) (h.trans hn) X := by
-                simpa [iu] using hu.symm
+                exact hu.symm
 
 /-- Lift between two finite cut indices. -/
 noncomputable def liftTo (U : FiniteFatTree H)
@@ -1035,7 +1036,8 @@ theorem initialSegment_liftSteps (U : FatTree H)
   | succ steps ih =>
       have hseg :
           i + (steps + 1) ≤ (U.initialSegment H n).height := by
-        simpa using h
+        change i + (steps + 1) ≤ n
+        exact h
       have hs :=
         (U.initialSegment H n).liftSteps_succ H i steps hseg X
       have hu := U.liftSteps_succ H i steps X
@@ -1050,7 +1052,7 @@ theorem initialSegment_liftSteps (U : FatTree H)
             (U.initialSegment H n).liftSteps H (i + 1) steps
               (by omega)
               ((U.initialSegment H n).oneLift H iseg X) := by
-                simpa [iseg] using hs
+                exact hs
         _ = (U.initialSegment H n).liftSteps H (i + 1) steps
               (by omega) (U.oneLift H i X) := by
                 rw [hone]
