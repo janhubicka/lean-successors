@@ -41,9 +41,8 @@ theorem finiteApproxTree_injective :
       _ = B.height := congrArg FiniteFatTree.height hab
       _ = m := hB
   cases hnm
-  apply Sigma.ext rfl
-  apply Subtype.ext
-  exact hab
+  cases hab
+  rfl
 
 /-- Typed A2 order: forget the level tags and use the concrete finite
 fat-tree order. -/
