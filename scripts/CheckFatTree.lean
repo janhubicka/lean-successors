@@ -52,3 +52,9 @@ open SuccessorTree
 #check SMTree.FiniteFatTree.ReductionWitness
 #check SMTree.FiniteFatTree.ReductionWitness.refl
 #check SMTree.FiniteFatTree.reduces_refl
+#check SMTree.FiniteFatTree.ReductionWitness.liftSteps_subset_liftTo
+#check SMTree.FiniteFatTree.ReductionWitness.liftTo_subset_liftTo
+#check SMTree.FiniteFatTree.ReductionWitness.trans
+#check SMTree.FiniteFatTree.reduces_trans
+#print axioms SMTree.FiniteFatTree.ReductionWitness.trans
+#print axioms SMTree.FiniteFatTree.reduces_trans
