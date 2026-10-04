@@ -64,7 +64,8 @@ noncomputable def completeFinite (x : FiniteFatTree H) : FatTree H :=
 segment of its completion. -/
 theorem completeFinite_initialSegment (x : FiniteFatTree H) :
     (completeFinite H x).initialSegment H x.height = x := by
-  exact splice_initialSegment H x (identityFatTree H)
+  apply initialSegment_eq_of_extendsStem H
+  exact splice_extendsStem H x (identityFatTree H)
     x.terminalCut (by rfl)
 
 /-- Complete an exact-height approximation. -/
