@@ -120,9 +120,20 @@ theorem exactAvoidNext_avoids
   have hnot :
       ¬ OneBlockExactPersistent H x A.1 O q :=
     hbad A.1 A.2.1 A.2.2 q (by omega)
+  intro g hg
   have hav :=
-    (Classical.choose_spec (exists_exact_avoidance H hnot)).2
-  simpa [q, Nat.add_assoc] using hav
+    (Classical.choose_spec (exists_exact_avoidance H hnot)).2 g hg
+  have hidx : q + 1 = x.height + i + 1 := by
+    dsimp [q]
+    omega
+  change
+    ¬ StemAt H (FiniteFatTree.appendRow H x g)
+      (exactAvoidNext H hbad i A).1
+      (x.height + i + 1)
+  unfold exactAvoidNext
+  dsimp only
+  rw [← hidx]
+  exact hav
 
 noncomputable def exactAvoidStage
     {x : FiniteFatTree H} {U : FatTree H}
@@ -207,12 +218,20 @@ theorem oneBlockLarge_exact_persistent
   have hfusion :
       (approximationSystem H).IsFusionFrom x.height Y := by
     intro i
-    simpa [Y, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using
-      exactAvoidStage_step H hxU hbad i
+    change
+      (exactAvoidStage H hxU hbad (i + 1)).1 ∈
+        (approximationSystem H).levelNeighborhood
+          (x.height + i)
+          (exactAvoidStage H hxU hbad i).1
+    exact exactAvoidStage_step H hxU hbad i
   rcases C.exists_limit hfusion with ⟨L, hL⟩
   have hL0 :
       L ∈ (approximationSystem H).levelNeighborhood x.height U := by
-    simpa [Y] using hL 0
+    have h0 := hL 0
+    change
+      L ∈ (approximationSystem H).levelNeighborhood
+        x.height (exactAvoidStage H hxU hbad 0).1 at h0
+    exact h0
   have hLU : FatTree.Reduces H L U := hL0.1
   have hxL : ExtendsStem H x L := by
     have hdepth :
@@ -228,7 +247,11 @@ theorem oneBlockLarge_exact_persistent
       FiniteFatTree.reduces_of_leFin H hgm
     have hh :=
       FiniteFatTree.ReductionWitness.height_le_of_reduces H hred
-    simpa [FiniteFatTree.appendRow_height] using hh
+    change
+      (FiniteFatTree.appendRow H x g).height ≤
+        (L.initialSegment H m).height at hh
+    change x.height + 1 ≤ m at hh
+    exact hh
   let i : Nat := m - (x.height + 1)
   have him : x.height + i + 1 = m := by
     dsimp [i]
@@ -242,15 +265,24 @@ theorem oneBlockLarge_exact_persistent
       L.initialSegment H m =
         (exactAvoidStage H hxU hbad (i + 1)).1.initialSegment H m := by
     have heq := congrArg Subtype.val hLstage.2
-    simpa [him, Nat.add_assoc] using heq
+    change
+      L.initialSegment H (x.height + (i + 1)) =
+        (exactAvoidStage H hxU hbad (i + 1)).1.initialSegment H
+          (x.height + (i + 1)) at heq
+    have hd : x.height + (i + 1) = m := by
+      omega
+    rw [hd] at heq
+    exact heq
   have hgmStage :
       StemAt H (FiniteFatTree.appendRow H x g)
         (exactAvoidStage H hxU hbad (i + 1)).1 m := by
     unfold StemAt at hgm ⊢
     rw [← hprefix]
     exact hgm
-  exact (exactAvoidStage_avoids H hxU hbad i g hgO)
-    (by simpa [him, Nat.add_assoc] using hgmStage)
+  apply (exactAvoidStage_avoids H hxU hbad i g hgO)
+  have hidx : x.height + i + 1 = m := him
+  rw [hidx]
+  exact hgmStage
 
 /-- Closed fat-tree spaces therefore satisfy the exact-persistence
 conclusion for every large one-block set, without assuming A4. -/
