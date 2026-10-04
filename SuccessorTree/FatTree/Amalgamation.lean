@@ -53,17 +53,24 @@ theorem cut_eq_of_extendsStem
     (h : ExtendsStem H x W)
     (i : Fin (x.height + 1)) :
     W.cut i.1 = x.cut i := by
-  have hc := congrArg
-    (fun y : FiniteFatTree H => y.cut i) h
-  simpa [ExtendsStem] using hc
+  have hp := h
+  change W.initialSegment H x.height = x at hp
+  have hc :
+      (W.initialSegment H x.height).cut i = x.cut i := by
+    simpa only [hp]
+  exact hc
 
 /-- In particular, literal stem extension identifies the terminal cut. -/
 theorem terminalCut_eq_of_extendsStem
     {x : FiniteFatTree H} {W : FatTree H}
     (h : ExtendsStem H x W) :
     W.cut x.height = x.terminalCut := by
-  have hc := congrArg FiniteFatTree.terminalCut h
-  simpa [ExtendsStem, FatTree.initialSegment_terminalCut] using hc
+  have hp := h
+  change W.initialSegment H x.height = x at hp
+  have hc :
+      (W.initialSegment H x.height).terminalCut = x.terminalCut := by
+    simpa only [hp]
+  simpa using hc
 
 /-- Before the terminal cut, one-step Lift of an infinite tree extending
 `x` agrees with one-step Lift in the finite stem. -/
@@ -74,9 +81,13 @@ theorem oneLift_eq_of_extendsStem
     W.oneLift H i.1 X = x.oneLift H i X := by
   have hi :=
     W.initialSegment_oneLift H x.height i X
-  unfold ExtendsStem at h
-  rw [h] at hi
-  exact hi.symm
+  have hp := h
+  change W.initialSegment H x.height = x at hp
+  have hfin :
+      (W.initialSegment H x.height).oneLift H i X =
+        x.oneLift H i X := by
+    simpa only [hp]
+  exact hi.symm.trans hfin
 
 /-- A stem occurring at cut `n` has terminal cut exactly `U.cut n`. -/
 theorem terminalCut_eq_of_stemAt
@@ -116,8 +127,9 @@ theorem exists_stemAt_of_neighborhood
   rcases FiniteFatTree.exists_initialSegment_leFin_of_reduces
       H hW.1 x.height with ⟨n, hn⟩
   refine ⟨n, ?_⟩
-  unfold StemAt ExtendsStem at *
-  rw [hW.2] at hn
+  have hp := hW.2
+  change W.initialSegment H x.height = x at hp
+  rw [hp] at hn
   exact hn
 
 /-- Finite depth transports along an infinite fat-tree reduction. -/
@@ -293,66 +305,6 @@ def splice
   simpa using
     splice_cut_ge H x V n hcut (i := x.height) le_rfl
 
-/-- The finite stem is literally the initial segment of its splice,
-not merely a finitary reduction of it. -/
-theorem splice_initialSegment
-    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
-    (hcut : x.terminalCut = V.cut n) :
-    (splice H x V n hcut).initialSegment H x.height = x := by
-  apply FiniteFatTree.ext_data H rfl
-  · apply heq_of_eq
-    funext i
-    change (splice H x V n hcut).cut i.1 = x.cut i
-    by_cases hi : i.1 < x.height
-    · have h := splice_cut_lt H x V n hcut hi
-      have hiEq :
-          (⟨i.1, Nat.lt_succ_of_lt hi⟩ :
-            Fin (x.height + 1)) = i := Fin.ext rfl
-      simpa [hiEq] using h
-    · have hieq : i.1 = x.height := by omega
-      have hiLast : i = Fin.last x.height := by
-        apply Fin.ext
-        exact hieq
-      calc
-        (splice H x V n hcut).cut i.1 =
-            V.cut n := by
-              simpa [hieq] using
-                splice_cut_height H x V n hcut
-        _ = x.terminalCut := hcut.symm
-        _ = x.cut i := by
-              rw [hiLast]
-              rfl
-  · have hcuts :
-        (splice H x V n hcut).initialSegment H x.height |>.cut =
-          x.cut := by
-      funext i
-      change (splice H x V n hcut).cut i.1 = x.cut i
-      by_cases hi : i.1 < x.height
-      · have h := splice_cut_lt H x V n hcut hi
-        have hiEq :
-            (⟨i.1, Nat.lt_succ_of_lt hi⟩ :
-              Fin (x.height + 1)) = i := Fin.ext rfl
-        simpa [hiEq] using h
-      · have hieq : i.1 = x.height := by omega
-        have hiLast : i = Fin.last x.height := by
-          apply Fin.ext
-          exact hieq
-        calc
-          (splice H x V n hcut).cut i.1 =
-              V.cut n := by
-                simpa [hieq] using
-                  splice_cut_height H x V n hcut
-          _ = x.terminalCut := hcut.symm
-          _ = x.cut i := by
-                rw [hiLast]
-                rfl
-    cases hcuts
-    apply heq_of_eq
-    funext i
-    change (splice H x V n hcut).row i.1 = x.row i
-    exact eq_of_heq
-      (splice_row_lt H x V n hcut i.2)
-
 /-- Before the splice point, the row is the corresponding row of the
 finite stem.  HEq records the definitional transport along the cut equality. -/
 theorem splice_row_lt
@@ -389,6 +341,68 @@ theorem splice_row_ge
     castRow_heq H hc (V.row q)
   have hnot : ¬ i < x.height := Nat.not_lt_of_ge hi
   simpa [splice, hnot, q] using hcast
+
+/-- The finite stem is literally the initial segment of its splice,
+not merely a finitary reduction of it. -/
+theorem splice_initialSegment
+    (x : FiniteFatTree H) (V : FatTree H) (n : Nat)
+    (hcut : x.terminalCut = V.cut n) :
+    (splice H x V n hcut).initialSegment H x.height = x := by
+  refine FiniteFatTree.ext_data H
+    (U := (splice H x V n hcut).initialSegment H x.height)
+    (V := x) rfl ?_ ?_
+  · apply heq_of_eq
+    funext i
+    change (splice H x V n hcut).cut i.1 = x.cut i
+    by_cases hi : i.1 < x.height
+    · have h := splice_cut_lt H x V n hcut hi
+      have hiEq :
+          (⟨i.1, Nat.lt_succ_of_lt hi⟩ :
+            Fin (x.height + 1)) = i := Fin.ext rfl
+      simpa [hiEq] using h
+    · have hieq : i.1 = x.height := by omega
+      have hiLast : i = Fin.last x.height := by
+        apply Fin.ext
+        exact hieq
+      calc
+        (splice H x V n hcut).cut i.1 =
+            V.cut n := by
+              simpa [hieq] using
+                splice_cut_height H x V n hcut
+        _ = x.terminalCut := hcut.symm
+        _ = x.cut i := by
+              rw [hiLast]
+              rfl
+  · have hcuts :
+        ((splice H x V n hcut).initialSegment H x.height).cut =
+          x.cut := by
+      funext i
+      change (splice H x V n hcut).cut i.1 = x.cut i
+      by_cases hi : i.1 < x.height
+      · have h := splice_cut_lt H x V n hcut hi
+        have hiEq :
+            (⟨i.1, Nat.lt_succ_of_lt hi⟩ :
+              Fin (x.height + 1)) = i := Fin.ext rfl
+        simpa [hiEq] using h
+      · have hieq : i.1 = x.height := by omega
+        have hiLast : i = Fin.last x.height := by
+          apply Fin.ext
+          exact hieq
+        calc
+          (splice H x V n hcut).cut i.1 =
+              V.cut n := by
+                simpa [hieq] using
+                  splice_cut_height H x V n hcut
+          _ = x.terminalCut := hcut.symm
+          _ = x.cut i := by
+                rw [hiLast]
+                rfl
+    cases hcuts
+    apply heq_of_eq
+    funext i
+    change (splice H x V n hcut).row i.1 = x.row i
+    exact eq_of_heq
+      (splice_row_lt H x V n hcut i.2)
 
 /-- Before the splice point, the canonical row extension is exactly
 the canonical extension of the corresponding finite stem row. -/
@@ -475,7 +489,13 @@ theorem splice_liftTo_ge
       V.liftTo H
         (n + (a - x.height))
         (n + (b - x.height))
-        (by omega) X := by
+        (by
+          have hb : x.height ≤ b := ha.trans hab
+          omega) X := by
+  have hb : x.height ≤ b := ha.trans hab
+  have hdiff :
+      (n + (b - x.height)) - (n + (a - x.height)) = b - a := by
+    omega
   unfold FatTree.liftTo
   calc
     (splice H x V n hcut).liftSteps H a (b - a) X =
@@ -484,8 +504,7 @@ theorem splice_liftTo_ge
     _ = V.liftSteps H
         (n + (a - x.height))
         ((n + (b - x.height)) - (n + (a - x.height))) X := by
-      congr 2
-      omega
+      rw [hdiff]
 
 /-- Cut-index map for the reduction from a splice to its ambient tail.
 Before the splice it follows the finite reduction witness; from the splice
@@ -729,12 +748,16 @@ theorem prefixTail_cut_eq
       U.cut (prefixTailIndex H w n m i) := by
   by_cases hi : i < m
   · rw [splice_cut_lt H (U.initialSegment H m) V n
-      (by simpa using hcut.symm) (by simpa using hi)]
+      (by simpa using hcut.symm) (by
+        change i < m
+        exact hi)]
     change U.cut i = U.cut (prefixTailIndex H w n m i)
     simp [prefixTailIndex, hi]
   · have hge : m ≤ i := Nat.le_of_not_gt hi
     rw [splice_cut_ge H (U.initialSegment H m) V n
-      (by simpa using hcut.symm) (by simpa using hge)]
+      (by simpa using hcut.symm) (by
+        change m ≤ i
+        exact hge)]
     let q : Nat := n + (i - m)
     have hw := w.cut_eq q
     change V.cut q = U.cut (prefixTailIndex H w n m i)
@@ -769,10 +792,14 @@ theorem splice_prefix_tail_reduces
         (U.initialSegment H m).terminalCut = V.cut n := by
       simpa using hcut.symm
     rw [splice_oneLift_lt H (U.initialSegment H m) V n
-      hsplice (by simpa using hi)]
+      hsplice (by
+        change i < m
+        exact hi)]
     rw [U.initialSegment_oneLift H m ix]
     rw [splice_cut_lt H (U.initialSegment H m) V n
-      hsplice (by simpa using hi)]
+      hsplice (by
+        change i < m
+        exact hi)]
     change
       U.oneLift H i (TreeLevel (T := T) (U.cut i)) ⊆
         U.liftTo H
@@ -807,9 +834,13 @@ theorem splice_prefix_tail_reduces
         (U.initialSegment H m).terminalCut = V.cut n := by
       simpa using hcut.symm
     rw [splice_oneLift_ge H (U.initialSegment H m) V n
-      hsplice (by simpa using hge)]
+      hsplice (by
+        change m ≤ i
+        exact hge)]
     rw [splice_cut_ge H (U.initialSegment H m) V n
-      hsplice (by simpa using hge)]
+      hsplice (by
+        change m ≤ i
+        exact hge)]
     have hw := w.lift_subset q
     have h0 :
         prefixTailIndex H w n m i = w.index q := by
