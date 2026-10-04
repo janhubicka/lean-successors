@@ -80,19 +80,11 @@ theorem exists_avoiding_refinement_of_not_large
       ∀ g : AM H x.terminalCut 1,
         OneBlockOccurs H x V g → g ∉ O := by
   classical
-  simp only [OneBlockLarge, not_forall] at hnot
-  rcases hnot with ⟨V, hV⟩
-  by_cases hVU : FatTree.Reduces H V U
-  · by_cases hxV : ExtendsStem H x V
-    · refine ⟨V, hVU, hxV, ?_⟩
-      intro g hgV hgO
-      have hex :
-          ∃ g' : AM H x.terminalCut 1,
-            g' ∈ O ∧ OneBlockOccurs H x V g' :=
-        ⟨g, hgO, hgV⟩
-      exact hV hVU hxV hex
-    · exact False.elim (hV hVU hxV)
-  · exact False.elim (hV hVU)
+  simp only [OneBlockLarge, not_forall, not_exists, not_and] at hnot
+  rcases hnot with ⟨V, hVU, hxV, havoid⟩
+  refine ⟨V, hVU, hxV, ?_⟩
+  intro g hgV hgO
+  exact havoid g hgO hgV
 
 end FatTree
 
