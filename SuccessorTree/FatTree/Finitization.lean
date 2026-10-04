@@ -44,8 +44,12 @@ noncomputable def boundedRowCode (n d : Nat)
       _ ≤ H.levelMap F.map n :=
         (H.levelMap_strictMono F.map).monotone x.2
   have hend : H.levelMap F.map n = a.1.rowEndLevel H := rfl
-  rw [hx, hend]
-  exact Nat.le_of_lt (hlev.trans_lt a.2)
+  apply Nat.le_of_lt
+  calc
+    LevelTree.lev (a.1.1 x) = LevelTree.lev (F x.1) := by rw [hx]
+    _ ≤ H.levelMap F.map n := hlev
+    _ = a.1.rowEndLevel H := hend
+    _ < d := a.2
 
 /-- The bounded row code is injective: a realized finite row is determined
 by its values on the finite source initial segment. -/
