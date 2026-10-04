@@ -1,4 +1,5 @@
 import SuccessorTree.FatTree.FiniteReduction
+import Mathlib.Data.Fintype.Pi
 
 /-!
 # Finitization of the fat-tree order
@@ -268,23 +269,11 @@ theorem fixedTerminalCode_injective (d : Nat) :
             simpa [FiniteFatTree.terminalCut] using h
           _ = d := hVt
       omega
-    let i0 : Fin uh := ⟨i.1, i.2⟩
-    have hi0 : i0 = i := Fin.ext rfl
-    have hbase :
-        (⟨i.1, Nat.lt_succ_of_lt i.2⟩ : Fin (uh + 1)) =
-          i.castSucc := Fin.ext rfl
-    have hs :
-        some
-            (uniformRowCode H (uc i.castSucc) d
-              ⟨ur i, hUend⟩) =
-          some
-            (uniformRowCode H (uc i.castSucc) d
-              ⟨vr i, hVend⟩) := by
-      simpa [fixedTerminalCode, j, i0, hi0, hbase, i.2] using hr
-    have hb :=
-      uniformRowCode_injective H (uc i.castSucc) d
-        (Option.some.inj hs)
-    exact congrArg Subtype.val hb
+    have hr' := Option.some.inj (by
+      simpa [fixedTerminalCode, j, i.2] using hr)
+    have hb := uniformRowCode_injective H _ d hr'
+    have hbv := congrArg Subtype.val hb
+    simpa using hbv
   subst vr
   rfl
 
