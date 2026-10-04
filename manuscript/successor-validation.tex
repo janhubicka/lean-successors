@@ -58,5 +58,22 @@
     \leaninterface{#1}{#2}%
   \endgroup
 }
+
+% Fat-tree structural/A2 snapshot.  Actions run 37181899053 checked
+% fourteen structural and A2 theorems and found only the standard Lean axioms.
+\newcommand{\successorfatleanverified}[2]{%
+  \begingroup
+    \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+    \renewcommand{\leancommit}{e477607203330e364c7813b0d1a424d07f2aa6d3}%
+    \leanverified{#1}{#2}%
+  \endgroup
+}
+\newcommand{\successorfatleanpartial}[2]{%
+  \begingroup
+    \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+    \renewcommand{\leancommit}{e477607203330e364c7813b0d1a424d07f2aa6d3}%
+    \leanpartial{#1}{#2}%
+  \endgroup
+}
 % All new inline review notes are enclosed by \ifshowvalidation ... \fi.
 % Use \showvalidationfalse after loading this overlay for a circulation copy.
