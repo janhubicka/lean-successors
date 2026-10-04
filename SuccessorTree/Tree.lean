@@ -43,6 +43,23 @@ class LevelTree (T : Type u) [PartialOrder T] where
   meet_le_right : ∀ {a b : T}, (∃ c : T, c ≤ a ∧ c ≤ b) → meet a b ≤ b
   le_meet : ∀ {a b c : T}, c ≤ a → c ≤ b → c ≤ meet a b
 
+/-- A levelled tree is pruned when every node has an immediate successor.
+This is not implied by M1--M3: M3 forces every level to be inhabited, but
+side branches may still terminate.  The fat-tree A4 last-block factorization
+uses pruning, while the structural A1--A3 development does not. -/
+class PrunedTree (T : Type u) [PartialOrder T] [LevelTree T] : Prop where
+  exists_covBy : ∀ a : T, ∃ b : T, a ⋖ b
+
+namespace PrunedTree
+
+variable {T : Type u} [PartialOrder T] [LevelTree T] [PrunedTree T]
+
+/-- Choose an immediate successor of a node in a pruned tree. -/
+theorem exists_immediateSuccessor (a : T) : ∃ b : T, a ⋖ b :=
+  PrunedTree.exists_covBy a
+
+end PrunedTree
+
 namespace LevelTree
 
 variable {T : Type u} [PartialOrder T] [LevelTree T]
