@@ -493,8 +493,7 @@ noncomputable def ExactTrace.extendByLetter
         rw [H.canonicalExtension_level_at_prefix
           (h.representative H) d]
       _ = h.rowEndLevel H + 1 := rfl
-  unfold ExactTrace
-  rw [hsrc]
+  cases hsrc
   refine ⟨theta, ?_, ?_⟩
   · calc
       theta.rowEndLevel H = h.rowEndLevel H + 1 := hthetaTop
