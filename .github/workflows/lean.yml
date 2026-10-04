@@ -60,7 +60,7 @@ jobs:
           import re
           text = Path('proof-audit/axioms.log').read_text()
           entries = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
-          if len(entries) != 8:
+          if len(entries) != 10:
               raise SystemExit(f'Expected 8 complete axiom reports, received {len(entries)}')
           allowed = {'propext', 'Classical.choice', 'Quot.sound'}
           for entry in entries:
@@ -149,7 +149,7 @@ jobs:
           text = Path('proof-audit/fat-tree-a4-axioms.log').read_text()
           entries = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
           if len(entries) != 8:
-              raise SystemExit(f'Expected 8 A4 bridge/trace axiom reports, received {len(entries)}')
+              raise SystemExit(f'Expected 10 A4 bridge/trace/persistence axiom reports, received {len(entries)}')
           allowed = {'propext', 'Classical.choice', 'Quot.sound'}
           for entry in entries:
               found = {x.strip() for x in entry.split(',') if x.strip()}
@@ -157,7 +157,7 @@ jobs:
                   raise SystemExit(f'Unexpected A4 bridge proof axioms: {found - allowed}')
           if 'sorryAx' in text or re.search(r'\berror:', text):
               raise SystemExit('A4 bridge audit contains an error or an admitted proof')
-          print('PASS: A4 bridge and bidirectional exact trace update use only standard Lean axioms')
+          print('PASS: A4 bridge, exact trace update, and exact persistence use only standard Lean axioms')
           PY
 
       - name: Check localized manuscript patches
