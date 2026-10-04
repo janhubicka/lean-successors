@@ -160,7 +160,14 @@ def initialSegment (U : FiniteFatTree H) (n : Nat) (hn : n ≤ U.height) :
     U.row ⟨i.1, by omega⟩
   row_cut := by
     intro i
-    simpa using U.row_cut (⟨i.1, by omega⟩ : Fin U.height)
+    let j : Fin U.height := ⟨i.1, by omega⟩
+    have hs :
+        j.succ =
+          (⟨i.1 + 1, by omega⟩ : Fin (U.height + 1)) :=
+      Fin.ext rfl
+    have h := U.row_cut j
+    rw [hs] at h
+    simpa [j] using h
 
 @[simp] theorem initialSegment_height (U : FiniteFatTree H)
     (n : Nat) (hn : n ≤ U.height) :
