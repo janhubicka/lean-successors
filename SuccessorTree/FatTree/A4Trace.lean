@@ -40,6 +40,36 @@ def traceSourceCut (y : FiniteFatTree H)
 def traceTargetCut (y : FiniteFatTree H) : Nat :=
   y.terminalCut
 
+/-- Appending one row preserves every previously selected trace source
+cut. -/
+theorem traceSourceCut_appendRow
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1)
+    (n : Nat) (hn : n ≤ y.height) :
+    traceSourceCut H (appendRow H y h) n (by
+      rw [appendRow_height]
+      omega) =
+      traceSourceCut H y n hn := by
+  let i : Fin (y.height + 1) := traceSourceIndex H y n hn
+  have hi :
+      traceSourceIndex H (appendRow H y h) n (by
+        rw [appendRow_height]
+        omega) = i.castSucc := by
+    apply Fin.ext
+    rfl
+  unfold traceSourceCut
+  rw [hi]
+  exact appendRow_cut_old H y h i
+
+/-- Appending one row changes the trace target to the new terminal cut. -/
+@[simp] theorem traceTargetCut_appendRow
+    (y : FiniteFatTree H)
+    (h : AM H y.terminalCut 1) :
+    traceTargetCut H (appendRow H y h) =
+      h.rowEndLevel H + 1 := by
+  unfold traceTargetCut
+  exact appendRow_terminalCut H y h
+
 /-- The finite Lift from the selected source cut to the terminal cut. -/
 noncomputable def traceLift (y : FiniteFatTree H)
     (n : Nat) (hn : n ≤ y.height) : Set T :=
