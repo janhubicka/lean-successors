@@ -203,7 +203,33 @@ theorem exists_lastBlock_exactTrace
           (TreeLevel (T := T) (V.cut irow.castSucc)) :=
       ⟨b, hbmem, rfl⟩
     have hzZ := hLift hzV
-    simp only [hidx0, hirowSucc, hidxLast] at hzZ
+    have hidxSucc :
+        w.index irow.succ = Fin.last Z.height := by
+      rw [hirowSucc]
+      exact hidxLast
+    change
+      zlast ∈ Z.liftTo H
+        (w.index irow.castSucc) (w.index irow.succ) _
+        (TreeLevel (T := T) (Z.cut (w.index irow.castSucc))) at hzZ
+    have hOld :
+        w.index irow.castSucc ≤ w.index irow.succ := by
+      exact le_of_lt (w.index_strict (by
+        change irow.1 < irow.1 + 1
+        omega))
+    have hNew : j0 ≤ Fin.last Z.height :=
+      Fin.le_last j0
+    have hLiftCongr :=
+      Z.liftTo_congr H hOld hNew hidx0 hidxSucc
+        (TreeLevel (T := T) (Z.cut (w.index irow.castSucc)))
+    have hzZ' :
+        zlast ∈ Z.liftTo H j0 (Fin.last Z.height) hNew
+          (TreeLevel (T := T) (Z.cut j0)) := by
+      have hz0 :
+          zlast ∈ Z.liftTo H j0 (Fin.last Z.height) hNew
+            (TreeLevel (T := T) (Z.cut (w.index irow.castSucc))) := by
+        rw [← hLiftCongr]
+        exact hzZ
+      simpa [hidx0] using hz0
 
     have h0m : j0 ≤ jmid := by
       change y.height ≤ m
@@ -214,10 +240,10 @@ theorem exists_lastBlock_exactTrace
     have hsplit :=
       Z.liftTo_split H j0 jmid (Fin.last Z.height)
         h0m hmLast (TreeLevel (T := T) (Z.cut j0))
-    rw [hsplit] at hzZ
-    rw [hjmid, hjlast, Z.liftTo_succ H jrow] at hzZ
+    rw [hsplit] at hzZ'
+    rw [hjmid, hjlast, Z.liftTo_succ H jrow] at hzZ'
 
-    rcases hzZ with ⟨s, hs, hzs⟩
+    rcases hzZ' with ⟨s, hs, hzs⟩
     rcases hs with ⟨t, ht, hts⟩
 
     have hInterLevel :
@@ -446,11 +472,8 @@ theorem exists_lastBlock_exactTrace
         congrFun hcTop x
 
   have hcastHEq :
-      HEq compCast comp := by
-    dsimp [compCast]
-    unfold FiniteFatTree.castTraceRow
-    cases hsrc
-    rfl
+      HEq compCast comp :=
+    FiniteFatTree.castTraceRow_heq H hsrc comp
   exact hEq ▸ hcastHEq
 
 end FatTree
