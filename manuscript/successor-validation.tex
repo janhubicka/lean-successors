@@ -59,12 +59,13 @@
   \endgroup
 }
 
-% Fat-tree A2/A3 snapshot. Actions run 37187320737 checked fourteen
-% structural/A2 reports and seven A3 reports, all using only standard Lean axioms.
+% Fat-tree A1--A3 snapshot. Actions run 37188688958 checked the A1
+% sequencing layer, fourteen structural/A2 reports, and the A3 splice/amalgamation
+% layer, all using only standard Lean axioms.
 \newcommand{\successorfatleanverified}[2]{%
   \begingroup
     \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
-    \renewcommand{\leancommit}{3c42b21e86adf0e3aca700e636c7a1fb6970f748}%
+    \renewcommand{\leancommit}{90294490350f812dbad9ae8e19d2012c64e7dd5c}%
     \leanverified{#1}{#2}%
   \endgroup
 }
@@ -73,7 +74,7 @@
 \newcommand{\successorfatleanpartial}[2]{%
   \begingroup
     \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
-    \renewcommand{\leancommit}{3c42b21e86adf0e3aca700e636c7a1fb6970f748}%
+    \renewcommand{\leancommit}{90294490350f812dbad9ae8e19d2012c64e7dd5c}%
     \leanpartial{#1}{#2}%
   \endgroup
 }
