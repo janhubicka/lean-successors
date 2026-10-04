@@ -830,6 +830,191 @@ theorem splice_prefix_tail_reduces
     rw [htarget] at hz'
     exact hz'
 
+/-- Any refinement of a splice which literally starts with the common
+stem `x` can be rebased into the attached tail.  This is the key
+neighbourhood-inclusion lemma for A3(2). -/
+theorem neighborhood_reduces_attached_tail
+    {x p : FiniteFatTree H} {V W : FatTree H} {n : Nat}
+    (hpV : p.terminalCut = V.cut n)
+    (hxV : StemAt H x V n)
+    (hxp : x.terminalCut = p.terminalCut)
+    (hW : InNeighborhood H x (splice H p V n hpV) W) :
+    FatTree.Reduces H W V := by
+  rcases hxV.1 with ⟨a⟩
+  rcases hW.1 with ⟨b⟩
+  have haLast :=
+    a.index_last_eq_last H hxV.2
+  have hbAt : b.index x.height = p.height := by
+    apply (splice H p V n hpV).cut_injective H
+    calc
+      (splice H p V n hpV).cut (b.index x.height) =
+          W.cut x.height := (b.cut_eq x.height).symm
+      _ = x.terminalCut :=
+        terminalCut_eq_of_extendsStem H hW.2
+      _ = p.terminalCut := hxp
+      _ = (splice H p V n hpV).cut p.height := by
+        calc
+          p.terminalCut = V.cut n := hpV
+          _ = (splice H p V n hpV).cut p.height :=
+            (splice_cut_height H p V n hpV).symm
+  let β : Nat → Nat := fun j =>
+    if hj : j < x.height then
+      (a.index (⟨j, by omega⟩ : Fin (x.height + 1))).1
+    else
+      n + (b.index j - p.height)
+  have hβstrict : StrictMono β := by
+    apply strictMono_nat_of_lt_succ
+    intro j
+    by_cases hj : j < x.height
+    · by_cases hnext : j + 1 < x.height
+      · let ja : Fin (x.height + 1) := ⟨j, by omega⟩
+        let jb : Fin (x.height + 1) := ⟨j + 1, by omega⟩
+        have hab : ja < jb := Fin.lt_def.mpr (by omega)
+        have ha := a.index_strict hab
+        change (a.index ja).1 < (a.index jb).1 at ha
+        simpa [β, hj, hnext, ja, jb] using ha
+      · have heq : j + 1 = x.height := by omega
+        let ja : Fin (x.height + 1) := ⟨j, by omega⟩
+        have hjaLast : ja < Fin.last x.height :=
+          Fin.lt_def.mpr (by simpa [heq] using hj)
+        have ha := a.index_strict hjaLast
+        have haval : (a.index ja).1 < n := by
+          rw [haLast] at ha
+          exact ha
+        have hbzero : b.index (j + 1) = p.height := by
+          simpa [heq] using hbAt
+        calc
+          β j = (a.index ja).1 := by simp [β, hj, ja]
+          _ < n := haval
+          _ = n + (b.index (j + 1) - p.height) := by
+            rw [hbzero]
+            simp
+          _ = β (j + 1) := by
+            simp [β, hnext]
+    · have hge : x.height ≤ j := Nat.le_of_not_gt hj
+      have hnext : ¬ j + 1 < x.height := by omega
+      have hbj : p.height ≤ b.index j := by
+        rw [← hbAt]
+        exact b.index_strict.monotone hge
+      have hb := b.index_strict (Nat.lt_succ_self j)
+      have hbj1 : p.height ≤ b.index (j + 1) := by
+        exact hbj.trans (Nat.le_of_lt hb)
+      simp [β, hj, hnext]
+      omega
+  refine ⟨{
+    index := β
+    index_strict := hβstrict
+    cut_eq := ?_
+    lift_subset := ?_
+  }⟩
+  · intro j
+    by_cases hj : j < x.height
+    · let ja : Fin (x.height + 1) := ⟨j, by omega⟩
+      have hWcut :=
+        cut_eq_of_extendsStem H hW.2 ja
+      have hacut := a.cut_eq ja
+      change x.cut ja = V.cut (a.index ja).1 at hacut
+      calc
+        W.cut j = x.cut ja := hWcut
+        _ = V.cut (a.index ja).1 := hacut
+        _ = V.cut (β j) := by simp [β, hj, ja]
+    · have hge : x.height ≤ j := Nat.le_of_not_gt hj
+      have hbj : p.height ≤ b.index j := by
+        rw [← hbAt]
+        exact b.index_strict.monotone hge
+      have hbcut := b.cut_eq j
+      calc
+        W.cut j =
+            (splice H p V n hpV).cut (b.index j) := hbcut
+        _ = V.cut (n + (b.index j - p.height)) :=
+          splice_cut_ge H p V n hpV hbj
+        _ = V.cut (β j) := by simp [β, hj]
+  · intro j
+    by_cases hj : j < x.height
+    · let ji : Fin x.height := ⟨j, hj⟩
+      have haLift := a.lift_subset ji
+      rw [V.initialSegment_liftTo H n] at haLift
+      rw [V.initialSegment_cut H n (a.index ji.castSucc)] at haLift
+      rw [oneLift_eq_of_extendsStem H hW.2 ji]
+      rw [cut_eq_of_extendsStem H hW.2 ji.castSucc]
+      have h0 : β j = (a.index ji.castSucc).1 := by
+        simp [β, hj, ji]
+      have h1 : β (j + 1) = (a.index ji.succ).1 := by
+        by_cases hnext : j + 1 < x.height
+        · let jj : Fin (x.height + 1) := ⟨j + 1, by omega⟩
+          have hjj : jj = ji.succ := Fin.ext rfl
+          calc
+            β (j + 1) = (a.index jj).1 := by
+              simp [β, hnext, jj]
+            _ = (a.index ji.succ).1 := by rw [hjj]
+        · have heq : j + 1 = x.height := by omega
+          have hjiLast : ji.succ = Fin.last x.height := by
+            apply Fin.ext
+            exact heq
+          have haval : (a.index ji.succ).1 = n := by
+            rw [hjiLast, haLast]
+            rfl
+          have hbzero : b.index (j + 1) = p.height := by
+            simpa [heq] using hbAt
+          calc
+            β (j + 1) =
+                n + (b.index (j + 1) - p.height) := by
+                  simp [β, hnext]
+            _ = n := by rw [hbzero]; simp
+            _ = (a.index ji.succ).1 := haval.symm
+      have haa :
+          (a.index ji.castSucc).1 ≤ (a.index ji.succ).1 :=
+        Nat.le_of_lt (a.index_strict
+          (Fin.lt_def.mpr (by omega)))
+      have hβ :
+          β j ≤ β (j + 1) :=
+        Nat.le_of_lt (hβstrict (Nat.lt_succ_self j))
+      have htarget :=
+        V.liftTo_level_congr H haa hβ h0.symm h1.symm
+      intro z hz
+      have hz' := haLift hz
+      rw [htarget] at hz'
+      exact hz'
+    · have hge : x.height ≤ j := Nat.le_of_not_gt hj
+      have hnext : ¬ j + 1 < x.height := by omega
+      have hbj : p.height ≤ b.index j := by
+        rw [← hbAt]
+        exact b.index_strict.monotone hge
+      have hbmono :
+          b.index j ≤ b.index (j + 1) :=
+        Nat.le_of_lt (b.index_strict (Nat.lt_succ_self j))
+      have hbj1 : p.height ≤ b.index (j + 1) :=
+        hbj.trans hbmono
+      have hbLift := b.lift_subset j
+      have htail :=
+        splice_liftTo_ge H p V n hpV
+          (b.index j) (b.index (j + 1))
+          hbj hbmono
+          (TreeLevel (T := T)
+            ((splice H p V n hpV).cut (b.index j)))
+      rw [htail] at hbLift
+      rw [splice_cut_ge H p V n hpV hbj] at hbLift
+      have h0 :
+          β j = n + (b.index j - p.height) := by
+        simp [β, hj]
+      have h1 :
+          β (j + 1) =
+            n + (b.index (j + 1) - p.height) := by
+        simp [β, hnext]
+      have hsrc :
+          n + (b.index j - p.height) ≤
+            n + (b.index (j + 1) - p.height) := by
+        omega
+      have hβ :
+          β j ≤ β (j + 1) :=
+        Nat.le_of_lt (hβstrict (Nat.lt_succ_self j))
+      have htarget :=
+        V.liftTo_level_congr H hsrc hβ h0.symm h1.symm
+      intro z hz
+      have hz' := hbLift hz
+      rw [htarget] at hz'
+      exact hz'
+
 /-- Todorčević A3(1) for the fat-tree space: every depth-cone refinement
 contains an infinite fat tree extending the prescribed finite stem. -/
 theorem a3_one_nonempty
