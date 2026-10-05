@@ -161,22 +161,23 @@ def main() -> None:
         "input_mode": mode,
         "observed_uploaded_git_head": "c4959f5",
         "input_main_sha256": hashlib.sha256(main_text.encode()).hexdigest(),
-        "lean_checkpoint": "fddc1c25189be745eabce27a179389480099e067",
-        "lean_actions_run": 37348884211,
-        "abstract_checkpoint": "d0e2073ad320240f3e0c9aed5285e94eef185d45",
-        "abstract_actions_run": 37345355393,
+        "lean_checkpoint": "215baad75a57b43967063b8d33ed8e6989125501",
+        "lean_actions_run": 37383862698,
+        "lean_full_build_run": 37383862703,
+        "abstract_checkpoint": "bdb601607c03a945bbcd01cfccaa884d4c95e69f",
+        "abstract_actions_run": 37365422442,
         "patches": PATCH_NAMES,
         "patch_checks": "sequential, combined, and shifted-context round trips passed for the stated input mode",
         "scope": "validation markers and TODO notes only; original manuscript prose is preserved",
         "full_manuscript_latex_build": "not performed",
-        "general_fat_tree_ellentuck": "NOT fully formalized; FixedStemPigeonhole remains explicit",
+        "general_fat_tree_ellentuck": "fully formalized; unconditional fixed-stem A4 and Ellentuck endpoint audited",
     })
     (out / "manifest.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
     shutil.copy2(Path(__file__), out / Path(__file__).name)
     (out / HELPER).write_text(helper, encoding="utf-8")
     (out / "README.txt").write_text(
         "SUCCESSORS V4 — VALIDATION AND CORRECTION-NOTE PATCHES\n\n"
-        "These are progress patches, not an unconditional A4/Ellentuck certificate.\n"
+        "These patches pin the completed, audited fat-tree A4/Ellentuck proof.\n"
         "Apply from the root of your extracted successors Git tree:\n\n"
         "  git apply --check /path/to/package/combined.patch\n"
         "  git apply /path/to/package/combined.patch\n\n"
@@ -190,8 +191,10 @@ def main() -> None:
         "reads the source, generates patches and tests them in a temporary Git\n"
         "repository; it does not modify or commit your source tree. Output must\n"
         "be a new or empty directory. Read manifest.json for the actual check mode.\n\n"
-        "The 64 application axiom reports and five abstract-library reports pass.\n"
-        "The geometric fixed-stem pigeonhole theorem is still a proof obligation.\n",
+        "The focused successor audit has 71 theorem-axiom reports and the full\n"
+        "successor build passes. The abstract library post-merge audit passes too.\n"
+        "The geometric fixed-stem pigeonhole theorem and fat-tree Ellentuck endpoint\n"
+        "are unconditional at the pinned checkpoint.\n",
         encoding="utf-8",
     )
     print(json.dumps(metadata, indent=2))
