@@ -115,8 +115,11 @@ theorem reviewFanLine_factor_colour
           reviewExactComp H q p := by
       apply Subtype.ext
       exact hj
-    rw [hexact] at he
-    exact he
+    have hcomp :
+        H.composeAcross (⟨trace j, hend j⟩ : AMExact H c (U.cut a)) L.head =
+          H.composeAcross (reviewExactComp H q p) L.head :=
+      congrArg (fun r : AMExact H c (U.cut a) => H.composeAcross r L.head) hexact
+    exact he.trans (congrArg chi hcomp)
   exact hline.trans (congrArg chi (review_composeAcross_assoc H q p L.head))
 
 end SuccessorTree.SMTree.FatTree
