@@ -95,3 +95,5 @@ import SuccessorTree.NonPrecompact.ParityStarMatrix
 import SuccessorTree.NonPrecompact.CompletionAutomorphism
 
 import SuccessorTree.NonPrecompact.PrebananaAmalgamBridge
+
+import SuccessorTree.NonPrecompact.CompletionAutomorphismHom
