@@ -1,4 +1,4 @@
-import SuccessorTree.FatTree.A4ReviewFan
+import SuccessorTree.FatTree.A4ReviewLine
 
 open SuccessorTree.SMTree.FatTree
 
@@ -7,6 +7,7 @@ open SuccessorTree.SMTree.FatTree
 #check ProfileReplayState.review_common_tail_replays
 #check ProfileReplayState.review_raw_fan_represented
 #check ProfileReplayState.review_exists_profile_fan_homogeneity
+#check exists_reviewFanLine_positive
 #print axioms oneBlockOccurs_of_reduces
 #print axioms oneBlockOccurs_of_pair
 #print axioms appendRow_injective
@@ -36,3 +37,6 @@ open SuccessorTree.SMTree.FatTree
 #print axioms ProfileReplayState.review_word_eval
 #print axioms ProfileReplayState.review_lineTail_composite
 #print axioms ProfileReplayState.review_exists_profile_fan_homogeneity
+#print axioms ReviewFanLine.depths_strict
+#print axioms exists_reviewFanLine_of_sourceLetter
+#print axioms exists_reviewFanLine_positive
