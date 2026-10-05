@@ -102,8 +102,9 @@ noncomputable def reviewTransportFan {c d D : Nat}
   have htop (x : InitialNode T c) (hx : LevelTree.lev x.1 = c) :
       LevelTree.lev (e.toFun x).1 = d + 1 := by
     have he := LevelTree.covBy_level_eq (e.top_covBy x hx)
-    rw [review_AM_level H q.1 hx, hqend] at he
-    exact he
+    have he' : LevelTree.lev (e.toFun x).1 = q.1.rowEndLevel H + 1 := by
+      exact he.trans (congrArg (fun k => k + 1) (review_AM_level H q.1 hx))
+    exact he'.trans (congrArg (fun k => k + 1) hqend)
   refine {
     toFun := fun x => ⟨P (e.toFun x).1, ?_⟩
     eq_id_below := ?_
