@@ -87,3 +87,5 @@ import SuccessorTree.NonPrecompact.BananaAmalgam
 import SuccessorTree.NonPrecompact.SymplecticQuadraticPolar
 
 import SuccessorTree.NonPrecompact.CoherentConjugation
+
+import SuccessorTree.NonPrecompact.CompletionAutomorphism
