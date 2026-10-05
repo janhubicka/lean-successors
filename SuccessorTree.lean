@@ -93,3 +93,5 @@ import SuccessorTree.NonPrecompact.FiberProductStrong
 import SuccessorTree.NonPrecompact.ParityStarMatrix
 
 import SuccessorTree.NonPrecompact.CompletionAutomorphism
+
+import SuccessorTree.NonPrecompact.PrebananaAmalgamBridge
