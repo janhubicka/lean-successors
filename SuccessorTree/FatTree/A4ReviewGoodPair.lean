@@ -19,6 +19,15 @@ universe u v w
 variable {T : Type u} {Label : Type v} [PartialOrder T] [LevelTree T]
 variable {S : STree T Label} (H : SMTree S)
 
+/-- Carry a one-level source letter to any later cut. Equality merely
+transports the dependent index; strict growth uses the M3 duplicate. -/
+noncomputable def reviewLaterSourceLetter
+    (c d : Nat) (hcd : c ≤ d) (E : OneLevelLetter H c) :
+    OneLevelLetter H d := by
+  by_cases heq : c = d
+  · exact heq ▸ E
+  · exact duplicateHistoryLetter H c d (lt_of_le_of_ne hcd heq)
+
 /-- Source transport for an exact trace. -/
 noncomputable def reviewCastExactSource {c c' d : Nat}
     (hc : c = c') (p : AMExact H c d) : AMExact H c' d :=
@@ -70,11 +79,8 @@ theorem review_goodPair_finite_family_of_sourceLetter
       y.terminalCut = A.cut y.height :=
         (terminalCut_eq_of_extendsStem H hyA).symm
       _ ≤ A.cut a := (A.cut_strictMono H).monotone hya
-  let Ecurrent : OneLevelLetter H (A.cut a) := by
-    by_cases heq : y.terminalCut = A.cut a
-    · exact heq ▸ Esource
-    · exact duplicateHistoryLetter H y.terminalCut (A.cut a)
-        (lt_of_le_of_ne hsource_le heq)
+  let Ecurrent : OneLevelLetter H (A.cut a) :=
+    reviewLaterSourceLetter H y.terminalCut (A.cut a) hsource_le Esource
   let chi : AM H c 1 → Bool := fun f => decide (f ∈ O)
   obtain ⟨L⟩ := exists_reviewFanLine_of_sourceLetter H A a family hend Ecurrent chi
   obtain ⟨p, g, k, hgG, hfactor, hktail, hkA⟩ :=
