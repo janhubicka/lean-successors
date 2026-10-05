@@ -365,8 +365,10 @@ def exactTraceToAMExact
     (q : FiniteFatTree.ExactTrace H y n hn) :
     AMExact H
       (FiniteFatTree.traceSourceCut H y n hn)
-      (FiniteFatTree.traceTargetCut H y) :=
-  ⟨q.1, q.rowEndLevel H⟩
+      y.terminalCut :=
+  ⟨q.1, by
+    change q.1.rowEndLevel H = y.terminalCut
+    exact q.rowEndLevel H⟩
 
 theorem exactTraceToAMExact_injective
     (y : FiniteFatTree H)
