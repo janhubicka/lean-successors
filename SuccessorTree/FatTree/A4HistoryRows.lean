@@ -51,15 +51,14 @@ theorem asRow_rowEndLevel
   obtain ⟨x, hx⟩ := H.level_nonempty (U.cut a)
   calc
     H.levelMap ((asRow H U a i P).representative H).map (U.cut a) =
-        LevelTree.lev ((asRow H U a i P).representative H x) := by
-      simpa [hx] using
-        H.levelMap_eq ((asRow H U a i P).representative H).map (a := x)
-    _ = LevelTree.lev (P.toMMap x) := by
-      rw [asRow_representative_agrees H U a i P x (by simpa [hx])]
-    _ = H.levelMap P.toMMap.map (U.cut a) := by
-      simpa [hx] using
-        (H.levelMap_eq P.toMMap.map (a := x)).symm
-    _ = U.cut (a + i) := P.topLevel
+        H.levelMap ((asRow H U a i P).representative H).map (LevelTree.lev x) :=
+      congrArg (H.levelMap ((asRow H U a i P).representative H).map) hx.symm
+    _ = LevelTree.lev ((asRow H U a i P).representative H x) :=
+      H.levelMap_eq ((asRow H U a i P).representative H).map (a := x)
+    _ = LevelTree.lev (P.toMMap x) :=
+      congrArg LevelTree.lev
+        (asRow_representative_agrees H U a i P x (Nat.le_of_eq hx))
+    _ = U.cut (a + i) := P.level_apply H U a i hx
 
 /-- A history state is an exact one-moving map from its initial ambient cut
 to its current ambient cut. -/
@@ -107,20 +106,21 @@ theorem headRow_rowEndLevel
       (U.row (a + i)).rowEndLevel H
   calc
     H.levelMap ((headRow H U a i P).representative H).map (U.cut a) =
-        LevelTree.lev ((headRow H U a i P).representative H x) := by
-      simpa [hx] using
-        H.levelMap_eq ((headRow H U a i P).representative H).map (a := x)
+        H.levelMap ((headRow H U a i P).representative H).map (LevelTree.lev x) :=
+      congrArg (H.levelMap ((headRow H U a i P).representative H).map) hx.symm
+    _ = LevelTree.lev ((headRow H U a i P).representative H x) :=
+      H.levelMap_eq ((headRow H U a i P).representative H).map (a := x)
     _ = LevelTree.lev
-        ((U.row (a + i)).representative H (P.toMMap x)) := by
-      rw [headRow_representative_agrees H U a i P x (by simpa [hx])]
+        ((U.row (a + i)).representative H (P.toMMap x)) :=
+      congrArg LevelTree.lev
+        (headRow_representative_agrees H U a i P x (Nat.le_of_eq hx))
     _ = H.levelMap (U.row (a + i)).representative.map
-        (LevelTree.lev (P.toMMap x)) := by
-      exact
-        (H.levelMap_eq (U.row (a + i)).representative.map
-          (a := P.toMMap x)).symm
+        (LevelTree.lev (P.toMMap x)) :=
+      (H.levelMap_eq (U.row (a + i)).representative.map
+        (a := P.toMMap x)).symm
     _ = H.levelMap (U.row (a + i)).representative.map
         (U.cut (a + i)) := by
-      rw [P.level_apply H U a i (by simpa [hx])]
+      rw [P.level_apply H U a i hx]
     _ = (U.row (a + i)).rowEndLevel H := rfl
 
 /-- Consequently the cut following the first block is exactly the next
