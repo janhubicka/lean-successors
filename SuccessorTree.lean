@@ -91,3 +91,5 @@ import SuccessorTree.NonPrecompact.CoherentConjugation
 import SuccessorTree.NonPrecompact.FiberProductStrong
 
 import SuccessorTree.NonPrecompact.ParityStarMatrix
+
+import SuccessorTree.NonPrecompact.CompletionAutomorphism
