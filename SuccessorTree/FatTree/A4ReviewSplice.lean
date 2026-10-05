@@ -37,7 +37,13 @@ theorem review_occurs_after_matching_stem
   have hCU : Reduces H C U := reduces_trans H hCB hBU
   have hrowC : HEq (C.row x.height) (B.row a) := by
     have h := splice_row_ge H x B a hc (i := x.height) le_rfl
-    simpa only [C, Nat.sub_self, Nat.add_zero] using h
+    have hidx : a + (x.height - x.height) = a := by omega
+    have hrow :
+        HEq (B.row (a + (x.height - x.height))) (B.row a) := by
+      cases hidx
+      rfl
+    change HEq ((splice H x B a hc).row x.height) (B.row a)
+    exact h.trans hrow
   have hrowB : HEq (B.row a) k := by
     have h := (hBstem.2 (Fin.last a)).trans
       (FiniteFatTree.appendRow_row_last H (U.initialSegment H a) k)
