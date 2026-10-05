@@ -427,7 +427,7 @@ theorem advanceAny_occurrence_old_letter
     let hbeta' : beta ∈ K'.seen := by
       rw [advanceAny_seen]
       exact Finset.mem_insert_of_mem hbeta
-    (K'.occurrence beta hbeta').letter =
+    HEq (K'.occurrence beta hbeta').letter
       (K.occurrence beta hbeta).letter := by
   classical
   dsimp only
