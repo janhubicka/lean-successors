@@ -60,13 +60,14 @@ theorem polarBilin_upperQuadratic
     (hsymm : ∀ i j, M i j = M j i) :
     QuadraticMap.polarBilin (upperQuadratic M) =
       Matrix.toBilin' M := by
-  rw [upperQuadratic, LinearMap.BilinForm.polarBilin_toQuadraticMap]
+  rw [upperQuadratic, LinearMap.BilinMap.polarBilin_toQuadraticMap]
   apply LinearMap.BilinForm.ext_basis (Pi.basisFun F2 n)
   intro i j
   simp only [Pi.basisFun_apply, LinearMap.add_apply, LinearMap.flip_apply,
     Matrix.toBilin'_single]
-  rw [← Matrix.add_apply, ← Matrix.transpose_apply,
-    strictUpper_add_transpose_eq M hdiag hsymm]
+  have hmat := congrArg (fun X : Matrix n n F2 => X i j)
+    (strictUpper_add_transpose_eq M hdiag hsymm)
+  simpa using hmat
 
 /-- The manuscript's affine polar expression in characteristic two. -/
 def affinePolar
@@ -86,11 +87,13 @@ theorem affinePolar_translate_quadratic
     (x y : W) :
     affinePolar (fun u => Q (w + L u)) x y =
       QuadraticMap.polar Q (L x) (L y) := by
-  simp only [affinePolar, map_zero, LinearMap.map_add]
-  rw [Q.map_add, Q.map_add, Q.map_add, Q.map_add]
-  rw [QuadraticMap.polar_add_right]
-  rw [QuadraticMap.map_add]
+  simp only [affinePolar, LinearMap.map_add, LinearMap.map_zero]
+  rw [show w + (L x + L y) = (w + L x) + L y by abel]
+  rw [QuadraticMap.map_add (fun v => Q v) (w + L x) (L y)]
+  rw [QuadraticMap.map_add (fun v => Q v) w (L y)]
+  rw [QuadraticMap.polar_add_left (Q := Q)]
   simp only [QuadraticMap.polar, sub_eq_add_neg]
   ring_nf
+  simp
 
 end SuccessorTree.NonPrecompact
