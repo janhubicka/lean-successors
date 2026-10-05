@@ -89,3 +89,4 @@ import SuccessorTree.FatTree.A4RootPigeonhole
 import SuccessorTree.FatTree.A4Coverage
 import SuccessorTree.FatTree.A4ReplaySemantics
 import SuccessorTree.FatTree.A4Assembly
+import SuccessorTree.FatTree.A4ReviewFusion
