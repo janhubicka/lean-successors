@@ -4,14 +4,12 @@ import SuccessorTree.FatTree.A4Profiles
 # Last-block factorization for fat-tree A4
 
 The all-trace A4 fusion must cover arbitrary geometric one-block reductions,
-not only canonical right-compositions.  For a pruned underlying tree, every
-such last block factors through an exact trace of the preceding finite prefix
-and the ambient last row.  The pruning hypothesis is used exactly once: to
-choose a successor of each source-cut node so that the reduction's Lift
-condition can see that node.
-
-This hypothesis is deliberately isolated here.  A1--A3, closedness, and the
-shape-preserving Ramsey theorem do not use pruning.
+not only canonical right-compositions.  Every such last block factors through an exact trace of the preceding finite
+prefix and the ambient last row as soon as the source cut is positive.
+M3 supplies an immediate successor for every positive-level source node, so
+no global pruning hypothesis is needed.  The only remaining source-cut-zero
+case is handled separately in the final A4 proof by the root-level
+dichotomy.
 -/
 
 namespace SuccessorTree
@@ -20,7 +18,7 @@ namespace SMTree
 universe u v
 
 variable {T : Type u} {Label : Type v}
-variable [PartialOrder T] [LevelTree T] [PrunedTree T]
+variable [PartialOrder T] [LevelTree T]
 variable {S : STree T Label}
 
 namespace FatTree
@@ -47,6 +45,7 @@ theorem exists_lastBlock_exactTrace
     (y : FiniteFatTree H)
     (U : FatTree H)
     (hyU : ExtendsStem H y U)
+    (hsourcePos : 0 < y.terminalCut)
     (m : Nat) (hym : y.height ≤ m)
     (g : AM H y.terminalCut 1)
     (hg :
@@ -189,7 +188,10 @@ theorem exists_lastBlock_exactTrace
     have hxy : LevelTree.lev x = y.terminalCut :=
       hx.trans hsrc
 
-    rcases PrunedTree.exists_immediateSuccessor x with ⟨b, hxb⟩
+    have hxpos : 0 < LevelTree.lev x := by
+      rw [hxy]
+      exact hsourcePos
+    rcases H.exists_immediateSuccessor_of_level_pos x hxpos with ⟨b, hxb⟩
     have hbmem :
         b ∈ ImmediateSuccessors (T := T)
           (TreeLevel (T := T) (V.cut irow.castSucc)) := by
