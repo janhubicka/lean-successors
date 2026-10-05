@@ -1,0 +1,13 @@
+import SuccessorTree.FatTree.A4PairPersistence
+
+open SuccessorTree.SMTree.FatTree
+
+#check persistentAcceptedPair_of_dense_pairs
+#print axioms oneBlockOccurs_of_reduces
+#print axioms oneBlockOccurs_of_pair
+#print axioms appendRow_injective
+#print axioms headsAtDepth_finite
+#print axioms eliminate_accepted_pair_at_depth
+#print axioms eliminate_accepted_pair_batch
+#print axioms eliminate_all_accepted_pairs_at_depth
+#print axioms persistentAcceptedPair_of_dense_pairs
