@@ -57,6 +57,29 @@ noncomputable def directSumLinearEquiv
         (f (finLeftPart x))
         (g (finRightPart x)) := rfl
 
+
+@[simp] theorem finLeftPart_append
+    {m n : ℕ} (x : Fin m → F2) (y : Fin n → F2) :
+    finLeftPart (Fin.append x y) = x := by
+  funext i
+  simp [finLeftPart]
+
+@[simp] theorem finRightPart_append
+    {m n : ℕ} (x : Fin m → F2) (y : Fin n → F2) :
+    finRightPart (Fin.append x y) = y := by
+  funext i
+  simp [finRightPart]
+
+theorem dotProduct_append
+    {m n : ℕ}
+    (x₁ y₁ : Fin m → F2)
+    (x₂ y₂ : Fin n → F2) :
+    Fin.append x₁ x₂ ⬝ᵥ Fin.append y₁ y₂ =
+      (x₁ ⬝ᵥ y₁) + (x₂ ⬝ᵥ y₂) := by
+  unfold dotProduct
+  rw [Fin.sum_univ_add]
+  simp
+
 /-- The left block action used on the perfect completion of a source
 automorphism (f,g). -/
 noncomputable def completionLeftEquiv
@@ -90,11 +113,8 @@ theorem completionAutomorphism_left_completion
   change
     completionLeftEquiv f g (Fin.append x 0) =
       Fin.append (f x) 0
-  apply funext
-  intro i
-  induction i using Fin.addCases <;>
-    simp [completionLeftEquiv, directSumLinearEquiv,
-      directSumLinearMap, finLeftPart, finRightPart]
+  rw [completionLeftEquiv, directSumLinearEquiv_apply]
+  simp
 
 /-- If f and g preserve the source pairing, the completion automorphism also
 extends g on the embedded right sort. -/
@@ -114,45 +134,46 @@ theorem completionAutomorphism_right_completion
   apply dotProduct_eq
   intro z
   obtain ⟨w, rfl⟩ := h.surjective z
-  rw [dotProduct_comm
-      (dotContragredient h (A.completionRight y)) (h w)]
-  rw [dotContragredient_pairing]
-  rw [dotProduct_comm
-      (A.completionRight (g y)) (h w)]
-  change
-    w ⬝ᵥ A.completionRight y =
-      h w ⬝ᵥ A.completionRight (g y)
-  rw [show
-      w =
-        Fin.append (finLeftPart w) (finRightPart w) by
+  calc
+    dotContragredient h (A.completionRight y) ⬝ᵥ h w =
+        h w ⬝ᵥ dotContragredient h (A.completionRight y) := by
+          rw [dotProduct_comm]
+    _ = w ⬝ᵥ A.completionRight y := by
+          exact dotContragredient_pairing h w (A.completionRight y)
+    _ = h w ⬝ᵥ A.completionRight (g y) := by
+      have hw :
+          w = Fin.append (finLeftPart w) (finRightPart w) := by
         funext i
         induction i using Fin.addCases <;>
-          simp [finLeftPart, finRightPart]]
-  rw [show
-      h (Fin.append (finLeftPart w) (finRightPart w)) =
-        Fin.append
-          (f (finLeftPart w))
-          (dotContragredient g (finRightPart w)) by
-        rfl]
-  unfold completionRight
-  simp only [dotProduct]
-  rw [Fin.sum_univ_add, Fin.sum_univ_add]
-  have hfg :
-      (f (finLeftPart w)) ⬝ᵥ
-          (A.pairing *ᵥ (g y)) =
-        finLeftPart w ⬝ᵥ (A.pairing *ᵥ y) := by
-    simpa [BananaMatrixStructure.eval] using
-      hpair (finLeftPart w) y
-  have hdual :
-      dotContragredient g (finRightPart w) ⬝ᵥ g y =
-        finRightPart w ⬝ᵥ y := by
-    rw [dotProduct_comm
-      (dotContragredient g (finRightPart w)) (g y)]
-    rw [dotProduct_comm
-      (finRightPart w) y]
-    simpa using
-      dotContragredient_pairing g y (finRightPart w)
-  rw [hfg, hdual]
+          simp [finLeftPart, finRightPart]
+      have hhw :
+          h w =
+            Fin.append
+              (f (finLeftPart w))
+              (dotContragredient g (finRightPart w)) := by
+        rw [hw]
+        simp [h, completionLeftEquiv]
+      rw [hw, hhw]
+      unfold completionRight
+      rw [dotProduct_append, dotProduct_append]
+      have hfg :
+          (f (finLeftPart w)) ⬝ᵥ
+              (A.pairing *ᵥ (g y)) =
+            finLeftPart w ⬝ᵥ (A.pairing *ᵥ y) := by
+        simpa [BananaMatrixStructure.eval] using
+          hpair (finLeftPart w) y
+      have hdual :
+          dotContragredient g (finRightPart w) ⬝ᵥ g y =
+            finRightPart w ⬝ᵥ y := by
+        rw [dotProduct_comm
+          (dotContragredient g (finRightPart w)) (g y)]
+        rw [dotProduct_comm
+          (finRightPart w) y]
+        simpa using
+          dotContragredient_pairing g y (finRightPart w)
+      rw [hfg, hdual]
+    _ = A.completionRight (g y) ⬝ᵥ h w := by
+      rw [dotProduct_comm]
 
 end BananaMatrixStructure
 
