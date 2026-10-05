@@ -113,8 +113,11 @@ noncomputable def reviewTransportFan {c d D : Nat}
   · calc
       LevelTree.lev (P (e.toFun x).1) = H.levelMap P.map (LevelTree.lev (e.toFun x).1) :=
         (H.levelMap_eq P.map (a := (e.toFun x).1)).symm
-      _ ≤ H.levelMap P.map (d + 1) :=
-        (H.levelMap_strictMono P.map).monotone (by simpa only [hqend] using (e.toFun x).2)
+      _ ≤ H.levelMap P.map (d + 1) := by
+        apply (H.levelMap_strictMono P.map).monotone
+        calc
+          LevelTree.lev (e.toFun x).1 ≤ q.1.rowEndLevel H + 1 := (e.toFun x).2
+          _ = d + 1 := congrArg (fun k => k + 1) hqend
       _ = D + 1 := hPnext
       _ = (H.composeAcross q p.1).rowEndLevel H + 1 := by rw [hrend]
   · intro x hx
