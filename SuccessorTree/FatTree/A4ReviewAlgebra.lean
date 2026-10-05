@@ -109,9 +109,14 @@ theorem reviewFanLine_factor_colour
   have hline :
       chi (H.composeAcross (⟨theta, htheta⟩ : AMExact H c (U.cut L.headDepth)) L.tail) =
         chi (H.composeAcross (reviewExactComp H q p) L.head) := by
-    have he := L.fan_colour j
-    rw [hj] at he
-    exact he f theta htheta hfraw
+    have he := L.fan_colour j f theta htheta hfraw
+    have hexact :
+        (⟨trace j, hend j⟩ : AMExact H c (U.cut a)) =
+          reviewExactComp H q p := by
+      apply Subtype.ext
+      exact hj
+    rw [hexact] at he
+    exact he
   exact hline.trans (congrArg chi (review_composeAcross_assoc H q p L.head))
 
 end SuccessorTree.SMTree.FatTree
