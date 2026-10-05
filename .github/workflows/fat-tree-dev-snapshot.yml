@@ -1,0 +1,69 @@
+name: Fat-tree development snapshot
+
+on:
+  push:
+    branches: [fat-tree-formalization]
+    paths: [.github/workflows/fat-tree-dev-snapshot.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache/restore@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Install pinned environment
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get
+      - name: Snapshot sources
+        run: |
+          mkdir -p snapshot
+          git rev-parse HEAD > snapshot/COMMIT
+          git archive --format=tar.gz -o snapshot/source.tar.gz HEAD
+          cp lean-toolchain lakefile.toml lake-manifest.json snapshot/
+      - name: Snapshot Lean runtime and compiled dependencies
+        run: |
+          set -o pipefail
+          TOOLCHAIN="$(dirname "$(dirname "$(elan which lean)")")"
+          tar -C "$TOOLCHAIN" -czf snapshot/toolchain.tar.gz bin lib share include
+          tar --exclude=.git --exclude=build/ir --exclude=build/bin --exclude='*.c' --exclude='*.o' --exclude='*.a' --exclude='*.ilean' -czf snapshot/lake-workspace.tar.gz .lake
+          (cd snapshot && sha256sum *.tar.gz > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fat-tree-sources
+          path: |
+            snapshot/source.tar.gz
+            snapshot/COMMIT
+            snapshot/lean-toolchain
+            snapshot/lakefile.toml
+            snapshot/lake-manifest.json
+            snapshot/SHA256SUMS
+          compression-level: 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fat-tree-lean-toolchain
+          path: snapshot/toolchain.tar.gz
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fat-tree-lake-workspace
+          path: snapshot/lake-workspace.tar.gz
+          compression-level: 0
+          retention-days: 2
