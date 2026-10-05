@@ -89,3 +89,5 @@ import SuccessorTree.NonPrecompact.SymplecticQuadraticPolar
 import SuccessorTree.NonPrecompact.CoherentConjugation
 
 import SuccessorTree.NonPrecompact.FiberProductStrong
+
+import SuccessorTree.NonPrecompact.ParityStarMatrix
