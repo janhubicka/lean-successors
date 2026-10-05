@@ -87,3 +87,5 @@ import SuccessorTree.FatTree.A4ReplayColour
 import SuccessorTree.FatTree.A4OccurrenceStability
 import SuccessorTree.FatTree.A4RootPigeonhole
 import SuccessorTree.FatTree.A4Coverage
+import SuccessorTree.FatTree.A4ReplaySemantics
+import SuccessorTree.FatTree.A4Assembly
