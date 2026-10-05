@@ -1,4 +1,4 @@
-import SuccessorTree.FatTree.A4ReviewSplice
+import SuccessorTree.FatTree.A4ReviewGoodPair
 
 open SuccessorTree.SMTree.FatTree
 
@@ -8,6 +8,7 @@ open SuccessorTree.SMTree.FatTree
 #check ProfileReplayState.review_raw_fan_represented
 #check ProfileReplayState.review_exists_profile_fan_homogeneity
 #check exists_reviewFanLine_positive
+#check review_goodPair_positive
 #print axioms oneBlockOccurs_of_reduces
 #print axioms oneBlockOccurs_of_pair
 #print axioms appendRow_injective
@@ -51,11 +52,21 @@ open SuccessorTree.SMTree.FatTree
 #print axioms reviewFanLine_factor_colour
 #print axioms review_occurs_after_matching_stem
 #print axioms review_realize_head
+#print axioms review_trace_transport
 #print axioms review_trace_prefix_transport
+#print axioms review_composeAcross_heq
+#print axioms reviewBridgeMap
+#print axioms reviewBridgeMap_heq
+#print axioms review_bridges_nonempty
+#print axioms review_persistent_line_witness
+#print axioms reviewCastExactSource
+#print axioms review_composeAcross_cast_source
+#print axioms review_goodPair_finite_family_positive
+#print axioms review_goodPair_at_prefix_positive
+#print axioms review_goodPair_positive
 
-/- The local endpoint must elaborate from the SM-tree data and a positive
-source cut. Adding an A4, good-pair, or saturation premise must break this
-type-level regression test rather than silently strengthen the theorem. -/
+/- These endpoint types must not silently acquire A4, good-pair, or
+saturation premises. Root-cut completion is a separate obligation. -/
 section InterfaceGuard
 open SuccessorTree SuccessorTree.SMTree
 universe u1 v1 w1 z1
@@ -69,4 +80,13 @@ example {c : Nat} {C : Type w1} [Fintype C] [Nonempty C]
     (hpos : 0 < U.cut a) (chi : AM H c 1 → κ) :
     Nonempty (ReviewFanLine H U a trace hend chi) :=
   exists_reviewFanLine_positive H U a trace hend hpos chi
+
+example (H : SMTree S) (c n : Nat) (y : FiniteFatTree H)
+    (hn : n ≤ y.height) (hsrc : FiniteFatTree.traceSourceCut H y n hn = c)
+    (O : Set (AM H c 1)) (U : SuccessorTree.SMTree.FatTree H)
+    (hyU : ExtendsStem H y U) (hpos : 0 < y.terminalCut)
+    (hlarge : OneBlockLarge H y U (FixedTraceGoodRows H c n y hn hsrc O)) :
+    ∃ h k, FixedTraceGoodPair H c n y hn hsrc O h k ∧
+      OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k :=
+  review_goodPair_positive H c n y hn hsrc O U hyU hpos hlarge
 end InterfaceGuard
