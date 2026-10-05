@@ -1,9 +1,10 @@
-import SuccessorTree.FatTree.A4ReviewFusion
+import SuccessorTree.FatTree.A4ReviewReplay
 
 open SuccessorTree.SMTree.FatTree
 
 #check persistentAcceptedPair_of_dense_pairs
 #check review_fixedStemPigeonhole_positive
+#check ProfileReplayState.review_common_tail_replays
 #print axioms oneBlockOccurs_of_reduces
 #print axioms oneBlockOccurs_of_pair
 #print axioms appendRow_injective
@@ -18,3 +19,10 @@ open SuccessorTree.SMTree.FatTree
 #print axioms review_good_row_of_good_prefix
 #print axioms review_large_set_homogeneous
 #print axioms review_fixedStemPigeonhole_positive
+#print axioms review_rowExtension_succ
+#print axioms ProfileReplayState.review_common_const_letter
+#print axioms ProfileReplayState.review_first_parameter_edge
+#print axioms ProfileReplayState.review_common_letter_agrees
+#print axioms ProfileReplayState.reviewTailEval_replay
+#print axioms ProfileReplayState.reviewTailEval_eq_foldl_state
+#print axioms ProfileReplayState.review_common_tail_replays
