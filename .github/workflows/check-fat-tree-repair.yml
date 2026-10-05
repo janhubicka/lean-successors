@@ -1,0 +1,79 @@
+name: Check localized fat-tree repair
+on:
+  push:
+    branches: [fat-tree-rebased-main-20261005]
+    paths: [.github/workflows/check-fat-tree-repair.yml]
+permissions:
+  contents: write
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fat-tree-formalization
+          fetch-depth: 0
+      - name: Apply the reviewed two-line dependent-equality repair
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 66936956da424931514ba0d082044b0994eae487
+          git config user.name 'Jan Hubička'
+          git config user.email '46065755+janhubicka@users.noreply.github.com'
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('SuccessorTree/FatTree/A4ProfileSaturation.lean')
+          s=p.read_text()
+          old="    (K'.occurrence beta hbeta').letter =\n      (K.occurrence beta hbeta).letter := by"
+          new="    HEq (K'.occurrence beta hbeta').letter\n      (K.occurrence beta hbeta).letter := by"
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new))
+          PY
+          git diff --check
+          git add SuccessorTree/FatTree/A4ProfileSaturation.lean
+          git commit -m 'Use heterogeneous equality for transported occurrence letters'
+          git push origin HEAD:fat-tree-formalization
+          mkdir -p proof-audit
+          git rev-parse HEAD > proof-audit/COMMIT
+          git show --format=fuller --stat HEAD > proof-audit/commit.txt
+      - uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache/restore@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Resolve pinned Lean dependencies
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          export PATH="$HOME/.elan/bin:$PATH"
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          lake update
+          lake exe cache get
+      - name: Build rebased successor library
+        run: |
+          set -o pipefail
+          lake build 2>&1 | tee proof-audit/build.log
+      - name: Audit established theorem dependencies
+        if: always()
+        run: |
+          set -o pipefail
+          for script in CheckShapeRamsey CheckFatTreeA1 CheckFatTree CheckFatTreeA3 CheckFatTreeA4; do
+            lake env lean "scripts/$script.lean" > "proof-audit/$script.log" 2>&1 || exit 1
+          done
+          if grep -E 'sorryAx|error:' proof-audit/Check*.log; then exit 1; fi
+      - name: Save checked project modules for local continuation
+        if: always()
+        run: |
+          tar -czf proof-audit/project-modules.tar.gz .lake/build/lib/lean .lake/packages/ramsey-space-todorcevic/.lake/build/lib/lean
+          git archive --format=tar.gz -o proof-audit/source.tar.gz HEAD
+          cp lean-toolchain lakefile.toml lake-manifest.json proof-audit/
+          (cd proof-audit && sha256sum *.tar.gz > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rebased-fat-tree-checked-modules
+          path: proof-audit/
+          retention-days: 14
