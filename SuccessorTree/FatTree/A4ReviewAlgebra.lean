@@ -15,6 +15,21 @@ universe u v w z
 variable {T : Type u} {Label : Type v} [PartialOrder T] [LevelTree T]
 variable {S : STree T Label} (H : SMTree S)
 
+/-- Transport a raw successor fan across equality of its base row.  The
+finite successor table itself is unchanged. -/
+private noncomputable def reviewCastFan
+    {c : Nat} {q r : AM H c 1} (h : q = r)
+    (e : RawSuccessorFan H q) : RawSuccessorFan H r := by
+  cases h
+  exact e
+
+@[simp] private theorem reviewCastFan_toFun
+    {c : Nat} {q r : AM H c 1} (h : q = r)
+    (e : RawSuccessorFan H q) (x : InitialNode T c) :
+    ((reviewCastFan H h e).toFun x).1 = (e.toFun x).1 := by
+  cases h
+  rfl
+
 /-- Compose exact traces, retaining the exact terminal level. -/
 noncomputable def reviewExactComp {c d D : Nat}
     (q : AMExact H c d) (p : AMExact H d D) : AMExact H c D :=
@@ -109,11 +124,13 @@ theorem reviewFanLine_factor_colour
   have hline :
       chi (H.composeAcross (⟨theta, htheta⟩ : AMExact H c (U.cut L.headDepth)) L.tail) =
         chi (H.composeAcross (reviewExactComp H q p) L.head) := by
-    let f' : RawSuccessorFan H (trace j) := hj.symm ▸ f
+    let f' : RawSuccessorFan H (trace j) :=
+      reviewCastFan H hj.symm f
     have hfraw' : ∀ (x : InitialNode T c), LevelTree.lev x.1 = c →
         theta.representative H x.1 =
           H.canonicalExtension (L.head.representative H) (U.cut a) (f'.toFun x).1 := by
-      simpa only [f', hj] using hfraw
+      intro x hx
+      simpa only [f', reviewCastFan_toFun] using hfraw x hx
     have he := L.fan_colour j f' theta htheta hfraw'
     have hexact :
         (⟨trace j, hend j⟩ : AMExact H c (U.cut a)) =
