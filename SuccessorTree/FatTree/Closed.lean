@@ -5,7 +5,7 @@ import RamseySpace.Closed
 # Metric closedness of the fat-tree approximation space
 
 A coherent approximation code is realized by taking the ith row from any
-realizer of the code through level i+1.  Prefix realizability guarantees that
+realizer of the code through level i+1. Prefix realizability guarantees that
 these choices agree on overlaps.
 
 This file is independent of A4 and of the optional embedding-space EA axiom.
@@ -31,10 +31,8 @@ private theorem realized_prefix_eq
     (N M k : Nat) (hkN : k ≤ N) (hkM : k ≤ M) :
     (Classical.choose (hpref N)).initialSegment H k =
       (Classical.choose (hpref M)).initialSegment H k := by
-  have hN :=
-    Classical.choose_spec (hpref N) k hkN
-  have hM :=
-    Classical.choose_spec (hpref M) k hkM
+  have hN := Classical.choose_spec (hpref N) k hkN
+  have hM := Classical.choose_spec (hpref M) k hkM
   exact congrArg Subtype.val (hN.trans hM.symm)
 
 /-- The approximation image of infinite fat trees is closed in the
@@ -58,14 +56,10 @@ theorem isMetricallyClosed :
   have hcut_overlap (i : Nat) :
       (X (i + 1)).cut (i + 1) =
         (X (i + 2)).cut (i + 1) := by
-    have hseg :=
-      realized_prefix_eq H c hpref
-        (i + 1) (i + 2) (i + 1) (by omega) (by omega)
-    have ht :=
-      FiniteFatTree.cut_eq_of_eq H hseg (Fin.last (i + 1))
-    change
-      (X (i + 1)).cut (i + 1) =
-        (X (i + 2)).cut (i + 1)
+    have hseg := realized_prefix_eq H c hpref
+      (i + 1) (i + 2) (i + 1) (by omega) (by omega)
+    have ht := FiniteFatTree.cut_eq_of_eq H hseg (Fin.last (i + 1))
+    change (X (i + 1)).cut (i + 1) = (X (i + 2)).cut (i + 1)
     exact ht
 
   let U : FatTree H := {
@@ -79,122 +73,41 @@ theorem isMetricallyClosed :
       dsimp [row, cut]
       calc
         ((X (i + 1)).row i).rowEndLevel H + 1 =
-            (X (i + 1)).cut (i + 1) :=
-          (X (i + 1)).row_cut i
-        _ = (X (i + 2)).cut (i + 1) :=
-          hcut_overlap i
+            (X (i + 1)).cut (i + 1) := (X (i + 1)).row_cut i
+        _ = (X (i + 2)).cut (i + 1) := hcut_overlap i
   }
 
   refine ⟨U, ?_⟩
   intro n
   apply Subtype.ext
-  have hreal : (X n).initialSegment H n = (c n).1 := by
-    exact congrArg Subtype.val (hX n n le_rfl)
+  have hreal : (X n).initialSegment H n = (c n).1 :=
+    congrArg Subtype.val (hX n n le_rfl)
   calc
     U.initialSegment H n = (X n).initialSegment H n := by
       apply FiniteFatTree.ext_pointwise H
         (U := U.initialSegment H n)
-        (V := (X n).initialSegment H n)
-        rfl
+        (V := (X n).initialSegment H n) rfl
       · intro i
-        have hiNlt : i.1 < n + 1 := by
-          change i.1 < n + 1
-          exact i.2
+        have hiNlt : i.1 < n + 1 := i.2
         have hiN : i.1 ≤ n := by omega
         change (X (i.1 + 1)).cut i.1 = (X n).cut i.1
-        have hseg :=
-          realized_prefix_eq H c hpref
-            (i.1 + 1) n i.1 (by omega) hiN
-        have ht :=
-          FiniteFatTree.cut_eq_of_eq H hseg (Fin.last i.1)
-        change (X (i.1 + 1)).cut i.1 = (X n).cut i.1
-        exact ht
+        have hseg := realized_prefix_eq H c hpref
+          (i.1 + 1) n i.1 (by omega) hiN
+        exact FiniteFatTree.cut_eq_of_eq H hseg (Fin.last i.1)
       · intro i
-        have hiNlt : i.1 < n := by
-          change i.1 < n
-          exact i.2
+        have hiNlt : i.1 < n := i.2
         have hiN : i.1 + 1 ≤ n := by omega
         change HEq ((X (i.1 + 1)).row i.1) ((X n).row i.1)
-        have hseg :=
-          realized_prefix_eq H c hpref
-            (i.1 + 1) n (i.1 + 1) le_rfl hiN
-        have hr :=
-          FiniteFatTree.row_heq_of_eq H hseg (Fin.last i.1)
-        change
-          HEq ((X (i.1 + 1)).row i.1) ((X n).row i.1)
-        exact hr
+        have hseg := realized_prefix_eq H c hpref
+          (i.1 + 1) n (i.1 + 1) le_rfl hiN
+        exact FiniteFatTree.row_heq_of_eq H hseg (Fin.last i.1)
     _ = (c n).1 := hreal
 
-/-- Metric closedness plus the already verified A2 finitization gives the
-fusion-completeness interface needed by the combinatorial A4 persistence
-argument.  No A3 or A4 field is used here. -/
+/-- A2 and closedness supply fusion before A3 or A4 is assumed. The general
+construction now lives in the abstract Ramsey-space library. -/
 theorem fusionComplete :
-    RamseySpace.FusionComplete (approximationSystem H) := by
-  let F := finitization H
-  refine ⟨?_⟩
-  intro n0 Y hY
-  let c : (approximationSystem H).ApproximationCode :=
-    fun n => (approximationSystem H).approx n (Y (n + 1))
-  have hpref :
-      ∀ N, (approximationSystem H).PrefixRealizable c N := by
-    intro N
-    refine ⟨Y (N + 1), ?_⟩
-    intro n hn
-    have hstab :
-        (approximationSystem H).approx n (Y (N + 1)) =
-          (approximationSystem H).approx n (Y (n + 1)) :=
-      (approximationSystem H).fusion_approx_eq hY
-        (by omega) (by omega)
-    simpa [c] using hstab
-  rcases isMetricallyClosed H c hpref with ⟨X, hXcode⟩
-  refine ⟨X, ?_⟩
-  intro k
-  constructor
-  · apply (F.realizesOrder X (Y k)).2
-    intro n
-    let j : Nat := max k (n + 1)
-    have hkj : k ≤ j := Nat.le_max_left _ _
-    have hnj : n + 1 ≤ j := Nat.le_max_right _ _
-    have hYjYk : FatTree.Reduces H (Y j) (Y k) :=
-      (approximationSystem H).fusion_le hY hkj
-    rcases (F.realizesOrder (Y j) (Y k)).1 hYjYk n with
-      ⟨m, hm⟩
-    refine ⟨m, ?_⟩
-    have hstab :
-        (approximationSystem H).approx n (Y j) =
-          (approximationSystem H).approx n (Y (n + 1)) :=
-      (approximationSystem H).fusion_approx_eq hY
-        hnj (by omega)
-    have hXj :
-        (approximationSystem H).approx n X =
-          (approximationSystem H).approx n (Y j) :=
-      (hXcode n).trans hstab.symm
-    have htree :
-        X.initialSegment H n = (Y j).initialSegment H n :=
-      congrArg Subtype.val hXj
-    change
-      FiniteFatTree.LeFin H
-        (X.initialSegment H n)
-        ((Y k).initialSegment H m)
-    change
-      FiniteFatTree.LeFin H
-        ((Y j).initialSegment H n)
-        ((Y k).initialSegment H m) at hm
-    rw [htree]
-    exact hm
-  · have hX :
-        (approximationSystem H).approx (n0 + k) X =
-          (approximationSystem H).approx (n0 + k)
-            (Y (n0 + k + 1)) :=
-      hXcode (n0 + k)
-    have hstab :
-        (approximationSystem H).approx (n0 + k)
-            (Y (n0 + k + 1)) =
-          (approximationSystem H).approx (n0 + k) (Y k) :=
-      (approximationSystem H).fusion_approx_eq hY
-        (by omega) (by omega)
-    exact hX.trans hstab
-
+    RamseySpace.FusionComplete (approximationSystem H) :=
+  (finitization H).fusionComplete_of_isMetricallyClosed (isMetricallyClosed H)
 
 end FatTree
 end SMTree
