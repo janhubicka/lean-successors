@@ -90,8 +90,11 @@ theorem completionAutomorphism_left_completion
   change
     completionLeftEquiv f g (Fin.append x 0) =
       Fin.append (f x) 0
-  simp [completionLeftEquiv, directSumLinearEquiv,
-    completionLeft, finLeftPart, finRightPart]
+  apply funext
+  intro i
+  induction i using Fin.addCases <;>
+    simp [completionLeftEquiv, directSumLinearEquiv,
+      directSumLinearMap, finLeftPart, finRightPart]
 
 /-- If f and g preserve the source pairing, the completion automorphism also
 extends g on the embedded right sort. -/
@@ -112,9 +115,10 @@ theorem completionAutomorphism_right_completion
   intro z
   obtain ⟨w, rfl⟩ := h.surjective z
   rw [dotProduct_comm
-      (h w) (dotContragredient h (A.completionRight y))]
+      (dotContragredient h (A.completionRight y)) (h w)]
   rw [dotContragredient_pairing]
-  rw [dotProduct_comm]
+  rw [dotProduct_comm
+      (A.completionRight (g y)) (h w)]
   change
     w ⬝ᵥ A.completionRight y =
       h w ⬝ᵥ A.completionRight (g y)
