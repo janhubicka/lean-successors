@@ -560,11 +560,18 @@ theorem exists_globallySaturated_from
             unfold missingCount
             rw [hseenEq]
           have hlt : measure P' < N := by
-            have hstep :=
-              missingCount_advanceAny_lt
-                H U a trace hend P E hEnewP
-            rw [hmeasureEq, hKN] at hstep
-            exact hstep
+            have hstep :
+                measure P' < measure P := by
+              change
+                missingCount H trace P' <
+                  missingCount H trace P
+              exact
+                missingCount_advanceAny_lt
+                  H U a trace hend P E hEnewP
+            calc
+              measure P' < measure P := hstep
+              _ = measure K := hmeasureEq
+              _ = N := hKN
           rcases ih (measure P') hlt P' rfl with
             ⟨L, hP'L, hLsat⟩
           exact ⟨L,
