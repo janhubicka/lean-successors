@@ -48,23 +48,36 @@ theorem reviewBridgeMap_heq
 
 /-- Persistence guarantees a nonempty finite bridge family. A witness is
 truncated at the persistent cut, not at a presumed first head. -/
-theorem review_bridges_nonempty
+theorem review_bridges_nonempty_of_sourceLetter
     (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
-    (hpos : 0 < y.terminalCut) (G : Set (AM H y.terminalCut 1))
+    (E : OneLevelLetter H y.terminalCut)
+    (G : Set (AM H y.terminalCut 1))
     (a : Nat) (hya : y.height ≤ a)
     (hP : OneBlockExactPersistent H y U G a) :
     Nonempty (FiniteFatTree.ExactTrace H (U.initialSegment H a) y.height hya) := by
   obtain ⟨g, _, hg⟩ := hP U
     ⟨reduces_refl H U, initialSegment_extendsStem H U a⟩
-  obtain ⟨p, _⟩ := exists_lastBlock_exactTrace H y U hyU hpos a hya g hg
+  obtain ⟨p, _⟩ := exists_lastBlock_exactTrace_of_sourceLetter H
+    y U hyU E a hya g hg
   exact ⟨p⟩
+
+/-- Positive source cuts provide the source letter by M3. -/
+theorem review_bridges_nonempty
+    (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
+    (hpos : 0 < y.terminalCut) (G : Set (AM H y.terminalCut 1))
+    (a : Nat) (hya : y.height ≤ a)
+    (hP : OneBlockExactPersistent H y U G a) :
+    Nonempty (FiniteFatTree.ExactTrace H (U.initialSegment H a) y.height hya) :=
+  review_bridges_nonempty_of_sourceLetter H y U hyU
+    (duplicateHistoryLetter H 0 y.terminalCut hpos) G a hya hP
 
 /-- Install the line head, choose the persistent accepted row, factor it
 through an original bridge, and retain the common geometric tail. -/
-theorem review_persistent_line_witness
+theorem review_persistent_line_witness_of_sourceLetter
     {c : Nat} {C : Type w} {κ : Type z}
     (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
-    (hpos : 0 < y.terminalCut) (G : Set (AM H y.terminalCut 1))
+    (E : OneLevelLetter H y.terminalCut)
+    (G : Set (AM H y.terminalCut 1))
     (a : Nat) (hya : y.height ≤ a)
     (hP : OneBlockExactPersistent H y U G a)
     (trace : C → AM H c 1)
@@ -79,7 +92,8 @@ theorem review_persistent_line_witness
     review_realize_head H U a L.headDepth L.head L.head_geometric
   have hyV : ExtendsStem H y V := extendsStem_of_depthCone H hyU hVcone hya
   obtain ⟨g, hgG, hgV⟩ := hP V hVcone
-  obtain ⟨pV, hfactorV⟩ := exists_lastBlock_exactTrace H y V hyV hpos a hya g hgV
+  obtain ⟨pV, hfactorV⟩ := exists_lastBlock_exactTrace_of_sourceLetter H
+    y V hyV E a hya g hgV
   have hprefix : V.initialSegment H a = U.initialSegment H a :=
     initialSegment_eq_of_extendsStem H hVcone.2
   obtain ⟨p, hpeq⟩ := review_trace_prefix_transport H U V a y.height hya hprefix pV
@@ -110,5 +124,25 @@ theorem review_persistent_line_witness
       U L.headDepth hgb L.tail ⟨L.tailDepth, L.tail_geometric⟩
   exact ⟨p, g, k, hgG, hfactor,
     FiniteFatTree.castTraceRow_heq H hterminal.symm L.tail, hk⟩
+
+/-- Positive source cuts recover the previous witness interface by using the
+M3 source letter. -/
+theorem review_persistent_line_witness
+    {c : Nat} {C : Type w} {κ : Type z}
+    (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
+    (hpos : 0 < y.terminalCut) (G : Set (AM H y.terminalCut 1))
+    (a : Nat) (hya : y.height ≤ a)
+    (hP : OneBlockExactPersistent H y U G a)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (chi : AM H c 1 → κ) (L : ReviewFanLine H U a trace hend chi) :
+    ∃ (p : FiniteFatTree.ExactTrace H (U.initialSegment H a) y.height hya)
+      (g : AM H y.terminalCut 1)
+      (k : AM H (FiniteFatTree.appendRow H y g).terminalCut 1),
+      g ∈ G ∧ g = H.composeAcross (reviewBridgeMap H y U hyU a hya p) L.head ∧
+      HEq k L.tail ∧ OneBlockOccurs H (FiniteFatTree.appendRow H y g) U k :=
+  review_persistent_line_witness_of_sourceLetter H y U hyU
+    (duplicateHistoryLetter H 0 y.terminalCut hpos)
+    G a hya hP trace hend chi L
 
 end SuccessorTree.SMTree.FatTree
