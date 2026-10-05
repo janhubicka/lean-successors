@@ -56,6 +56,7 @@ theorem dotContragredient_directSumLinearEquiv
         (finLeftPart x ⬝ᵥ finLeftPart y) +
           (finRightPart x ⬝ᵥ finRightPart y) := by
       rw [hx, hy, dotProduct_append]
+      simp
     _ =
         (f (finLeftPart x) ⬝ᵥ
           dotContragredient f (finLeftPart y)) +
