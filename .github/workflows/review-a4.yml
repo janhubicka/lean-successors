@@ -1,0 +1,74 @@
+name: Review A4
+on:
+  push:
+    branches: [fat-tree-formalization]
+    paths:
+      - 'SuccessorTree/FatTree/A4PairPersistence.lean'
+      - 'SuccessorTree/FatTree/A4Review*.lean'
+      - 'scripts/CheckFatTreeReviewA4.lean'
+      - '.github/workflows/review-a4.yml'
+  workflow_dispatch:
+concurrency:
+  group: review-a4-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  review-a4:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Download Mathlib cache
+        run: lake exe cache get
+      - name: Build review proof
+        run: |
+          set -o pipefail
+          mkdir -p review-a4-audit
+          lake build SuccessorTree.FatTree.A4PairPersistence 2>&1 | tee review-a4-audit/build.log
+      - name: Audit proof axioms
+        run: |
+          set -o pipefail
+          lake env lean scripts/CheckFatTreeReviewA4.lean 2>&1 | tee review-a4-audit/axioms.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text = Path('review-a4-audit/axioms.log').read_text()
+          reports = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
+          expected = Path('scripts/CheckFatTreeReviewA4.lean').read_text().count('#print axioms ')
+          assert len(reports) == expected and expected >= 8, (len(reports), expected)
+          allowed = {'propext', 'Classical.choice', 'Quot.sound'}
+          for report in reports:
+              assert {x.strip() for x in report.split(',') if x.strip()} <= allowed, report
+          assert 'sorryAx' not in text and not re.search(r'\berror:', text)
+          print(f'PASS: {expected} review-proof reports use only standard axioms')
+          PY
+      - name: Record exact source checkpoint
+        if: always()
+        run: |
+          mkdir -p review-a4-audit
+          git rev-parse HEAD > review-a4-audit/COMMIT
+          git diff --check
+          git diff 30ec322c69658f08b6cefde0696e0a7b72790b75 HEAD -- SuccessorTree/FatTree scripts/CheckFatTreeReviewA4.lean manuscript docs .github/workflows/review-a4.yml > review-a4-audit/review-a4.patch
+          cp lean-toolchain lakefile.toml review-a4-audit/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: review-a4-audit
+          path: review-a4-audit/
+          retention-days: 30
