@@ -1,0 +1,95 @@
+name: Verify proof patch
+
+on:
+  push:
+    branches: [fat-tree-formalization]
+    paths: [proof-patches/active.patch, .github/workflows/verify-proof-patch.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: verify-proof-patch-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/cache/restore@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache/restore@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Apply proposed repairs
+        run: |
+          mkdir -p proof-audit
+          git rev-parse HEAD > proof-audit/input-commit
+          test -s proof-patches/active.patch
+          git apply --check --index proof-patches/active.patch
+          git apply --index proof-patches/active.patch
+          git diff --cached --check
+      - name: Prepare exact Lean toolchain
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get
+      - name: Rebuild every project theorem
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          rm -rf .lake/build/lib/lean/SuccessorTree .lake/build/lib/lean/SuccessorTree.olean*
+          set -o pipefail
+          lake build 2>&1 | tee proof-audit/build.log
+          if grep -E "declaration uses .sorry.|sorryAx|error:" proof-audit/build.log; then exit 1; fi
+      - name: Audit proof axioms
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          set -o pipefail
+          for f in scripts/CheckShapeRamsey.lean scripts/CheckFatTree*.lean; do
+            lake env lean "$f"
+          done | tee proof-audit/axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('proof-audit/axioms.log').read_text()
+          entries = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
+          assert entries, 'No axiom reports'
+          allowed = {'propext', 'Classical.choice', 'Quot.sound'}
+          for e in entries:
+              assert {x.strip() for x in e.split(',') if x.strip()} <= allowed, e
+          assert 'sorryAx' not in text
+          assert not re.search(r'\berror:', text)
+          print(f'PASS: {len(entries)} reports contain only standard Lean axioms')
+          PY
+      - name: Publish only verified source repairs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Apply fully checked fat-tree proof repairs'
+          git rev-parse HEAD > proof-audit/verified-commit
+          git push origin HEAD:"$GITHUB_REF_NAME"
+      - name: Record tested sources
+        if: always()
+        run: |
+          mkdir -p proof-audit
+          git diff HEAD > proof-audit/unstaged.patch
+          git diff --cached > proof-audit/staged.patch
+          tar --exclude=.git --exclude=.lake --exclude=proof-audit -cf proof-audit/tested-sources.tar .
+          cp lean-toolchain lakefile.toml proof-audit/
+          test ! -f lake-manifest.json || cp lake-manifest.json proof-audit/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verified-proof-patch-audit
+          path: proof-audit/
+          retention-days: 30
