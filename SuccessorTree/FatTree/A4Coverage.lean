@@ -43,9 +43,11 @@ theorem height_lt_of_appended_stemAt
 /-- Last-block coverage of the all-trace invariant. Positivity is precisely
 the source-successor hypothesis of the existing last-block factorisation;
 the root case remains separate. -/
-theorem oneBlock_mem_of_all_fixedTraceGoodRows
+theorem oneBlock_mem_of_all_fixedTraceGoodRows_of_successors
     (y : FiniteFatTree H) (U : FatTree H)
-    (hyU : ExtendsStem H y U) (hsourcePos : 0 < y.terminalCut)
+    (hyU : ExtendsStem H y U)
+    (hsuccessors :
+      ∀ x : T, LevelTree.lev x = y.terminalCut → ∃ z : T, x ⋖ z)
     (O : Set (AM H y.terminalCut 1))
     (hgood : ∀ (m : Nat) (hym : y.height ≤ m),
       U.row m ∈ FixedTraceGoodRows H y.terminalCut y.height
@@ -59,8 +61,8 @@ theorem oneBlock_mem_of_all_fixedTraceGoodRows
   | zero => omega
   | succ m =>
       have hym : y.height ≤ m := by omega
-      obtain ⟨p, hp⟩ := exists_lastBlock_exactTrace H y U hyU
-        hsourcePos m hym g hgk
+      obtain ⟨p, hp⟩ := exists_lastBlock_exactTrace_of_successors H
+        y U hyU hsuccessors m hym g hgk
       let hsrc := initialSegment_traceSource_of_extendsStem H y U hyU m hym
       let comp := H.composeAcross
         (exactTraceToAMExact H (U.initialSegment H m) y.height hym p)
@@ -72,5 +74,35 @@ theorem oneBlock_mem_of_all_fixedTraceGoodRows
         eq_of_heq (hp.trans hcast.symm)
       rw [heq]
       exact hcolour
+
+/-- A source letter supplies the successor hypothesis needed for coverage,
+including at a moving root. -/
+theorem oneBlock_mem_of_all_fixedTraceGoodRows_of_sourceLetter
+    (y : FiniteFatTree H) (U : FatTree H)
+    (hyU : ExtendsStem H y U) (E : OneLevelLetter H y.terminalCut)
+    (O : Set (AM H y.terminalCut 1))
+    (hgood : ∀ (m : Nat) (hym : y.height ≤ m),
+      U.row m ∈ FixedTraceGoodRows H y.terminalCut y.height
+        (U.initialSegment H m) hym
+        (initialSegment_traceSource_of_extendsStem H y U hyU m hym) O)
+    (g : AM H y.terminalCut 1) (hg : OneBlockOccurs H y U g) :
+    g ∈ O :=
+  oneBlock_mem_of_all_fixedTraceGoodRows_of_successors H y U hyU
+    (fun x hx => ⟨E.toMMap x, H.letter_covBy E hx⟩) O hgood g hg
+
+/-- Compatibility wrapper for positive source cuts, where M3 supplies the
+source letter. -/
+theorem oneBlock_mem_of_all_fixedTraceGoodRows
+    (y : FiniteFatTree H) (U : FatTree H)
+    (hyU : ExtendsStem H y U) (hsourcePos : 0 < y.terminalCut)
+    (O : Set (AM H y.terminalCut 1))
+    (hgood : ∀ (m : Nat) (hym : y.height ≤ m),
+      U.row m ∈ FixedTraceGoodRows H y.terminalCut y.height
+        (U.initialSegment H m) hym
+        (initialSegment_traceSource_of_extendsStem H y U hyU m hym) O)
+    (g : AM H y.terminalCut 1) (hg : OneBlockOccurs H y U g) :
+    g ∈ O :=
+  oneBlock_mem_of_all_fixedTraceGoodRows_of_sourceLetter H y U hyU
+    (duplicateHistoryLetter H 0 y.terminalCut hsourcePos) O hgood g hg
 
 end SuccessorTree.SMTree.FatTree
