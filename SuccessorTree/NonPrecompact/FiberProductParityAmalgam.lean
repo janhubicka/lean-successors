@@ -127,11 +127,11 @@ noncomputable def fiberGridEquivCompatiblePair
       (⟨p.1.1, rfl⟩,
         ⟨p.1.2, p.2.symm⟩)⟩
   left_inv p := by
-    rcases p with ⟨a, b, c⟩
-    simp only
-    apply Sigma.ext
-    · exact b.2
-    · apply Prod.ext <;> apply Subtype.ext <;> rfl
+    rcases p with ⟨a, ⟨b, c⟩⟩
+    rcases b with ⟨b, hb⟩
+    rcases c with ⟨c, hc⟩
+    subst a
+    rfl
   right_inv p := by
     apply Subtype.ext
     apply Prod.ext <;> rfl
