@@ -87,7 +87,7 @@ theorem headRow_oneLift_subset
       H.levelMap C.map (LevelTree.lev y) =
         H.levelMap C.map (LevelTree.lev x) + 1 := by
     have hyLevel : LevelTree.lev y = d + 1 :=
-      LevelTree.covBy_level_eq hxy
+      (LevelTree.covBy_level_eq hxy).trans (congrArg (fun k => k + 1) hx)
     rw [hyLevel, hx]
     dsimp [C, d]
     calc
@@ -109,50 +109,37 @@ theorem headRow_oneLift_subset
         some (C y) := by
     exact H.succ_eq_of_consecutive_levels C.map hsxy hClevels
 
-  have hCx :
-      C x = R (P.toMMap x) := by
-    dsimp [C, R, h, d]
-    rw [H.canonicalExtension_agrees
-      ((headRow H U a i P).representative H)
-      (U.cut a) x (by simpa [hxLevel])]
-    exact headRow_representative_agrees H U a i P x
-      (by simpa [hxLevel])
+  have hCx : C x = R (P.toMMap x) := by
+    calc
+      C x = (headRow H U a i P).representative H x :=
+        H.canonicalExtension_agrees
+          ((headRow H U a i P).representative H) (U.cut a) x
+          (Nat.le_of_eq hxLevel)
+      _ = R (P.toMMap x) :=
+        headRow_representative_eq_rowExtension H U a i P x
+          (Nat.le_of_eq hxLevel)
 
   have hparamPoint :
       ∀ q ∈ params, C q = R (P.toMMap q) := by
     intro q hq
-    have hqLt : LevelTree.lev q < d := by
-      have hq0 := S.parameter_level_lt hsxy hq
-      simpa [hx] using hq0
-    have hqLe : LevelTree.lev q ≤ d := Nat.le_of_lt hqLt
-    have hCq :
-        C q = (headRow H U a i P).representative H q := by
-      dsimp [C, d]
-      exact H.canonicalExtension_agrees
-        ((headRow H U a i P).representative H) (U.cut a) q hqLe
-    have hhq :
-        (headRow H U a i P).representative H q =
-          R (P.toMMap q) := by
-      dsimp [R]
-      exact headRow_representative_agrees H U a i P q hqLe
-    exact hCq.trans hhq
+    have hqLt : LevelTree.lev q < d :=
+      lt_of_lt_of_eq (S.parameter_level_lt hsxy hq) hx
+    calc
+      C q = (headRow H U a i P).representative H q :=
+        H.canonicalExtension_agrees
+          ((headRow H U a i P).representative H) (U.cut a) q
+          (Nat.le_of_lt hqLt)
+      _ = R (P.toMMap q) :=
+        headRow_representative_eq_rowExtension H U a i P q
+          (Nat.le_of_lt hqLt)
 
   have hparamEq :
       params.map C.map =
         (params.map P.toMMap.map).map R.map := by
-    induction params with
-    | nil => rfl
-    | cons q qs ih =>
-        have hqEq : C q = R (P.toMMap q) :=
-          hparamPoint q (by simp)
-        have htail :
-            qs.map C.map =
-              (qs.map P.toMMap.map).map R.map := by
-          apply ih
-          intro r hr
-          exact hparamPoint r (by simp [hr])
-        simp only [List.map_cons]
-        rw [hqEq, htail]
+    rw [List.map_map]
+    apply List.map_congr_left
+    intro q hq
+    exact hparamPoint q hq
 
   have hRt' :
       S.succ (C x) (params.map C.map) ch =
@@ -193,6 +180,8 @@ theorem headRow_oneLift_subset
           (TreeLevel (T := T) (U.cut a)) := by
     rw [hsplit, hone]
     exact hlast
+  change C y ∈ U.liftTo H a (a + i + 1) (by omega)
+    (TreeLevel (T := T) (U.cut a))
   rw [hCyRt]
   exact htarget
 
