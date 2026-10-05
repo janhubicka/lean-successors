@@ -32,7 +32,12 @@ noncomputable def reviewLaterSourceLetter
 noncomputable def reviewCastExactSource {c c' d : Nat}
     (hc : c = c') (p : AMExact H c d) : AMExact H c' d :=
   ⟨FiniteFatTree.castTraceRow H hc p.1, by
-    simpa only [FiniteFatTree.castTraceRow_rowEndLevel] using p.2⟩
+    change (FiniteFatTree.castTraceRow H hc p.1).rowEndLevel H = d
+    calc
+      (FiniteFatTree.castTraceRow H hc p.1).rowEndLevel H =
+          p.1.rowEndLevel H :=
+        FiniteFatTree.castTraceRow_rowEndLevel H hc p.1
+      _ = d := p.2⟩
 
 /-- Source transport commutes with substitution. -/
 theorem review_composeAcross_cast_source {c c' d : Nat}
@@ -66,7 +71,9 @@ theorem review_goodPair_finite_family_of_sourceLetter
     {g | ∀ j : C, H.composeAcross (trace j) g ∈ O}
   obtain ⟨A, a, hAU, hyA, hya, hP⟩ := oneBlockLarge_exact_persistent_closed H hyU hlarge
   let R := FiniteFatTree.ExactTrace H (A.initialSegment H a) y.height hya
-  letI : Fintype R := Fintype.ofFinite R
+  letI : Fintype R := by
+    dsimp [R]
+    exact exactTraceFintype H (A.initialSegment H a) y.height hya
   letI : Nonempty R :=
     review_bridges_nonempty_of_sourceLetter H y A hyA Esource G a hya hP
   let bridge : R → AMExact H y.terminalCut (A.cut a) := reviewBridgeMap H y A hyA a hya
@@ -147,14 +154,20 @@ theorem review_goodPair_at_prefix_of_sourceLetter
         th.1.representative H x.1 =
           H.canonicalExtension (g.representative H) y.terminalCut (e.toFun x).1 := by
       intro x hx
-      simpa only [th, reviewCastExactSource, FiniteFatTree.castTraceRow_representative]
-        using he x hx
+      simpa only [th, reviewCastExactSource, exactTraceToAMExact,
+        FiniteFatTree.castTraceRow_representative] using he x hx
     have hgood := hupdate q e th hthraw
-    change FiniteFatTree.castTraceRow H hc
-      (H.composeAcross (exactTraceToAMExact H (FiniteFatTree.appendRow H y g) n
-        (by rw [FiniteFatTree.appendRow_height]; omega) theta) k) ∈ O
-    rw [review_composeAcross_cast_source]
-    exact hgood
+    let ptheta :=
+      exactTraceToAMExact H (FiniteFatTree.appendRow H y g) n
+        (by rw [FiniteFatTree.appendRow_height]; omega) theta
+    have hcast :=
+      review_composeAcross_cast_source H hc ptheta k
+    have hmem :
+        (FiniteFatTree.castTraceRow H hc (H.composeAcross ptheta k) ∈ O) =
+          (H.composeAcross (reviewCastExactSource H hc ptheta) k ∈ O) :=
+      congrArg (fun z => z ∈ O) hcast
+    apply Eq.mpr hmem
+    simpa only [th, ptheta] using hgood
   · let g := ambientNextRow H y U hyU
     let z := FiniteFatTree.appendRow H y g
     have hzU : ExtendsStem H z U := by
