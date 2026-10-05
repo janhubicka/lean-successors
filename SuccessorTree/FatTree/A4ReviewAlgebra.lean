@@ -109,7 +109,12 @@ theorem reviewFanLine_factor_colour
   have hline :
       chi (H.composeAcross (⟨theta, htheta⟩ : AMExact H c (U.cut L.headDepth)) L.tail) =
         chi (H.composeAcross (reviewExactComp H q p) L.head) := by
-    have he := L.fan_colour j f theta htheta hfraw
+    let f' : RawSuccessorFan H (trace j) := hj.symm ▸ f
+    have hfraw' : ∀ (x : InitialNode T c), LevelTree.lev x.1 = c →
+        theta.representative H x.1 =
+          H.canonicalExtension (L.head.representative H) (U.cut a) (f'.toFun x).1 := by
+      simpa only [f', hj] using hfraw
+    have he := L.fan_colour j f' theta htheta hfraw'
     have hexact :
         (⟨trace j, hend j⟩ : AMExact H c (U.cut a)) =
           reviewExactComp H q p := by
