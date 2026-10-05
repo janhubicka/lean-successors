@@ -88,9 +88,7 @@ theorem appendRow_stemAt_of_oneLift
           U.oneLift H r.1 (TreeLevel (T := T) (U.cut r.1)) := by
         unfold FiniteFatTree.oneLift FatTree.oneLift
         rw [hrow, hcut r.castSucc, hi0]
-      rw [hs]
-      simpa only [hi0, hi1, U.liftTo_succ H] using
-        (Set.Subset.refl (U.oneLift H r.1 (TreeLevel (T := T) (U.cut r.1))))
+      rw [hs, hi0, hi1, U.liftTo_succ H]
     · have hre : r.1 = a := by omega
       have hi1 : (idx r.succ).1 = b := idx_last _ (by change ¬ r.1 + 1 ≤ a; omega)
       have heq : r = Fin.last x.height := Fin.ext hre
@@ -99,10 +97,14 @@ theorem appendRow_stemAt_of_oneLift
             ImmediateSuccessors (T := T) (TreeLevel (T := T) (U.cut a)) := by
         rw [hcut r.castSucc, hi0, hre, heq]
         exact FiniteFatTree.appendRow_oneLift_last H x h _
-      rw [hs]
-      simpa only [hi0, hi1, hre] using hlift
-  refine ⟨⟨{ index := idx, index_strict := hstrict,
-    cut_eq := hcut, lift_subset := hstep }⟩, ?_⟩
+      rw [hs, hi0, hi1, hre]
+      exact hlift
+  refine ⟨⟨{
+    index := idx
+    index_strict := hstrict
+    cut_eq := hcut
+    lift_subset := hstep
+  }⟩, ?_⟩
   change V.terminalCut = U.cut b
   exact (FiniteFatTree.appendRow_terminalCut H x h).trans hend
 
