@@ -65,6 +65,16 @@ theorem review_realize_head
     ⟨reduces_refl H U, initialSegment_extendsStem H U b⟩
   exact ⟨V, ⟨hVU, extendsStem_of_appendRow H hstem⟩, hstem⟩
 
+/-- Exact traces depend on the finite prefix data, not on the particular
+proofs of its height bounds. -/
+theorem review_trace_transport
+    {y z : FiniteFatTree H} (hyz : y = z) (n : Nat)
+    (hy : n ≤ y.height) (hz : n ≤ z.height)
+    (q : FiniteFatTree.ExactTrace H y n hy) :
+    ∃ p : FiniteFatTree.ExactTrace H z n hz, HEq q.1 p.1 := by
+  cases hyz
+  exact ⟨q, HEq.rfl⟩
+
 /-- Finite traces are unaffected by replacing an ambient tree beyond the
 entire prefix in which they are recorded. -/
 theorem review_trace_prefix_transport
@@ -72,10 +82,7 @@ theorem review_trace_prefix_transport
     (heq : V.initialSegment H a = U.initialSegment H a)
     (q : FiniteFatTree.ExactTrace H (V.initialSegment H a) n hna) :
     ∃ p : FiniteFatTree.ExactTrace H (U.initialSegment H a) n hna,
-      HEq q.1 p.1 := by
-  generalize hzV : V.initialSegment H a = y at heq q
-  generalize hzU : U.initialSegment H a = z at heq ⊢
-  cases heq
-  exact ⟨q, HEq.rfl⟩
+      HEq q.1 p.1 :=
+  review_trace_transport H heq n hna hna q
 
 end SuccessorTree.SMTree.FatTree
