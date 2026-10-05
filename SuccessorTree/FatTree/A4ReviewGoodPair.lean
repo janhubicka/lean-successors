@@ -1,0 +1,167 @@
+import SuccessorTree.FatTree.A4ReviewWitness
+
+/-!
+# The large-set good-pair lemma of the alternative A4 proof
+
+The local simultaneous fan line is applied to every composite p q, where q
+is an original trace and p ranges over the finite bridges to the persistent
+depth. The accepted head is then selected by exact-depth persistence.
+Canonical transport of raw fans proves that its common tail is good after
+EVERY raw trace update. This file does not assume the good-pair principle.
+
+The current geometric factorisation interface requires a positive terminal
+cut of the finite prefix. The root cases remain separate.
+-/
+
+namespace SuccessorTree.SMTree.FatTree
+
+universe u v w
+variable {T : Type u} {Label : Type v} [PartialOrder T] [LevelTree T]
+variable {S : STree T Label} (H : SMTree S)
+
+/-- Source transport for an exact trace. -/
+noncomputable def reviewCastExactSource {c c' d : Nat}
+    (hc : c = c') (p : AMExact H c d) : AMExact H c' d :=
+  ⟨FiniteFatTree.castTraceRow H hc p.1, by
+    simpa only [FiniteFatTree.castTraceRow_rowEndLevel] using p.2⟩
+
+/-- Source transport commutes with substitution. -/
+theorem review_composeAcross_cast_source {c c' d : Nat}
+    (hc : c = c') (p : AMExact H c d) (h : AM H d 1) :
+    FiniteFatTree.castTraceRow H hc (H.composeAcross p h) =
+      H.composeAcross (reviewCastExactSource H hc p) h := by
+  cases hc
+  rfl
+
+/-- A good pair for any nonempty finite family of exact traces, at a
+positive current cut. Neither the local good-pair lemma nor A4 is assumed. -/
+theorem review_goodPair_finite_family_positive
+    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
+    (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
+    (hpos : 0 < y.terminalCut)
+    (trace : C → AMExact H c y.terminalCut) (O : Set (AM H c 1))
+    (hlarge : OneBlockLarge H y U
+      {g | ∀ j : C, H.composeAcross (trace j) g ∈ O}) :
+    ∃ (g : AM H y.terminalCut 1)
+      (k : AM H (FiniteFatTree.appendRow H y g).terminalCut 1),
+      (∀ j : C, H.composeAcross (trace j) g ∈ O) ∧
+      OneBlockOccurs H (FiniteFatTree.appendRow H y g) U k ∧
+      ∀ (j : C) (e : RawSuccessorFan H (trace j).1)
+        (theta : AMExact H c (FiniteFatTree.appendRow H y g).terminalCut),
+        (∀ (x : InitialNode T c), LevelTree.lev x.1 = c →
+          theta.1.representative H x.1 =
+            H.canonicalExtension (g.representative H) y.terminalCut (e.toFun x).1) →
+        H.composeAcross theta k ∈ O := by
+  classical
+  let G : Set (AM H y.terminalCut 1) :=
+    {g | ∀ j : C, H.composeAcross (trace j) g ∈ O}
+  obtain ⟨A, a, hAU, hyA, hya, hP⟩ := oneBlockLarge_exact_persistent_closed H hyU hlarge
+  let R := FiniteFatTree.ExactTrace H (A.initialSegment H a) y.height hya
+  letI : Fintype R := Fintype.ofFinite R
+  letI : Nonempty R := review_bridges_nonempty H y A hyA hpos G a hya hP
+  let bridge : R → AMExact H y.terminalCut (A.cut a) := reviewBridgeMap H y A hyA a hya
+  let family : R × C → AM H c 1 := fun j => H.composeAcross (trace j.2) (bridge j.1).1
+  have hend : ∀ j : R × C, (family j).rowEndLevel H = A.cut a := by
+    intro j
+    exact (review_composeAcross_end H (trace j.2) (bridge j.1).1).trans (bridge j.1).2
+  have hapos : 0 < A.cut a := by
+    have hle : A.cut y.height ≤ A.cut a := (A.cut_strictMono H).monotone hya
+    rw [terminalCut_eq_of_extendsStem H hyA] at hle
+    exact hpos.trans_le hle
+  let chi : AM H c 1 → Bool := fun f => decide (f ∈ O)
+  obtain ⟨L⟩ := exists_reviewFanLine_positive H A a family hend hapos chi
+  obtain ⟨p, g, k, hgG, hfactor, hktail, hkA⟩ :=
+    review_persistent_line_witness H y A hyA hpos G a hya hP family hend chi L
+  refine ⟨g, k, hgG, oneBlockOccurs_of_reduces H hkA hAU, ?_⟩
+  intro j e theta hraw
+  have hterminal : (FiniteFatTree.appendRow H y g).terminalCut = A.cut L.headDepth := by
+    rw [FiniteFatTree.appendRow_terminalCut, hfactor, review_composeAcross_end]
+    exact L.head_end
+  let theta' : AMExact H c (A.cut L.headDepth) := ⟨theta.1, theta.2.trans hterminal⟩
+  have hraw' : ∀ (x : InitialNode T c), LevelTree.lev x.1 = c →
+      theta.1.representative H x.1 =
+        H.canonicalExtension ((H.composeAcross (bridge p) L.head).representative H)
+          y.terminalCut (e.toFun x).1 := by
+    intro x hx
+    rw [← hfactor]
+    exact hraw x hx
+  have hcolour := reviewFanLine_factor_colour H L (trace j) (bridge p)
+    (p, j) rfl e theta.1 theta'.2 hraw'
+  have htransport : H.composeAcross theta k = H.composeAcross theta' L.tail :=
+    eq_of_heq (review_composeAcross_heq H rfl hterminal HEq.rfl hktail)
+  have hcolour' : chi (H.composeAcross theta k) = chi (H.composeAcross (trace j) g) := by
+    rw [htransport]
+    exact hcolour.trans (congrArg (fun h => chi (H.composeAcross (trace j) h)) hfactor.symm)
+  have hright : chi (H.composeAcross (trace j) g) = true := by
+    simp only [chi, decide_eq_true_eq]
+    exact hgG j
+  have hleft := hcolour'.trans hright
+  simpa only [chi, decide_eq_true_eq] using hleft
+
+/-- The finite-family good pair instantiated with ALL exact traces of the
+current prefix. The empty trace family is handled directly, without asking
+Hales--Jewett for a nonempty alphabet. -/
+theorem review_goodPair_at_prefix_positive
+    (n : Nat) (y : FiniteFatTree H) (hn : n ≤ y.height)
+    (O : Set (AM H (FiniteFatTree.traceSourceCut H y n hn) 1))
+    (U : FatTree H) (hyU : ExtendsStem H y U) (hpos : 0 < y.terminalCut)
+    (hlarge : OneBlockLarge H y U
+      (FixedTraceGoodRows H (FiniteFatTree.traceSourceCut H y n hn) n y hn rfl O)) :
+    ∃ h k,
+      FixedTraceGoodPair H (FiniteFatTree.traceSourceCut H y n hn) n y hn rfl O h k ∧
+      OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k := by
+  classical
+  let c := FiniteFatTree.traceSourceCut H y n hn
+  let C := FiniteFatTree.ExactTrace H y n hn
+  by_cases hne : Nonempty C
+  · letI : Fintype C := Fintype.ofFinite C
+    letI : Nonempty C := hne
+    let trace : C → AMExact H c y.terminalCut := exactTraceToAMExact H y n hn
+    obtain ⟨g, k, hg, hk, hupdate⟩ :=
+      review_goodPair_finite_family_positive H y U hyU hpos trace O hlarge
+    refine ⟨g, k, ⟨hg, ?_⟩, hk⟩
+    intro theta q hraw
+    let hc := FiniteFatTree.traceSourceCut_appendRow H y g n hn
+    let th := reviewCastExactSource H hc
+      (exactTraceToAMExact H (FiniteFatTree.appendRow H y g) n
+        (by rw [FiniteFatTree.appendRow_height]; omega) theta)
+    obtain ⟨e, he⟩ := review_exists_fan_of_pointwise H q.1
+      (H.canonicalExtension (g.representative H) y.terminalCut)
+      (theta.1.representative H) hraw
+    have hthraw : ∀ (x : InitialNode T c), LevelTree.lev x.1 = c →
+        th.1.representative H x.1 =
+          H.canonicalExtension (g.representative H) y.terminalCut (e.toFun x).1 := by
+      intro x hx
+      simpa only [th, reviewCastExactSource, FiniteFatTree.castTraceRow_representative]
+        using he x hx
+    have hgood := hupdate q e th hthraw
+    change FiniteFatTree.castTraceRow H hc
+      (H.composeAcross (exactTraceToAMExact H (FiniteFatTree.appendRow H y g) n
+        (by rw [FiniteFatTree.appendRow_height]; omega) theta) k) ∈ O
+    rw [review_composeAcross_cast_source]
+    exact hgood
+  · let g := ambientNextRow H y U hyU
+    let z := FiniteFatTree.appendRow H y g
+    have hzU : ExtendsStem H z U := by
+      apply extendsStem_of_initialSegment_eq H
+      exact (appendRow_ambientNextRow H y U hyU).symm
+    let k := ambientNextRow H z U hzU
+    refine ⟨g, k, ⟨?_, ?_⟩, ambientNextRow_occurs H z U hzU⟩
+    · intro q
+      exact False.elim (hne ⟨q⟩)
+    · intro theta q hraw
+      exact False.elim (hne ⟨q⟩)
+
+/-- Source-facing positive-current-cut version of the local review lemma. -/
+theorem review_goodPair_positive
+    (c n : Nat) (y : FiniteFatTree H) (hn : n ≤ y.height)
+    (hsrc : FiniteFatTree.traceSourceCut H y n hn = c)
+    (O : Set (AM H c 1)) (U : FatTree H)
+    (hyU : ExtendsStem H y U) (hpos : 0 < y.terminalCut)
+    (hlarge : OneBlockLarge H y U (FixedTraceGoodRows H c n y hn hsrc O)) :
+    ∃ h k, FixedTraceGoodPair H c n y hn hsrc O h k ∧
+      OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k := by
+  cases hsrc
+  exact review_goodPair_at_prefix_positive H n y hn O U hyU hpos hlarge
+
+end SuccessorTree.SMTree.FatTree
