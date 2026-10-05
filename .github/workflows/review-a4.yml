@@ -40,7 +40,9 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p review-a4-audit
-          lake build SuccessorTree.FatTree.A4ReviewReplay 2>&1 | tee review-a4-audit/build.log
+          mapfile -t targets < <(sed -n 's/^import //p' scripts/CheckFatTreeReviewA4.lean)
+          test "${#targets[@]}" -gt 0
+          lake build "${targets[@]}" 2>&1 | tee review-a4-audit/build.log
       - name: Audit proof axioms
         run: |
           set -o pipefail
