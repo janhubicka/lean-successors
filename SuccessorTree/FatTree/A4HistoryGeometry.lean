@@ -79,7 +79,7 @@ theorem headRow_oneLift_subset
 
   have hRt :
       S.succ (R (P.toMMap x))
-          (params.map R.map) ch =
+          ((params.map P.toMMap.map).map R.map) ch =
         some (R t) := by
     exact H.succ_eq_of_consecutive_levels R.map hPt hRlevels
 
@@ -118,14 +118,8 @@ theorem headRow_oneLift_subset
     exact headRow_representative_agrees H U a i P x
       (by simpa [hxLevel])
 
-  have hparams :
-      params.map C.map = params.map R.map ∘? := by
-    sorry
-
-  have hparamEq :
-      params.map C.map =
-        (params.map P.toMMap.map).map R.map := by
-    apply List.map_inj_left.mpr
+  have hparamPoint :
+      ∀ q ∈ params, C q = R (P.toMMap q) := by
     intro q hq
     have hqLt : LevelTree.lev q < d := by
       have hq0 := S.parameter_level_lt hsxy hq
@@ -141,13 +135,30 @@ theorem headRow_oneLift_subset
           R (P.toMMap q) := by
       dsimp [R]
       exact headRow_representative_agrees H U a i P q hqLe
-    simpa [Function.comp_def, hCq] using hhq
+    exact hCq.trans hhq
+
+  have hparamEq :
+      params.map C.map =
+        (params.map P.toMMap.map).map R.map := by
+    induction params with
+    | nil => rfl
+    | cons q qs ih =>
+        have hqEq : C q = R (P.toMMap q) :=
+          hparamPoint q (by simp)
+        have htail :
+            qs.map C.map =
+              (qs.map P.toMMap.map).map R.map := by
+          apply ih
+          intro r hr
+          exact hparamPoint r (by simp [hr])
+        simp only [List.map_cons]
+        rw [hqEq, htail]
 
   have hRt' :
       S.succ (C x) (params.map C.map) ch =
         some (R t) := by
     rw [hCx, hparamEq]
-    simpa [List.map_map] using hRt
+    exact hRt
 
   have hCyRt : C y = R t := by
     exact Option.some.inj (hCy.symm.trans hRt')
