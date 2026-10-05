@@ -37,7 +37,19 @@ noncomputable def reviewBridgeMap
     (p : FiniteFatTree.ExactTrace H (U.initialSegment H a) y.height hya) :
     AMExact H y.terminalCut (U.cut a) :=
   ⟨FiniteFatTree.castTraceRow H (terminalCut_eq_of_extendsStem H hyU) p.1, by
-    simpa only [FiniteFatTree.castTraceRow_rowEndLevel] using p.rowEndLevel H⟩
+    change
+      (FiniteFatTree.castTraceRow H
+        (terminalCut_eq_of_extendsStem H hyU) p.1).rowEndLevel H =
+        U.cut a
+    calc
+      (FiniteFatTree.castTraceRow H
+          (terminalCut_eq_of_extendsStem H hyU) p.1).rowEndLevel H =
+          p.1.rowEndLevel H :=
+        FiniteFatTree.castTraceRow_rowEndLevel H
+          (terminalCut_eq_of_extendsStem H hyU) p.1
+      _ = FiniteFatTree.traceTargetCut H (U.initialSegment H a) :=
+        p.rowEndLevel H
+      _ = U.cut a := rfl⟩
 
 theorem reviewBridgeMap_heq
     (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
