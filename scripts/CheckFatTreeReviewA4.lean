@@ -1,4 +1,4 @@
-import SuccessorTree.FatTree.A4ReviewTransport
+import SuccessorTree.FatTree.A4ReviewSplice
 
 open SuccessorTree.SMTree.FatTree
 
@@ -45,6 +45,13 @@ open SuccessorTree.SMTree.FatTree
 #print axioms review_composeAcross_canonical
 #print axioms reviewTransportFan
 #print axioms reviewTransportFan_apply
+#print axioms reviewExactComp
+#print axioms review_composeAcross_assoc
+#print axioms review_exists_fan_of_pointwise
+#print axioms reviewFanLine_factor_colour
+#print axioms review_occurs_after_matching_stem
+#print axioms review_realize_head
+#print axioms review_trace_prefix_transport
 
 /- The local endpoint must elaborate from the SM-tree data and a positive
 source cut. Adding an A4, good-pair, or saturation premise must break this
