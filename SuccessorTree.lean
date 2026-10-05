@@ -85,3 +85,4 @@ import SuccessorTree.FatTree.A4TypedBridge
 import SuccessorTree.FatTree.A4LineTail
 import SuccessorTree.FatTree.A4ReplayColour
 import SuccessorTree.FatTree.A4OccurrenceStability
+import SuccessorTree.FatTree.A4RootPigeonhole
