@@ -40,7 +40,7 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p review-a4-audit
-          lake build SuccessorTree.FatTree.A4PairPersistence 2>&1 | tee review-a4-audit/build.log
+          lake build SuccessorTree.FatTree.A4ReviewFusion 2>&1 | tee review-a4-audit/build.log
       - name: Audit proof axioms
         run: |
           set -o pipefail
