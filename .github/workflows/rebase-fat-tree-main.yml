@@ -44,10 +44,16 @@ jobs:
           import pathlib, subprocess
           files = subprocess.check_output(['git','diff','--name-only','--diff-filter=U'],text=True).splitlines()
           for name in files:
+              if name == 'docs/banana-persistence-adversarial-audit.md':
+                  subprocess.run(['git','checkout','--ours','--',name],check=True)
+                  subprocess.run(['git','add',name],check=True)
+                  continue
+              if name.startswith('SuccessorTree/NonPrecompact/'):
+                  subprocess.run(['git','rm','-f','--',name],check=True)
+                  continue
               if name != 'SuccessorTree.lean':
                   raise SystemExit('Manual review required for conflict: '+name)
-              # The entrypoint is an import-only file. Union the two sides,
-              # retaining main's BANANA separation.
+              # Entrypoint is import-only. Union successor imports, not BANANA.
               ours = subprocess.check_output(['git','show',':2:'+name],text=True)
               theirs = subprocess.check_output(['git','show',':3:'+name],text=True)
               lines = []
@@ -64,6 +70,20 @@ jobs:
             result=$?
             set -e
           done
+          # Some historical preservation commits added BANANA files outright.
+          # Keep those commits in history, but retain main's final separation.
+          git rm -r --ignore-unmatch SuccessorTree/NonPrecompact
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('SuccessorTree.lean')
+          p.write_text(''.join(line for line in p.read_text().splitlines(keepends=True)
+            if 'SuccessorTree.NonPrecompact.' not in line))
+          PY
+          git restore --source="$MAIN" -- docs/banana-persistence-adversarial-audit.md
+          git add SuccessorTree.lean docs/banana-persistence-adversarial-audit.md
+          if ! git diff --cached --quiet; then
+            git commit -m 'Retain mainline BANANA split after historical successor replay'
+          fi
           git merge-base --is-ancestor "$MAIN" HEAD
           if git ls-files SuccessorTree/NonPrecompact | grep -q .; then echo 'Unexpected BANANA files'; exit 1; fi
           if grep -q 'SuccessorTree.NonPrecompact' SuccessorTree.lean; then echo 'Unexpected BANANA imports'; exit 1; fi
