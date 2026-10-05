@@ -660,7 +660,7 @@ theorem ProfileOccurrence.level_lt_current
 
 /-- Replay a previously witnessed complete fan profile at the current history
 cut using the M3 duplication attached to that occurrence. -/
-noncomputable def ProfileCollector.replaySeenLetter
+noncomputable def replaySeenLetter
     {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
     (U : FatTree H) (a : Nat)
     (trace : C → AM H c 1)
@@ -678,7 +678,7 @@ noncomputable def ProfileCollector.replaySeenLetter
 /-- Replaying a seen profile reproduces that complete option-valued profile
 at the current history state.  In particular, bottom coordinates remain
 bottom, which is the point needed for the later raw-fan accounting step. -/
-theorem ProfileCollector.historyFanProfile_replaySeenLetter
+theorem historyFanProfile_replaySeenLetter
     {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
     (U : FatTree H) (a : Nat)
     (trace : C → AM H c 1)
@@ -716,7 +716,7 @@ theorem ProfileCollector.historyFanProfile_replaySeenLetter
 
 /-- Advancing by a replayed seen profile leaves the set of witnessed profiles
 unchanged. -/
-theorem ProfileCollector.advanceAny_replaySeen_seen
+theorem advanceAny_replaySeen_seen
     {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
     (U : FatTree H) (a : Nat)
     (trace : C → AM H c 1)
