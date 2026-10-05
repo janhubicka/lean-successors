@@ -99,3 +99,5 @@ import SuccessorTree.NonPrecompact.PrebananaAmalgamBridge
 import SuccessorTree.NonPrecompact.CompletionAutomorphismHom
 
 import SuccessorTree.NonPrecompact.CompletionAmbientAction
+
+import SuccessorTree.NonPrecompact.PerfectSelfEmbedding
