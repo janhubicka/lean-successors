@@ -153,7 +153,14 @@ theorem completionAutomorphism_right_completion
               (dotContragredient g (finRightPart w)) := by
         rw [hw]
         simp [h, completionLeftEquiv]
-      rw [hw, hhw]
+      rw [hw]
+      have hhw' :
+          h (Fin.append (finLeftPart w) (finRightPart w)) =
+            Fin.append
+              (f (finLeftPart w))
+              (dotContragredient g (finRightPart w)) := by
+        simpa [← hw] using hhw
+      rw [hhw']
       unfold completionRight
       rw [dotProduct_append, dotProduct_append]
       have hfg :
