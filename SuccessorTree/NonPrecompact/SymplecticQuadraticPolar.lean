@@ -1,4 +1,4 @@
-import Mathlib
+import SuccessorTree.NonPrecompact.QuadraticGauss
 
 /-!
 # Quadratic refinements of alternating binary matrices
