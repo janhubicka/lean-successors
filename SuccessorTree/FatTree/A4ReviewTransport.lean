@@ -139,8 +139,17 @@ noncomputable def reviewTransportFan {c d D : Nat}
       exact P.map.map_le_of_le (e.top_covBy x hx).le
     · change LevelTree.lev (P (e.toFun x).1) =
         LevelTree.lev ((H.composeAcross q p.1).representative H x.1) + 1
-      rw [← H.levelMap_eq P.map (a := (e.toFun x).1), htop x hx, hPnext,
-        review_AM_level H (H.composeAcross q p.1) hx, hrend]
+      calc
+        LevelTree.lev (P (e.toFun x).1) =
+            H.levelMap P.map (LevelTree.lev (e.toFun x).1) :=
+          (H.levelMap_eq P.map (a := (e.toFun x).1)).symm
+        _ = H.levelMap P.map (d + 1) := congrArg (H.levelMap P.map) (htop x hx)
+        _ = D + 1 := hPnext
+        _ = (H.composeAcross q p.1).rowEndLevel H + 1 :=
+          (congrArg (fun k => k + 1) hrend).symm
+        _ = LevelTree.lev ((H.composeAcross q p.1).representative H x.1) + 1 :=
+          congrArg (fun k => k + 1)
+            (review_AM_level H (H.composeAcross q p.1) hx).symm
 
 @[simp] theorem reviewTransportFan_apply {c d D : Nat}
     (q : AMExact H c d) (p : AMExact H d D)
