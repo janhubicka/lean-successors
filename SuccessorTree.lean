@@ -79,3 +79,5 @@ import SuccessorTree.NonPrecompact.QuadraticResidueGenerating
 import SuccessorTree.NonPrecompact.QuadraticResidueStandard
 
 import SuccessorTree.NonPrecompact.SymplecticSlice
+
+import SuccessorTree.NonPrecompact.SymplecticQuadraticPolar
