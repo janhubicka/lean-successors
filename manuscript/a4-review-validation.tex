@@ -1,0 +1,24 @@
+% Alternative A4 proof: isolated validation overlay.
+% Requires validation.tex; does not alter the existing proof snapshot.
+% The general A4 and fat-tree Ellentuck theorems remain partial.
+\newcommand{\aFourReviewPartial}[2]{%
+  \begingroup
+  \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+  \renewcommand{\leancommit}{01b40dbe3495fc655e8f9b5f3400aafed86415da}%
+  \leanpartial{#1}{#2}%
+  \endgroup
+}
+
+\newcommand{\aFourReviewPersistenceNote}{%
+  \aFourReviewPartial{SuccessorTree/FatTree/A4PairPersistence.lean}{pair persistence}%
+  \ifshowvalidation
+  \todo[inline]{Lean review-proof audit: The persistence implication is now formalised for an arbitrary accepted continuation set depending on the first block. Replace the global enumeration argument by finite batches at each currently preserved depth. A2 makes the batch finite, and A3 lifts avoidance below each head while retaining the whole prefix. A pair surviving in the fusion limit has its head in its exact-depth batch, contradicting the avoidance established there. The hypothesis that every stem-preserving refinement contains a good pair remains explicit; its local combinatorial proof is still required.}
+  \fi
+}
+
+\newcommand{\aFourReviewFusionNote}{%
+  \aFourReviewPartial{SuccessorTree/FatTree/A4ReviewFusion.lean}{all-trace fusion}%
+  \ifshowvalidation
+  \todo[inline]{Lean review-proof audit: The alternative fixed-source fusion is now formalised from the local good-pair lemma, rather than assuming A4 itself. Keep the original source cut and accepted set fixed. At every prefix retain all admissible exact traces from that cut, and keep large the set of rows whose composites with every such trace lie in the accepted set. Exact trace update and the verified pair-persistence argument construct this invariant through the fusion. Last-block factorisation then covers every geometric one-step extension at a positive source cut. The local simultaneous raw-successor-fan good-pair lemma and root-moving source-cut-zero coverage remain obligations, so neither A4 nor the fat-tree Ellentuck theorem should yet receive an unconditional validation marker.}
+  \fi
+}
