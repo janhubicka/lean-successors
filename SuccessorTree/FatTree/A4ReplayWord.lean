@@ -64,7 +64,7 @@ theorem occurrence_level_lt_current
     (R.collector.occurrence alpha halpha).level <
       U.cut (a + R.collector.index) := by
   let occ := R.collector.occurrence alpha halpha
-  let j : C := Classical.choice inferInstance
+  let j : C := Classical.choice (inferInstance : Nonempty C)
   obtain ⟨x, hx⟩ := H.level_nonempty c
   let xx : InitialNode T c := ⟨x, by omega⟩
   have hqlev :
@@ -205,18 +205,18 @@ noncomputable def step
   rw [R.seen_eq]
   exact Finset.insert_eq_self.mpr alpha.2
 
-/-- Replay a finite word of seen profiles. -/
+/-- Replay a finite word of seen profiles, in its left-to-right order. -/
 noncomputable def word
     {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
     (U : FatTree H) (a : Nat)
     (trace : C → AM H c 1)
     (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
-    (K : ProfileCollector H U a trace) :
-    List {p : FanProfile H C trace // p ∈ K.seen} →
-      ProfileReplayState H U a trace hend K
-  | [] => initial H U a trace hend K
-  | alpha :: w =>
-      word H U a trace hend K w |>.step H U a trace hend K alpha
+    (K : ProfileCollector H U a trace)
+    (w : List {p : FanProfile H C trace // p ∈ K.seen}) :
+    ProfileReplayState H U a trace hend K :=
+  w.foldl
+    (fun R alpha => step H U a trace hend K R alpha)
+    (initial H U a trace hend K)
 
 @[simp] theorem word_nil_collector
     {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
@@ -226,30 +226,42 @@ noncomputable def word
     (K : ProfileCollector H U a trace) :
     (word H U a trace hend K []).collector = K := rfl
 
+private theorem foldl_step_index
+    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace) :
+    ∀ (w : List {p : FanProfile H C trace // p ∈ K.seen})
+      (R : ProfileReplayState H U a trace hend K),
+      (w.foldl
+        (fun Q alpha => step H U a trace hend K Q alpha) R).collector.index =
+        R.collector.index + w.length := by
+  intro w
+  induction w with
+  | nil =>
+      intro R
+      simp
+  | cons alpha w ih =>
+      intro R
+      simp only [List.foldl_cons, List.length_cons]
+      rw [ih (step H U a trace hend K R alpha)]
+      change R.collector.index + 1 + w.length =
+        R.collector.index + (w.length + 1)
+      omega
+
 /-- Each replayed letter advances the history index by one. -/
 theorem word_index
     {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
     (U : FatTree H) (a : Nat)
     (trace : C → AM H c 1)
     (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
-    (K : ProfileCollector H U a trace) :
-    ∀ w : List {p : FanProfile H C trace // p ∈ K.seen},
-      (word H U a trace hend K w).collector.index =
-        K.index + w.length := by
-  intro w
-  induction w with
-  | nil => simp [word]
-  | cons alpha w ih =>
-      change
-        (step H U a trace hend K
-          (word H U a trace hend K w) alpha).collector.index =
-          K.index + (alpha :: w).length
-      change
-        (word H U a trace hend K w).collector.index + 1 =
-          K.index + (alpha :: w).length
-      rw [ih]
-      simp
-      omega
+    (K : ProfileCollector H U a trace)
+    (w : List {p : FanProfile H C trace // p ∈ K.seen}) :
+    (word H U a trace hend K w).collector.index =
+      K.index + w.length := by
+  exact foldl_step_index H U a trace hend K w
+    (initial H U a trace hend K)
 
 end ProfileReplayState
 
