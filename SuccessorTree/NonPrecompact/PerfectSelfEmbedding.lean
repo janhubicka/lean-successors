@@ -109,9 +109,9 @@ theorem inversePerfectSelfEmbedding_right_comp
   have hcomp :=
     congrArg
       (fun h : (Fin n → F2) ≃ₗ[F2] (Fin n → F2) => h y)
-      (dotContragredient_trans
+      (BananaMatrixStructure.dotContragredient_trans
         H.leftSelfEquiv H.leftSelfEquiv.symm)
-  simpa [dotContragredient_refl] using hcomp
+  simpa [BananaMatrixStructure.dotContragredient_refl] using hcomp
 
 end BananaMatrixEmbedding
 
