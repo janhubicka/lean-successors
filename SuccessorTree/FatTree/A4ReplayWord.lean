@@ -263,6 +263,43 @@ theorem word_index
   exact foldl_step_index H U a trace hend K w
     (initial H U a trace hend K)
 
+
+/-- A replay step has the literal history-step action on every node. -/
+@[simp] theorem step_state_apply
+    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (R : ProfileReplayState H U a trace hend K)
+    (alpha : {p : FanProfile H C trace // p ∈ K.seen})
+    (x : T) :
+    (step H U a trace hend K R alpha).collector.state x =
+      U.rowExtension H (a + R.collector.index)
+        ((replayLetter H U a trace hend K R alpha).toMMap
+          (R.collector.state x)) := by
+  unfold step
+  dsimp only
+  exact TraceHistoryState.step_apply H U a R.collector.index
+    R.collector.state
+    (replayLetter H U a trace hend K R alpha) x
+
+/-- Replaying a concatenation is the same as continuing the replay of the
+first word by the second word. -/
+theorem word_append
+    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (u v : List {p : FanProfile H C trace // p ∈ K.seen}) :
+    word H U a trace hend K (u ++ v) =
+      v.foldl
+        (fun R alpha => step H U a trace hend K R alpha)
+        (word H U a trace hend K u) := by
+  unfold word
+  rw [List.foldl_append]
+
 end ProfileReplayState
 
 end FatTree
