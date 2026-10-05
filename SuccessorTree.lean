@@ -101,3 +101,5 @@ import SuccessorTree.NonPrecompact.CompletionAutomorphismHom
 import SuccessorTree.NonPrecompact.CompletionAmbientAction
 
 import SuccessorTree.NonPrecompact.PerfectBlockConjugator
+
+import SuccessorTree.NonPrecompact.FiberProductParityAmalgam
