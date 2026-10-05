@@ -595,6 +595,42 @@ theorem exists_globallySaturated
 
 
 
+
+/-- Global saturation already implies one-step saturation: the profile of
+every possible next letter has been seen. -/
+theorem currentProfile_mem_of_globallySaturated
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (hglobal : GloballySaturated H U a trace hend K)
+    (E : OneLevelLetter H (U.cut (a + K.index))) :
+    currentProfile H U a trace K E ∈ K.seen := by
+  let L := advanceAny H U a trace hend K E
+  have hKL : ReachableFrom H U a trace hend K L :=
+    ReachableFrom.step ReachableFrom.refl E
+  have hsub : L.seen ⊆ K.seen :=
+    hglobal L hKL
+  apply hsub
+  rw [advanceAny_seen]
+  exact Finset.mem_insert_self _ _
+
+/-- Therefore a globally saturated collector has a nonempty seen alphabet as
+soon as there is at least one admissible next letter. -/
+theorem seen_nonempty_of_globallySaturated
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (hglobal : GloballySaturated H U a trace hend K)
+    (E : OneLevelLetter H (U.cut (a + K.index))) :
+    K.seen.Nonempty :=
+  ⟨currentProfile H U a trace K E,
+    currentProfile_mem_of_globallySaturated
+      H U a trace hend K hglobal E⟩
+
 end ProfileCollector
 
 end FatTree
