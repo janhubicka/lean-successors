@@ -93,8 +93,8 @@ open SuccessorTree.SMTree.FatTree
 #print axioms fixedStemPigeonhole_review
 #print axioms ellentuck_review
 
-/- These endpoint types must not silently acquire A4, good-pair, or
-saturation premises. Root-cut completion is a separate obligation. -/
+/- These endpoint types must not silently acquire A4, good-pair,
+saturation, positivity, or root-cut premises. -/
 section InterfaceGuard
 open SuccessorTree SuccessorTree.SMTree
 universe u1 v1 w1 z1
@@ -117,4 +117,12 @@ example (H : SMTree S) (c n : Nat) (y : FiniteFatTree H)
     ∃ h k, FixedTraceGoodPair H c n y hn hsrc O h k ∧
       OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k :=
   review_goodPair_positive H c n y hn hsrc O U hyU hpos hlarge
+
+example (H : SMTree S) : FixedStemPigeonhole H :=
+  fixedStemPigeonhole_review H
+
+example (H : SMTree S) :
+    RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
+      (S := approximationSystem H) :=
+  ellentuck_review H
 end InterfaceGuard
