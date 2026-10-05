@@ -60,9 +60,16 @@ theorem exists_standardPerfectBlock_conjugator
         H.left (Fin.append x 0) = E.left x) ∧
       (∀ y,
         H.right (Fin.append y 0) = E.right y) := by
-  simpa [standardPerfectBlockEmbedding] using
+  obtain ⟨H, hleft, hright⟩ :=
     exists_perfectPairAutomorphism_extends
       (standardPerfectBlockEmbedding m k) E
+  refine ⟨H, ?_, ?_⟩
+  · intro x
+    simpa [standardPerfectBlockEmbedding, directSumLeftInl] using
+      hleft x
+  · intro y
+    simpa [standardPerfectBlockEmbedding, directSumRightInl] using
+      hright y
 
 end BananaMatrixStructure
 
