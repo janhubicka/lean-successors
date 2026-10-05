@@ -1,4 +1,4 @@
-import SuccessorTree.NonPrecompact.PerfectHomogeneity
+import SuccessorTree.NonPrecompact.CompletionAutomorphismHom
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
 /-!
