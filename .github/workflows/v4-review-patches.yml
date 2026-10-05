@@ -1,0 +1,65 @@
+name: Successors v4 review patches
+
+on:
+  push:
+    branches: [fat-tree-formalization]
+    paths:
+      - manuscript/v4-review/**
+      - .github/workflows/v4-review-patches.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  patches:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build context-based review patches
+        run: |
+          set -euo pipefail
+          python3 -m py_compile manuscript/v4-review/make-v4-review-patches.py
+          python3 manuscript/v4-review/make-v4-review-patches.py --reference --output patch-package
+      - name: Test archive and source-tree modes on a synthetic context fixture
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import importlib.util
+          import json
+          import subprocess
+          import tarfile
+          import tempfile
+          script = Path('manuscript/v4-review/make-v4-review-patches.py').resolve()
+          spec = importlib.util.spec_from_file_location('v4_patches', script)
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          with tempfile.TemporaryDirectory() as folder:
+              root = Path(folder)
+              tree = root / 'successors'
+              tree.mkdir()
+              original = module.reference_main()
+              (tree / 'main.tex').write_text(original, encoding='utf-8')
+              archive = root / 'fixture.tgz'
+              with tarfile.open(archive, 'w:gz') as tar:
+                  tar.add(tree / 'main.tex', arcname='successors/main.tex')
+              for flag, source, dest in [('--archive', archive, root / 'from-archive'),
+                                         ('--source-tree', tree, root / 'from-tree')]:
+                  subprocess.run(['python3', str(script), flag, str(source), '--output', str(dest)], check=True)
+                  report = json.loads((dest / 'manifest.json').read_text())
+                  assert report['input_mode'] == 'exact attached archive/tree bytes'
+                  assert (tree / 'main.tex').read_text() == original
+              bad = subprocess.run(['python3', str(script), '--source-tree', str(tree),
+                                    '--output', str(root / 'from-tree')], capture_output=True)
+              assert bad.returncode != 0, 'Nonempty output directory must be rejected'
+          print('PASS: both exact-source reading modes; source preserved; overwrite guard')
+          print('NOTE: fixture tests are not a full check against the uploaded v4 archive.')
+          PY
+      - name: Record package checksums
+        run: |
+          (cd patch-package && sha256sum *.patch *.tex *.py *.json README.txt > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: successors-v4-review-patches
+          path: patch-package/
+          retention-days: 30
