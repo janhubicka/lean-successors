@@ -388,6 +388,75 @@ noncomputable def advanceAny
       insert (currentProfile H U a trace K E) K.seen := by
   rfl
 
+
+/-- Advancing by an arbitrary letter preserves the chosen source level of an
+already witnessed profile. -/
+theorem advanceAny_occurrence_old_level
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (E : OneLevelLetter H (U.cut (a + K.index)))
+    (beta : FanProfile H C trace)
+    (hbeta : beta ∈ K.seen) :
+    let K' := advanceAny H U a trace hend K E
+    let hbeta' : beta ∈ K'.seen := by
+      rw [advanceAny_seen]
+      exact Finset.mem_insert_of_mem hbeta
+    (K'.occurrence beta hbeta').level =
+      (K.occurrence beta hbeta).level := by
+  classical
+  dsimp only
+  unfold advanceAny
+  dsimp only
+  split <;> simp_all [ProfileOccurrence.advance]
+
+/-- Advancing preserves the chosen source letter of an already witnessed
+profile. -/
+theorem advanceAny_occurrence_old_letter
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (E : OneLevelLetter H (U.cut (a + K.index)))
+    (beta : FanProfile H C trace)
+    (hbeta : beta ∈ K.seen) :
+    let K' := advanceAny H U a trace hend K E
+    let hbeta' : beta ∈ K'.seen := by
+      rw [advanceAny_seen]
+      exact Finset.mem_insert_of_mem hbeta
+    (K'.occurrence beta hbeta').letter =
+      (K.occurrence beta hbeta).letter := by
+  classical
+  dsimp only
+  unfold advanceAny
+  dsimp only
+  split <;> simp_all [ProfileOccurrence.advance]
+
+/-- The chosen base map of an old profile is preserved as well. -/
+theorem advanceAny_occurrence_old_base
+    {c : Nat} {C : Type w} [Fintype C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (E : OneLevelLetter H (U.cut (a + K.index)))
+    (beta : FanProfile H C trace)
+    (hbeta : beta ∈ K.seen) :
+    let K' := advanceAny H U a trace hend K E
+    let hbeta' : beta ∈ K'.seen := by
+      rw [advanceAny_seen]
+      exact Finset.mem_insert_of_mem hbeta
+    (K'.occurrence beta hbeta').base =
+      (K.occurrence beta hbeta).base := by
+  classical
+  dsimp only
+  unfold advanceAny
+  dsimp only
+  split <;> simp_all [ProfileOccurrence.advance]
+
 /-- Finite history extension between collectors. -/
 inductive ReachableFrom
     {c : Nat} {C : Type w} [Fintype C]
