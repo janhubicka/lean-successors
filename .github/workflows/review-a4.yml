@@ -3,9 +3,12 @@ on:
   push:
     branches: [fat-tree-formalization]
     paths:
+      - 'SuccessorTree.lean'
       - 'SuccessorTree/FatTree/A4PairPersistence.lean'
       - 'SuccessorTree/FatTree/A4Review*.lean'
       - 'scripts/CheckFatTreeReviewA4.lean'
+      - 'docs/a4-review-proof.md'
+      - 'manuscript/a4-review-validation.tex'
       - '.github/workflows/review-a4.yml'
   workflow_dispatch:
 concurrency:
