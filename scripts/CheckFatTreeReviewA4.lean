@@ -1,4 +1,5 @@
 import SuccessorTree.FatTree.A4ReviewGoodPair
+import SuccessorTree.FatTree.A4ReviewSourceFusion
 
 open SuccessorTree.SMTree.FatTree
 
@@ -9,6 +10,13 @@ open SuccessorTree.SMTree.FatTree
 #check ProfileReplayState.review_exists_profile_fan_homogeneity
 #check exists_reviewFanLine_positive
 #check review_goodPair_positive
+#check exists_lastBlock_exactTrace_of_successors
+#check exists_lastBlock_exactTrace_of_sourceLetter
+#check review_goodPair_of_sourceLetter
+#check review_trace_persistence_of_sourceLetter
+#check review_all_trace_fusion_of_sourceLetter
+#check review_fixedStemPigeonhole_of_sourceLetter
+#check review_fixedStemPigeonhole
 #print axioms oneBlockOccurs_of_reduces
 #print axioms oneBlockOccurs_of_pair
 #print axioms appendRow_injective
@@ -64,6 +72,20 @@ open SuccessorTree.SMTree.FatTree
 #print axioms review_goodPair_finite_family_positive
 #print axioms review_goodPair_at_prefix_positive
 #print axioms review_goodPair_positive
+#print axioms exists_lastBlock_exactTrace_of_successors
+#print axioms exists_lastBlock_exactTrace_of_sourceLetter
+#print axioms review_bridges_nonempty_of_sourceLetter
+#print axioms review_persistent_line_witness_of_sourceLetter
+#print axioms review_goodPair_finite_family_of_sourceLetter
+#print axioms review_goodPair_at_prefix_of_sourceLetter
+#print axioms review_goodPair_of_sourceLetter
+#print axioms oneBlock_mem_of_all_fixedTraceGoodRows_of_successors
+#print axioms oneBlock_mem_of_all_fixedTraceGoodRows_of_sourceLetter
+#print axioms review_trace_persistence_of_sourceLetter
+#print axioms review_all_trace_fusion_of_sourceLetter
+#print axioms review_large_set_homogeneous_of_sourceLetter
+#print axioms review_fixedStemPigeonhole_of_sourceLetter
+#print axioms review_fixedStemPigeonhole
 
 /- These endpoint types must not silently acquire A4, good-pair, or
 saturation premises. Root-cut completion is a separate obligation. -/
