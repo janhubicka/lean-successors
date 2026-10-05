@@ -1,11 +1,12 @@
 import SuccessorTree.FatTree.A4OccurrenceStability
 import SuccessorTree.FatTree.A4ReplayColour
 import SuccessorTree.FatTree.A4TypedBridge
-import SuccessorTree.FatTree.A4Root
+import SuccessorTree.FatTree.A4RootPigeonhole
 
 /-!
 These are intermediate A4 ingredients, not the completed A4 or Ellentuck
 statement. The audit must not be presented as a proof of either conclusion.
+The last report covers A4 only at a root-fixed source cut.
 -/
 
 open SuccessorTree
@@ -24,7 +25,7 @@ open SuccessorTree.SMTree.FatTree
 #check ProfileReplayState.exists_colour_stable_replayLine
 #check ProfileReplayState.LineTailState.headRow_stemAt
 #check mem_oneStep_iff_exists_appendedRow
-#check rootRow_eq_id1_of_no_rootLetter
+#check typed_a4_at_fixedRoot
 
 #print axioms ProfileCollector.exists_globallySaturated
 #print axioms ProfileCollector.reachable_occurrence_level
@@ -38,4 +39,4 @@ open SuccessorTree.SMTree.FatTree
 #print axioms ProfileReplayState.exists_colour_stable_replayLine
 #print axioms ProfileReplayState.LineTailState.headRow_stemAt
 #print axioms mem_oneStep_iff_exists_appendedRow
-#print axioms rootRow_eq_id1_of_no_rootLetter
+#print axioms typed_a4_at_fixedRoot
