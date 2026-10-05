@@ -431,9 +431,7 @@ theorem advanceAny_occurrence_old_letter
       (K.occurrence beta hbeta).letter := by
   classical
   dsimp only
-  unfold advanceAny
-  dsimp only
-  split <;> simp_all [ProfileOccurrence.advance]
+  simp only [advanceAny, dif_pos hbeta, ProfileOccurrence.advance]
 
 /-- The chosen base map of an old profile is preserved as well. -/
 theorem advanceAny_occurrence_old_base
