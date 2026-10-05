@@ -1,4 +1,4 @@
-import SuccessorTree.FatTree.A4ReviewLine
+import SuccessorTree.FatTree.A4ReviewTransport
 
 open SuccessorTree.SMTree.FatTree
 
@@ -40,6 +40,11 @@ open SuccessorTree.SMTree.FatTree
 #print axioms ReviewFanLine.depths_strict
 #print axioms exists_reviewFanLine_of_sourceLetter
 #print axioms exists_reviewFanLine_positive
+#print axioms review_AM_level
+#print axioms review_composeAcross_end
+#print axioms review_composeAcross_canonical
+#print axioms reviewTransportFan
+#print axioms reviewTransportFan_apply
 
 /- The local endpoint must elaborate from the SM-tree data and a positive
 source cut. Adding an A4, good-pair, or saturation premise must break this
