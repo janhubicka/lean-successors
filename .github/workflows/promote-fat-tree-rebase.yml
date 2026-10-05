@@ -1,0 +1,19 @@
+name: Publish audited fat-tree rebase
+on:
+  push:
+    branches: [fat-tree-rebased-main-20261005]
+    paths: [.github/workflows/promote-fat-tree-rebase.yml]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Publish only the audited commit under a fixed branch lease
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 57d35508abd0e55cb2387f88360125d6320e3457 66936956da424931514ba0d082044b0994eae487
+          git push --force-with-lease=refs/heads/fat-tree-formalization:9ed0f44a57f63e8e13a9403bc5c695fabc2fa32f origin 66936956da424931514ba0d082044b0994eae487:refs/heads/fat-tree-formalization
