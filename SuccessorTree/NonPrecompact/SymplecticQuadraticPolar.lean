@@ -95,6 +95,7 @@ theorem affinePolar_translate_quadratic
   simp only [QuadraticMap.polar, sub_eq_add_neg]
   ring_nf
   have htwo : (2 : F2) = 0 := ZMod.natCast_self 2
-  simp [htwo, CharTwo.neg_eq]
+  simp only [htwo, mul_zero, zero_mul, zero_add, add_zero]
+  abel
 
 end SuccessorTree.NonPrecompact
