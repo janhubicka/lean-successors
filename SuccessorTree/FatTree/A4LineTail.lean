@@ -4,7 +4,7 @@ import SuccessorTree.FatTree.A4HistoryGeometry
 # The common tail of a replayed profile line
 
 After the first parameter of a starred Hales--Jewett line, the manuscript
-builds a common second block.  Constant symbols replay their recorded profile
+builds a common second block. Constant symbols replay their recorded profile
 occurrence, while later parameter symbols replay the first parameter edge.
 Interleaving these M3 duplications with the ambient fat-tree rows is naturally
 another `TraceHistoryState`.
@@ -119,7 +119,8 @@ noncomputable def initial
     TraceHistoryState.initial H U
       (firstParameterIndex H R + 1)
 
-/-- Process one suffix symbol. -/
+/-- Process one suffix symbol. The source index is already definitionally
+correct, so no associativity cast is needed in the state. -/
 noncomputable def step
     {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
     (U : FatTree H) (a : Nat)
@@ -129,26 +130,11 @@ noncomputable def step
     (R : ProfileReplayState H U a trace hend K)
     (Q : LineTailState H U a trace hend K R)
     (x : LineSymbol (SeenProfile H K)) :
-    LineTailState H U a trace hend K R := by
-  let j := firstParameterIndex H R
-  have hcut :
-      U.cut ((j + 1) + Q.index) =
-        U.cut (j + 1 + Q.index) := by
-    congr 2 <;> omega
-  let E0 :=
-    lineTailLetter H U a trace hend K R Q.index x
-  let E :
-      OneLevelLetter H
-        (U.cut ((firstParameterIndex H R + 1) + Q.index)) := by
-    simpa [firstParameterIndex, Nat.add_assoc] using E0
-  exact {
-    index := Q.index + 1
-    state :=
-      TraceHistoryState.step H U
-        (firstParameterIndex H R + 1)
-        Q.index Q.state E
-  }
-
+    LineTailState H U a trace hend K R where
+  index := Q.index + 1
+  state := TraceHistoryState.step H U
+    (firstParameterIndex H R + 1) Q.index Q.state
+    (lineTailLetter H U a trace hend K R Q.index x)
 
 /-- A common-tail step has the expected explicit action. -/
 @[simp] theorem step_state_apply
@@ -166,15 +152,9 @@ noncomputable def step
         ((firstParameterIndex H R + 1) + Q.index)
         ((lineTailLetter H U a trace hend K R Q.index x).toMMap
           (Q.state z)) := by
-  unfold step
-  dsimp only
   exact TraceHistoryState.step_apply H U
-    (firstParameterIndex H R + 1)
-    Q.index Q.state
-    (by
-      simpa [firstParameterIndex, Nat.add_assoc] using
-        (lineTailLetter H U a trace hend K R Q.index x))
-    z
+    (firstParameterIndex H R + 1) Q.index Q.state
+    (lineTailLetter H U a trace hend K R Q.index x) z
 
 /-- Process the suffix in left-to-right order. -/
 noncomputable def word
@@ -224,10 +204,9 @@ theorem word_index
     (R : ProfileReplayState H U a trace hend K)
     (xs : List (LineSymbol (SeenProfile H K))) :
     (word H U a trace hend K R xs).index = xs.length := by
-  have h :=
-    foldl_step_index H U a trace hend K R xs
-      (initial H U a trace hend K R)
-  simpa [initial] using h
+  have h := foldl_step_index H U a trace hend K R xs
+    (initial H U a trace hend K R)
+  simpa only [word, initial, Nat.zero_add] using h
 
 /-- The common second block obtained after the suffix, followed by the next
 ambient row. -/
@@ -262,8 +241,18 @@ theorem headRow_stemAt
   let Q := word H U a trace hend K R xs
   have hQ := TraceHistoryState.headRow_stemAt H U
     (firstParameterIndex H R + 1) Q.index Q.state
-  rw [word_index H U a trace hend K R xs] at hQ
-  simpa [headRow, Q, Nat.add_assoc] using hQ
+  change StemAt H
+    (FiniteFatTree.appendRow H
+      (U.initialSegment H (firstParameterIndex H R + 1))
+      (TraceHistoryState.headRow H U
+        (firstParameterIndex H R + 1) Q.index Q.state))
+    U (firstParameterIndex H R + 1 + xs.length + 1)
+  have hdepth : firstParameterIndex H R + 1 + Q.index + 1 =
+      firstParameterIndex H R + 1 + xs.length + 1 :=
+    congrArg (fun k => firstParameterIndex H R + 1 + k + 1)
+      (word_index H U a trace hend K R xs)
+  rw [hdepth] at hQ
+  exact hQ
 
 end LineTailState
 end ProfileReplayState
