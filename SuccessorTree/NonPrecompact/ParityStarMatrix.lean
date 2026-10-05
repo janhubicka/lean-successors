@@ -47,7 +47,6 @@ theorem sum_row_parityStarMatrix
       (Finset.univ : Finset J)
       (fun j => parityStarMatrix row col i0 j0 i0 j)
       (by simp)]
-    simp only [Finset.sum_erase]
     have hsum :
         (∑ j ∈ (Finset.univ : Finset J).erase j0,
             parityStarMatrix row col i0 j0 i0 j) =
@@ -107,7 +106,10 @@ theorem sum_col_parityStarMatrix
       have hi0 : i ≠ i0 := (Finset.mem_erase.mp hi).1
       simp [parityStarMatrix, hi0]
     rw [hrest]
-    change R + (row i0 + C) = col j0
+    have hcenter :
+        parityStarMatrix row col i0 j0 i0 j0 = row i0 + C := by
+      simp [parityStarMatrix, C]
+    rw [hcenter]
     calc
       R + (row i0 + C) = (R + row i0) + C := by abel
       _ = (C + col j0) + C := by rw [htot']
