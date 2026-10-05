@@ -1,5 +1,6 @@
 import SuccessorTree.FatTree.A4ReviewGoodPair
 import SuccessorTree.FatTree.A4ReviewSourceFusion
+import SuccessorTree.FatTree.A4ReviewComplete
 
 open SuccessorTree.SMTree.FatTree
 
@@ -17,6 +18,9 @@ open SuccessorTree.SMTree.FatTree
 #check review_all_trace_fusion_of_sourceLetter
 #check review_fixedStemPigeonhole_of_sourceLetter
 #check review_fixedStemPigeonhole
+#check fixedStemPigeonhole_review
+#check abstractRamseySpace_review
+#check ellentuck_review
 #print axioms oneBlockOccurs_of_reduces
 #print axioms oneBlockOccurs_of_pair
 #print axioms appendRow_injective
@@ -86,6 +90,8 @@ open SuccessorTree.SMTree.FatTree
 #print axioms review_large_set_homogeneous_of_sourceLetter
 #print axioms review_fixedStemPigeonhole_of_sourceLetter
 #print axioms review_fixedStemPigeonhole
+#print axioms fixedStemPigeonhole_review
+#print axioms ellentuck_review
 
 /- These endpoint types must not silently acquire A4, good-pair, or
 saturation premises. Root-cut completion is a separate obligation. -/
