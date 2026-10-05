@@ -220,6 +220,32 @@ theorem historyProfile_eq_some
   exact historyRealizesFan_unique H q P E
     (Classical.choose_spec ⟨e, he⟩) he
 
+
+/-- A non-bottom profile coordinate is equivalent to realization of the
+recorded raw successor fan. -/
+theorem historyProfile_eq_some_iff
+    {c r : Nat}
+    (q : AM H c 1)
+    (P : MMap H)
+    (E : OneLevelLetter H r)
+    (e : RawSuccessorFan H q) :
+    historyProfile H q P E = some e ↔
+      HistoryRealizesFan H q P E e := by
+  constructor
+  · intro hprof
+    classical
+    unfold historyProfile at hprof
+    by_cases hex :
+        ∃ f : RawSuccessorFan H q,
+          HistoryRealizesFan H q P E f
+    · rw [dif_pos hex] at hprof
+      have heq : Classical.choose hex = e :=
+        Option.some.inj hprof
+      simpa [heq] using Classical.choose_spec hex
+    · rw [dif_neg hex] at hprof
+      contradiction
+  · exact historyProfile_eq_some H q P E e
+
 /-- A finite profile over a finite family of traces: at each trace we either
 record a raw successor fan or none. The latter is the manuscript's bottom
 symbol recording failure to match that fan. -/
