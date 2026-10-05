@@ -60,7 +60,7 @@
 
 \newcommand{\fatvfourCoverageReview}{%
 \ifshowvalidation
-\fatvfourcheck{SuccessorTree/FatTree/A4Coverage.lean}{oneBlock\_mem\_of\_all\_fixedTraceGoodRows}
+\fatvfourcheck{SuccessorTree/FatTree/A4Coverage.lean}{all-trace coverage}
 \todo[inline]{Stevo\v sek: The final coverage implication is now checked, with the all-exact-traces invariant as an explicit hypothesis. An arbitrary geometric row ending at depth $m+1$ factors as $v_mq$, where $q$ is an exact trace of the preceding prefix from the original cut $c$. The invariant then gives its colour; no factorisation through the first chosen head is needed. The present fusion must still be strengthened to establish that invariant. The checked last-block factorisation currently assumes $c>0$; at $c=0$, distinguish the presence or absence of a root-moving letter. Finally, A3 transfers the literal-stem conclusion back to the original depth cone.}
 \fi
 }
