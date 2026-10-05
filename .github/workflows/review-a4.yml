@@ -40,7 +40,7 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p review-a4-audit
-          lake build SuccessorTree.FatTree.A4ReviewFusion 2>&1 | tee review-a4-audit/build.log
+          lake build SuccessorTree.FatTree.A4ReviewReplay 2>&1 | tee review-a4-audit/build.log
       - name: Audit proof axioms
         run: |
           set -o pipefail
@@ -51,7 +51,7 @@ jobs:
           text = Path('review-a4-audit/axioms.log').read_text()
           reports = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
           expected = Path('scripts/CheckFatTreeReviewA4.lean').read_text().count('#print axioms ')
-          assert len(reports) == expected and expected >= 8, (len(reports), expected)
+          assert len(reports) == expected and expected >= 14, (len(reports), expected)
           allowed = {'propext', 'Classical.choice', 'Quot.sound'}
           for report in reports:
               assert {x.strip() for x in report.split(',') if x.strip()} <= allowed, report
@@ -64,7 +64,7 @@ jobs:
           mkdir -p review-a4-audit
           git rev-parse HEAD > review-a4-audit/COMMIT
           git diff --check
-          git diff 30ec322c69658f08b6cefde0696e0a7b72790b75 HEAD -- SuccessorTree/FatTree scripts/CheckFatTreeReviewA4.lean manuscript docs .github/workflows/review-a4.yml > review-a4-audit/review-a4.patch
+          git diff 30ec322c69658f08b6cefde0696e0a7b72790b75 HEAD -- SuccessorTree.lean SuccessorTree/FatTree scripts/CheckFatTreeReviewA4.lean manuscript docs .github/workflows/review-a4.yml > review-a4-audit/review-a4.patch
           cp lean-toolchain lakefile.toml review-a4-audit/
       - uses: actions/upload-artifact@v4
         if: always()
