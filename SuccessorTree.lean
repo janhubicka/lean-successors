@@ -65,14 +65,22 @@ import SuccessorTree.FatTree.Reduction
 import SuccessorTree.FatTree.FiniteReduction
 import SuccessorTree.FatTree.Finitization
 import SuccessorTree.FatTree.Amalgamation
+import SuccessorTree.FatTree.A3Typed
 import SuccessorTree.FatTree.A4
 import SuccessorTree.FatTree.A4Trace
 import SuccessorTree.FatTree.A4Large
 import SuccessorTree.FatTree.A4Persistence
 import SuccessorTree.FatTree.A4Profiles
-
 import SuccessorTree.FatTree.A4Factor
 import SuccessorTree.FatTree.A4Good
 import SuccessorTree.FatTree.A4History
 import SuccessorTree.FatTree.A4ProfileReplay
 import SuccessorTree.FatTree.A4ProfileSaturation
+import SuccessorTree.FatTree.A4Root
+import SuccessorTree.FatTree.A4ReplayWord
+import SuccessorTree.FatTree.A4ReplayHJ
+import SuccessorTree.FatTree.A4HistoryRows
+import SuccessorTree.FatTree.A4HistoryGeometry
+import SuccessorTree.FatTree.A4TypedBridge
+import SuccessorTree.FatTree.A4LineTail
+import SuccessorTree.FatTree.A4ReplayColour
