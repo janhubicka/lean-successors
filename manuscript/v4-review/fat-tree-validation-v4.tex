@@ -1,0 +1,66 @@
+% Internal fat-tree validation and correction requests for successors v4.
+% General A4/Ellentuck remains partial. Existing shape-theorem pins are untouched.
+% Successor CI: 37348884211; abstract CI: 37345355393.
+\newcommand{\fatvfourcheck}[2]{%
+  \begingroup
+  \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+  \renewcommand{\leancommit}{fddc1c25189be745eabce27a179389480099e067}%
+  \leanverified{#1}{#2}%
+  \endgroup
+}
+\newcommand{\fatvfourpartial}[2]{%
+  \begingroup
+  \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+  \renewcommand{\leancommit}{fddc1c25189be745eabce27a179389480099e067}%
+  \leanpartial{#1}{#2}%
+  \endgroup
+}
+\newcommand{\fatvfourabstract}[2]{%
+  \begingroup
+  \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-ramsey-space-todorcevic}%
+  \renewcommand{\leancommit}{d0e2073ad320240f3e0c9aed5285e94eef185d45}%
+  \leanverified{#1}{#2}%
+  \endgroup
+}
+
+\newcommand{\fatvfourTheoremReview}{%
+\ifshowvalidation
+\fatvfourpartial{SuccessorTree/FatTree/A4Assembly.lean}{Ellentuck: conditional assembly}
+\todo[inline]{Stevo\v sek: The passage from the geometric fixed-stem pigeonhole statement to typed A4 and then to the actual Ellentuck theorem is now checked. Its Lean hypothesis is explicitly named FixedStemPigeonhole and is not yet proved. Thus this is not an unconditional certificate for the present theorem. Keep the fat-tree theorem marked partial until the simultaneous raw-fan argument and the all-exact-traces fusion discharge that hypothesis. No embedding-space EA assumption occurs in this assembly.}
+\fi
+}
+
+\newcommand{\fatvfourAbstractReview}{%
+\ifshowvalidation
+\fatvfourabstract{RamseySpace/AbstractEllentuck.lean}{abstractEllentuck}
+\todo[inline]{Stevo\v sek: This abstract endpoint has passed a full build and a transitive axiom audit using the actual Ellentuck topology and Mathlib's Baire and meagreness predicates. Its hypotheses still include A4 and metric closedness. The new Finitization.fusionComplete_of_isMetricallyClosed theorem uses only A2 and closedness; use that theorem, rather than an already assembled Ramsey-space instance, when obtaining fusion during the proof of A4.}
+\fi
+}
+
+\newcommand{\fatvfourStructuralReview}{%
+\ifshowvalidation
+\fatvfourcheck{SuccessorTree/FatTree/Closed.lean}{isMetricallyClosed}
+\todo[inline]{Stevo\v sek: Insert the missing closedness verification before applying the abstract theorem: a coherent sequence of finite approximations determines compatible cuts and rows, and each row-end equation is preserved. The displayed marker certifies that ingredient, not the full theorem. For A2, spell out coherence of the finite reduction witnesses, forced by uniqueness of the target index at each terminal cut. In A3(2), the checked conclusion is the required neighbourhood inclusion; the stronger equality below needs a separate reverse-inclusion proof or should be weakened.}
+\fi
+}
+
+\newcommand{\fatvfourAfourReview}{%
+\ifshowvalidation
+\fatvfourpartial{SuccessorTree/FatTree/A4Good.lean}{FixedTraceGoodRows}
+\todo[inline]{Stevo\v sek: Keep the original source cut $c$ fixed throughout the fusion. For a current prefix $\fat y$, let $\mathcal Q_{\fat y}$ contain every admissible exact trace from $c$ to its terminal cut following its Lift. The invariant is largeness of the rows $h$ for which $hq\in\mathcal O$ for every $q\in\mathcal Q_{\fat y}$. Repeating only a condition on the immediately preceding head does not establish this invariant.}
+\todo[inline]{Stevo\v sek: The simultaneous line proof needs saturation under every finite continuation, with the originally chosen occurrence of each profile fixed. Equality of two bottom coordinates does not identify their actual successor codes. The new replay-coherence lemmas track the actual recorded edges, including those bottom coordinates; the common-tail identity must be assembled from these pointwise facts. Raw successor tables need not themselves be admissible: impose admissibility only on the final composites.}
+\fi
+}
+
+\newcommand{\fatvfourFusionReview}{%
+\ifshowvalidation
+\todo[inline]{Stevo\v sek: Process finite batches of occurring heads ending at each currently frozen cut, preserving that whole prefix while treating the batch. State avoidance relative to the current thinning. If the construction never stops, every head in the fusion limit occurs in the batch at its preserved terminal cut. To obtain a pair good for all old traces after exact-depth persistence, apply the simultaneous lemma to the finite family of composites $rq$, with $r$ an intervening high trace and $q\in\mathcal Q_{\fat y}$. Both directions of the raw exact-trace update are required.}
+\fi
+}
+
+\newcommand{\fatvfourCoverageReview}{%
+\ifshowvalidation
+\fatvfourcheck{SuccessorTree/FatTree/A4Coverage.lean}{oneBlock\_mem\_of\_all\_fixedTraceGoodRows}
+\todo[inline]{Stevo\v sek: The final coverage implication is now checked, with the all-exact-traces invariant as an explicit hypothesis. An arbitrary geometric row ending at depth $m+1$ factors as $v_mq$, where $q$ is an exact trace of the preceding prefix from the original cut $c$. The invariant then gives its colour; no factorisation through the first chosen head is needed. The present fusion must still be strengthened to establish that invariant. The checked last-block factorisation currently assumes $c>0$; at $c=0$, distinguish the presence or absence of a root-moving letter. Finally, A3 transfers the literal-stem conclusion back to the original depth cone.}
+\fi
+}
