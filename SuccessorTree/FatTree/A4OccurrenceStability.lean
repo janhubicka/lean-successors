@@ -130,7 +130,7 @@ theorem replayLetter_eq_fixed
     R.reachable alpha.1 alpha.2 halpha
   unfold replayLetter
   dsimp only
-  congr 1
+  congr 1 <;> exact hlevel
 
 end ProfileReplayState
 end SuccessorTree.SMTree.FatTree
