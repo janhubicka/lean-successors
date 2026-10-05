@@ -2,90 +2,139 @@
 
 ## Verified checkpoint
 
-At `01b40dbe3495fc655e8f9b5f3400aafed86415da`, the Review A4 workflow
-[37354774029](https://github.com/janhubicka/lean-successors/actions/runs/37354774029)
-passed its build and all 14 transitive axiom reports. Only `propext`,
-`Classical.choice`, and `Quot.sound` occur. The argument does not assume A4,
-Ellentuck, EA, global pruning, or inverse closure of the monoid.
+At `10d0f5fcd92ccd98cb8284b33860bfdfabbfdd36`, the Review A4 workflow
+[37359516130](https://github.com/janhubicka/lean-successors/actions/runs/37359516130)
+passed its proof build and all **32 transitive axiom reports**. Only
+`propext`, `Classical.choice`, and `Quot.sound` occur. The local fan-line
+existence theorem assumes neither A4 nor a saturation/pigeonhole principle.
+Its positive-cut form follows from the SM-tree axioms and the already
+formalized finite Hales--Jewett theorem.
 
-This is a certificate for the statements and their displayed hypotheses,
-not an unconditional certificate for the whole A4 theorem.
+The default library now imports `A4ReviewLine.lean`, so the common-tail,
+forward-M2, and raw-fan colour theorems are included in the full build too.
+This is not yet an unconditional certificate for the whole A4 theorem:
+`ReviewGoodPairPrinciple` remains an explicit hypothesis of the separate
+global fusion endpoint.
 
-## What is now proved
+## The local combinatorial theorem is now proved
 
-`A4PairPersistence.lean` proves `persistentAcceptedPair_of_dense_pairs`.
-The accepted set of second blocks is allowed to depend on the first block.
-If every stem-preserving refinement contains an accepted two-block pair,
-there is an accepted first block whose accepted continuations are large
-below a literal realization of that block.
+`A4ReviewReplay.lean` proves the pointwise common-tail identity. Constants
+use their original recorded occurrence; later parameter symbols repeat the
+actual first-parameter edge. The induction keeps that first-parameter
+endpoint as an ancestor of the current point. This proves the identity at
+EVERY trace coordinate, including bottom coordinates. No equality between
+two bottom profiles is used to identify successor codes.
 
-The proof replaces a global enumeration by finite batches at preserved
-depths. At depth d, finitely many heads can end at the current cut, by A2.
-If a head has no large continuation, A3 lifts an avoiding refinement below
-that head to an ambient refinement preserving the whole depth-d prefix.
-Process the whole finite batch, then move to the next depth. If this never
-finds a persistent head, closedness gives a fusion limit. A good pair in
-that limit has its first block at some exact depth d. That head was in the
-batch processed at d and its second block was eliminated, a contradiction.
-Occurrence and avoidance are transported by geometric reductions; there is
-no assumption that every reduction factors through a chosen representative.
+`A4ReviewForward.lean` proves the forward-M2 representation step. A raw
+successor table e is not assumed admissible. Suppose only that its canonical
+image theta = h^+ e is admissible. Choose one recorded profile and transport
+its replay letter through the current ambient row. Call the resulting
+letter C. It skips only the image level of h, and C h agrees on the trace
+images with the next reachable history state. The FORWARD composite C theta
+is admissible. Its predecessors at the next cut are the corresponding
+history points. M2 extracts a one-level letter realizing this successor
+image. Since this is a finite continuation of the globally saturated
+collector, its full profile was already seen. The desired raw fan occurs
+at its selected coordinate.
 
-`A4ReviewFusion.lean` implements the final fixed-source trace fusion.
-Keep the original source cut c, initial height n, and accepted set O fixed.
-For each current prefix y, keep ALL exact admissible traces from c through
-y, not merely the trace through the most recently chosen head. The large
-set at y consists of rows h for which every composite hq belongs to O.
-The already proved exact trace update identifies the accepted continuation
-set after h. Pair persistence selects h while preserving largeness for the
-entire updated trace family. Dependent recursion and metric fusion then
-construct an infinite reduction with every selected row good after every
-trace of its preceding prefix.
+The auxiliary theorem `review_letter_for_admissible_successors` formalizes
+this extraction without requiring the predecessor table itself to be an
+M-map. The source cut may be zero in this auxiliary theorem. Neither the
+raw table nor a pullback of an admissible map is silently declared admissible.
+Using a transported replay letter instead of a separately identified total
+duplication map simplifies the review's forward argument without changing
+its action on the relevant trace images.
 
-The finite-prefix formulation `ReviewStepGood` is deliberately used in the
-limit argument: its truth depends only on a preserved finite prefix. The
-proof then converts it to the ambient-row formulation required by
-`oneBlock_mem_of_all_fixedTraceGoodRows`. Last-block factorization, not a
-first-head factorization, covers arbitrary geometric one-step extensions.
+`A4ReviewFan.lean` closes the common tail with the final ambient row and
+proves equality of actual admissible approximations with the evaluated
+Hales--Jewett words. The vector colouring therefore yields, simultaneously
+for all traces q and all admissible canonical raw-fan images theta = h^+ e,
 
-The endpoint `review_fixedStemPigeonhole_positive` is therefore proved from
-`ReviewGoodPairPrinciple`, for a positive original source cut. The not-large
-case is handled by immediate avoidance; no extra partition assumption is
-needed.
+    chi(h' theta) = chi(h q).
+
+The hypotheses do NOT restrict raw e to admissible letters. In the intended
+all-trace update, theta is already an admissible exact trace, so this form
+avoids an unnecessary extra truncation of the final composite.
+
+`A4ReviewLine.lean` constructs the saturated history and the nonempty
+alphabet and packages the result as `ReviewFanLine`. The head and the common
+tail have geometric stem certificates inside the ambient fat tree; their
+middle cuts agree. The tail is certified over the whole ambient middle
+level, not only over the finitely many trace images.
+
+The theorem `exists_reviewFanLine_of_sourceLetter` requires just one
+admissible letter at the initial ambient cut. The theorem
+`exists_reviewFanLine_positive` obtains that letter directly from M3 at a
+positive cut. Thus the local simultaneous fan construction is no longer a
+postulated lemma. The root-moving zero-cut version can use a root letter;
+the root-fixed case is treated separately by the existing root lemmas.
+
+## The global persistence and fusion are also proved
+
+`A4PairPersistence.lean` proves `persistentAcceptedPair_of_dense_pairs` for
+an accepted continuation set depending on its first block. If every
+stem-preserving refinement contains an accepted pair, there is an accepted
+head with a large accepted continuation below a literal realization.
+
+The proof replaces the review's global enumeration by finite batches at
+preserved depths. A2 makes the batch finite. A3 lifts an avoiding refinement
+below each head to an ambient refinement preserving the whole current
+prefix. If every batch can be eliminated, metric closedness gives a fusion
+limit. Any good pair in that limit has its first block at an exact depth d;
+that head was in the depth-d batch and its second block was eliminated.
+This contradiction proves persistence. The argument does not use A4.
+
+`A4ReviewFusion.lean` implements the fixed-source all-trace invariant. Keep
+the original source cut c, initial height n, and accepted set O fixed. At a
+current prefix y, retain ALL admissible exact traces from c through y. The
+large set at y consists of rows h for which every composite hq belongs to O.
+The verified exact-trace update identifies the accepted continuation set.
+Pair persistence selects h while keeping the whole updated set large.
+Dependent recursion and closed fusion construct the infinite reduction.
+
+The finite-prefix predicate `ReviewStepGood` makes preservation in the
+limit explicit. Last-block factorization, not a first-head factorization,
+then covers arbitrary geometric one-step extensions at a positive original
+source cut. The endpoint `review_fixedStemPigeonhole_positive` is proved
+from `ReviewGoodPairPrinciple`; when O is not large, immediate avoidance
+supplies the other colour alternative.
 
 ## Exact remaining proof boundary
 
-`ReviewGoodPairPrinciple` is a DEFINITION of the local finite-prefix
-`trace-good-pair` statement, not an axiom and not yet a proved theorem. It
-asks for two geometrically compatible blocks, with the first good for the
-current trace family and the second good for the entire updated family.
-The global persistence/fusion argument from this local statement is no
-longer missing.
+`ReviewGoodPairPrinciple` is a definition of the local large-set
+`trace-good-pair` statement, not a theorem or an axiom. Its derivation from
+the now proved simultaneous fan-line theorem still needs to be integrated:
 
-The local proof uses simultaneous raw-successor-fan profiles. Raw tables
-must NOT be required to be admissible. Profile saturation must hold under
-all finite continuations, with original recorded occurrences retained.
-The common-tail identity must be justified by actual recorded successor
-codes, including coordinates where the optional profile is bottom.
-`A4ReviewReplay.lean` develops this pointwise identity; its validation is
-tracked separately from the 14-report fusion checkpoint above.
+1. Apply exact-depth persistence to the current large good-row set. Form
+   the finite composite trace family {p q}, with p running over the exact
+   traces to the preserved depth and q over the original prefix traces.
+2. Apply `exists_reviewFanLine_positive` (or the source-letter form) to
+   this family. Use the persistent large-set witness to select the first
+   block through the constructed head, and use last-block factorization.
+3. Transport each raw trace update through that factorization and splice
+   the common second block geometrically after the selected first block.
+   The simultaneous fan-colour theorem then supplies the complete updated
+   trace-good condition, not merely the condition on the last selected head.
 
-After common-tail correctness, the forward-saturation argument must show
-that every admissible raw-fan composite is represented by a seen profile.
-Only then can the Hales--Jewett colour identity imply the complete local
-good-pair statement. Do not promote an identity valid only for admissible
-letters to this raw-table conclusion.
+The empty composite-family case must be handled explicitly. The
+root-moving original-source-cut-zero coverage also needs the existing
+last-block factorization generalized to use successors supplied by a root
+letter instead of positivity. The root-fixed case is already handled by
+`A4RootPigeonhole.lean`.
 
-The root-moving source-cut-zero case also needs the last-block coverage
-argument with successors supplied by a root-moving letter. The root-fixed
-case is already handled by `A4RootPigeonhole.lean`. Positivity in the current
-coverage interface must not silently be dropped.
+Once these steps prove the local good-pair principle and zero-cut coverage,
+the checked global fusion, A3 transfer, metric closedness, and the audited
+abstract Ellentuck endpoint provide the final theorem. Do not mark A4 or
+the fat-tree Ellentuck theorem unconditional before that linkage is checked.
+In particular, none of this certifies the old displayed fat-line equality
+in `lem:4andy`, which the alternative proof deliberately avoids.
 
 ## Manuscript annotations
 
-The finite-batch proof is a replacement for the enumeration/termination
-paragraph in `lem:fixlevel` and applies to the dependent continuation family
-in the review's `trace-persistence` lemma. The final A4 paragraph should keep
-the original cut fixed and quantify over every exact trace of each prefix.
-Add validation notes for these checked implications, but retain a partial
-marker on A4 and the fat-tree Ellentuck theorem until the local good-pair
-principle and the remaining root coverage are discharged.
+`manuscript/a4-review-validation.tex` supplies isolated validation/TODO
+macros. The finite-batch note belongs at `lem:fixlevel`. The simultaneous
+raw-fan replacement note belongs at `lem:fatpigeonhole1`, not as a validation
+of the false preceding fat-line equality. The all-trace note belongs at
+`prop:A4`. These annotations preserve the manuscript's original prose and
+its existing `validation.tex`; they record both the new certificates and
+the remaining local-to-global obligation.
