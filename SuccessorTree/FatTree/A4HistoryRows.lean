@@ -93,6 +93,24 @@ theorem headRow_representative_agrees
     (U.row (a + i)).representative H (P.toMMap x)
   rw [asRow_representative_agrees H U a i P x hx]
 
+/-- The same action through the ambient canonical extension. The bound on
+P(x) is proved explicitly; an arbitrary representative is not identified
+with its canonical extension outside the finite row domain. -/
+theorem headRow_representative_eq_rowExtension
+    (U : FatTree H) (a i : Nat)
+    (P : TraceHistoryState H U a i)
+    (x : T) (hx : LevelTree.lev x ≤ U.cut a) :
+    (headRow H U a i P).representative H x =
+      U.rowExtension H (a + i) (P.toMMap x) := by
+  have hPx : LevelTree.lev (P.toMMap x) ≤ U.cut (a + i) := by
+    rcases lt_or_eq_of_le hx with hlt | heq
+    · rw [P.fixesBelow x hlt]
+      exact (Nat.le_of_lt hlt).trans
+        ((U.cut_strictMono H).monotone (by omega))
+    · exact Nat.le_of_eq (P.level_apply H U a i heq)
+  exact (headRow_representative_agrees H U a i P x hx).trans
+    (U.rowExtension_agrees H (a + i) (P.toMMap x) hPx).symm
+
 /-- The first block ends at the last image level of the corresponding ambient
 row. -/
 theorem headRow_rowEndLevel
