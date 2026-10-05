@@ -171,6 +171,19 @@ theorem review_fixedStemPigeonhole_of_sourceLetter
       exists_avoiding_refinement_of_not_large H hlarge
     exact ⟨V, hVU, hyV, Or.inr havoid⟩
 
+/-- If a source cut has no one-level letter, then M3 forces that cut to
+be zero and every row based there is the identity root row. -/
+theorem review_rows_eq_of_no_sourceLetter
+    (c : Nat) (hno : ¬ Nonempty (OneLevelLetter H c))
+    (g k : AM H c 1) : g = k := by
+  have hc : c = 0 := by
+    by_contra hne
+    have hpos : 0 < c := Nat.pos_of_ne_zero hne
+    exact hno ⟨duplicateHistoryLetter H 0 c hpos⟩
+  subst c
+  exact (H.rootRow_eq_id1_of_no_rootLetter hno g).trans
+    (H.rootRow_eq_id1_of_no_rootLetter hno k).symm
+
 /-- Full geometric fixed-stem pigeonhole theorem.  If there is no source
 letter, M3 forces the source cut to be zero and every root row is the same;
 then the original ambient tree is already homogeneous. -/
@@ -184,33 +197,8 @@ theorem review_fixedStemPigeonhole
   by_cases hletter : Nonempty (OneLevelLetter H y.terminalCut)
   · rcases hletter with ⟨Esource⟩
     exact review_fixedStemPigeonhole_of_sourceLetter H y U hyU Esource O
-  · have hzero : y.terminalCut = 0 := by
-      by_contra hne
-      have hpos : 0 < y.terminalCut := Nat.pos_of_ne_zero hne
-      exact hletter ⟨duplicateHistoryLetter H 0 y.terminalCut hpos⟩
-    have hno0 : ¬ Nonempty (OneLevelLetter H 0) := by
-      simpa only [hzero] using hletter
-    have hrows : ∀ g k : AM H y.terminalCut 1, g = k := by
-      intro g k
-      let cg : AM H 0 1 := FiniteFatTree.castTraceRow H hzero g
-      let ck : AM H 0 1 := FiniteFatTree.castTraceRow H hzero k
-      have hcg : cg = AM.id1 H 0 := H.rootRow_eq_id1_of_no_rootLetter hno0 cg
-      have hck : ck = AM.id1 H 0 := H.rootRow_eq_id1_of_no_rootLetter hno0 ck
-      have hcast : cg = ck := hcg.trans hck.symm
-      have hinvg :
-          FiniteFatTree.castTraceRow H hzero.symm
-              (FiniteFatTree.castTraceRow H hzero g) = g := by
-        cases hzero
-        rfl
-      have hinvk :
-          FiniteFatTree.castTraceRow H hzero.symm
-              (FiniteFatTree.castTraceRow H hzero k) = k := by
-        cases hzero
-        rfl
-      calc
-        g = FiniteFatTree.castTraceRow H hzero.symm cg := hinvg.symm
-        _ = FiniteFatTree.castTraceRow H hzero.symm ck := congrArg _ hcast
-        _ = k := hinvk
+  · have hrows : ∀ g k : AM H y.terminalCut 1, g = k :=
+      review_rows_eq_of_no_sourceLetter H y.terminalCut hletter
     let g0 : AM H y.terminalCut 1 := ambientNextRow H y U hyU
     refine ⟨U, reduces_refl H U, hyU, ?_⟩
     by_cases hg0 : g0 ∈ O
