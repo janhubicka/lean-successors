@@ -196,6 +196,247 @@ theorem headRow_oneLift_subset
   rw [hCyRt]
   exact htarget
 
+
+/-- Appending the history head to the ambient prefix at `a` occurs exactly at
+depth `a+i+1` in the original fat tree. -/
+theorem headRow_stemAt
+    (U : FatTree H) (a i : Nat)
+    (P : TraceHistoryState H U a i) :
+    StemAt H
+      (FiniteFatTree.appendRow H (U.initialSegment H a)
+        (headRow H U a i P))
+      U (a + i + 1) := by
+  let x : FiniteFatTree H := U.initialSegment H a
+  let h : AM H x.terminalCut 1 := by
+    change AM H (U.cut a) 1
+    exact headRow H U a i P
+  let V : FiniteFatTree H := FiniteFatTree.appendRow H x h
+  let Z : FiniteFatTree H := U.initialSegment H (a + i + 1)
+
+  have hxheight : x.height = a := rfl
+  have hVheight : V.height = a + 1 := rfl
+  have hZheight : Z.height = a + i + 1 := rfl
+
+  let idx : Fin (V.height + 1) → Fin (Z.height + 1) :=
+    fun k =>
+      if hk : k.1 ≤ a then
+        ⟨k.1, by
+          change k.1 < a + i + 2
+          omega⟩
+      else
+        ⟨a + i + 1, by
+          change a + i + 1 < a + i + 2
+          omega⟩
+
+  have hidxStrict : StrictMono idx := by
+    intro p q hpq
+    by_cases hq : q.1 ≤ a
+    · have hp : p.1 ≤ a := by omega
+      simp [idx, hp, hq]
+      exact hpq
+    · have hqeq : q.1 = a + 1 := by
+        have hqbound : q.1 < a + 2 := by
+          simpa [V, hVheight] using q.2
+        omega
+      have hp : p.1 ≤ a := by omega
+      simp [idx, hp, hq, hqeq]
+      omega
+
+  have hcut : ∀ k : Fin (V.height + 1), V.cut k = Z.cut (idx k) := by
+    intro k
+    by_cases hk : k.1 ≤ a
+    · let ka : Fin (x.height + 1) :=
+        ⟨k.1, by
+          change k.1 < a + 1
+          omega⟩
+      have hkcast : ka.castSucc = k := by
+        apply Fin.ext
+        rfl
+      calc
+        V.cut k = V.cut ka.castSucc := by rw [hkcast]
+        _ = x.cut ka :=
+          FiniteFatTree.appendRow_cut_old H x h ka
+        _ = U.cut k.1 := rfl
+        _ = Z.cut (idx k) := by
+          simp [idx, hk, Z]
+    · have hkeq : k.1 = a + 1 := by
+        have hkbound : k.1 < a + 2 := by
+          simpa [V, hVheight] using k.2
+        omega
+      have hkLast : k = Fin.last V.height := by
+        apply Fin.ext
+        simpa [hVheight] using hkeq
+      calc
+        V.cut k = V.terminalCut := by rw [hkLast]
+        _ = h.rowEndLevel H + 1 :=
+          FiniteFatTree.appendRow_terminalCut H x h
+        _ = U.cut (a + i + 1) := by
+          change
+            (headRow H U a i P).rowEndLevel H + 1 =
+              U.cut (a + i + 1)
+          exact headRow_nextCut H U a i P
+        _ = Z.cut (idx k) := by
+          simp [idx, hk, Z]
+
+  have hlift :
+      ∀ r : Fin V.height,
+        V.oneLift H r
+            (TreeLevel (T := T) (V.cut r.castSucc)) ⊆
+          Z.liftTo H (idx r.castSucc) (idx r.succ)
+            (le_of_lt (hidxStrict (by
+              change r.1 < r.1 + 1
+              omega)))
+            (TreeLevel (T := T) (Z.cut (idx r.castSucc))) := by
+    intro r
+    by_cases hr : r.1 < a
+    · let ra : Fin a := ⟨r.1, hr⟩
+      have hrV : (⟨r.1, by omega⟩ : Fin V.height) = r := Fin.ext rfl
+      have hidx0 : idx r.castSucc =
+          (⟨r.1, by
+            change r.1 < a + i + 2
+            omega⟩ : Fin (Z.height + 1)) := by
+        apply Fin.ext
+        simp [idx]
+        omega
+      have hidx1 : idx r.succ =
+          (⟨r.1 + 1, by
+            change r.1 + 1 < a + i + 2
+            omega⟩ : Fin (Z.height + 1)) := by
+        apply Fin.ext
+        simp [idx]
+        omega
+      have hVprefix :
+          V.initialSegment H a (by
+            rw [hVheight]
+            omega) = x := by
+        dsimp [V]
+        exact FiniteFatTree.appendRow_initialSegment H x h
+      have hVone :
+          (V.initialSegment H a (by
+            rw [hVheight]
+            omega)).oneLift H ra
+              (TreeLevel (T := T) (U.cut r.1)) =
+            V.oneLift H r
+              (TreeLevel (T := T) (U.cut r.1)) := by
+        simpa [ra, hrV] using
+          V.initialSegment_oneLift H a
+            (by rw [hVheight]; omega) ra
+            (TreeLevel (T := T) (U.cut r.1))
+      have hxone :
+          x.oneLift H ra
+              (TreeLevel (T := T) (U.cut r.1)) =
+            U.oneLift H r.1
+              (TreeLevel (T := T) (U.cut r.1)) := by
+        simpa [x, ra] using
+          U.initialSegment_oneLift H a ra
+            (TreeLevel (T := T) (U.cut r.1))
+      have hsource :
+          V.oneLift H r
+              (TreeLevel (T := T) (V.cut r.castSucc)) =
+            U.oneLift H r.1
+              (TreeLevel (T := T) (U.cut r.1)) := by
+        have hVcut0 : V.cut r.castSucc = U.cut r.1 := by
+          rw [hcut r.castSucc, hidx0]
+          rfl
+        rw [hVcut0]
+        rw [← hVone, hVprefix, hxone]
+      have htarget :
+          Z.liftTo H (idx r.castSucc) (idx r.succ)
+              (le_of_lt (hidxStrict (by
+                change r.1 < r.1 + 1
+                omega)))
+              (TreeLevel (T := T) (Z.cut (idx r.castSucc))) =
+            U.oneLift H r.1
+              (TreeLevel (T := T) (U.cut r.1)) := by
+        rw [hidx0, hidx1]
+        have hseg :=
+          U.initialSegment_liftTo H (a + i + 1)
+            (⟨r.1, by omega⟩ : Fin (a + i + 2))
+            (⟨r.1 + 1, by omega⟩ : Fin (a + i + 2))
+            (by omega)
+            (TreeLevel (T := T) (U.cut r.1))
+        change
+          Z.liftTo H
+              (⟨r.1, by omega⟩ : Fin (Z.height + 1))
+              (⟨r.1 + 1, by omega⟩ : Fin (Z.height + 1))
+              _
+              (TreeLevel (T := T) (U.cut r.1)) =
+            _
+        rw [hseg]
+        exact U.liftTo_succ H r.1
+          (TreeLevel (T := T) (U.cut r.1))
+      rw [hsource, htarget]
+    · have hre : r.1 = a := by
+        have hrbound : r.1 < a + 1 := by
+          simpa [V, hVheight] using r.2
+        omega
+      have hrLast : r = Fin.last x.height := by
+        apply Fin.ext
+        simpa [x, hxheight] using hre
+      have hidx0 :
+          idx r.castSucc =
+            (⟨a, by omega⟩ : Fin (Z.height + 1)) := by
+        apply Fin.ext
+        simp [idx, hre]
+      have hidx1 :
+          idx r.succ =
+            Fin.last Z.height := by
+        apply Fin.ext
+        simp [idx, hre, hZheight]
+      have hsource :
+          V.oneLift H r
+              (TreeLevel (T := T) (V.cut r.castSucc)) =
+            H.canonicalExtension
+                ((headRow H U a i P).representative H)
+                (U.cut a) ''
+              ImmediateSuccessors (T := T)
+                (TreeLevel (T := T) (U.cut a)) := by
+        have hVcut0 : V.cut r.castSucc = U.cut a := by
+          rw [hcut r.castSucc, hidx0]
+          rfl
+        rw [hVcut0]
+        dsimp [V, h]
+        rw [hrLast]
+        simpa [x] using
+          FiniteFatTree.appendRow_oneLift_last H x
+            (headRow H U a i P)
+            (TreeLevel (T := T) (U.cut a))
+      have htarget :
+          Z.liftTo H (idx r.castSucc) (idx r.succ)
+              (le_of_lt (hidxStrict (by
+                change r.1 < r.1 + 1
+                omega)))
+              (TreeLevel (T := T) (Z.cut (idx r.castSucc))) =
+            U.liftTo H a (a + i + 1) (by omega)
+              (TreeLevel (T := T) (U.cut a)) := by
+        rw [hidx0, hidx1]
+        simpa [Z, hZheight] using
+          U.initialSegment_liftTo H (a + i + 1)
+            (⟨a, by omega⟩ : Fin (a + i + 2))
+            (Fin.last (a + i + 1))
+            (by omega)
+            (TreeLevel (T := T) (U.cut a))
+      rw [hsource, htarget]
+      exact headRow_oneLift_subset H U a i P
+
+  unfold StemAt
+  refine ⟨?_, ?_⟩
+  · exact ⟨{
+      index := idx
+      index_strict := hidxStrict
+      cut_eq := hcut
+      lift_subset := hlift
+    }⟩
+  · change V.terminalCut = Z.terminalCut
+    have hlastV : V.cut (Fin.last V.height) =
+        Z.cut (idx (Fin.last V.height)) :=
+      hcut (Fin.last V.height)
+    have hidxLast :
+        idx (Fin.last V.height) = Fin.last Z.height := by
+      apply Fin.ext
+      simp [idx, hVheight, hZheight]
+    simpa [FiniteFatTree.terminalCut, hidxLast] using hlastV
+
 end TraceHistoryState
 end FatTree
 end SMTree
