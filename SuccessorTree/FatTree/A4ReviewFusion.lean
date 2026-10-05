@@ -150,9 +150,16 @@ theorem review_all_trace_fusion
       (Y (i + 1)).1.initialSegment H (y.height + (i + 1)) :=
     initialSegment_eq_of_extendsStem H (hVcone (i + 1)).2
   have htarget : y.height + (i + 1) = m + 1 := by omega
-  rw [htarget] at hprefix
-  rw [hprefix]
-  simpa only [hid] using hgood i (Y i)
+  have hselected : ReviewStepGood H y.terminalCut y.height O
+      ((Y (i + 1)).1.initialSegment H (y.height + (i + 1))) :=
+    hgood i (Y i)
+  have hlimit : ReviewStepGood H y.terminalCut y.height O
+      (V.initialSegment H (y.height + (i + 1))) :=
+    (congrArg (ReviewStepGood H y.terminalCut y.height O) hprefix).mpr hselected
+  have hdepth : V.initialSegment H (y.height + (i + 1)) =
+      V.initialSegment H (m + 1) :=
+    congrArg (fun d => V.initialSegment H d) htarget
+  exact (congrArg (ReviewStepGood H y.terminalCut y.height O) hdepth).mp hlimit
 
 /-- Transport the good-row statement across equality of finite prefixes,
 using heterogeneous equality only for the indexed row itself. -/
@@ -194,7 +201,11 @@ theorem review_good_row_of_good_prefix
   have hr : HEq h (U.row m) := by
     have hr0 := (hzU.2 (Fin.last z.height)).trans
       (FiniteFatTree.appendRow_row_last H z h)
-    simpa only [Fin.val_last, hzheight] using hr0.symm
+    have hrow_congr : ∀ {a b : Nat}, a = b → HEq (U.row a) (U.row b) := by
+      intro a b hab
+      cases hab
+      rfl
+    exact hr0.symm.trans (hrow_congr hzheight)
   exact review_goodRows_transport H y.terminalCut y.height O hz.symm hr
     hn hym hs (initialSegment_traceSource_of_extendsStem H y U hyU m hym) hgood
 
