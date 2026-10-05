@@ -593,6 +593,145 @@ theorem exists_globallySaturated
   exists_globallySaturated_from H U a trace hend
     (initial H U a trace)
 
+
+/-- A recorded profile occurrence necessarily lies strictly before the current
+history cut.  The proof reads one trace coordinate and one source-level node;
+the transported occurrence endpoint is one level above the recorded source
+level and lies below the current history endpoint. -/
+theorem ProfileOccurrence.level_lt_current
+    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    {i : Nat}
+    (P : TraceHistoryState H U a i)
+    {alpha : FanProfile H C trace}
+    (occ : ProfileOccurrence H U a trace P alpha) :
+    occ.level < U.cut (a + i) := by
+  classical
+  let j : C := Classical.choice (inferInstance : Nonempty C)
+  obtain ⟨x0, hx0⟩ := H.level_nonempty c
+  let x : InitialNode T c := ⟨x0, Nat.le_of_eq hx0⟩
+  have hqlev :
+      LevelTree.lev ((trace j).representative H x.1) =
+        (trace j).rowEndLevel H := by
+    calc
+      LevelTree.lev ((trace j).representative H x.1) =
+          H.levelMap ((trace j).representative H).map
+            (LevelTree.lev x.1) :=
+        (H.levelMap_eq ((trace j).representative H).map
+          (a := x.1)).symm
+      _ = H.levelMap ((trace j).representative H).map c := by
+        rw [hx0]
+      _ = (trace j).rowEndLevel H := rfl
+  have hbase :
+      LevelTree.lev
+          (occ.base ((trace j).representative H x.1)) =
+        occ.level := by
+    calc
+      LevelTree.lev
+          (occ.base ((trace j).representative H x.1)) =
+          H.levelMap occ.base.map
+            (LevelTree.lev ((trace j).representative H x.1)) :=
+        (H.levelMap_eq occ.base.map
+          (a := (trace j).representative H x.1)).symm
+      _ = H.levelMap occ.base.map ((trace j).rowEndLevel H) := by
+        rw [hqlev]
+      _ = occ.level := occ.base_top j
+  have hletter :
+      LevelTree.lev
+          (occ.letter.toMMap
+            (occ.base ((trace j).representative H x.1))) =
+        occ.level + 1 :=
+    occ.letter.level_succ_at H hbase
+  have hsource :
+      LevelTree.lev ((trace j).representative H x.1) =
+        U.cut a := by
+    rw [hqlev, hend j]
+  have hcurrent :
+      LevelTree.lev (P ((trace j).representative H x.1)) =
+        U.cut (a + i) :=
+    P.level_apply H U a i hsource
+  have hle :=
+    LevelTree.level_le_of_le
+      (occ.endpoint_below j x hx0)
+  rw [hletter, hcurrent] at hle
+  omega
+
+/-- Replay a previously witnessed complete fan profile at the current history
+cut using the M3 duplication attached to that occurrence. -/
+noncomputable def ProfileCollector.replaySeenLetter
+    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (alpha : FanProfile H C trace)
+    (halpha : alpha ∈ K.seen) :
+    OneLevelLetter H (U.cut (a + K.index)) :=
+  duplicateHistoryLetter H
+    (K.occurrence alpha halpha).level
+    (U.cut (a + K.index))
+    (ProfileOccurrence.level_lt_current
+      H U a trace hend K.state (K.occurrence alpha halpha))
+
+/-- Replaying a seen profile reproduces that complete option-valued profile
+at the current history state.  In particular, bottom coordinates remain
+bottom, which is the point needed for the later raw-fan accounting step. -/
+theorem ProfileCollector.historyFanProfile_replaySeenLetter
+    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (alpha : FanProfile H C trace)
+    (halpha : alpha ∈ K.seen) :
+    historyFanProfile H trace K.state.toMMap
+        (K.replaySeenLetter H U a trace hend alpha halpha) =
+      alpha := by
+  classical
+  funext j
+  let occ := K.occurrence alpha halpha
+  let r := occ.level
+  let m := U.cut (a + K.index)
+  have hrm : r < m :=
+    ProfileOccurrence.level_lt_current
+      H U a trace hend K.state occ
+  have hPtop :
+      H.levelMap K.state.toMMap.map ((trace j).rowEndLevel H) = m := by
+    rw [hend j]
+    exact K.state.topLevel
+  have hdup :=
+    historyProfile_duplicate H
+      (trace j) occ.base K.state.toMMap occ.letter
+      hrm (occ.base_top j) hPtop
+      (fun x hx => occ.endpoint_below j x hx)
+  have hocc :=
+    congrFun occ.profile_eq j
+  change
+    historyProfile H (trace j) K.state.toMMap
+        (duplicateHistoryLetter H r m hrm) =
+      alpha j
+  exact hdup.trans hocc
+
+/-- Advancing by a replayed seen profile leaves the set of witnessed profiles
+unchanged. -/
+theorem ProfileCollector.advanceAny_replaySeen_seen
+    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (alpha : FanProfile H C trace)
+    (halpha : alpha ∈ K.seen) :
+    (advanceAny H U a trace hend K
+      (K.replaySeenLetter H U a trace hend alpha halpha)).seen =
+      K.seen := by
+  classical
+  rw [advanceAny_seen]
+  rw [K.historyFanProfile_replaySeenLetter H U a trace hend alpha halpha]
+  exact Finset.insert_eq_of_mem halpha
+
 end ProfileCollector
 
 end FatTree
