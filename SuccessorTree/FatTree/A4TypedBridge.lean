@@ -23,7 +23,7 @@ namespace FatTree
 variable (H : SMTree S)
 
 /-- Typed version of appending one row. -/
-def appendApprox {n : Nat} (a : (approximationSystem H).Approx n)
+noncomputable def appendApprox {n : Nat} (a : (approximationSystem H).Approx n)
     (g : AM H a.1.terminalCut 1) :
     (approximationSystem H).Approx (n + 1) :=
   ⟨FiniteFatTree.appendRow H a.1 g, by
