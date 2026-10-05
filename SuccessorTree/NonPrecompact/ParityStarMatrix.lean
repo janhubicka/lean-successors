@@ -43,20 +43,27 @@ theorem sum_row_parityStarMatrix
     (∑ j, parityStarMatrix row col i0 j0 i j) = row i := by
   by_cases hi : i = i0
   · subst i
+    let C : F2 := ∑ j ∈ (Finset.univ : Finset J).erase j0, col j
     rw [← Finset.sum_erase_add
       (Finset.univ : Finset J)
       (fun j => parityStarMatrix row col i0 j0 i0 j)
       (by simp)]
     have hsum :
         (∑ j ∈ (Finset.univ : Finset J).erase j0,
-            parityStarMatrix row col i0 j0 i0 j) =
-          ∑ j ∈ (Finset.univ : Finset J).erase j0, col j := by
+            parityStarMatrix row col i0 j0 i0 j) = C := by
+      dsimp [C]
       apply Finset.sum_congr rfl
       intro j hj
       have hj0 : j ≠ j0 := (Finset.mem_erase.mp hj).1
       simp [parityStarMatrix, hj0]
-    rw [hsum]
-    simp [parityStarMatrix]
+    have hcenter :
+        parityStarMatrix row col i0 j0 i0 j0 = row i0 + C := by
+      simp [parityStarMatrix, C]
+    rw [hsum, hcenter]
+    calc
+      C + (row i0 + C) = row i0 + (C + C) := by abel
+      _ = row i0 := by
+        rw [CharTwo.add_self_eq_zero, add_zero]
   · rw [← Finset.sum_erase_add
       (Finset.univ : Finset J)
       (fun j => parityStarMatrix row col i0 j0 i j)
@@ -115,7 +122,7 @@ theorem sum_col_parityStarMatrix
       _ = (C + col j0) + C := by rw [htot']
       _ = col j0 := by
         rw [show (C + col j0) + C = col j0 + (C + C) by abel]
-        simp
+        rw [CharTwo.add_self_eq_zero, add_zero]
   · rw [← Finset.sum_erase_add
       (Finset.univ : Finset I)
       (fun i => parityStarMatrix row col i0 j0 i j)
