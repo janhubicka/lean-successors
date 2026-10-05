@@ -1,8 +1,9 @@
-import SuccessorTree.FatTree.A4PairPersistence
+import SuccessorTree.FatTree.A4ReviewFusion
 
 open SuccessorTree.SMTree.FatTree
 
 #check persistentAcceptedPair_of_dense_pairs
+#check review_fixedStemPigeonhole_positive
 #print axioms oneBlockOccurs_of_reduces
 #print axioms oneBlockOccurs_of_pair
 #print axioms appendRow_injective
@@ -11,3 +12,9 @@ open SuccessorTree.SMTree.FatTree
 #print axioms eliminate_accepted_pair_batch
 #print axioms eliminate_all_accepted_pairs_at_depth
 #print axioms persistentAcceptedPair_of_dense_pairs
+#print axioms review_trace_persistence
+#print axioms review_all_trace_fusion
+#print axioms review_goodRows_transport
+#print axioms review_good_row_of_good_prefix
+#print axioms review_large_set_homogeneous
+#print axioms review_fixedStemPigeonhole_positive
