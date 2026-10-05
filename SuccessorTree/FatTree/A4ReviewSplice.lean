@@ -15,6 +15,12 @@ universe u v
 variable {T : Type u} {Label : Type v} [PartialOrder T] [LevelTree T]
 variable {S : STree T Label} (H : SMTree S)
 
+private theorem review_row_heq_of_index_eq
+    (B : FatTree H) {i j : Nat} (hij : i = j) :
+    HEq (B.row i) (B.row j) := by
+  cases hij
+  rfl
+
 /-- A tail geometrically legal after the full prefix at a cut is legal
 after any finite geometric stem ending at that cut. -/
 theorem review_occurs_after_matching_stem
@@ -36,12 +42,9 @@ theorem review_occurs_after_matching_stem
   have hCB : Reduces H C B := splice_reduces H hxB
   have hCU : Reduces H C U := reduces_trans H hCB hBU
   have hrowC : HEq (C.row x.height) (B.row a) := by
-    have hcutC : B.cut a = (splice H x B a hc).cut x.height :=
-      (splice_cut_height H x B a hc).symm
-    have hcast : HEq (castRow H hcutC (B.row a)) (B.row a) :=
-      castRow_heq H hcutC (B.row a)
-    change HEq ((splice H x B a hc).row x.height) (B.row a)
-    simpa [splice, Nat.sub_self, Nat.add_zero] using hcast
+    have h := splice_row_ge H x B a hc (i := x.height) le_rfl
+    have hidx : a + (x.height - x.height) = a := by omega
+    exact h.trans (review_row_heq_of_index_eq H B hidx)
   have hrowB : HEq (B.row a) k := by
     have h := (hBstem.2 (Fin.last a)).trans
       (FiniteFatTree.appendRow_row_last H (U.initialSegment H a) k)
