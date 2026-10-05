@@ -18,6 +18,17 @@ universe u v w
 variable {T : Type u} {Label : Type v} [PartialOrder T] [LevelTree T]
 variable {S : STree T Label} (H : SMTree S)
 
+private theorem review_map_fixed {A : Type*} (f : A → A) (xs : List A)
+    (h : ∀ x ∈ xs, f x = x) : xs.map f = xs := by
+  induction xs with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : f x = x := h x (by simp)
+      have hxs : ∀ y ∈ xs, f y = y := by
+        intro y hy
+        exact h y (by simp [hy])
+      simp only [List.map_cons, hx, ih hxs]
+
 /-- A canonical ambient row transports a successor edge at its source cut
 without changing the edge's parameters or character. -/
 theorem review_rowExtension_succ
@@ -36,7 +47,7 @@ theorem review_rowExtension_succ
     rw [U.rowExtension_level_succ H i, U.rowExtension_level_at_cut H i]
     exact (U.row_cut i).symm
   have hparams : params.map R.map = params := by
-    apply List.map_id' 
+    apply review_map_fixed
     intro p hp
     apply U.rowExtension_fixesBelow H i
     have hlt := S.parameter_level_lt he hp
@@ -59,6 +70,7 @@ variable (U : FatTree H) (a : Nat) (trace : C → AM H c 1)
 variable (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
 variable (K : ProfileCollector H U a trace)
 
+include hend in
 private theorem review_trace_level
     (j : C) (x : InitialNode T c) (hx : LevelTree.lev x.1 = c) :
     LevelTree.lev ((trace j).representative H x.1) = U.cut a := by
@@ -83,12 +95,20 @@ theorem review_common_const_letter
     exact beta.2
   have hlevel := ProfileCollector.reachable_occurrence_level H hend
     Rstar.reachable beta.1 beta.2 hbeta
+  have hnew := fixed_occurrence_level_lt H hend R beta
+  have hold : (Rstar.collector.occurrence beta.1 hbeta).level <
+      U.cut (firstParameterIndex H Rstar + 1 + r) := by
+    calc
+      (Rstar.collector.occurrence beta.1 hbeta).level =
+          (K.occurrence beta.1 beta.2).level := hlevel
+      _ < U.cut (a + R.collector.index) := hnew
+      _ = U.cut (firstParameterIndex H Rstar + 1 + r) := congrArg U.cut hindex
   rw [replayLetter_eq_fixed H hend R beta]
   change H.duplicate (Rstar.collector.occurrence beta.1 hbeta).level
-      (U.cut (firstParameterIndex H Rstar + 1 + r)) _ =
+      (U.cut (firstParameterIndex H Rstar + 1 + r)) hold =
     H.duplicate (K.occurrence beta.1 beta.2).level
-      (U.cut (a + R.collector.index)) _
-  exact review_duplicate_congr H _ _ hlevel (congrArg U.cut hindex.symm)
+      (U.cut (a + R.collector.index)) hnew
+  exact review_duplicate_congr H hold hnew hlevel (congrArg U.cut hindex.symm)
 
 /-- The first parameter edge carries the code of its original recorded
 occurrence, even when that profile coordinate is bottom. -/
@@ -181,7 +201,7 @@ theorem review_common_letter_agrees
         omega
       have hcommon : S.succ b code.params code.char =
           some ((lineTailLetter H U a trace hend K Rstar r .parameter).toMMap b) := by
-        change S.succ b code.params code.char = some (H.duplicate ell m _ b)
+        change S.succ b code.params code.char = some (H.duplicate ell m hlt b)
         exact H.duplicate_rule ell m hlt parent b code.params code.char child
           hparent hb hedge hbelow
       have hactual := replayLetter_rule_from_original H hend R alpha j x hx
@@ -268,7 +288,10 @@ theorem reviewTailEval_eq_foldl_state
   | cons s xs ih =>
       intro Q z
       have h := ih (LineTailState.step H U a trace hend K Rstar Q s) z
-      simpa only [reviewTailEval, List.foldl_cons, LineTailState.step_state_apply] using h
+      change reviewTailEval H U a trace hend K Rstar (Q.index + 1) xs
+        ((LineTailState.step H U a trace hend K Rstar Q s).state z) = _ at h
+      rw [LineTailState.step_state_apply] at h
+      exact h
 
 /-- The common second block replays every evaluated suffix at every trace.
 In particular this includes coordinates labelled bottom by the profile. -/
