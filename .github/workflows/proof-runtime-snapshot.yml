@@ -44,6 +44,7 @@ jobs:
           git rev-parse HEAD > runtime-snapshot/COMMIT
           du -sh runtime-snapshot/*
           tar -cf - -C runtime-snapshot . | split -b 180M - runtime-part-
+          test ! -e runtime-part-ap
           sha256sum runtime-part-* > runtime-SHA256SUMS
       - uses: actions/upload-artifact@v4
         with:
@@ -91,6 +92,48 @@ jobs:
         with:
           name: proof-runtime-ah
           path: runtime-part-ah
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ai
+          path: runtime-part-ai
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-aj
+          path: runtime-part-aj
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ak
+          path: runtime-part-ak
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-al
+          path: runtime-part-al
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-am
+          path: runtime-part-am
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-an
+          path: runtime-part-an
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ao
+          path: runtime-part-ao
           compression-level: 0
           retention-days: 2
       - uses: actions/upload-artifact@v4
