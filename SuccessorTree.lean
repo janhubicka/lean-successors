@@ -85,3 +85,5 @@ import SuccessorTree.NonPrecompact.SymplecticAmalgam
 import SuccessorTree.NonPrecompact.BananaAmalgam
 
 import SuccessorTree.NonPrecompact.SymplecticQuadraticPolar
+
+import SuccessorTree.NonPrecompact.CompletionAutomorphism
