@@ -40,3 +40,21 @@ open SuccessorTree.SMTree.FatTree
 #print axioms ReviewFanLine.depths_strict
 #print axioms exists_reviewFanLine_of_sourceLetter
 #print axioms exists_reviewFanLine_positive
+
+/- The local endpoint must elaborate from the SM-tree data and a positive
+source cut. Adding an A4, good-pair, or saturation premise must break this
+type-level regression test rather than silently strengthen the theorem. -/
+section InterfaceGuard
+open SuccessorTree SuccessorTree.SMTree
+universe u1 v1 w1 z1
+variable {T : Type u1} {Label : Type v1} [PartialOrder T] [LevelTree T]
+variable {S : STree T Label}
+example {c : Nat} {C : Type w1} [Fintype C] [Nonempty C]
+    {κ : Type z1} [Fintype κ]
+    (H : SMTree S) (U : SuccessorTree.SMTree.FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (hpos : 0 < U.cut a) (chi : AM H c 1 → κ) :
+    Nonempty (ReviewFanLine H U a trace hend chi) :=
+  exists_reviewFanLine_positive H U a trace hend hpos chi
+end InterfaceGuard
