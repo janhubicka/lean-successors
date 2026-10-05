@@ -108,7 +108,7 @@ theorem occurrence_level_lt_current
   have hlevle :=
     LevelTree.level_le_of_le hle
   rw [hleft, hright] at hlevle
-  omega
+  exact Nat.lt_of_succ_le hlevle
 
 /-- Replay a seen profile at the current cut by duplicating one of its recorded
 occurrences. -/
