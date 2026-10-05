@@ -13,6 +13,17 @@ universe u v
 variable {T : Type u} {Label : Type v} [PartialOrder T] [LevelTree T]
 variable {S : STree T Label} (H : SMTree S)
 
+/-- Transport both endpoints, the interval bound, and its full source level
+at once. This avoids rewriting an index inside a proof-dependent application. -/
+theorem liftTo_fullLevel_congr (U : FatTree H)
+    {a b a' b' : Nat} (hab : a ≤ b) (hab' : a' ≤ b')
+    (ha : a = a') (hb : b = b') :
+    U.liftTo H a b hab (TreeLevel (T := T) (U.cut a)) =
+      U.liftTo H a' b' hab' (TreeLevel (T := T) (U.cut a')) := by
+  cases ha
+  cases hb
+  rfl
+
 /-- A row whose whole successor lift follows an ambient interval can replace
 that interval, preserving every earlier row and the terminal cut. -/
 theorem appendRow_stemAt_of_oneLift
@@ -88,7 +99,8 @@ theorem appendRow_stemAt_of_oneLift
           U.oneLift H r.1 (TreeLevel (T := T) (U.cut r.1)) := by
         unfold FiniteFatTree.oneLift FatTree.oneLift
         rw [hrow, hcut r.castSucc, hi0]
-      rw [hs, hi0, hi1, U.liftTo_succ H]
+      rw [hs, liftTo_fullLevel_congr H U _ (Nat.le_succ r.1) hi0 hi1,
+        U.liftTo_succ H] <;> exact Set.Subset.refl _
     · have hre : r.1 = a := by omega
       have hi1 : (idx r.succ).1 = b := idx_last _ (by change ¬ r.1 + 1 ≤ a; omega)
       have heq : r = Fin.last x.height := Fin.ext hre
@@ -97,7 +109,7 @@ theorem appendRow_stemAt_of_oneLift
             ImmediateSuccessors (T := T) (TreeLevel (T := T) (U.cut a)) := by
         rw [hcut r.castSucc, hi0, hre, heq]
         exact FiniteFatTree.appendRow_oneLift_last H x h _
-      rw [hs, hi0, hi1, hre]
+      rw [hs, liftTo_fullLevel_congr H U _ (Nat.le_of_lt hab) (hi0.trans hre) hi1]
       exact hlift
   refine ⟨⟨{
     index := idx
