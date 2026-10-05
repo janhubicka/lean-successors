@@ -149,6 +149,33 @@ noncomputable def step
         Q.index Q.state E
   }
 
+
+/-- A common-tail step has the expected explicit action. -/
+@[simp] theorem step_state_apply
+    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
+    (U : FatTree H) (a : Nat)
+    (trace : C → AM H c 1)
+    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
+    (K : ProfileCollector H U a trace)
+    (R : ProfileReplayState H U a trace hend K)
+    (Q : LineTailState H U a trace hend K R)
+    (x : LineSymbol (SeenProfile H K))
+    (z : T) :
+    (step H U a trace hend K R Q x).state z =
+      U.rowExtension H
+        ((firstParameterIndex H R + 1) + Q.index)
+        ((lineTailLetter H U a trace hend K R Q.index x).toMMap
+          (Q.state z)) := by
+  unfold step
+  dsimp only
+  exact TraceHistoryState.step_apply H U
+    (firstParameterIndex H R + 1)
+    Q.index Q.state
+    (by
+      simpa [firstParameterIndex, Nat.add_assoc] using
+        (lineTailLetter H U a trace hend K R Q.index x))
+    z
+
 /-- Process the suffix in left-to-right order. -/
 noncomputable def word
     {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
