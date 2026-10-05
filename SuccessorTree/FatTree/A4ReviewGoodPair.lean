@@ -35,10 +35,10 @@ theorem review_composeAcross_cast_source {c c' d : Nat}
 
 /-- A good pair for any nonempty finite family of exact traces, at a
 positive current cut. Neither the local good-pair lemma nor A4 is assumed. -/
-theorem review_goodPair_finite_family_positive
+theorem review_goodPair_finite_family_of_sourceLetter
     {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
     (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
-    (hpos : 0 < y.terminalCut)
+    (Esource : OneLevelLetter H y.terminalCut)
     (trace : C → AMExact H c y.terminalCut) (O : Set (AM H c 1))
     (hlarge : OneBlockLarge H y U
       {g | ∀ j : C, H.composeAcross (trace j) g ∈ O}) :
@@ -58,20 +58,28 @@ theorem review_goodPair_finite_family_positive
   obtain ⟨A, a, hAU, hyA, hya, hP⟩ := oneBlockLarge_exact_persistent_closed H hyU hlarge
   let R := FiniteFatTree.ExactTrace H (A.initialSegment H a) y.height hya
   letI : Fintype R := Fintype.ofFinite R
-  letI : Nonempty R := review_bridges_nonempty H y A hyA hpos G a hya hP
+  letI : Nonempty R :=
+    review_bridges_nonempty_of_sourceLetter H y A hyA Esource G a hya hP
   let bridge : R → AMExact H y.terminalCut (A.cut a) := reviewBridgeMap H y A hyA a hya
   let family : R × C → AM H c 1 := fun j => H.composeAcross (trace j.2) (bridge j.1).1
   have hend : ∀ j : R × C, (family j).rowEndLevel H = A.cut a := by
     intro j
     exact (review_composeAcross_end H (trace j.2) (bridge j.1).1).trans (bridge j.1).2
-  have hapos : 0 < A.cut a := by
-    have hle : A.cut y.height ≤ A.cut a := (A.cut_strictMono H).monotone hya
-    rw [terminalCut_eq_of_extendsStem H hyA] at hle
-    exact hpos.trans_le hle
+  have hsource_le : y.terminalCut ≤ A.cut a := by
+    calc
+      y.terminalCut = A.cut y.height :=
+        (terminalCut_eq_of_extendsStem H hyA).symm
+      _ ≤ A.cut a := (A.cut_strictMono H).monotone hya
+  let Ecurrent : OneLevelLetter H (A.cut a) := by
+    by_cases heq : y.terminalCut = A.cut a
+    · exact heq ▸ Esource
+    · exact duplicateHistoryLetter H y.terminalCut (A.cut a)
+        (lt_of_le_of_ne hsource_le heq)
   let chi : AM H c 1 → Bool := fun f => decide (f ∈ O)
-  obtain ⟨L⟩ := exists_reviewFanLine_positive H A a family hend hapos chi
+  obtain ⟨L⟩ := exists_reviewFanLine_of_sourceLetter H A a family hend Ecurrent chi
   obtain ⟨p, g, k, hgG, hfactor, hktail, hkA⟩ :=
-    review_persistent_line_witness H y A hyA hpos G a hya hP family hend chi L
+    review_persistent_line_witness_of_sourceLetter H y A hyA Esource
+      G a hya hP family hend chi L
   refine ⟨g, k, hgG, oneBlockOccurs_of_reduces H hkA hAU, ?_⟩
   intro j e theta hraw
   have hterminal : (FiniteFatTree.appendRow H y g).terminalCut = A.cut L.headDepth := by
@@ -101,10 +109,11 @@ theorem review_goodPair_finite_family_positive
 /-- The finite-family good pair instantiated with ALL exact traces of the
 current prefix. The empty trace family is handled directly, without asking
 Hales--Jewett for a nonempty alphabet. -/
-theorem review_goodPair_at_prefix_positive
+theorem review_goodPair_at_prefix_of_sourceLetter
     (n : Nat) (y : FiniteFatTree H) (hn : n ≤ y.height)
     (O : Set (AM H (FiniteFatTree.traceSourceCut H y n hn) 1))
-    (U : FatTree H) (hyU : ExtendsStem H y U) (hpos : 0 < y.terminalCut)
+    (U : FatTree H) (hyU : ExtendsStem H y U)
+    (Esource : OneLevelLetter H y.terminalCut)
     (hlarge : OneBlockLarge H y U
       (FixedTraceGoodRows H (FiniteFatTree.traceSourceCut H y n hn) n y hn rfl O)) :
     ∃ h k,
@@ -118,7 +127,7 @@ theorem review_goodPair_at_prefix_positive
     letI : Nonempty C := hne
     let trace : C → AMExact H c y.terminalCut := exactTraceToAMExact H y n hn
     obtain ⟨g, k, hg, hk, hupdate⟩ :=
-      review_goodPair_finite_family_positive H y U hyU hpos trace O hlarge
+      review_goodPair_finite_family_of_sourceLetter H y U hyU Esource trace O hlarge
     refine ⟨g, k, ⟨hg, ?_⟩, hk⟩
     intro theta q hraw
     let hc := FiniteFatTree.traceSourceCut_appendRow H y g n hn
@@ -152,6 +161,53 @@ theorem review_goodPair_at_prefix_positive
     · intro theta q hraw
       exact False.elim (hne ⟨q⟩)
 
+/-- Positive-cut compatibility wrapper for the finite-family lemma. -/
+theorem review_goodPair_finite_family_positive
+    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
+    (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
+    (hpos : 0 < y.terminalCut)
+    (trace : C → AMExact H c y.terminalCut) (O : Set (AM H c 1))
+    (hlarge : OneBlockLarge H y U
+      {g | ∀ j : C, H.composeAcross (trace j) g ∈ O}) :
+    ∃ (g : AM H y.terminalCut 1)
+      (k : AM H (FiniteFatTree.appendRow H y g).terminalCut 1),
+      (∀ j : C, H.composeAcross (trace j) g ∈ O) ∧
+      OneBlockOccurs H (FiniteFatTree.appendRow H y g) U k ∧
+      ∀ (j : C) (e : RawSuccessorFan H (trace j).1)
+        (theta : AMExact H c (FiniteFatTree.appendRow H y g).terminalCut),
+        (∀ (x : InitialNode T c), LevelTree.lev x.1 = c →
+          theta.1.representative H x.1 =
+            H.canonicalExtension (g.representative H) y.terminalCut (e.toFun x).1) →
+        H.composeAcross theta k ∈ O :=
+  review_goodPair_finite_family_of_sourceLetter H y U hyU
+    (duplicateHistoryLetter H 0 y.terminalCut hpos) trace O hlarge
+
+/-- Positive-cut compatibility wrapper for the all-exact-traces instance. -/
+theorem review_goodPair_at_prefix_positive
+    (n : Nat) (y : FiniteFatTree H) (hn : n ≤ y.height)
+    (O : Set (AM H (FiniteFatTree.traceSourceCut H y n hn) 1))
+    (U : FatTree H) (hyU : ExtendsStem H y U) (hpos : 0 < y.terminalCut)
+    (hlarge : OneBlockLarge H y U
+      (FixedTraceGoodRows H (FiniteFatTree.traceSourceCut H y n hn) n y hn rfl O)) :
+    ∃ h k,
+      FixedTraceGoodPair H (FiniteFatTree.traceSourceCut H y n hn) n y hn rfl O h k ∧
+      OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k :=
+  review_goodPair_at_prefix_of_sourceLetter H n y hn O U hyU
+    (duplicateHistoryLetter H 0 y.terminalCut hpos) hlarge
+
+/-- Source-facing version of the local review lemma from an explicit source
+letter. This includes the moving-root case. -/
+theorem review_goodPair_of_sourceLetter
+    (c n : Nat) (y : FiniteFatTree H) (hn : n ≤ y.height)
+    (hsrc : FiniteFatTree.traceSourceCut H y n hn = c)
+    (O : Set (AM H c 1)) (U : FatTree H)
+    (hyU : ExtendsStem H y U) (Esource : OneLevelLetter H y.terminalCut)
+    (hlarge : OneBlockLarge H y U (FixedTraceGoodRows H c n y hn hsrc O)) :
+    ∃ h k, FixedTraceGoodPair H c n y hn hsrc O h k ∧
+      OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k := by
+  cases hsrc
+  exact review_goodPair_at_prefix_of_sourceLetter H n y hn O U hyU Esource hlarge
+
 /-- Source-facing positive-current-cut version of the local review lemma. -/
 theorem review_goodPair_positive
     (c n : Nat) (y : FiniteFatTree H) (hn : n ≤ y.height)
@@ -160,8 +216,8 @@ theorem review_goodPair_positive
     (hyU : ExtendsStem H y U) (hpos : 0 < y.terminalCut)
     (hlarge : OneBlockLarge H y U (FixedTraceGoodRows H c n y hn hsrc O)) :
     ∃ h k, FixedTraceGoodPair H c n y hn hsrc O h k ∧
-      OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k := by
-  cases hsrc
-  exact review_goodPair_at_prefix_positive H n y hn O U hyU hpos hlarge
+      OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k :=
+  review_goodPair_of_sourceLetter H c n y hn hsrc O U hyU
+    (duplicateHistoryLetter H 0 y.terminalCut hpos) hlarge
 
 end SuccessorTree.SMTree.FatTree
