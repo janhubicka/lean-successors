@@ -30,13 +30,15 @@ theorem reachable_occurrence_level
     (beta : FanProfile H C trace) (hbeta : beta ∈ K.seen)
     (hbetaL : beta ∈ L.seen) :
     (L.occurrence beta hbetaL).level = (K.occurrence beta hbeta).level := by
+  revert hbetaL
   induction hKL with
-  | refl => rfl
+  | refl => intro hbetaL; rfl
   | @step P hKP E ih =>
+      intro hbetaL
       have hbetaP : beta ∈ P.seen :=
         reachable_seen_mono H U a trace hend hKP hbeta
       exact (advanceAny_occurrence_old_level H U a trace hend P E beta hbetaP).trans
-        (ih hbetaP)
+        (@ih hbetaP)
 
 /-- The base map of an old occurrence is independent of the continuation. -/
 theorem reachable_occurrence_base
@@ -44,13 +46,15 @@ theorem reachable_occurrence_base
     (beta : FanProfile H C trace) (hbeta : beta ∈ K.seen)
     (hbetaL : beta ∈ L.seen) :
     (L.occurrence beta hbetaL).base = (K.occurrence beta hbeta).base := by
+  revert hbetaL
   induction hKL with
-  | refl => rfl
+  | refl => intro hbetaL; rfl
   | @step P hKP E ih =>
+      intro hbetaL
       have hbetaP : beta ∈ P.seen :=
         reachable_seen_mono H U a trace hend hKP hbeta
       exact (advanceAny_occurrence_old_base H U a trace hend P E beta hbetaP).trans
-        (ih hbetaP)
+        (@ih hbetaP)
 
 /-- The dependent source letter is preserved as well. -/
 theorem reachable_occurrence_letter
@@ -58,13 +62,15 @@ theorem reachable_occurrence_letter
     (beta : FanProfile H C trace) (hbeta : beta ∈ K.seen)
     (hbetaL : beta ∈ L.seen) :
     HEq (L.occurrence beta hbetaL).letter (K.occurrence beta hbeta).letter := by
+  revert hbetaL
   induction hKL with
-  | refl => rfl
+  | refl => intro hbetaL; rfl
   | @step P hKP E ih =>
+      intro hbetaL
       have hbetaP : beta ∈ P.seen :=
         reachable_seen_mono H U a trace hend hKP hbeta
       exact (advanceAny_occurrence_old_letter H U a trace hend P E beta hbetaP).trans
-        (ih hbetaP)
+        (@ih hbetaP)
 
 /-- Global saturation fixes the seen alphabet along every finite continuation. -/
 theorem seen_eq_of_globallySaturated
