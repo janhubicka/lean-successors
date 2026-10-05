@@ -367,13 +367,15 @@ noncomputable def advanceAny
     occurrence := ?_
   }
   intro beta hbeta
-  by_cases hEq : beta = alpha
-  · subst beta
-    exact ProfileOccurrence.current H U a trace hend K.state E
-  · have hOld : beta ∈ K.seen := by
-      simpa [hEq] using hbeta
-    exact ProfileOccurrence.advance H U a trace hend
+  by_cases hOld : beta ∈ K.seen
+  · exact ProfileOccurrence.advance H U a trace hend
       K.state (K.occurrence beta hOld) E
+  · have hEq : beta = alpha := by
+      have hmem : beta = alpha ∨ beta ∈ K.seen := by
+        simpa [alpha] using hbeta
+      exact hmem.resolve_right hOld
+    subst beta
+    exact ProfileOccurrence.current H U a trace hend K.state E
 
 @[simp] theorem advanceAny_seen
     {c : Nat} {C : Type w} [Fintype C]
