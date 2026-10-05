@@ -430,8 +430,20 @@ theorem advanceAny_occurrence_old_letter
     HEq (K'.occurrence beta hbeta').letter
       (K.occurrence beta hbeta).letter := by
   classical
-  dsimp only
-  simp only [advanceAny, dif_pos hbeta, ProfileOccurrence.advance]
+  let K' := advanceAny H U a trace hend K E
+  have hbeta' : beta ∈ K'.seen := by
+    rw [advanceAny_seen]
+    exact Finset.mem_insert_of_mem hbeta
+  have hocc : K'.occurrence beta hbeta' =
+      ProfileOccurrence.advance H U a trace hend K.state
+        (K.occurrence beta hbeta) E := by
+    simp [K', advanceAny, hbeta]
+  have project (p q : ProfileOccurrence H U a trace
+      (TraceHistoryState.step H U a K.index K.state E) beta)
+      (hpq : p = q) : HEq p.letter q.letter := by
+    cases hpq
+    rfl
+  exact project _ _ hocc
 
 /-- The chosen base map of an old profile is preserved as well. -/
 theorem advanceAny_occurrence_old_base
