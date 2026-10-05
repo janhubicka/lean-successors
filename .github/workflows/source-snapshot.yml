@@ -1,8 +1,6 @@
 name: Fat-tree source checkpoint
 
 on:
-  push:
-    branches: [fat-tree-formalization]
   workflow_dispatch:
 
 permissions:
