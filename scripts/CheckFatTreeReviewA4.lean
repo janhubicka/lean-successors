@@ -8,8 +8,6 @@ open SuccessorTree.SMTree.FatTree
 #check ProfileReplayState.review_common_tail_replays
 #check ProfileReplayState.review_raw_fan_represented
 #check ProfileReplayState.review_exists_profile_fan_homogeneity
-#check exists_reviewFanLine_positive
-#check review_goodPair_positive
 #check exists_lastBlock_exactTrace_of_successors
 #check exists_lastBlock_exactTrace_of_sourceLetter
 #check review_goodPair_of_sourceLetter
@@ -53,7 +51,6 @@ open SuccessorTree.SMTree.FatTree
 #print axioms ProfileReplayState.review_exists_profile_fan_homogeneity
 #print axioms ReviewFanLine.depths_strict
 #print axioms exists_reviewFanLine_of_sourceLetter
-#print axioms exists_reviewFanLine_positive
 #print axioms review_AM_level
 #print axioms review_composeAcross_end
 #print axioms review_composeAcross_canonical
@@ -70,13 +67,8 @@ open SuccessorTree.SMTree.FatTree
 #print axioms review_composeAcross_heq
 #print axioms reviewBridgeMap
 #print axioms reviewBridgeMap_heq
-#print axioms review_bridges_nonempty
-#print axioms review_persistent_line_witness
 #print axioms reviewCastExactSource
 #print axioms review_composeAcross_cast_source
-#print axioms review_goodPair_finite_family_positive
-#print axioms review_goodPair_at_prefix_positive
-#print axioms review_goodPair_positive
 #print axioms exists_lastBlock_exactTrace_of_successors
 #print axioms exists_lastBlock_exactTrace_of_sourceLetter
 #print axioms review_bridges_nonempty_of_sourceLetter
@@ -115,15 +107,6 @@ example {c : Nat} {C : Type w1} [Fintype C] [Nonempty C]
     (hpos : 0 < U.cut a) (chi : AM H c 1 → κ) :
     Nonempty (ReviewFanLine H U a trace hend chi) :=
   exists_reviewFanLine_positive H U a trace hend hpos chi
-
-example (H : SMTree S) (c n : Nat) (y : FiniteFatTree H)
-    (hn : n ≤ y.height) (hsrc : FiniteFatTree.traceSourceCut H y n hn = c)
-    (O : Set (AM H c 1)) (U : SuccessorTree.SMTree.FatTree H)
-    (hyU : ExtendsStem H y U) (hpos : 0 < y.terminalCut)
-    (hlarge : OneBlockLarge H y U (FixedTraceGoodRows H c n y hn hsrc O)) :
-    ∃ h k, FixedTraceGoodPair H c n y hn hsrc O h k ∧
-      OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k :=
-  review_goodPair_positive H c n y hn hsrc O U hyU hpos hlarge
 
 example (H : SMTree S) : FixedStemPigeonhole H :=
   fixedStemPigeonhole_review H
