@@ -335,9 +335,11 @@ theorem shapeAct_tail_oneBlockOccurs
     OneBlockOccurs H (U.initialSegment H n) U
       (FatTree.castRow H hc.symm (H.shapeAct c W r)) := by
   cases hc
-  simp only [castRow_self]
-  simpa [tailCoordinateRow, tailSubspace] using
-    tailCoordinateRow_oneBlockOccurs H U n r
+  dsimp
+  change OneBlockOccurs H (U.initialSegment H n) U
+    (FatTree.castRow H _ (tailCoordinateRow H U n r))
+  rw [castRow_self H]
+  exact tailCoordinateRow_oneBlockOccurs H U n r
 
 end FatTree
 end SMTree
