@@ -173,3 +173,223 @@ end FatTree
 
 end SMTree
 end SuccessorTree
+
+
+namespace SuccessorTree
+namespace SMTree
+
+universe u v
+
+variable {T : Type u} {Label : Type v}
+variable [PartialOrder T] [LevelTree T]
+variable {S : STree T Label}
+
+namespace FatTree
+
+variable (H : SMTree S)
+
+/-- The cuts of the canonical fat-tree widening of a shape map. -/
+noncomputable def shapeCut (K : MMap H) : Nat → Nat
+  | 0 => 0
+  | i + 1 => H.levelMap K.map i + 1
+
+@[simp] theorem shapeCut_zero (K : MMap H) :
+    shapeCut H K 0 = 0 := rfl
+
+@[simp] theorem shapeCut_succ (K : MMap H) (i : Nat) :
+    shapeCut H K (i + 1) = H.levelMap K.map i + 1 := rfl
+
+/-- The factor which adds source level i+1 after the canonical prefix
+through source level i. -/
+noncomputable def shapeNextFactor (K : MMap H) (i : Nat) : MMap H :=
+  Classical.choose (H.exists_factor_through_canonical_succ K i)
+
+theorem shapeNextFactor_spec (K : MMap H) (i : Nat) :
+    (shapeNextFactor H K i).FixesBelow H (H.levelMap K.map i + 1) ∧
+    H.levelMap (shapeNextFactor H K i).map
+        (H.levelMap K.map i + 1) =
+      H.levelMap K.map (i + 1) ∧
+    ∀ x : T, LevelTree.lev x ≤ i + 1 →
+      shapeNextFactor H K i (H.canonicalExtension K i x) = K x :=
+  Classical.choose_spec (H.exists_factor_through_canonical_succ K i)
+
+/-- Reading the final level of a one-row word produced from a total map
+recovers the level of that total map at the source cut. -/
+theorem rowEndLevel_toAM
+    (F : MMap H) (n : Nat) (hF : F.FixesBelow H n) :
+    ((F.toAM H n 1 hF).rowEndLevel H) =
+      H.levelMap F.map n := by
+  obtain ⟨x, hx⟩ := H.level_nonempty n
+  have htop := AM.representative_top H (F.toAM H n 1 hF)
+  have hval := congrArg Subtype.val htop
+  change
+    ((F.toAM H n 1 hF).representative H).restrictLe H n =
+      F.restrictLe H n at hval
+  have hpoint := congrFun hval ⟨x, by simpa [hx]⟩
+  unfold AM.rowEndLevel
+  calc
+    H.levelMap ((F.toAM H n 1 hF).representative H).map n =
+        LevelTree.lev ((F.toAM H n 1 hF).representative H x) := by
+      simpa [hx] using
+        H.levelMap_eq ((F.toAM H n 1 hF).representative H).map (a := x)
+    _ = LevelTree.lev (F x) := by rw [hpoint]
+    _ = H.levelMap F.map n := by
+      simpa [hx] using (H.levelMap_eq F.map (a := x)).symm
+
+/-- The i-th row in the canonical widening of K. -/
+noncomputable def shapeRow (K : MMap H) :
+    (i : Nat) → AM H (shapeCut H K i) 1
+  | 0 =>
+      K.toAM H 0 1 (by
+        intro x hx
+        omega)
+  | i + 1 =>
+      let Q := shapeNextFactor H K i
+      Q.toAM H (H.levelMap K.map i + 1) 1
+        (shapeNextFactor_spec H K i).1
+
+/-- Canonical widening of a total shape map to a fat tree. -/
+noncomputable def ofShapeMap (K : MMap H) : FatTree H where
+  cut := shapeCut H K
+  cut_zero := rfl
+  row := shapeRow H K
+  row_cut := by
+    intro i
+    cases i with
+    | zero =>
+        change
+          ((K.toAM H 0 1 _).rowEndLevel H) + 1 =
+            H.levelMap K.map 0 + 1
+        rw [rowEndLevel_toAM H K 0]
+    | succ i =>
+        let Q := shapeNextFactor H K i
+        change
+          ((Q.toAM H (H.levelMap K.map i + 1) 1 _).rowEndLevel H) + 1 =
+            H.levelMap K.map (i + 1) + 1
+        rw [rowEndLevel_toAM H Q (H.levelMap K.map i + 1)]
+        exact congrArg (fun z => z + 1)
+          (shapeNextFactor_spec H K i).2.1
+
+@[simp] theorem ofShapeMap_cut (K : MMap H) (i : Nat) :
+    (ofShapeMap H K).cut i = shapeCut H K i := rfl
+
+/-- The row extension of a row obtained from F.toAM agrees with F through
+the source cut. -/
+theorem rowExtension_toAM_agrees
+    (F : MMap H) (n : Nat) (hF : F.FixesBelow H n)
+    (x : T) (hx : LevelTree.lev x ≤ n) :
+    H.canonicalExtension ((F.toAM H n 1 hF).representative H) n x =
+      F x := by
+  rw [H.canonicalExtension_agrees _ n x hx]
+  have htop := AM.representative_top H (F.toAM H n 1 hF)
+  have hval := congrArg Subtype.val htop
+  change
+    ((F.toAM H n 1 hF).representative H).restrictLe H n =
+      F.restrictLe H n at hval
+  exact congrFun hval ⟨x, hx⟩
+
+/-- The first i+1 rows of the canonical widening are precisely the canonical
+extension of K through source level i. -/
+theorem ofShapeMap_partialMap_canonical (K : MMap H) :
+    ∀ i : Nat,
+      partialMap H (ofShapeMap H K) (i + 1) =
+        H.canonicalExtension K i := by
+  intro i
+  induction i with
+  | zero =>
+      rw [partialMap_succ, partialMap_zero]
+      apply H.canonicalExtension_unique K
+        ((ofShapeMap H K).rowExtension H 0) 0
+      · intro x hx
+        change
+          H.canonicalExtension
+              (((K.toAM H 0 1 _).representative H)) 0 x =
+            K x
+        exact rowExtension_toAM_agrees H K 0 _ x hx
+      · intro ell hell
+        change ell ∈
+          (H.canonicalExtension ((K.toAM H 0 1 _).representative H) 0).map.levelRange
+        apply H.canonicalExtension_tail_mem_levelRange
+        rw [rowEndLevel_toAM H K 0]
+        exact hell
+  | succ i ih =>
+      rw [partialMap_succ, ih]
+      let Q := shapeNextFactor H K i
+      let c := H.levelMap K.map i + 1
+      have hQfix : Q.FixesBelow H c :=
+        (shapeNextFactor_spec H K i).1
+      have hQlev :
+          H.levelMap Q.map c = H.levelMap K.map (i + 1) :=
+        (shapeNextFactor_spec H K i).2.1
+      have hQK :
+          ∀ x : T, LevelTree.lev x ≤ i + 1 →
+            Q (H.canonicalExtension K i x) = K x :=
+        (shapeNextFactor_spec H K i).2.2
+      apply H.canonicalExtension_unique K
+        (MMap.comp H
+          ((ofShapeMap H K).rowExtension H (i + 1))
+          (H.canonicalExtension K i)) (i + 1)
+      · intro x hx
+        change
+          H.canonicalExtension
+              ((Q.toAM H c 1 hQfix).representative H) c
+              (H.canonicalExtension K i x) = K x
+        have hinner :
+            LevelTree.lev (H.canonicalExtension K i x) ≤ c := by
+          calc
+            LevelTree.lev (H.canonicalExtension K i x) =
+                H.levelMap (H.canonicalExtension K i).map
+                  (LevelTree.lev x) :=
+              (H.levelMap_eq (H.canonicalExtension K i).map (a := x)).symm
+            _ ≤ H.levelMap (H.canonicalExtension K i).map (i + 1) :=
+              (H.levelMap_strictMono
+                (H.canonicalExtension K i).map).monotone hx
+            _ = c := by
+              dsimp [c]
+              rw [H.canonicalExtension_level_succ K i i le_rfl,
+                H.canonicalExtension_level_at_prefix K i]
+        rw [rowExtension_toAM_agrees H Q c hQfix _ hinner]
+        exact hQK x hx
+      · intro ell hell
+        rw [← H.range_levelMap]
+        let t := ell - H.levelMap K.map (i + 1)
+        let j := i + 1 + t
+        refine ⟨j, ?_⟩
+        rw [MMap.levelMap_comp]
+        have hinner :
+            H.levelMap (H.canonicalExtension K i).map j =
+              c + t := by
+          dsimp [j, c]
+          rw [H.canonicalExtension_level_tail K i (1 + t)]
+          omega
+        rw [hinner]
+        change
+          H.levelMap
+              (H.canonicalExtension
+                ((Q.toAM H c 1 hQfix).representative H) c).map
+              (c + t) = ell
+        rw [H.canonicalExtension_level_tail
+          ((Q.toAM H c 1 hQfix).representative H) c t]
+        rw [rowEndLevel_toAM H Q c hQfix, hQlev]
+        dsimp [t]
+        omega
+
+/-- The widening construction is a right inverse to the associated-map
+construction. -/
+theorem associatedMap_ofShapeMap (K : MMap H) :
+    associatedMap H (ofShapeMap H K) = K := by
+  apply MMap.ext_apply
+  intro x
+  let i := LevelTree.lev x
+  calc
+    associatedMap H (ofShapeMap H K) x =
+        partialMap H (ofShapeMap H K) (i + 1) x := by
+      rw [associatedMap_apply]
+    _ = H.canonicalExtension K i x := by
+      rw [ofShapeMap_partialMap_canonical H K i]
+    _ = K x := H.canonicalExtension_agrees K i x le_rfl
+
+end FatTree
+
+end SMTree
+end SuccessorTree
