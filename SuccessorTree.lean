@@ -96,3 +96,4 @@ import SuccessorTree.RamseySpace.Pigeonhole
 import SuccessorTree.RamseySpace.Ellentuck
 import SuccessorTree.RamseySpace.EA
 import SuccessorTree.FatTree.CanonicalMap
+import SuccessorTree.FatTree.ShapeTransfer
