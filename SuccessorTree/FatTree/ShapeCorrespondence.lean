@@ -723,9 +723,21 @@ theorem tailStage_fusionStable (U : FatTree H) (n : Nat) :
             (intervalMap H U n (j - U.cut n + 1)).map j =
           U.cut (n + (j - U.cut n + 1)) - 1 := by
       have hsource :
-          j = U.cut n + (j - U.cut n) := by omega
-      rw [hsource]
-      exact intervalMap_level_last H U n (j - U.cut n)
+          U.cut n + (j - U.cut n) = j := by omega
+      have hindex :
+          n + (j - U.cut n) + 1 =
+            n + (j - U.cut n + 1) := by omega
+      calc
+        H.levelMap
+            (intervalMap H U n (j - U.cut n + 1)).map j =
+            H.levelMap
+              (intervalMap H U n ((j - U.cut n) + 1)).map
+              (U.cut n + (j - U.cut n)) := by
+                rw [hsource]
+        _ = U.cut (n + (j - U.cut n) + 1) - 1 :=
+          intervalMap_level_last H U n (j - U.cut n)
+        _ = U.cut (n + (j - U.cut n + 1)) - 1 := by
+          rw [hindex]
     have hcutpos :
         0 < U.cut (n + (j - U.cut n + 1)) := by
       have hindex : 0 < n + (j - U.cut n + 1) := by omega
