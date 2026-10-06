@@ -1,4 +1,5 @@
 import SuccessorTree.FatTree.A4ReviewSplice
+import SuccessorTree.FatTree.A4Persistence
 
 /-!
 # The actual large-set witness under a simultaneous fan line
