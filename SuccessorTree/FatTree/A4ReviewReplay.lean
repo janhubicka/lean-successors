@@ -1,4 +1,3 @@
-import SuccessorTree.FatTree.A4ReviewFusion
 import SuccessorTree.FatTree.A4ReplaySemantics
 import SuccessorTree.FatTree.A4ReplayColour
 
