@@ -158,6 +158,41 @@ theorem associatedMap_apply (U : FatTree H) (x : T) :
       partialMap H U (LevelTree.lev x + 1) x := by
   rfl
 
+/-- The canonical extension of the associated map through source level i
+is exactly the product of the first i+1 fat-tree rows. -/
+theorem canonicalExtension_associatedMap
+    (U : FatTree H) (i : Nat) :
+    H.canonicalExtension (associatedMap H U) i =
+      partialMap H U (i + 1) := by
+  apply H.canonicalExtension_unique (associatedMap H U)
+    (partialMap H U (i + 1)) i
+  · intro x hx
+    rw [associatedMap_apply H U x]
+    have hs := partialMap_fusionStable H U
+    have hstage :=
+      ShapeMap.fusion_stable_of_le
+        (fun j => (partialMap H U (j + 1)).map) hs x hx
+    exact hstage.symm
+  · intro ell hell
+    have hbase :
+        H.levelMap (associatedMap H U).map i =
+          U.cut (i + 1) - 1 := by
+      exact associatedMap_level H U i
+    rw [hbase] at hell
+    by_cases heq : ell = U.cut (i + 1) - 1
+    · rw [heq, ← H.range_levelMap]
+      refine ⟨i, ?_⟩
+      exact partialMap_level_last H U i
+    · have hcut : U.cut (i + 1) ≤ ell := by
+        have hpos : 0 < U.cut (i + 1) := by
+          have h := U.cut_strictMono H (Nat.zero_lt_succ i)
+          simpa [U.cut_zero] using h
+        omega
+      obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le hcut
+      rw [← H.range_levelMap]
+      refine ⟨i + 1 + k, ?_⟩
+      simpa [hk] using partialMap_level_tail H U (i + 1) k
+
 /-- The associated map has exactly the level function stated in the paper. -/
 theorem associatedMap_level (U : FatTree H) (i : Nat) :
     H.levelMap (associatedMap H U).map i =
