@@ -828,9 +828,9 @@ theorem tailMap_mem_relativeFatLevel
   refine ⟨y, hyMem, ?_⟩
   rw [tailMap_apply_at_level H U n k z hz, intervalMap_snoc]
   change
-    U.rowExtension H (n + k) y =
-      (U.row (n + k)).representative H y
-  exact U.rowExtension_agrees H (n + k) y (Nat.le_of_eq hyLev)
+    (U.row (n + k)).representative H y =
+      U.rowExtension H (n + k) y
+  exact (U.rowExtension_agrees H (n + k) y (Nat.le_of_eq hyLev)).symm
 
 /-- The tail map as a frozen-prefix shape subspace. -/
 noncomputable def tailSubspace
@@ -880,6 +880,9 @@ theorem tailCoordinateRow_end
       (tailCoordinateRow H U n r).topLevel H =
         U.cut (n + k + 1) - 1 := by
     rw [tailCoordinateRow, shapeAct_topLevel H]
+    change
+      H.levelMap (tailMap H U n).map (r.topLevel H) =
+        U.cut (n + k + 1) - 1
     rw [hr, tailMap_level H U n k]
   change (tailCoordinateRow H U n r).topLevel H + 1 =
     U.cut (n + k + 1)
@@ -910,7 +913,9 @@ theorem tailCoordinateRow_range
       LevelTree.lev (r.representative H a) =
           H.levelMap (r.representative H).map (LevelTree.lev a) :=
         (H.levelMap_eq (r.representative H).map (a := a)).symm
-      _ = r.topLevel H := by rw [ha]
+      _ = r.topLevel H := by
+        unfold AM.topLevel
+        rw [ha]
       _ = U.cut n + k := hr
   obtain ⟨y, hy, htail⟩ :=
     tailMap_mem_relativeFatLevel H U n k (r.representative H a) hra
@@ -918,7 +923,7 @@ theorem tailCoordinateRow_range
   calc
     (tailCoordinateRow H U n r).representative H a =
         tailMap H U n (r.representative H a) := hact
-    _ = (U.row (n + k)).representative H y := htail
+    _ = (U.row (n + k)).representative H y := htail.symm
 
 /-- At the tail level reached after an interval, the interval product sends
 an edge to an edge. -/
