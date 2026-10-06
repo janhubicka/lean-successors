@@ -103,8 +103,6 @@ theorem isMetricallyClosed :
         exact FiniteFatTree.row_heq_of_eq H hseg (Fin.last i.1)
     _ = (c n).1 := hreal
 
-/-- A2 and closedness supply fusion before A3 or A4 is assumed. The general
-construction now lives in the abstract Ramsey-space library. -/
 /-- Literal published closedness of the fat-tree approximation-code image
 in the Tychonoff power of discrete finite approximations. -/
 theorem isTychonoffClosed :
@@ -112,6 +110,8 @@ theorem isTychonoffClosed :
   ((approximationSystem H).isTychonoffClosed_iff_isClosedApproximationImage).2
     (isMetricallyClosed H)
 
+/-- A2 and closedness supply fusion before A3 or A4 is assumed. The general
+construction now lives in the abstract Ramsey-space library. -/
 theorem fusionComplete :
     RamseySpace.FusionComplete (approximationSystem H) :=
   (finitization H).fusionComplete_of_isMetricallyClosed (isMetricallyClosed H)
