@@ -115,6 +115,11 @@ jobs:
         if: always()
         run: |
           set -o pipefail
+          mapfile -t targets < <(sed -n 's/^import //p' scripts/CheckFatTreeReplay.lean)
+          if ! lake build "${targets[@]}" > proof-audit/fat-tree-replay-build.log 2>&1; then
+            cat proof-audit/fat-tree-replay-build.log
+            exit 1
+          fi
           if ! lake env lean scripts/CheckFatTreeReplay.lean > proof-audit/fat-tree-replay-axioms.log 2>&1; then
             cat proof-audit/fat-tree-replay-axioms.log
             exit 1
