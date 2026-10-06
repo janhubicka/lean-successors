@@ -70,3 +70,4 @@ import SuccessorTree.FatTree.A4ReviewComplete
 
 import SuccessorTree.FatTree.ShapeCorrespondence
 import SuccessorTree.FatTree.ShapeRealization
+import SuccessorTree.FatTree.ShapeEllentuckOne
