@@ -55,6 +55,19 @@ abbrev At
     (H : SMTree S) (n k N : Nat) :=
   {a : AM H n k // a.terminalLevel H = N}
 
+/-- Finite approximations agree when their total representatives agree on
+the represented source segment. -/
+theorem ramseyApprox_eq_of_apply
+    (H : SMTree S) {m : Nat} {F G : MMap H}
+    (h : ∀ x : T, LevelTree.lev x < m → F x = G x) :
+    ramseyApprox H m F = ramseyApprox H m G := by
+  cases m with
+  | zero => rfl
+  | succ m =>
+      apply Subtype.ext
+      funext x
+      exact h x.1 (by omega)
+
 /-- Code a bounded nonempty approximation by its finite action between two
 finite initial tree segments. -/
 noncomputable def atMostCode
@@ -73,28 +86,17 @@ theorem atMostCode_injective
   intro a b hab
   apply Subtype.ext
   apply Subtype.ext
-  have hsum : n + k = (n + k - 1) + 1 := by omega
-  rw [hsum]
-  apply Subtype.ext
-  funext x
-  have hcode :=
-    congrArg Subtype.val (congrFun hab x)
-  have haTop := a.1.representative_top H
-  have hbTop := b.1.representative_top H
-  rw [hsum] at haTop hbTop
-  have haVal := congrArg Subtype.val haTop
-  have hbVal := congrArg Subtype.val hbTop
-  change
-    (a.1.representative H).restrictLe H (n + k - 1) =
-      a.1.1.1 at haVal
-  change
-    (b.1.representative H).restrictLe H (n + k - 1) =
-      b.1.1.1 at hbVal
   calc
-    a.1.1.1 x = a.1.representative H x.1 :=
-      (congrFun haVal x).symm
-    _ = b.1.representative H x.1 := hcode
-    _ = b.1.1.1 x := congrFun hbVal x
+    a.1.1 = ramseyApprox H (n + k) (a.1.representative H) :=
+      (a.1.representative_top H).symm
+    _ = ramseyApprox H (n + k) (b.1.representative H) := by
+      apply ramseyApprox_eq_of_apply H
+      intro x hx
+      have hxTop : LevelTree.lev x ≤ n + k - 1 := by omega
+      let xx : InitialNode T (n + k - 1) := ⟨x, hxTop⟩
+      have hcode := congrArg Subtype.val (congrFun hab xx)
+      exact hcode
+    _ = b.1.1 := b.1.representative_top H
 
 /-- Bounded nonempty finite approximations form a finite type. -/
 theorem atMost_finite
@@ -105,9 +107,6 @@ theorem atMost_finite
     initialNodeFintype T (n + k - 1)
   letI : Fintype (InitialNode T N) :=
     initialNodeFintype T N
-  letI : Finite
-      (InitialNode T (n + k - 1) → InitialNode T N) :=
-    Fintype.toFinite _
   exact Finite.of_injective
     (atMostCode (T := T) H hpos)
     (atMostCode_injective (T := T) H hpos)
@@ -121,7 +120,8 @@ theorem below_finite
   exact Finite.of_injective (fun a : Below H n k N =>
     (⟨a.1, Nat.le_of_lt a.2⟩ : AtMost H n k N)) (by
       intro a b h
-      exact Subtype.ext (congrArg Subtype.val h))
+      apply Subtype.ext
+      exact congrArg (fun z : AtMost H n k N => z.1) h)
 
 /-- Exact-terminal approximations are finite. -/
 theorem at_finite
@@ -132,7 +132,8 @@ theorem at_finite
   exact Finite.of_injective (fun a : At H n k N =>
     (⟨a.1, a.2.le⟩ : AtMost H n k N)) (by
       intro a b h
-      exact Subtype.ext (congrArg Subtype.val h))
+      apply Subtype.ext
+      exact congrArg (fun z : AtMost H n k N => z.1) h)
 
 end AM
 
@@ -159,21 +160,15 @@ theorem MMap.toAM_terminalLevel
   have hxlt : LevelTree.lev x < n + k := by
     rw [hx]
     omega
-  have htop := AM.representative_top H (F.toAM H n k hF)
-  have hsum : n + k = (n + k - 1) + 1 := by omega
-  rw [hsum] at htop
-  have hval := congrArg Subtype.val htop
-  change
-    ((F.toAM H n k hF).representative H).restrictLe H (n + k - 1) =
-      F.restrictLe H (n + k - 1) at hval
-  have hpoint := congrFun hval ⟨x, by simpa [hx]⟩
   unfold AM.terminalLevel
   calc
     H.levelMap ((F.toAM H n k hF).representative H).map (n + k - 1) =
         LevelTree.lev ((F.toAM H n k hF).representative H x) := by
       simpa [hx] using
         H.levelMap_eq ((F.toAM H n k hF).representative H).map (a := x)
-    _ = LevelTree.lev (F x) := congrArg LevelTree.lev hpoint
+    _ = LevelTree.lev (F x) := by
+      exact congrArg LevelTree.lev
+        (MMap.toAM_representative_agrees H F n k hF x hxlt)
     _ = H.levelMap F.map (n + k - 1) := by
       simpa [hx] using (H.levelMap_eq F.map (a := x)).symm
 
@@ -192,14 +187,14 @@ theorem finiteShapeComp_terminalLevel_le
     MMap.comp_fixesBelow H F G n
       (f.representative_fixesBelow H)
       (g.representative_fixesBelow H)
-  rw [finiteShapeComp]
+  unfold finiteShapeComp
   rw [MMap.toAM_terminalLevel H (MMap.comp H F G) n k hfix (by omega)]
   rw [H.levelMap_comp F G (n + k - 1)]
-  have hGtop :
-      H.levelMap G.map (n + k - 1) = g.terminalLevel H := rfl
-  rw [hGtop]
+  change
+    H.levelMap F.map (g.terminalLevel H) ≤ f.terminalLevel H
   unfold AM.terminalLevel
   exact (H.levelMap_strictMono F.map).monotone (by omega)
+
 
 end SMTree
 end SuccessorTree
