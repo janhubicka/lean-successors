@@ -69,3 +69,4 @@ import SuccessorTree.FatTree.A3Typed
 import SuccessorTree.FatTree.A4ReviewComplete
 
 import SuccessorTree.FatTree.ShapeCorrespondence
+import SuccessorTree.FatTree.ShapeRealization
