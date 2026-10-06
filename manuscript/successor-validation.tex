@@ -1,0 +1,92 @@
+% Successor-tree validation overlay, 3 October 2026.
+% Load once in the preamble: \input{successor-validation.tex}
+% Reuse the manuscript's validation.tex and its visibility setting when present.
+% The pinned proof snapshot passed the Lean build, interface regressions,
+% and eight transitive axiom checks in Actions run 37150740752.
+\RequirePackage{xcolor}
+\RequirePackage{hyperref}
+\RequirePackage{amssymb}
+\makeatletter
+\@ifundefined{leanverified}{\InputIfFileExists{validation.tex}{}{}}{}
+\@ifundefined{ifshowvalidation}{\newif\ifshowvalidation\showvalidationtrue}{}
+\makeatother
+
+\providecommand{\leanrepo}{https://github.com/janhubicka/lean-successors}
+\providecommand{\leancommit}{1856f22fa1c94a27b3b282945da7d0f962903cc6}
+\providecommand{\leanverified}[2]{%
+  \ifshowvalidation
+    \marginpar{\scriptsize\raggedright
+      \textcolor{green!50!black}{$\checkmark$ Lean}\\[-2pt]
+      \href{\leanrepo/blob/\leancommit/#1}{\nolinkurl{#2}}}%
+  \fi
+}
+\providecommand{\leanpartial}[2]{%
+  \ifshowvalidation
+    \marginpar{\scriptsize\raggedright
+      \textcolor{orange!80!black}{$\sim$ Lean}\\[-2pt]
+      \href{\leanrepo/blob/\leancommit/#1}{\nolinkurl{#2}}}%
+  \fi
+}
+\providecommand{\leaninterface}[2]{%
+  \ifshowvalidation
+    \marginpar{\scriptsize\raggedright
+      \textcolor{blue!60!black}{$\diamond$ interface}\\[-2pt]
+      \href{\leanrepo/blob/\leancommit/#1}{\nolinkurl{#2}}}%
+  \fi
+}
+
+% Local wrappers keep links pinned even when validation.tex serves another
+% repository elsewhere in the manuscript. Existing global values are preserved.
+\newcommand{\successorleanverified}[2]{%
+  \begingroup
+    \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+    \renewcommand{\leancommit}{1856f22fa1c94a27b3b282945da7d0f962903cc6}%
+    \leanverified{#1}{#2}%
+  \endgroup
+}
+\newcommand{\successorleanpartial}[2]{%
+  \begingroup
+    \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+    \renewcommand{\leancommit}{1856f22fa1c94a27b3b282945da7d0f962903cc6}%
+    \leanpartial{#1}{#2}%
+  \endgroup
+}
+\newcommand{\successorleaninterface}[2]{%
+  \begingroup
+    \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+    \renewcommand{\leancommit}{1856f22fa1c94a27b3b282945da7d0f962903cc6}%
+    \leaninterface{#1}{#2}%
+  \endgroup
+}
+
+% Fat-tree A1--A3 snapshot. Actions run 37188688958 checked the A1
+% sequencing layer, fourteen structural/A2 reports, and the A3 splice/amalgamation
+% layer, all using only standard Lean axioms.
+\newcommand{\successorfatleanverified}[2]{%
+  \begingroup
+    \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+    \renewcommand{\leancommit}{90294490350f812dbad9ae8e19d2012c64e7dd5c}%
+    \leanverified{#1}{#2}%
+  \endgroup
+}
+% Partial fat-tree wrapper retained for later A4 work; it is pinned to the
+% same audited A2/A3 snapshot until a later proof layer is completed.
+\newcommand{\successorfatleanpartial}[2]{%
+  \begingroup
+    \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+    \renewcommand{\leancommit}{90294490350f812dbad9ae8e19d2012c64e7dd5c}%
+    \leanpartial{#1}{#2}%
+  \endgroup
+}
+% Fat-tree A4 exact-trace snapshot. Actions run 37197761609 checked
+% the finite bridge, exact trace recursion, and bidirectional exact-trace
+% update separately; profile persistence/fusion is still unfinished.
+\newcommand{\successorfatafourpartial}[2]{%
+  \begingroup
+    \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+    \renewcommand{\leancommit}{64dc00f70042b6efd72823b3c28cac0fb96ac029}%
+    \leanpartial{#1}{#2}%
+  \endgroup
+}
+% All new inline review notes are enclosed by \ifshowvalidation ... \fi.
+% Use \showvalidationfalse after loading this overlay for a circulation copy.

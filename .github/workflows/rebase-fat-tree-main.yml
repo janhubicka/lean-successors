@@ -1,0 +1,102 @@
+name: Rebase fat-tree development
+
+on:
+  push:
+    branches: [fat-tree-formalization]
+    paths: [.github/workflows/rebase-fat-tree-main.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rebase:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Replay development commits onto current main
+        env:
+          GIT_EDITOR: 'true'
+        run: |
+          set -euo pipefail
+          git config user.name 'Jan Hubička'
+          git config user.email '46065755+janhubicka@users.noreply.github.com'
+          mkdir -p /tmp/rebase-audit
+          git fetch origin main fat-tree-formalization
+          OLD=$(git rev-parse origin/fat-tree-formalization)
+          MAIN=$(git rev-parse origin/main)
+          BASE=$(git merge-base "$OLD" "$MAIN")
+          printf '%s\n' "$OLD" > /tmp/rebase-audit/OLD
+          printf '%s\n' "$MAIN" > /tmp/rebase-audit/MAIN
+          printf '%s\n' "$BASE" > /tmp/rebase-audit/BASE
+          git log --reverse --format='%H %s' "$BASE..$OLD" > /tmp/rebase-audit/old-history.txt
+          git switch -c fat-tree-rebased-main-20261005 "$OLD"
+          set +e
+          git rebase --onto "$MAIN" "$BASE" > /tmp/rebase-audit/rebase.log 2>&1
+          result=$?
+          set -e
+          while test "$result" -ne 0; do
+            git diff --name-only --diff-filter=U > /tmp/rebase-audit/conflicts.txt
+            if ! test -s /tmp/rebase-audit/conflicts.txt; then cat /tmp/rebase-audit/rebase.log; exit 1; fi
+            python3 - <<'PY'
+          import pathlib, subprocess
+          files = subprocess.check_output(['git','diff','--name-only','--diff-filter=U'],text=True).splitlines()
+          for name in files:
+              if name == 'docs/banana-persistence-adversarial-audit.md':
+                  subprocess.run(['git','checkout','--ours','--',name],check=True)
+                  subprocess.run(['git','add',name],check=True)
+                  continue
+              if name.startswith('SuccessorTree/NonPrecompact/'):
+                  subprocess.run(['git','rm','-f','--',name],check=True)
+                  continue
+              if name != 'SuccessorTree.lean':
+                  raise SystemExit('Manual review required for conflict: '+name)
+              # Entrypoint is import-only. Union successor imports, not BANANA.
+              ours = subprocess.check_output(['git','show',':2:'+name],text=True)
+              theirs = subprocess.check_output(['git','show',':3:'+name],text=True)
+              lines = []
+              for line in (ours+'\n'+theirs).splitlines():
+                  if not line.strip(): continue
+                  if not line.startswith('import '): raise SystemExit('Non-import conflict in entrypoint')
+                  if 'SuccessorTree.NonPrecompact.' in line: continue
+                  if line not in lines: lines.append(line)
+              pathlib.Path(name).write_text('\n'.join(lines)+'\n')
+              subprocess.run(['git','add',name],check=True)
+          PY
+            set +e
+            git rebase --continue >> /tmp/rebase-audit/rebase.log 2>&1
+            result=$?
+            set -e
+          done
+          # Some historical preservation commits added BANANA files outright.
+          # Keep those commits in history, but retain main's final separation.
+          git rm -r --ignore-unmatch SuccessorTree/NonPrecompact
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('SuccessorTree.lean')
+          p.write_text(''.join(line for line in p.read_text().splitlines(keepends=True)
+            if 'SuccessorTree.NonPrecompact.' not in line))
+          PY
+          git restore --source="$MAIN" -- docs/banana-persistence-adversarial-audit.md
+          git add SuccessorTree.lean docs/banana-persistence-adversarial-audit.md
+          if ! git diff --cached --quiet; then
+            git commit -m 'Retain mainline BANANA split after historical successor replay'
+          fi
+          git merge-base --is-ancestor "$MAIN" HEAD
+          if git ls-files SuccessorTree/NonPrecompact | grep -q .; then echo 'Unexpected BANANA files'; exit 1; fi
+          if grep -q 'SuccessorTree.NonPrecompact' SuccessorTree.lean; then echo 'Unexpected BANANA imports'; exit 1; fi
+          git diff --check
+          git rev-parse HEAD > /tmp/rebase-audit/HEAD
+          git range-diff "$BASE..$OLD" "$MAIN..HEAD" > /tmp/rebase-audit/range-diff.txt
+          git diff --stat "$MAIN" HEAD > /tmp/rebase-audit/branch-stat.txt
+          git bundle create /tmp/rebase-audit/rebased.bundle --all
+          git archive --format=tar.gz -o /tmp/rebase-audit/rebased-source.tar.gz HEAD
+          git push origin HEAD:refs/heads/fat-tree-rebased-main-20261005
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fat-tree-main-rebase-audit
+          path: /tmp/rebase-audit/
+          retention-days: 14

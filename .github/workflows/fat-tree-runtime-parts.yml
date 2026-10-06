@@ -1,0 +1,65 @@
+name: Fat-tree runtime parts
+
+on:
+  push:
+    branches: [fat-tree-formalization]
+    paths: [.github/workflows/fat-tree-runtime-parts.yml]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        artifact: [fat-tree-lean-toolchain, fat-tree-lake-workspace]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          run-id: 37320131405
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: runtime
+      - name: Split compressed runtime into 400 MiB parts
+        run: |
+          mkdir parts
+          file=$(find runtime -type f -name '*.tar.gz')
+          test -f "$file"
+          split -b 400M -d "$file" parts/runtime.part.
+          sha256sum "$file" parts/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}-00
+          path: parts/runtime.part.00
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}-01
+          path: parts/runtime.part.01
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}-02
+          path: parts/runtime.part.02
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}-03
+          path: parts/runtime.part.03
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}-04
+          path: parts/runtime.part.04
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore

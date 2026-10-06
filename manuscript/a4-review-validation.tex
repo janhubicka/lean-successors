@@ -1,0 +1,42 @@
+% Alternative A4 proof: isolated validation overlay.
+% Requires validation.tex; does not alter the manuscript proof text.
+% Full A4 and fat-tree Ellentuck endpoint verified at the pinned checkpoint.
+% Review A4 workflow 37383862698: build + 71 transitive axiom reports passed.
+\newcommand{\aFourReviewVerified}[2]{%
+  \begingroup
+  \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+  \renewcommand{\leancommit}{215baad75a57b43967063b8d33ed8e6989125501}%
+  \leanverified{#1}{#2}%
+  \endgroup
+}
+
+% Retained for old patch consumers; new A4 annotations should use the green
+% wrapper above.
+\newcommand{\aFourReviewPartial}[2]{%
+  \begingroup
+  \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+  \renewcommand{\leancommit}{215baad75a57b43967063b8d33ed8e6989125501}%
+  \leanpartial{#1}{#2}%
+  \endgroup
+}
+
+\newcommand{\aFourReviewFanNote}{%
+  \aFourReviewVerified{SuccessorTree/FatTree/A4ReviewLine.lean}{simultaneous raw-fan line}%
+  \ifshowvalidation
+  \todo[inline]{Lean review-proof audit: The simultaneous raw-fan replacement is fully checked. Raw successor tables are finite data and are not assumed admissible; only their canonical images are. Actual recorded successor edges, including bottom profile coordinates, are replayed through a common geometric tail, and Hales--Jewett stabilises all coordinates simultaneously. Use this argument in place of the obsolete first-head/fat-line factorisation; do not mark that old displayed equality as validated.}
+  \fi
+}
+
+\newcommand{\aFourReviewPersistenceNote}{%
+  \aFourReviewVerified{SuccessorTree/FatTree/A4PairPersistence.lean}{Baumgartner pair persistence}%
+  \ifshowvalidation
+  \todo[inline]{Lean review-proof audit: Pair persistence is checked by finite batches at each protected depth. A2 makes each batch finite, A3 lifts an avoiding refinement while preserving the whole prefix, and metric closedness supplies the fusion limit. This is cleaner than the global enumeration prose and does not use A4. Presentation can be updated incrementally to this finite-depth Baumgartner formulation.}
+  \fi
+}
+
+\newcommand{\aFourReviewFusionNote}{%
+  \aFourReviewVerified{SuccessorTree/FatTree/A4ReviewComplete.lean}{A4 and fat-tree Ellentuck}%
+  \ifshowvalidation
+  \todo[inline]{Lean review-proof audit: The local good-pair linkage, all-exact-traces fusion, moving-root case and root-fixed degenerate case are now checked, yielding the unconditional geometric fixed-stem pigeonhole theorem. A3 transfers it to Todorcevic A4, and metric closedness plus the audited abstract Ellentuck theorem gives the fat-tree topological Ramsey-space conclusion. Keep the original source cut fixed through the fusion and cover arbitrary geometric extensions by last-block factorisation, not by factorisation through the first chosen head.}
+  \fi
+}

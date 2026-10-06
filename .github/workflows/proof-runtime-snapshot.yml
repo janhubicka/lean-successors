@@ -1,0 +1,143 @@
+name: Proof runtime snapshot
+
+on:
+  push:
+    branches: [fat-tree-formalization]
+    paths: [.github/workflows/proof-runtime-snapshot.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/cache/restore@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache/restore@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Resolve pinned public dependencies
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get
+      - name: Export offline checker
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          TOOLCHAIN=$(dirname "$(dirname "$(elan which lean)")")
+          mkdir -p runtime-snapshot
+          tar --exclude='*.a' --exclude='*.o' --exclude='*.ilean' --exclude='.git' --exclude='*/ir' \
+            -C "$TOOLCHAIN" -cf - bin lib | zstd -T0 -3 > runtime-snapshot/toolchain.tar.zst
+          tar --exclude='.git' --exclude='*.a' --exclude='*.o' --exclude='*.ilean' --exclude='*/ir' \
+            -cf - .lake lakefile.toml lake-manifest.json lean-toolchain | zstd -T0 -3 > runtime-snapshot/dependencies.tar.zst
+          git rev-parse HEAD > runtime-snapshot/COMMIT
+          du -sh runtime-snapshot/*
+          tar -cf - -C runtime-snapshot . | split -b 180M - runtime-part-
+          test ! -e runtime-part-ap
+          sha256sum runtime-part-* > runtime-SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-aa
+          path: runtime-part-aa
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ab
+          path: runtime-part-ab
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ac
+          path: runtime-part-ac
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ad
+          path: runtime-part-ad
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ae
+          path: runtime-part-ae
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-af
+          path: runtime-part-af
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ag
+          path: runtime-part-ag
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ah
+          path: runtime-part-ah
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ai
+          path: runtime-part-ai
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-aj
+          path: runtime-part-aj
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ak
+          path: runtime-part-ak
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-al
+          path: runtime-part-al
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-am
+          path: runtime-part-am
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-an
+          path: runtime-part-an
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-ao
+          path: runtime-part-ao
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-runtime-hashes
+          path: runtime-SHA256SUMS
+          retention-days: 2

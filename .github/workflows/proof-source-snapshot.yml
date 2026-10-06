@@ -1,0 +1,34 @@
+name: Proof source snapshot
+
+on:
+  push:
+    branches: [fat-tree-formalization]
+    paths: [.github/workflows/proof-source-snapshot.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Snapshot exact sources
+        run: |
+          mkdir -p source-snapshot
+          git rev-parse HEAD > source-snapshot/COMMIT
+          git archive HEAD -o source-snapshot/lean-successors.tar
+          git clone --filter=blob:none https://github.com/janhubicka/lean-ramsey-space-todorcevic /tmp/abstract-ramsey
+          REV=$(python3 -c 'import tomllib; d=tomllib.load(open("lakefile.toml","rb")); print(next(x["rev"] for x in d["require"] if x["name"]=="ramsey-space-todorcevic"))')
+          git -C /tmp/abstract-ramsey archive "$REV" -o "$GITHUB_WORKSPACE/source-snapshot/abstract-ramsey.tar"
+          printf '%s\n' "$REV" > source-snapshot/ABSTRACT_COMMIT
+          git diff 39960367bdf92f97be1e3d7f8dc342f21671fd47 HEAD > source-snapshot/audit-changes.patch
+          (cd source-snapshot && sha256sum *.tar *.patch > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proof-source-snapshot
+          path: source-snapshot/
+          retention-days: 30

@@ -1,0 +1,69 @@
+% Internal fat-tree validation and correction requests for successors v4.
+% General A4/Ellentuck is verified; existing shape-theorem pins are untouched.
+% Successor CI: 37383862698 (focused) and 37383862703 (full build).
+% Abstract Ellentuck dependency: bdb601607c03a945bbcd01cfccaa884d4c95e69f,
+% post-merge CI rerun 37365422442.
+\newcommand{\fatvfourcheck}[2]{%
+  \begingroup
+  \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+  \renewcommand{\leancommit}{215baad75a57b43967063b8d33ed8e6989125501}%
+  \leanverified{#1}{#2}%
+  \endgroup
+}
+\newcommand{\fatvfourpartial}[2]{%
+  \begingroup
+  \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+  \renewcommand{\leancommit}{215baad75a57b43967063b8d33ed8e6989125501}%
+  \leanpartial{#1}{#2}%
+  \endgroup
+}
+\newcommand{\fatvfourabstract}[2]{%
+  \begingroup
+  \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-ramsey-space-todorcevic}%
+  \renewcommand{\leancommit}{bdb601607c03a945bbcd01cfccaa884d4c95e69f}%
+  \leanverified{#1}{#2}%
+  \endgroup
+}
+
+\newcommand{\fatvfourTheoremReview}{%
+\ifshowvalidation
+\fatvfourcheck{SuccessorTree/FatTree/A4ReviewComplete.lean}{ellentuck\_review}
+\todo[inline]{Stevo\v sek: The fat-tree Ellentuck theorem is now formally proved. The checked route is: the alternative raw-fan proof gives the geometric fixed-stem pigeonhole theorem, A3 transfers it to typed A4, and metric closedness plus the abstract Ellentuck theorem yields the topological Ramsey-space conclusion. The old first-head/fat-line factorisation is not used and should not be presented as part of the verified proof.}
+\fi
+}
+
+\newcommand{\fatvfourAbstractReview}{%
+\ifshowvalidation
+\fatvfourabstract{RamseySpace/AbstractEllentuck.lean}{abstractEllentuck}
+\todo[inline]{Stevo\v sek: The abstract endpoint has passed its first major application audit using the actual Ellentuck topology and Mathlib's Baire and meagreness predicates. Fusion completeness is derived from A2 and metric closedness alone, before A3/A4 is assembled, so the use of fusion inside the A4 proof is noncircular.}
+\fi
+}
+
+\newcommand{\fatvfourStructuralReview}{%
+\ifshowvalidation
+\fatvfourcheck{SuccessorTree/FatTree/Closed.lean}{isMetricallyClosed}
+\todo[inline]{Stevo\v sek: Closedness is Lean-checked: a coherent sequence of finite approximations determines compatible cuts and rows, and each row-end equation is preserved. For A2, spell out coherence of finite reduction witnesses via uniqueness of the target index at each terminal cut. In A3(2), the checked conclusion is the required neighbourhood inclusion; the stronger equality displayed in the prose still needs a separate reverse-inclusion proof or should be weakened.}
+\fi
+}
+
+\newcommand{\fatvfourAfourReview}{%
+\ifshowvalidation
+\fatvfourcheck{SuccessorTree/FatTree/A4ReviewComplete.lean}{fixedStemPigeonhole\_review}
+\todo[inline]{Stevo\v sek: A4 is now checked via the alternative all-trace proof. Keep the original source cut $c$ fixed. For a current prefix $\fat y$, retain every admissible exact trace from $c$ to its terminal cut and keep large the rows good for all such traces. The simultaneous raw-fan Hales--Jewett lemma handles all admissible successor-table updates at once; raw successor tables themselves are not assumed admissible.}
+\todo[inline]{Stevo\v sek: The final geometric coverage uses last-block factorisation, not factorisation through the first selected head. The factorisation only needs successors on the source cut. M3 gives them at positive cuts, a source letter gives them at a moving root, and if no root letter exists then every root row is the identity and the one-step front is already homogeneous.}
+\fi
+}
+
+\newcommand{\fatvfourFusionReview}{%
+\ifshowvalidation
+\fatvfourcheck{SuccessorTree/FatTree/A4PairPersistence.lean}{persistentAcceptedPair\_of\_dense\_pairs}
+\todo[inline]{Stevo\v sek: The persistence step is verified in Baumgartner finite-batch form. Process the finite set of relevant heads at each protected depth, use A3 to lift avoidance while preserving that prefix, and take the metric-closed fusion limit. Any surviving good pair has its first head in the batch processed at its exact depth, yielding the contradiction. This is a cleaner replacement for the global enumeration argument in the present prose.}
+\fi
+}
+
+\newcommand{\fatvfourCoverageReview}{%
+\ifshowvalidation
+\fatvfourcheck{SuccessorTree/FatTree/A4ReviewSourceFusion.lean}{review\_fixedStemPigeonhole}
+\todo[inline]{Stevo\v sek: The complete all-exact-traces fusion and arbitrary geometric coverage are checked. Exact-depth persistence supplies the finite bridge family; the simultaneous fan line is applied to every composite of an old trace with a bridge; the accepted head is factored through the common line head; transported raw fans and a spliced common tail give the full updated trace-good condition. The empty trace-family branch and both root cases are handled explicitly.}
+\fi
+}

@@ -1,0 +1,42 @@
+import SuccessorTree.FatTree.A4OccurrenceStability
+import SuccessorTree.FatTree.A4ReplayColour
+import SuccessorTree.FatTree.A4TypedBridge
+import SuccessorTree.FatTree.A4RootPigeonhole
+
+/-!
+These are intermediate A4 ingredients, not the completed A4 or Ellentuck
+statement. The audit must not be presented as a proof of either conclusion.
+The last report covers A4 only at a root-fixed source cut.
+-/
+
+open SuccessorTree
+open SuccessorTree.SMTree
+open SuccessorTree.SMTree.FatTree
+
+#check ProfileCollector.exists_globallySaturated
+#check ProfileCollector.reachable_occurrence_level
+#check ProfileCollector.reachable_occurrence_base
+#check ProfileCollector.reachable_occurrence_letter
+#check ProfileCollector.seen_eq_of_globallySaturated
+#check ProfileCollector.globallySaturated_of_reachable
+#check ProfileCollector.currentProfile_mem_start
+#check ProfileReplayState.fixed_occurrence_level_lt
+#check ProfileReplayState.replayLetter_eq_fixed
+#check ProfileReplayState.exists_colour_stable_replayLine
+#check ProfileReplayState.LineTailState.headRow_stemAt
+#check mem_oneStep_iff_exists_appendedRow
+#check typed_a4_at_fixedRoot
+
+#print axioms ProfileCollector.exists_globallySaturated
+#print axioms ProfileCollector.reachable_occurrence_level
+#print axioms ProfileCollector.reachable_occurrence_base
+#print axioms ProfileCollector.reachable_occurrence_letter
+#print axioms ProfileCollector.seen_eq_of_globallySaturated
+#print axioms ProfileCollector.globallySaturated_of_reachable
+#print axioms ProfileCollector.currentProfile_mem_start
+#print axioms ProfileReplayState.fixed_occurrence_level_lt
+#print axioms ProfileReplayState.replayLetter_eq_fixed
+#print axioms ProfileReplayState.exists_colour_stable_replayLine
+#print axioms ProfileReplayState.LineTailState.headRow_stemAt
+#print axioms mem_oneStep_iff_exists_appendedRow
+#print axioms typed_a4_at_fixedRoot
