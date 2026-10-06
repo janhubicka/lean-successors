@@ -77,3 +77,4 @@ import SuccessorTree.ShapeFiniteCorollaries
 import SuccessorTree.Envelope
 import SuccessorTree.EnvelopePullback
 import SuccessorTree.EnvelopeAlgorithm
+import SuccessorTree.EnvelopeStage
