@@ -1,0 +1,157 @@
+name: Adversarial fat-tree A4
+
+on:
+  push:
+    branches: [fat-tree-proof-cleanup, fat-tree-formalization]
+    paths:
+      - 'SuccessorTree/FatTree/A4*.lean'
+      - 'scripts/RefereeFatTreeA4*.lean'
+      - '.github/workflows/adversarial-fat-tree-a4.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: adversarial-fat-tree-a4-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  referee-a-endpoint:
+    name: Referee A — unconditional endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Download Mathlib cache
+        run: lake exe cache get
+      - name: Build final endpoint only
+        run: lake build SuccessorTree.FatTree.A4ReviewComplete
+      - name: Run endpoint audit
+        run: |
+          set -o pipefail
+          lake env lean scripts/RefereeFatTreeA4A.lean 2>&1 | tee referee-a.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text=Path("referee-a.log").read_text()
+          reports=re.findall(r"depends on axioms:\s*\[([^\]]*)\]",text,re.S)
+          assert len(reports)==3, len(reports)
+          allowed={"propext","Classical.choice","Quot.sound"}
+          for report in reports:
+              actual={x.strip() for x in report.split(",") if x.strip()}
+              assert actual <= allowed, actual
+          assert "sorryAx" not in text and not re.search(r"\berror:",text)
+          print("PASS: public A4/Ellentuck endpoint is unconditional and axiom-clean")
+          PY
+
+  referee-b-edge-cases:
+    name: Referee B — root and coverage cases
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Download Mathlib cache
+        run: lake exe cache get
+      - name: Run edge-case audit
+        run: |
+          set -o pipefail
+          lake env lean scripts/RefereeFatTreeA4B.lean 2>&1 | tee referee-b.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text=Path("referee-b.log").read_text()
+          reports=re.findall(r"depends on axioms:\s*\[([^\]]*)\]",text,re.S)
+          assert len(reports)==5, len(reports)
+          allowed={"propext","Classical.choice","Quot.sound"}
+          for report in reports:
+              actual={x.strip() for x in report.split(",") if x.strip()}
+              assert actual <= allowed, actual
+          assert "sorryAx" not in text and not re.search(r"\berror:",text)
+          print("PASS: moving-root, no-letter-root and last-block coverage interfaces compile")
+          PY
+
+  referee-c-dependency-firewall:
+    name: Referee C — circularity firewall
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Build geometric A4 core without assembly
+        run: lake build SuccessorTree.FatTree.A4ReviewSourceFusion
+      - name: Check transitive import firewall
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          start="SuccessorTree.FatTree.A4ReviewSourceFusion"
+          forbidden={
+            "SuccessorTree.FatTree.A4Assembly",
+            "SuccessorTree.FatTree.A4ReviewComplete",
+            "RamseySpace.AbstractEllentuck",
+          }
+          seen=set()
+          stack=[start]
+          def local_path(mod):
+              if not mod.startswith("SuccessorTree."):
+                  return None
+              return Path(mod.replace(".","/")+".lean")
+          while stack:
+              mod=stack.pop()
+              if mod in seen: continue
+              seen.add(mod)
+              if mod in forbidden:
+                  raise SystemExit(f"forbidden circular import reached: {mod}")
+              p=local_path(mod)
+              if p is None or not p.exists():
+                  continue
+              text=p.read_text()
+              if "sorry" in text:
+                  raise SystemExit(f"admitted proof token in {p}")
+              for line in text.splitlines():
+                  if line.startswith("import "):
+                      child=line[len("import "):].strip()
+                      if child in forbidden:
+                          raise SystemExit(f"{p} imports forbidden module {child}")
+                      if child.startswith("SuccessorTree."):
+                          stack.append(child)
+          print(f"PASS: {len(seen)} local modules in geometric A4 core avoid assembly/Ellentuck")
+          PY
