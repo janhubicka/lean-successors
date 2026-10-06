@@ -92,15 +92,4 @@ theorem exists_reviewFanLine_of_sourceLetter
   intro j e theta htheta hraw
   exact hL j e theta htheta hraw
 
-/-- At a positive initial cut, M3 alone supplies a source letter. -/
-theorem exists_reviewFanLine_positive
-    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
-    {κ : Type z} [Fintype κ]
-    (U : FatTree H) (a : Nat) (trace : C → AM H c 1)
-    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
-    (hpos : 0 < U.cut a) (chi : AM H c 1 → κ) :
-    Nonempty (ReviewFanLine H U a trace hend chi) :=
-  exists_reviewFanLine_of_sourceLetter H U a trace hend
-    (duplicateHistoryLetter H 0 (U.cut a) hpos) chi
-
 end SuccessorTree.SMTree.FatTree
