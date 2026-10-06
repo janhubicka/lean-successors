@@ -32,7 +32,7 @@ private theorem map_comp_list_eq_of_pointwise
       have hxs : ∀ y ∈ xs, F y = G (Q y) := by
         intro y hy
         exact h y (by simp [hy])
-      simp only [List.map_cons]
+      simp only [List.map_cons, Function.comp_apply]
       rw [hx, ih hxs]
 
 /-- One-step replacement from the top-level range condition.
@@ -96,7 +96,9 @@ theorem appendRow_stemAt_of_topRange
         LevelTree.lev (q.representative H a) =
             H.levelMap (q.representative H).map (LevelTree.lev a) :=
           (H.levelMap_eq (q.representative H).map (a := a)).symm
-        _ = q.topLevel H := by rw [halev]
+        _ = q.topLevel H := by
+          unfold AM.topLevel
+          rw [halev]
         _ = U.cut m := hqtop
 
     have hqaUpper :
