@@ -107,6 +107,7 @@ theorem shapePigeonhole_zero
         Disjoint
           ((ramseyApproximationSystem H).oneStepApproximations (n := 0) a A) O) := by
   classical
+  change Set (RamseyApprox H 1) at O
   let colour : RamseyApprox H 1 → Bool :=
     fun b => if b ∈ O then true else false
   obtain ⟨W, hWB, hhom⟩ :=
