@@ -122,6 +122,18 @@ jobs:
             cat proof-audit/fat-tree-a4-axioms.log
             exit 1
           }
+      - name: Check unconditional fat-tree A4 and Ellentuck endpoints
+        if: always()
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckFatTreeReviewA4.lean > proof-audit/fat-tree-review-a4-axioms.log 2>&1; then
+            cat proof-audit/fat-tree-review-a4-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/fat-tree-review-a4-axioms.log 64 || {
+            cat proof-audit/fat-tree-review-a4-axioms.log
+            exit 1
+          }
       - name: Check intermediate fat-tree replay axioms
         if: always()
         run: |
