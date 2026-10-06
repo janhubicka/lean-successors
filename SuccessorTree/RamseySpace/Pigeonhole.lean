@@ -149,7 +149,7 @@ theorem shapePigeonhole_zero
         rw [if_neg hbO]
       exact False.elim (Bool.noConfusion (hbColour.symm.trans hbFalse))
   · right
-    rw [Set.disjoint_left]
+    apply Set.disjoint_left.mpr
     intro b hb hbO
     change RamseyApprox H 1 at b
     rcases hb with ⟨X, hXaW, hXb⟩
