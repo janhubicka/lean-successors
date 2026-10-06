@@ -359,26 +359,16 @@ theorem shapeAct_tail_oneBlockOccurs
       ⟨tailMap H U n, by
         intro x hx
         exact tailMap_fixesBelow H U n x (by simpa [hc] using hx)⟩
+    let hstem : c = (U.initialSegment H n).terminalCut :=
+      hc.symm.trans (U.initialSegment_terminalCut H n).symm
     OneBlockOccurs H (U.initialSegment H n) U
-      (FatTree.castRow H hc.symm (H.shapeAct c W r)) := by
-  let r0 : AM H (U.cut n) 1 := FatTree.castRow H hc.symm r
-  have hocc :
-      OneBlockOccurs H (U.initialSegment H n) U
-        (tailCoordinateRow H U n r0) :=
-    tailCoordinateRow_oneBlockOccurs H U n r0
-  let W : ShapeSubspace H c :=
-    ⟨tailMap H U n, by
-      intro x hx
-      exact tailMap_fixesBelow H U n x (by simpa [hc] using hx)⟩
-  have heq :
-      FatTree.castRow H hc.symm (H.shapeAct c W r) =
-        tailCoordinateRow H U n r0 := by
-    exact cast_shapeAct_tail_eq H U n c hc r
+      (FatTree.castRow H hstem (H.shapeAct c W r)) := by
+  cases hc
   change OneBlockOccurs H (U.initialSegment H n) U
-    (FatTree.castRow H hc.symm (H.shapeAct c W r))
-  rw [heq]
-  exact hocc
-
+    (FatTree.castRow H _
+      (tailCoordinateRow H U n r))
+  rw [castRow_initialSegment H U n]
+  exact tailCoordinateRow_oneBlockOccurs H U n r
 
 end FatTree
 end SMTree
