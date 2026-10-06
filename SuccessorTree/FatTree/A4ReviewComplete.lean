@@ -2,12 +2,16 @@ import SuccessorTree.FatTree.A4ReviewSourceFusion
 import SuccessorTree.FatTree.A4Assembly
 
 /-!
-# Completed alternative A4 / Ellentuck endpoint for fat trees
+# Completed A4 and Ellentuck endpoint for fat trees
 
-The Baumgartner-style review proof supplies the literal-stem pigeonhole
-statement without an A4 hypothesis.  The previously checked A3 transfer then
-produces Todorcevic A4, and metric closedness plus the abstract Ellentuck
-theorem gives the topological Ramsey-space conclusion.
+The Baumgartner-style all-trace proof supplies the geometric fixed-stem
+pigeonhole theorem without an A4 hypothesis.  The independently checked A3
+transfer gives Todorčević A4 for the typed fat-tree approximation system.
+Metric closedness and the abstract Ellentuck theorem then give the
+topological Ramsey-space conclusion.
+
+The `*_review` names at the end are compatibility aliases for earlier
+development checkpoints.  The public endpoints are the `fatTree*` names.
 -/
 
 namespace SuccessorTree.SMTree.FatTree
@@ -16,32 +20,13 @@ universe u v
 variable {T : Type u} {Label : Type v} [PartialOrder T] [LevelTree T]
 variable {S : STree T Label} (H : SMTree S)
 
-/-- The alternative proof discharges the geometric fixed-stem obligation. -/
-theorem fixedStemPigeonhole_review : FixedStemPigeonhole H := by
+/-- Geometric fixed-stem pigeonhole theorem for every finite stem and every
+colour class of geometric one-block extensions. -/
+theorem fatTreeFixedStemPigeonhole : FixedStemPigeonhole H := by
   intro y U hyU O
   exact review_fixedStemPigeonhole H y U hyU O
 
-/-- A1--A4 for the fat-tree approximation space, obtained from the review
-proof of A4 and the independently checked A1--A3 development. -/
-noncomputable def abstractRamseySpace_review :
-    RamseySpace.AbstractRamseySpace (approximationSystem H) :=
-  ramseySpaceOfFixedStemPigeonhole H (fixedStemPigeonhole_review H)
-
-/-- The fat-tree space is a topological Ramsey space in the literal
-basic-neighbourhood formulation of the abstract Ellentuck theorem. -/
-theorem ellentuck_review :
-    RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
-      (S := approximationSystem H) :=
-  ellentuck_of_fixedStemPigeonhole H (fixedStemPigeonhole_review H)
-
-/-- Final public geometric fixed-stem pigeonhole theorem.  The `review`
-suffix on the construction lemmas is historical; no additional hypothesis
-remains here. -/
-theorem fatTreeFixedStemPigeonhole : FixedStemPigeonhole H :=
-  fixedStemPigeonhole_review H
-
-/-- Final public Todorčević A4 theorem for the typed fat-tree approximation
-space. -/
+/-- Todorčević A4 for the typed fat-tree approximation space. -/
 theorem fatTreeA4
     {n : Nat} (a : (approximationSystem H).Approx n)
     (B : FatTree H) {d : Nat}
@@ -52,16 +37,32 @@ theorem fatTreeA4
         Disjoint ((approximationSystem H).oneStepApproximations a V) O) :=
   typed_pigeonhole_of_fixedStem H (fatTreeFixedStemPigeonhole H) a B hd O
 
-/-- Final public A1--A4 structure for fat trees. -/
+/-- A1--A4 for the fat-tree approximation space. -/
 noncomputable def fatTreeAbstractRamseySpace :
     RamseySpace.AbstractRamseySpace (approximationSystem H) :=
   ramseySpaceOfFixedStemPigeonhole H (fatTreeFixedStemPigeonhole H)
 
-/-- Final public Ellentuck endpoint for the fat-tree space. -/
+/-- The fat-tree space is a topological Ramsey space in the literal
+basic-neighbourhood formulation. -/
 theorem fatTreeEllentuck :
     RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
       (S := approximationSystem H) :=
   RamseySpace.abstractEllentuck_onBasicNeighborhoods
     (fatTreeAbstractRamseySpace H) (isMetricallyClosed H)
+
+/-! Compatibility aliases retained for validation links from earlier
+checkpoints. -/
+
+theorem fixedStemPigeonhole_review : FixedStemPigeonhole H :=
+  fatTreeFixedStemPigeonhole H
+
+noncomputable def abstractRamseySpace_review :
+    RamseySpace.AbstractRamseySpace (approximationSystem H) :=
+  fatTreeAbstractRamseySpace H
+
+theorem ellentuck_review :
+    RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
+      (S := approximationSystem H) :=
+  fatTreeEllentuck H
 
 end SuccessorTree.SMTree.FatTree
