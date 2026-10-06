@@ -1,7 +1,7 @@
 name: Review A4
 on:
   push:
-    branches: [fat-tree-formalization]
+    branches: [fat-tree-formalization, fat-tree-proof-cleanup]
     paths:
       - 'SuccessorTree.lean'
       - 'SuccessorTree/FatTree/A4PairPersistence.lean'
