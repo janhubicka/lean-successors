@@ -22,29 +22,6 @@ variable {T : Type u} {Label : Type v}
 variable [PartialOrder T] [LevelTree T]
 variable {S : STree T Label}
 
-/-- Postcomposition respects equality of finite approximations. -/
-theorem ramseyApprox_comp_congr
-    (H : SMTree S) {m : Nat} (F : MMap H) {G K : MMap H}
-    (h : ramseyApprox H m G = ramseyApprox H m K) :
-    ramseyApprox H m (MMap.comp H F G) =
-      ramseyApprox H m (MMap.comp H F K) := by
-  cases m with
-  | zero => rfl
-  | succ m =>
-      apply Subtype.ext
-      funext x
-      exact congrArg F (H.ramseyApprox_apply_eq h x.1 (by omega))
-
-/-- Acting on the finite restriction of a total map is literal composition
-on that finite source domain, independent of the chosen representative. -/
-theorem shapeActK_toAM_val
-    (H : SMTree S) (n k : Nat)
-    (W K : ShapeSubspace H n) :
-    (H.shapeActK n k W (K.1.toAM H n k K.2)).1 =
-      ramseyApprox H (n + k) (MMap.comp H W.1 K.1) := by
-  exact H.ramseyApprox_comp_congr W.1
-    (AM.representative_top H (K.1.toAM H n k K.2))
-
 /-- One-moving-level homogeneity inside a prescribed subspace. -/
 theorem shapeRamsey_one_relative
     {κ : Type w} [Fintype κ]
