@@ -103,7 +103,7 @@ noncomputable def appendRow
         (r i).rowEndLevel H + 1 =
             g.rowEndLevel H + 1 := by rw [hend]
         _ = c (x.height + 1) := by
-          simp [c, appendCut]
+          simp [c]
         _ = c i.succ.1 := by
           congr
           omega
