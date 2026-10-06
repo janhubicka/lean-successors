@@ -1,101 +1,55 @@
 # lean-successors
 
-Lean 4 verification project for **Ramsey theorem for trees with successor operation**
+Lean 4 formalisation of **Ramsey theorem for trees with successor operation**
 (Balko–Chodounský–Dobrinen–Hubička–Konečný–Nešetřil–Zucker).
 
-The project starts at the combinatorial core of Section 3.1: the support
-bookkeeping and the Hales--Jewett-based one-dimensional pigeonhole lemma.
+## Main endpoints
 
-## Verified so far
+The public results are theorems of the `LevelTree`, `STree` and `SMTree`
+interfaces. The distinguished monoid satisfies M1–M3; no global pruning,
+extra amalgamation axiom, or unproved pigeonhole premise is imposed by the
+endpoints below.
 
-The following layers are checked by Lean/CI on branch
-`formalize-hales-jewett`.
+| Result | Module | Declaration |
+| --- | --- | --- |
+| Starred Hales–Jewett | `HalesJewett.AlphabetInduction` | `starHJ_finite` |
+| Fat-tree A4 | `FatTree.A4ReviewComplete` | `fatTreeA4` |
+| Fat-tree Ellentuck | `FatTree.A4ReviewComplete` | `fatTreeEllentuck` |
+| Finite-dimensional shape Ramsey, direct fusion | `ShapeFiniteRamsey` | `shapePreservingRamsey` |
+| The same theorem from fat-tree Ellentuck | `ShapeEllentuckRamsey` | `shapePreservingRamsey_viaFatEllentuck` |
+| Bounded-terminal finite corollary | `ShapeFiniteCorollaries` | `shapeRamsey_bounded` |
+| Exact-terminal finite corollary | `ShapeFiniteCorollaries` | `shapeRamsey_exact` |
 
-1. **Starred combinatorial lines** (`SuccessorTree/StarLine.lean`):
-   `L(a)`, `L(*)`, prefix, concatenation, and constant-prefix lemmas.
-2. **Successor-pigeonhole support** (`SuccessorTree/Support.lean`,
-   `SuccessorTree/Pigeonhole.lean`):
-   the paper's support word containing every transition and the abstract
-   Hales--Jewett replay argument. The tree-specific replay equations are
-   isolated in `ReplaySystem`.
-3. **Variable words and Shift** (`SuccessorTree/HalesJewett/VariableWord.lean`):
-   infinite variable words in block normal form and
-   `Shift(W,n)(u⌢v)=u⌢W(v)`.
-4. **Subspace composition** (`SuccessorTree/HalesJewett/Composition.lean`):
-   `(W(U))(v)=W(U(v))` and the combined Shift/substitution identity.
-5. **Combinatorial-forcing plumbing** (`SuccessorTree/HalesJewett/Forcing.lean`):
-   largeness, avoiding subspaces, the two pullback observations, and the
-   binary-to-finite-colour refinement by nested subspaces.
-6. **Reduction layer** (`SuccessorTree/HalesJewett/ForcingReduction.lean`):
-   once the large-set proposition is available, the binary and finite-colour
-   omega-dimensional statements, and hence the starred line needed by the
-   successor pigeonhole, follow formally.
+Module paths are relative to `SuccessorTree`. Both shape proofs share the
+relative reduction and dimension induction in `ShapeFiniteInduction`, but use
+different one-dimensional Ramsey inputs. Their public statements are unchanged.
+See [the proof-route guide](docs/shape-proof-routes.md) before strengthening them.
 
-## Non-precompact colourings
+## Validation boundary
 
-The library also contains the formalised lower-bound arguments used by the
-BANANA project:
+The set-theoretic definition of a tree in the manuscript still needs a formal
+adapter to `LevelTree`. The stronger neighbourhood projection to the monoid's
+composition-Ellentuck topology is not established by the finite shape theorem
+or by the ordinary correspondence between fat trees and shape maps. Later
+manuscript applications must be checked separately. The manuscript's TODOs
+record these distinctions; a formal endpoint does not certify surrounding prose.
 
-* odd subset-sum surjectivity for pre-BANANA and Folkman--BANANA;
-* affine-fibre parity over `F₂` and the determinant/Cauchy--Binet step;
-* the residue group algebra and the full bilinear residue-count theorem;
-* target-copy wrappers showing that the selected pre-BANANA blocks are
-  legitimate, the Folkman witness has odd ordinary count, and the BANANA
-  affine slice produces nonzero vectors with the required pairing parity;
-* coordinate perfect-copy interfaces turning the BANANA matrix data into
-  injective left/right linear maps preserving the pairing, and identifying
-  the matrix weight with the ordinary support-intersection count of the
-  ambient image vectors.
-* structure-level perfect-pair embeddings and line-pair copies, so the final BANANA witness is stated as an embedded finite source copy rather than raw vectors.
-* standard-coordinate BANANA structures with arbitrary bilinear pairing matrices and injective pairing-preserving embeddings, matching the manuscript's finite structure definition.
-* an explicit perfect-completion embedding for every finite pairing, formalising the manuscript's completion lemma in coordinates;
-* arbitrary perfect-pair embeddings converted back to coordinate matrices, so persistence is not restricted to a chosen matrix presentation;
-* a fixed-completion persistence theorem with the manuscript's quantifier order: the ambient coordinate realisation is fixed before the target copy;
-* the fixed-parity palette has exactly `2^k=q/2` colours, and every one occurs inside each embedded `B_q` target.
-* the palette is enumerated by the manuscript's `Fin r` colour convention, giving the fixed-ambient persistent colouring itself, the sharper `A₁` target of dimension `q-1`, and the deduction that both four-element line-pair sources have infinite copy Ramsey degree.
-
-These results live under `SuccessorTree/NonPrecompact/`.
-
-## Hales--Jewett dependency
-
-The proof in `janhubicka/Hales-Jewett-by-combinatorial-forcing` is an
-**induction on alphabet size**. Its large-set Proposition 1 is proved assuming
-the one-dimensional theorem for the same alphabet; it is not an unconditional
-replacement for Hales--Jewett. Lean makes this dependency explicit.
-
-The remaining combinatorial work is therefore:
-
-* formalize Lemma 1 (large set contains a line) under the same-alphabet
-  one-dimensional hypothesis;
-* formalize Lemma 2 and the fusion limit;
-* derive Proposition 1;
-* formalize the finite-colour alphabet-increase step from the
-  omega-dimensional theorem on the smaller alphabet;
-* close the alphabet-size induction and obtain `StarHJ` without any
-  Hales--Jewett black box.
-
-The accompanying proof audit is in
-`docs/hales-jewett-proof-audit.md`. The source corrections are in
-`janhubicka/Hales-Jewett-by-combinatorial-forcing#1`.
-
-## After Hales--Jewett
-
-We return to the successor-tree structure:
-
-* formalize the successor operation S1--S3;
-* shape-preserving maps and their basic support lemmas;
-* M1--M3, shape splitting, and canonical extension;
-* instantiate `ReplaySystem` from M3;
-* continue to fat subtrees, A4, and the main theorem.
-
-## Build
+## Build and regression checks
 
 ```bash
 lake update
 lake exe cache get
 lake build
+lake env lean scripts/CheckShapeRamsey.lean
+lake env lean scripts/CheckShapeProofRoutes.lean
 ```
 
-CI executes these steps on every push and pull request. The project pins
-mathlib to commit `5bd58ac291422a21f412ae354c91e7d172255a2c` and Lean
-`v4.35.0-rc3`.
+The normal root build includes both finite corollaries. CI also checks fat-tree
+statements, the transitive axioms of the endpoints, and the independence of the
+two shape-proof inputs by inspecting elaborated proof dependencies. Axiom checks
+allow only `propext`, `Classical.choice` and `Quot.sound`.
+
+The toolchain is Lean `v4.35.0-rc3`. Dependencies are pinned in `lakefile.toml`:
+mathlib at `5bd58ac291422a21f412ae354c91e7d172255a2c` and
+`lean-ramsey-space-todorcevic` at `54a9eb02f7f7bd2e942e95f7b44fc6f04f48892c`.
+CI artifacts retain the resolved manifest and proof-audit logs.

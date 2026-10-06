@@ -62,6 +62,17 @@ jobs:
             cat proof-audit/axioms.log
             exit 1
           }
+      - name: Check independent shape proof routes and finite corollaries
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckShapeProofRoutes.lean > proof-audit/shape-proof-routes.log 2>&1; then
+            cat proof-audit/shape-proof-routes.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/shape-proof-routes.log 10 || {
+            cat proof-audit/shape-proof-routes.log
+            exit 1
+          }
       - name: Check fat-tree A1 sequencing axioms
         if: always()
         run: |
@@ -109,6 +120,18 @@ jobs:
           fi
           python3 scripts/check-axiom-log.py proof-audit/fat-tree-a4-axioms.log 10 || {
             cat proof-audit/fat-tree-a4-axioms.log
+            exit 1
+          }
+      - name: Check unconditional fat-tree A4 and Ellentuck endpoints
+        if: always()
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckFatTreeReviewA4.lean > proof-audit/fat-tree-review-a4-axioms.log 2>&1; then
+            cat proof-audit/fat-tree-review-a4-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/fat-tree-review-a4-axioms.log 64 || {
+            cat proof-audit/fat-tree-review-a4-axioms.log
             exit 1
           }
       - name: Check intermediate fat-tree replay axioms

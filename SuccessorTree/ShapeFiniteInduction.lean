@@ -1,0 +1,167 @@
+import SuccessorTree.ShapeFiniteProduct
+
+/-!
+# Finite-dimensional shape Ramsey from the one-dimensional theorem
+
+The relative reduction, finite-dimensional induction and conversion to AM
+coordinates are independent of the proof of one-dimensional homogeneity.
+Both the direct fusion proof and the fat-tree Ellentuck proof use this file.
+-/
+
+namespace SuccessorTree
+namespace SMTree
+
+universe u v w
+
+variable {T : Type u} {Label : Type v}
+variable [PartialOrder T] [LevelTree T]
+variable {S : STree T Label}
+
+/-- One-dimensional homogeneity relativises by pulling the colouring back
+along the prescribed subspace. -/
+theorem shapeRamsey_one_relative_of_oneDimensional
+    {κ : Type w} [Fintype κ]
+    (H : SMTree S) (n : Nat)
+    (oneDim :
+      ∀ c : AM H n 1 → κ,
+        ∃ U : ShapeSubspace H n,
+          (H.shapeSubspaceAction n).Homogeneous c U)
+    (B : ShapeSubspace H n)
+    (colour : RamseyApprox H (n + 1) → κ) :
+    ∃ W : ShapeSubspace H n,
+      RamseyReduction H W.1 B.1 ∧
+      ∀ K L : ShapeSubspace H n,
+        colour (ramseyApprox H (n + 1) (MMap.comp H W.1 K.1)) =
+          colour (ramseyApprox H (n + 1) (MMap.comp H W.1 L.1)) := by
+  classical
+  let c : AM H n 1 → κ := fun a => colour (H.shapeAct n B a).1
+  obtain ⟨U, hU⟩ := oneDim c
+  let W : ShapeSubspace H n := ShapeSubspace.comp H B U
+  have hval (K : ShapeSubspace H n) :
+      (H.shapeAct n B
+        (H.shapeAct n U (K.1.toAM H n 1 K.2))).1 =
+        ramseyApprox H (n + 1) (MMap.comp H W.1 K.1) := by
+    rw [← H.shapeAct_comp n B U]
+    have h := H.shapeActK_toAM_val n 1 W K
+    rw [H.shapeActK_one n W] at h
+    exact h
+  refine ⟨W, ⟨U.1, ?_⟩, ?_⟩
+  · intro x
+    rfl
+  · intro K L
+    have h := hU (K.1.toAM H n 1 K.2) (L.1.toAM H n 1 L.2)
+    change
+      colour (H.shapeAct n B
+        (H.shapeAct n U (K.1.toAM H n 1 K.2))).1 =
+      colour (H.shapeAct n B
+        (H.shapeAct n U (L.1.toAM H n 1 L.2))).1 at h
+    rw [hval K, hval L] at h
+    exact h
+
+/-- Finite-front fusion and induction on the number of moving levels.
+The one-dimensional input is used both at width one and, through the
+canonical-prefix factorisation, at each local fusion step. -/
+theorem shapeRamsey_approximations_of_oneDimensional
+    {κ : Type w} [Fintype κ]
+    (H : SMTree S) (n : Nat)
+    (oneDim :
+      ∀ (m : Nat) (c : AM H m 1 → κ),
+        ∃ W : ShapeSubspace H m,
+          (H.shapeSubspaceAction m).Homogeneous c W) :
+    ∀ (k : Nat) (B : ShapeSubspace H n)
+      (colour : RamseyApprox H (n + k) → κ),
+      ∃ W : ShapeSubspace H n,
+        RamseyReduction H W.1 B.1 ∧
+        ∀ K L : ShapeSubspace H n,
+          colour (ramseyApprox H (n + k) (MMap.comp H W.1 K.1)) =
+            colour (ramseyApprox H (n + k) (MMap.comp H W.1 L.1)) := by
+  intro k
+  induction k with
+  | zero =>
+      intro B colour
+      refine ⟨B, H.ramseyReduction_refl B.1, ?_⟩
+      intro K L
+      have hK := MMap.ramseyApprox_eq_id_of_fixesBelow H
+        (MMap.comp H B.1 K.1) n
+        (MMap.comp_fixesBelow H B.1 K.1 n B.2 K.2)
+      have hL := MMap.ramseyApprox_eq_id_of_fixesBelow H
+        (MMap.comp H B.1 L.1) n
+        (MMap.comp_fixesBelow H B.1 L.1 n B.2 L.2)
+      exact congrArg colour (hK.trans hL.symm)
+  | succ k ih =>
+      intro B colour
+      cases k with
+      | zero =>
+          exact H.shapeRamsey_one_relative_of_oneDimensional
+            n (oneDim n) B colour
+      | succ k =>
+          let m : Nat := n + (k + 1)
+          have hnm : n < m := by dsimp [m]; omega
+          let default : κ := colour (ramseyApprox H (m + 1) (MMap.id H))
+          let P : ShapeProductStep H n m B colour :=
+            H.buildShapeProductStep_of_localPigeonhole default hnm B colour
+              (H.shapeLocalPigeonhole_of_oneDimensional
+                (H.singleLevelStepColour default m colour) oneDim)
+          obtain ⟨W, hWP, hW⟩ := ih P.space P.colour
+          obtain ⟨R, hRfix, hR⟩ :=
+            H.exists_frozen_rightFactor W.2 P.space.2 hWP
+          let RR : ShapeSubspace H n := ⟨R, hRfix⟩
+          have hcomp (K : ShapeSubspace H n) :
+              MMap.comp H W.1 K.1 =
+                MMap.comp H P.space.1 (ShapeSubspace.comp H RR K).1 := by
+            apply MMap.ext_apply
+            intro x
+            exact congrArg (fun F : MMap H => F (K.1 x)) hR
+          have hchild (K : ShapeSubspace H n) :
+              colour (ramseyApprox H (m + 1) (MMap.comp H W.1 K.1)) =
+                P.colour (ramseyApprox H m (MMap.comp H W.1 K.1)) := by
+            rw [hcomp K]
+            exact P.child_colour (ShapeSubspace.comp H RR K)
+          refine ⟨W, H.ramseyReduction_trans hWP P.reduction, ?_⟩
+          intro K L
+          exact (hchild K).trans ((hW K L).trans (hchild L).symm)
+
+/-- The finite-dimensional theorem in the paper's frozen-prefix AM
+coordinates, from one-dimensional homogeneity at every cut. -/
+theorem shapePreservingRamsey_of_oneDimensional
+    {κ : Type w} [Fintype κ]
+    (H : SMTree S)
+    (oneDim :
+      ∀ (m : Nat) (c : AM H m 1 → κ),
+        ∃ W : ShapeSubspace H m,
+          (H.shapeSubspaceAction m).Homogeneous c W)
+    (n k : Nat) (colour : AM H n k → κ) :
+    ∃ W : ShapeSubspace H n,
+      ∀ a b : AM H n k,
+        colour (H.shapeActK n k W a) =
+          colour (H.shapeActK n k W b) := by
+  classical
+  let default : κ := colour
+    ((MMap.id H).toAM H n k (MMap.id_fixesBelow H n))
+  let extended : RamseyApprox H (n + k) → κ := fun p =>
+    if hp : (ramseyApproximationSystem H).IsInitial
+        (ramseyApprox H n (MMap.id H)) p then
+      colour ⟨p, hp⟩
+    else default
+  have hext (a : AM H n k) : extended a.1 = colour a := by
+    dsimp only [extended]
+    rw [dite_eq_left a.2]
+    exact congrArg colour (Subtype.ext rfl)
+  obtain ⟨W, _, hW⟩ :=
+    H.shapeRamsey_approximations_of_oneDimensional
+      n oneDim k (ShapeSubspace.id H n) extended
+  refine ⟨W, ?_⟩
+  intro a b
+  let K : ShapeSubspace H n :=
+    ⟨a.representative H, a.representative_fixesBelow H⟩
+  let L : ShapeSubspace H n :=
+    ⟨b.representative H, b.representative_fixesBelow H⟩
+  have h := hW K L
+  change
+    extended (H.shapeActK n k W a).1 =
+      extended (H.shapeActK n k W b).1 at h
+  rw [hext, hext] at h
+  exact h
+
+end SMTree
+end SuccessorTree
