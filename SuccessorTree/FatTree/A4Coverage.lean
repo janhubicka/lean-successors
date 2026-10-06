@@ -91,19 +91,4 @@ theorem oneBlock_mem_of_all_fixedTraceGoodRows_of_sourceLetter
   oneBlock_mem_of_all_fixedTraceGoodRows_of_successors H y U hyU
     (fun x hx => ⟨E.toMMap x, H.letter_covBy E hx⟩) O hgood g hg
 
-/-- Compatibility wrapper for positive source cuts, where M3 supplies the
-source letter. -/
-theorem oneBlock_mem_of_all_fixedTraceGoodRows
-    (y : FiniteFatTree H) (U : FatTree H)
-    (hyU : ExtendsStem H y U) (hsourcePos : 0 < y.terminalCut)
-    (O : Set (AM H y.terminalCut 1))
-    (hgood : ∀ (m : Nat) (hym : y.height ≤ m),
-      U.row m ∈ FixedTraceGoodRows H y.terminalCut y.height
-        (U.initialSegment H m) hym
-        (initialSegment_traceSource_of_extendsStem H y U hyU m hym) O)
-    (g : AM H y.terminalCut 1) (hg : OneBlockOccurs H y U g) :
-    g ∈ O :=
-  oneBlock_mem_of_all_fixedTraceGoodRows_of_sourceLetter H y U hyU
-    (duplicateHistoryLetter H 0 y.terminalCut hsourcePos) O hgood g hg
-
 end SuccessorTree.SMTree.FatTree
