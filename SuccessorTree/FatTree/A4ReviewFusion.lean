@@ -3,15 +3,15 @@ import SuccessorTree.FatTree.A4PairPersistence
 /-!
 # Fixed-source fusion in the review proof of A4
 
-This file proves the review's global argument, rather than assuming the
-fixed-stem pigeonhole conclusion. The sole combinatorial input is the local
-good-pair lemma for a finite prefix (`ReviewGoodPairPrinciple`). Pair
-persistence is derived by the finite-depth avoidance theorem; the resulting
-large-set invariant is then fused. Last-block factorisation covers every
-geometric one-step extension at a positive original source cut.
+This file isolates the persistence and fixed-source fusion machinery from
+the local two-block combinatorics.  The generic core accepts a dense supply
+of good pairs; a compatibility wrapper states the older
+`ReviewGoodPairPrinciple` interface.  The completed source-letter proof in
+`A4ReviewGoodPair` and `A4ReviewSourceFusion` reuses the same core.
 
-The local good-pair principle is an explicit hypothesis, NOT an axiom or a
-completed theorem. Its simultaneous raw-successor-fan proof remains separate.
+Pair persistence is derived by finite-depth avoidance and metric fusion.
+Last-block factorisation, rather than first-head factorisation, is used by the
+final geometric coverage theorem.
 -/
 
 namespace SuccessorTree.SMTree.FatTree
