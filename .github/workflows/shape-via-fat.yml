@@ -43,3 +43,7 @@ jobs:
         run: lake exe cache get
       - name: Build correspondence
         run: lake build SuccessorTree.ShapeEllentuckRamsey
+      - name: Check theorem axioms
+        run: |
+          lake env lean scripts/CheckShapeViaFatEllentuck.lean > shape-via-fat-axioms.log
+          python3 scripts/check-axiom-log.py shape-via-fat-axioms.log 3
