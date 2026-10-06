@@ -93,6 +93,7 @@ variable (U : FatTree H) (a : Nat) (trace : C → AM H c 1)
 variable (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
 variable (K : ProfileCollector H U a trace)
 
+omit [Fintype C] [Nonempty C] in
 include hend in
 private theorem forward_trace_level
     (j : C) (x : T) (hx : LevelTree.lev x = c) :
@@ -104,6 +105,7 @@ private theorem forward_trace_level
     _ = (trace j).rowEndLevel H := by rw [hx]; rfl
     _ = U.cut a := hend j
 
+omit [Nonempty C] in
 /-- An admissible full successor image at a reachable history produces an
 actual seen profile by M2 and global saturation. The raw fan itself is not
 required to be admissible. -/
@@ -141,6 +143,7 @@ theorem review_seen_of_admissible_successors
   exact ⟨⟨alpha, hmem⟩,
     historyProfile_eq_some H (trace j) R.collector.state.toMMap E e hreal⟩
 
+omit [Nonempty C] in
 /-- The canonical head transports every raw fan edge with its actual code.
 This is a pointwise statement and does not assert that the fan is admissible. -/
 theorem review_head_raw_fan_edge

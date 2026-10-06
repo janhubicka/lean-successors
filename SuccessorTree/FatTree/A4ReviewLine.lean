@@ -50,10 +50,17 @@ theorem ReviewFanLine.depths_strict
     {chi : AM H c 1 → κ}
     (L : ReviewFanLine H U a trace hend chi) :
     a < L.headDepth ∧ L.headDepth < L.tailDepth := by
-  exact ⟨height_lt_of_appended_stemAt H (U.initialSegment H a) U
-    L.head L.headDepth L.head_geometric,
-    height_lt_of_appended_stemAt H (U.initialSegment H L.headDepth) U
-      L.tail L.tailDepth L.tail_geometric⟩
+  have hhead : a < L.headDepth := by
+    rcases L.head_geometric.1 with ⟨w⟩
+    have h := w.height_le H
+    change a + 1 ≤ L.headDepth at h
+    omega
+  have htail : L.headDepth < L.tailDepth := by
+    rcases L.tail_geometric.1 with ⟨w⟩
+    have h := w.height_le H
+    change L.headDepth + 1 ≤ L.tailDepth at h
+    omega
+  exact ⟨hhead, htail⟩
 
 /-- The review's simultaneous raw-fan construction from a source letter.
 All saturation and Hales--Jewett data are supplied by the tree axioms and
@@ -91,16 +98,5 @@ theorem exists_reviewFanLine_of_sourceLetter
   }⟩
   intro j e theta htheta hraw
   exact hL j e theta htheta hraw
-
-/-- At a positive initial cut, M3 alone supplies a source letter. -/
-theorem exists_reviewFanLine_positive
-    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
-    {κ : Type z} [Fintype κ]
-    (U : FatTree H) (a : Nat) (trace : C → AM H c 1)
-    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
-    (hpos : 0 < U.cut a) (chi : AM H c 1 → κ) :
-    Nonempty (ReviewFanLine H U a trace hend chi) :=
-  exists_reviewFanLine_of_sourceLetter H U a trace hend
-    (duplicateHistoryLetter H 0 (U.cut a) hpos) chi
 
 end SuccessorTree.SMTree.FatTree

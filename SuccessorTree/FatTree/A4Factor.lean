@@ -530,31 +530,6 @@ theorem exists_lastBlock_exactTrace_of_sourceLetter
     (fun x hx => ⟨E.toMMap x, H.letter_covBy E hx⟩)
     m hym g hg
 
-/-- Positive source cuts satisfy the successor hypothesis by M3.  This
-compatibility wrapper retains the original interface used by the existing
-positive-cut development. -/
-theorem exists_lastBlock_exactTrace
-    (y : FiniteFatTree H)
-    (U : FatTree H)
-    (hyU : ExtendsStem H y U)
-    (hsourcePos : 0 < y.terminalCut)
-    (m : Nat) (hym : y.height ≤ m)
-    (g : AM H y.terminalCut 1)
-    (hg :
-      StemAt H (FiniteFatTree.appendRow H y g) U (m + 1)) :
-    ∃ p : FiniteFatTree.ExactTrace H
-        (U.initialSegment H m) y.height hym,
-      HEq g
-        (H.composeAcross
-          (exactTraceToAMExact H (U.initialSegment H m)
-            y.height hym p)
-          (U.row m)) := by
-  apply exists_lastBlock_exactTrace_of_successors H y U hyU
-    (fun x hx => H.exists_immediateSuccessor_of_level_pos x (by
-      rw [hx]
-      exact hsourcePos))
-    m hym g hg
-
 end FatTree
 end SMTree
 end SuccessorTree

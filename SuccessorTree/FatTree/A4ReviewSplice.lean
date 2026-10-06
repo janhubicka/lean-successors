@@ -1,4 +1,6 @@
 import SuccessorTree.FatTree.A4ReviewAlgebra
+import SuccessorTree.FatTree.A4Large
+import SuccessorTree.FatTree.A4Splice
 
 /-!
 # Reattaching a common tail after the persistent witness

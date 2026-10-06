@@ -62,7 +62,7 @@ theorem typed_amalgamation_nonempty
   refine ⟨W, ?_⟩
   exact (mem_neighborhood_iff_inNeighborhood H a A W).2 hW
 
-/-- Todorčević's standard A3(2) in the typed approximation-system interface. -/
+/-- Useful basic-member special case of A3(2) in the typed approximation-system interface. -/
 theorem typed_amalgamation_refine_standard
     {n : Nat} (a : (S0 H).Approx n)
     (B : FatTree H) {d : Nat}
@@ -92,6 +92,26 @@ theorem typed_amalgamation_refine_standard
     (mem_neighborhood_iff_inNeighborhood H a A' W).1 hW
   exact (mem_neighborhood_iff_inNeighborhood H a A W).2
     (hsub W hWc)
+
+/-- Todorčević's printed A3(2): if `A ≤ B` and `[a,A]` is nonempty,
+then some `A' ∈ [depth_B(a),B]` has nonempty `[a,A'] ⊆ [a,A]`.
+The proof reduces it to the basic-member special case above. -/
+theorem typed_amalgamation_refine_published
+    {n : Nat} (a : (S0 H).Approx n)
+    (B : FatTree H) {d : Nat}
+    (hd : (finitization H).HasDepth a B d)
+    {A : FatTree H} (hAB : (S0 H).le A B)
+    (hne : ((S0 H).neighborhood a A).Nonempty) :
+    ∃ A', A' ∈ (S0 H).levelNeighborhood d B ∧
+      ((S0 H).neighborhood a A').Nonempty ∧
+      (S0 H).neighborhood a A' ⊆ (S0 H).neighborhood a A := by
+  rcases hne with ⟨X, hXaA⟩
+  have hXaB : X ∈ (S0 H).neighborhood a B :=
+    (S0 H).neighborhood_mono hAB hXaA
+  rcases typed_amalgamation_refine_standard H a B hd hXaB with
+    ⟨A', hA'B, hsub⟩
+  refine ⟨A', hA'B, typed_amalgamation_nonempty H a B hd hA'B, ?_⟩
+  exact hsub.trans ((S0 H).neighborhood_mono hXaA.1)
 
 end FatTree
 end SMTree

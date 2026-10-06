@@ -18,8 +18,8 @@ universe u v
 variable {T : Type u} {Label : Type v} [PartialOrder T] [LevelTree T]
 variable {S : STree T Label} (H : SMTree S)
 
-/-- The checked local good-pair theorem gives persistence directly when a
-source letter is available; no global good-pair principle is assumed. -/
+/-- The checked source-letter good-pair theorem feeds the common
+persistence core directly; no global good-pair principle is assumed. -/
 theorem review_trace_persistence_of_sourceLetter
     (c n : Nat) (O : Set (AM H c 1))
     (y : FiniteFatTree H) (U : FatTree H)
@@ -30,114 +30,38 @@ theorem review_trace_persistence_of_sourceLetter
       ReviewTraceGood H c n O y h ∧ Reduces H V U ∧
       ExtendsStem H (FiniteFatTree.appendRow H y h) V ∧
       ReviewTraceLarge H c n O (FiniteFatTree.appendRow H y h) V := by
-  rcases hlarge with ⟨hn, hsrc, hlarge⟩
-  let G := FixedTraceGoodRows H c n y hn hsrc O
-  let P : PairContinuation H y := fun h =>
-    FixedTraceGoodRows H c n (FiniteFatTree.appendRow H y h)
-      (by rw [FiniteFatTree.appendRow_height]; omega)
-      (traceSource_eq_after_append H c n y hn hsrc h) O
-  have hdense : ∀ A : FatTree H, Reduces H A U → ExtendsStem H y A →
-      ∃ h, h ∈ G ∧ ∃ k, k ∈ P h ∧
-        OneBlockOccurs H (FiniteFatTree.appendRow H y h) A k := by
-    intro A hAU hyA
-    obtain ⟨h, k, hpair, hk⟩ :=
-      review_goodPair_of_sourceLetter H c n y hn hsrc O A hyA Esource
-        (oneBlockLarge_mono H hlarge hAU hyA)
-    exact ⟨h, hpair.1, k,
-      (fixedTraceUpdateGood_iff H c n y hn hsrc O h k).1 hpair.2, hk⟩
-  obtain ⟨h, hh, V, hVU, hyhV, hnext⟩ :=
-    persistentAcceptedPair_of_dense_pairs H y U hyU G P hdense
-  refine ⟨h, V, ⟨hn, hsrc, hh⟩, hVU, hyhV, ?_⟩
-  exact ⟨by rw [FiniteFatTree.appendRow_height]; omega,
-    traceSource_eq_after_append H c n y hn hsrc h, hnext⟩
+  rcases hlarge with ⟨hn, hsrc, hrows⟩
+  apply review_trace_persistence_core H c n O y U hn hsrc hyU
+  intro A hAU hyA
+  exact review_goodPair_of_sourceLetter H c n y hn hsrc O A hyA Esource
+    (oneBlockLarge_mono H hrows hAU hyA)
 
-/-- Fixed-source all-trace fusion from an explicit source letter.  The same
-original letter is carried to each later finite prefix before applying the
-local good-pair theorem. -/
+/-- Fixed-source all-trace fusion from an explicit source letter.  The
+generic fusion engine is reused; the only extra work is transporting the
+original source letter to the current terminal cut. -/
 theorem review_all_trace_fusion_of_sourceLetter
     (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
     (Esource : OneLevelLetter H y.terminalCut)
     (O : Set (AM H y.terminalCut 1)) (hlarge : OneBlockLarge H y U O) :
     ∃ V : FatTree H, Reduces H V U ∧ ExtendsStem H y V ∧
       ∀ m : Nat, y.height ≤ m →
-        ReviewStepGood H y.terminalCut y.height O (V.initialSegment H (m + 1)) := by
-  classical
-  let State (i : Nat) := {A : FatTree H //
-    Reduces H A U ∧ ExtendsStem H y A ∧
-      ReviewTraceLarge H y.terminalCut y.height O
-        (A.initialSegment H (y.height + i)) A}
-  have hbase : ReviewTraceLarge H y.terminalCut y.height O
-      (U.initialSegment H y.height) U := by
-    rw [initialSegment_eq_of_extendsStem H hyU]
-    refine ⟨le_rfl, baseTraceSource H y, ?_⟩
-    rwa [fixedTraceGoodRows_base H y O]
-  let start : State 0 := ⟨U, reduces_refl H U, hyU, by
-    simpa only [Nat.add_zero] using hbase⟩
-  have hstep : ∀ i : Nat, ∀ A : State i, ∃ B : State (i + 1),
-      InDepthCone H (y.height + i) A.1 B.1 ∧
-      ReviewStepGood H y.terminalCut y.height O
-        (B.1.initialSegment H (y.height + i + 1)) := by
-    intro i A
-    let z := A.1.initialSegment H (y.height + i)
-    have hsourceLe : y.terminalCut ≤ z.terminalCut := by
-      dsimp [z]
-      calc
-        y.terminalCut = A.1.cut y.height :=
-          (terminalCut_eq_of_extendsStem H A.2.2.1).symm
-        _ ≤ A.1.cut (y.height + i) :=
-          (A.1.cut_strictMono H).monotone (by omega)
-        _ = (A.1.initialSegment H (y.height + i)).terminalCut := rfl
-    let Ez : OneLevelLetter H z.terminalCut :=
-      reviewLaterSourceLetter H y.terminalCut z.terminalCut hsourceLe Esource
-    obtain ⟨h, V, hgood, hVA, hzV, hnext⟩ :=
-      review_trace_persistence_of_sourceLetter H
-        y.terminalCut y.height O z A.1
-        (initialSegment_extendsStem H A.1 (y.height + i)) Ez A.2.2.2
-    have hcone : InDepthCone H (y.height + i) A.1 V :=
-      ⟨hVA, extendsStem_of_appendRow H hzV⟩
-    have hyV : ExtendsStem H y V :=
-      extendsStem_of_depthCone H A.2.2.1 hcone (by omega)
-    have heq : V.initialSegment H (y.height + i + 1) =
-        FiniteFatTree.appendRow H z h :=
-      initialSegment_eq_of_extendsStem H hzV
-    have hnext' : ReviewTraceLarge H y.terminalCut y.height O
-        (V.initialSegment H (y.height + (i + 1))) V := by
-      rw [show y.height + (i + 1) = y.height + i + 1 by omega, heq]
-      exact hnext
-    exact ⟨⟨V, reduces_trans H hVA A.2.1, hyV, hnext'⟩,
-      hcone, z, h, heq, hgood⟩
-  choose next hnext hgood using hstep
-  let Y : (i : Nat) → State i :=
-    fun i => Nat.rec (motive := fun i => State i) start (fun i A => next i A) i
-  have hYstep (i : Nat) :
-      InDepthCone H (y.height + i) (Y i).1 (Y (i + 1)).1 := hnext i (Y i)
-  have hYfusion : (approximationSystem H).IsFusionFrom y.height
-      (fun i => (Y i).1) := by
-    intro i
-    exact (mem_levelNeighborhood_iff_depthCone H (y.height + i)
-      (Y i).1 (Y (i + 1)).1).2 (hYstep i)
-  obtain ⟨V, hV⟩ := (fusionComplete H).exists_limit hYfusion
-  have hVcone (i : Nat) : InDepthCone H (y.height + i) (Y i).1 V :=
-    (mem_levelNeighborhood_iff_depthCone H (y.height + i) (Y i).1 V).1 (hV i)
-  refine ⟨V, reduces_trans H (hVcone 0).1 (Y 0).2.1,
-    extendsStem_of_depthCone H (Y 0).2.2.1 (hVcone 0) (by omega), ?_⟩
-  intro m hm
-  let i := m - y.height
-  have hid : y.height + i = m := by dsimp [i]; omega
-  have hprefix : V.initialSegment H (y.height + (i + 1)) =
-      (Y (i + 1)).1.initialSegment H (y.height + (i + 1)) :=
-    initialSegment_eq_of_extendsStem H (hVcone (i + 1)).2
-  have htarget : y.height + (i + 1) = m + 1 := by omega
-  have hselected : ReviewStepGood H y.terminalCut y.height O
-      ((Y (i + 1)).1.initialSegment H (y.height + (i + 1))) :=
-    hgood i (Y i)
-  have hlimit : ReviewStepGood H y.terminalCut y.height O
-      (V.initialSegment H (y.height + (i + 1))) :=
-    (congrArg (ReviewStepGood H y.terminalCut y.height O) hprefix).mpr hselected
-  have hdepth : V.initialSegment H (y.height + (i + 1)) =
-      V.initialSegment H (m + 1) :=
-    congrArg (fun d => V.initialSegment H d) htarget
-  exact (congrArg (ReviewStepGood H y.terminalCut y.height O) hdepth).mp hlimit
+        ReviewStepGood H y.terminalCut y.height O
+          (V.initialSegment H (m + 1)) := by
+  apply review_all_trace_fusion_of_persistence H y U hyU O hlarge
+  intro z A hyA hzA hzlarge
+  rcases hzlarge with ⟨hn, hsrc, hrows⟩
+  have hsourceLe : y.terminalCut ≤ z.terminalCut := by
+    calc
+      y.terminalCut = A.cut y.height :=
+        (terminalCut_eq_of_extendsStem H hyA).symm
+      _ ≤ A.cut z.height :=
+        (A.cut_strictMono H).monotone hn
+      _ = z.terminalCut :=
+        terminalCut_eq_of_extendsStem H hzA
+  let Ez : OneLevelLetter H z.terminalCut :=
+    reviewLaterSourceLetter H y.terminalCut z.terminalCut hsourceLe Esource
+  exact review_trace_persistence_of_sourceLetter H
+    y.terminalCut y.height O z A hzA Ez ⟨hn, hsrc, hrows⟩
 
 /-- Every large set is homogeneous below a source-letter stem. -/
 theorem review_large_set_homogeneous_of_sourceLetter
@@ -187,7 +111,7 @@ theorem review_rows_eq_of_no_sourceLetter
 /-- Full geometric fixed-stem pigeonhole theorem.  If there is no source
 letter, M3 forces the source cut to be zero and every root row is the same;
 then the original ambient tree is already homogeneous. -/
-theorem review_fixedStemPigeonhole
+theorem fatTreeFixedStemPigeonhole
     (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
     (O : Set (AM H y.terminalCut 1)) :
     ∃ V : FatTree H, Reduces H V U ∧ ExtendsStem H y V ∧

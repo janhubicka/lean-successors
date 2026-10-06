@@ -1,6 +1,4 @@
-import SuccessorTree.FatTree.A4ReviewFusion
 import SuccessorTree.FatTree.A4ReplaySemantics
-import SuccessorTree.FatTree.A4ReplayColour
 
 /-!
 # Actual-edge correctness of the review's common second block
@@ -70,6 +68,7 @@ variable (U : FatTree H) (a : Nat) (trace : C → AM H c 1)
 variable (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
 variable (K : ProfileCollector H U a trace)
 
+omit [Fintype C] [Nonempty C] in
 include hend in
 private theorem review_trace_level
     (j : C) (x : InitialNode T c) (hx : LevelTree.lev x.1 = c) :

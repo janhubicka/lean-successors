@@ -248,7 +248,7 @@ theorem historyProfile_rowTransport
       exact h ⟨e,
         (historyRealizesFan_rowTransport_iff H U i q P E e hPtop).2 he⟩
     unfold historyProfile
-    rw [dif_neg h, dif_neg h']
+    rw [dite_eq_right h, dite_eq_right h']
 
 /-- M3 replay from a recorded occurrence to a later history point preserves
 realization of a raw fan in both directions. -/
@@ -373,7 +373,7 @@ theorem historyProfile_duplicate
         (historyRealizesFan_duplicate_iff
           H q B P E e hrm hBtop hPtop hbelow).1 he⟩
     unfold historyProfile
-    rw [dif_neg h', dif_neg h]
+    rw [dite_eq_right h', dite_eq_right h]
 
 end FatTree
 end SMTree

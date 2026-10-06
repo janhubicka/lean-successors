@@ -43,9 +43,9 @@ theorem appendRow_stemAt_of_oneLift
     if hk : k.1 ≤ a then ⟨k.1, by change k.1 < b + 1; omega⟩
     else ⟨b, by change b < b + 1; omega⟩
   have idx_old (k : Fin (V.height + 1)) (hk : k.1 ≤ a) :
-      (idx k).1 = k.1 := by simp only [idx, dif_pos hk]
+      (idx k).1 = k.1 := by simp only [idx, dite_eq_left hk]
   have idx_last (k : Fin (V.height + 1)) (hk : ¬ k.1 ≤ a) :
-      (idx k).1 = b := by simp only [idx, dif_neg hk]
+      (idx k).1 = b := by simp only [idx, dite_eq_right hk]
   have hstrict : StrictMono idx := by
     intro p q hpq
     have hpq' : p.1 < q.1 := hpq
@@ -100,7 +100,7 @@ theorem appendRow_stemAt_of_oneLift
         unfold FiniteFatTree.oneLift FatTree.oneLift
         rw [hrow, hcut r.castSucc, hi0]
       rw [hs, liftTo_fullLevel_congr H U _ (Nat.le_succ r.1) hi0 hi1,
-        U.liftTo_succ H] <;> exact Set.Subset.refl _
+        U.liftTo_succ H]
     · have hre : r.1 = a := by omega
       have hi1 : (idx r.succ).1 = b := idx_last _ (by change ¬ r.1 + 1 ≤ a; omega)
       have heq : r = Fin.last x.height := Fin.ext hre

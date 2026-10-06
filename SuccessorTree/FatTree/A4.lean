@@ -59,13 +59,13 @@ noncomputable def appendRow
     · let j : Fin x.height := ⟨i.1, hi⟩
       have hc :
           x.cut j.castSucc = c i.1 := by
-        simp [c, appendCut, Nat.le_of_lt hi, j]
+        simp [c, Nat.le_of_lt hi, j]
       exact FatTree.castRow H hc (x.row j)
     · have hieq : i.1 = x.height := by omega
       have hc :
           x.terminalCut = c i.1 := by
         rw [hieq]
-        simp [c, appendCut, FiniteFatTree.terminalCut]
+        simp [c, FiniteFatTree.terminalCut]
       exact FatTree.castRow H hc g
   refine {
     height := x.height + 1
@@ -74,7 +74,7 @@ noncomputable def appendRow
     row := r
     row_cut := ?_
   }
-  · simp [c, appendCut, x.cut_zero]
+  · simp [c, x.cut_zero]
   · intro i
     by_cases hi : i.1 < x.height
     · let j : Fin x.height := ⟨i.1, hi⟩
@@ -93,17 +93,17 @@ noncomputable def appendRow
         _ = x.cut ⟨i.1 + 1, by omega⟩ := by rw [hsucc]
         _ = c (i.1 + 1) := by
           symm
-          simp [c, appendCut, show i.1 + 1 ≤ x.height by omega]
+          simp [c, show i.1 + 1 ≤ x.height by omega]
         _ = c i.succ.1 := by rfl
     · have hieq : i.1 = x.height := by omega
       have hend :
           (r i).rowEndLevel H = g.rowEndLevel H := by
-        simp [r, hi, hieq, FatTree.castRow_rowEndLevel]
+        simp [r, hieq, FatTree.castRow_rowEndLevel]
       calc
         (r i).rowEndLevel H + 1 =
             g.rowEndLevel H + 1 := by rw [hend]
         _ = c (x.height + 1) := by
-          simp [c, appendCut]
+          simp [c]
         _ = c i.succ.1 := by
           congr
           omega

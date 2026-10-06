@@ -29,20 +29,6 @@ noncomputable def appendApprox {n : Nat} (a : (approximationSystem H).Approx n)
   ⟨FiniteFatTree.appendRow H a.1 g, by
     rw [FiniteFatTree.appendRow_height, a.2]⟩
 
-/-- Exact agreement with an appended stem implies agreement with the old stem.
-The proof uses the row and cut data directly, avoiding dependent truncation. -/
-theorem extendsStem_of_appendRow
-    {x : FiniteFatTree H} {g : AM H x.terminalCut 1} {X : FatTree H}
-    (hx : ExtendsStem H (FiniteFatTree.appendRow H x g) X) :
-    ExtendsStem H x X := by
-  constructor
-  · intro i
-    exact (hx.1 i.castSucc).trans
-      (FiniteFatTree.appendRow_cut_old H x g i)
-  · intro i
-    exact (hx.2 i.castSucc).trans
-      (FiniteFatTree.appendRow_row_old H x g i)
-
 /-- Every member of the typed one-step front is an appended occurring row. -/
 theorem oneStep_exists_appendedRow
     {n : Nat} (a : (approximationSystem H).Approx n) (B : FatTree H)

@@ -1,4 +1,5 @@
 import SuccessorTree.FatTree.A4ReviewForward
+import SuccessorTree.FatTree.A4ReplayColour
 
 /-!
 # Simultaneous homogeneity of the entire admissible raw-fan image

@@ -1,7 +1,7 @@
 name: Review A4
 on:
   push:
-    branches: [fat-tree-formalization]
+    branches: [fat-tree-formalization, fat-tree-proof-cleanup]
     paths:
       - 'SuccessorTree.lean'
       - 'SuccessorTree/FatTree/A4PairPersistence.lean'
@@ -18,7 +18,7 @@ jobs:
   review-a4:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: actions/cache@v5
@@ -45,24 +45,30 @@ jobs:
           mkdir -p review-a4-audit
           mapfile -t targets < <(sed -n 's/^import //p' scripts/CheckFatTreeReviewA4.lean)
           test "${#targets[@]}" -gt 0
-          lake build "${targets[@]}" 2>&1 | tee review-a4-audit/build.log
+          if ! lake build "${targets[@]}" > review-a4-audit/build.log 2>&1; then
+            cat review-a4-audit/build.log
+            exit 1
+          fi
+          python3 - <<'PY'
+          from pathlib import Path
+          text = Path("review-a4-audit/build.log").read_text(encoding="utf-8")
+          warnings = sum("warning:" in line for line in text.splitlines())
+          hints = sum("Hint:" in line for line in text.splitlines())
+          print(f"PASS: review proof built ({warnings} warning lines, {hints} hints; full log in artifact)")
+          PY
       - name: Audit proof axioms
         run: |
           set -o pipefail
-          lake env lean scripts/CheckFatTreeReviewA4.lean 2>&1 | tee review-a4-audit/axioms.log
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          text = Path('review-a4-audit/axioms.log').read_text()
-          reports = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
-          expected = Path('scripts/CheckFatTreeReviewA4.lean').read_text().count('#print axioms ')
-          assert len(reports) == expected and expected >= 14, (len(reports), expected)
-          allowed = {'propext', 'Classical.choice', 'Quot.sound'}
-          for report in reports:
-              assert {x.strip() for x in report.split(',') if x.strip()} <= allowed, report
-          assert 'sorryAx' not in text and not re.search(r'\berror:', text)
-          print(f'PASS: {expected} review-proof reports use only standard axioms')
-          PY
+          if ! lake env lean scripts/CheckFatTreeReviewA4.lean > review-a4-audit/axioms.log 2>&1; then
+            cat review-a4-audit/axioms.log
+            exit 1
+          fi
+          expected="$(grep -c '^#print axioms ' scripts/CheckFatTreeReviewA4.lean)"
+          test "$expected" -ge 14
+          python3 scripts/check-axiom-log.py review-a4-audit/axioms.log "$expected" || {
+            cat review-a4-audit/axioms.log
+            exit 1
+          }
       - name: Record exact source checkpoint
         if: always()
         run: |
@@ -71,7 +77,7 @@ jobs:
           git diff --check
           git diff 30ec322c69658f08b6cefde0696e0a7b72790b75 HEAD -- SuccessorTree.lean SuccessorTree/FatTree scripts/CheckFatTreeReviewA4.lean manuscript docs .github/workflows/review-a4.yml > review-a4-audit/review-a4.patch
           cp lean-toolchain lakefile.toml review-a4-audit/
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: review-a4-audit

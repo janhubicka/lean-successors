@@ -1,4 +1,5 @@
 import SuccessorTree.FatTree.A4ReviewSplice
+import SuccessorTree.FatTree.A4Persistence
 
 /-!
 # The actual large-set witness under a simultaneous fan line
@@ -73,16 +74,6 @@ theorem review_bridges_nonempty_of_sourceLetter
     y U hyU E a hya g hg
   exact ⟨p⟩
 
-/-- Positive source cuts provide the source letter by M3. -/
-theorem review_bridges_nonempty
-    (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
-    (hpos : 0 < y.terminalCut) (G : Set (AM H y.terminalCut 1))
-    (a : Nat) (hya : y.height ≤ a)
-    (hP : OneBlockExactPersistent H y U G a) :
-    Nonempty (FiniteFatTree.ExactTrace H (U.initialSegment H a) y.height hya) :=
-  review_bridges_nonempty_of_sourceLetter H y U hyU
-    (duplicateHistoryLetter H 0 y.terminalCut hpos) G a hya hP
-
 /-- Install the line head, choose the persistent accepted row, factor it
 through an original bridge, and retain the common geometric tail. -/
 theorem review_persistent_line_witness_of_sourceLetter
@@ -136,25 +127,5 @@ theorem review_persistent_line_witness_of_sourceLetter
       U L.headDepth hgb L.tail ⟨L.tailDepth, L.tail_geometric⟩
   exact ⟨p, g, k, hgG, hfactor,
     FiniteFatTree.castTraceRow_heq H hterminal.symm L.tail, hk⟩
-
-/-- Positive source cuts recover the previous witness interface by using the
-M3 source letter. -/
-theorem review_persistent_line_witness
-    {c : Nat} {C : Type w} {κ : Type z}
-    (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
-    (hpos : 0 < y.terminalCut) (G : Set (AM H y.terminalCut 1))
-    (a : Nat) (hya : y.height ≤ a)
-    (hP : OneBlockExactPersistent H y U G a)
-    (trace : C → AM H c 1)
-    (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
-    (chi : AM H c 1 → κ) (L : ReviewFanLine H U a trace hend chi) :
-    ∃ (p : FiniteFatTree.ExactTrace H (U.initialSegment H a) y.height hya)
-      (g : AM H y.terminalCut 1)
-      (k : AM H (FiniteFatTree.appendRow H y g).terminalCut 1),
-      g ∈ G ∧ g = H.composeAcross (reviewBridgeMap H y U hyU a hya p) L.head ∧
-      HEq k L.tail ∧ OneBlockOccurs H (FiniteFatTree.appendRow H y g) U k :=
-  review_persistent_line_witness_of_sourceLetter H y U hyU
-    (duplicateHistoryLetter H 0 y.terminalCut hpos)
-    G a hya hP trace hend chi L
 
 end SuccessorTree.SMTree.FatTree

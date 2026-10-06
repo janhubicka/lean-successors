@@ -215,7 +215,7 @@ theorem historyProfile_eq_some
     historyProfile H q P E = some e := by
   classical
   unfold historyProfile
-  rw [dif_pos ⟨e, he⟩]
+  rw [dite_eq_left ⟨e, he⟩]
   congr 1
   exact historyRealizesFan_unique H q P E
     (Classical.choose_spec ⟨e, he⟩) he
@@ -238,11 +238,11 @@ theorem historyProfile_eq_some_iff
     by_cases hex :
         ∃ f : RawSuccessorFan H q,
           HistoryRealizesFan H q P E f
-    · rw [dif_pos hex] at hprof
+    · rw [dite_eq_left hex] at hprof
       have heq : Classical.choose hex = e :=
         Option.some.inj hprof
       simpa [heq] using Classical.choose_spec hex
-    · rw [dif_neg hex] at hprof
+    · rw [dite_eq_right hex] at hprof
       contradiction
   · exact historyProfile_eq_some H q P E e
 
@@ -458,12 +458,12 @@ noncomputable def rawSuccessorFanOfUpdate
       have hzlev :=
         LevelTree.covBy_level_eq hz.1
       dsimp [chosen]
-      rw [dif_pos hx]
+      rw [dite_eq_left hx]
       rw [hzlev, hqlev]
     · have hxlt : LevelTree.lev x.1 < c0 := by
         omega
       dsimp [chosen]
-      rw [dif_neg hx]
+      rw [dite_eq_right hx]
       omega
   refine {
     toFun := fun x => ⟨chosen x, chosen_bound x⟩
@@ -473,11 +473,11 @@ noncomputable def rawSuccessorFanOfUpdate
   · intro x hx
     have hne : LevelTree.lev x.1 ≠ c0 := by omega
     dsimp [chosen]
-    rw [dif_neg hne]
+    rw [dite_eq_right hne]
   · intro x hx
     let hz := Classical.choose_spec (hupdate x.1 hx)
     dsimp [chosen]
-    rw [dif_pos hx]
+    rw [dite_eq_left hx]
     exact hz.1
 
 /-- The fan chosen from a raw update records the same top-level successor
