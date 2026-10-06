@@ -268,6 +268,13 @@ theorem oneBlockOccurs_transport_stem
   rw [← happ]
   exact hm
 
+/-- Transporting a row along an equality from a cut to itself is the identity,
+independently of the proof of equality. -/
+theorem castRow_self
+    {a : Nat} (h : a = a) (g : AM H a 1) :
+    FatTree.castRow H h g = g := by
+  exact eq_of_heq (FatTree.castRow_heq H h g)
+
 /-- Three successive transports around an equality triangle cancel. -/
 theorem castRow_cancel_chain
     {a b c : Nat} (hab : a = b) (hbc : b = c)
@@ -328,6 +335,7 @@ theorem shapeAct_tail_oneBlockOccurs
     OneBlockOccurs H (U.initialSegment H n) U
       (FatTree.castRow H hc.symm (H.shapeAct c W r)) := by
   cases hc
+  simp only [castRow_self]
   simpa [tailCoordinateRow, tailSubspace] using
     tailCoordinateRow_oneBlockOccurs H U n r
 
