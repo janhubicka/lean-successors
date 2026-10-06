@@ -444,7 +444,8 @@ theorem padApproxTo_comp_exact
     (exactComp H hm hk (padApproxTo H hm f ht) g).1
   let rhs : AM H n k :=
     (padApproxTo H hk fg htfg).1
-  change lhs.1 = rhs.1
+  change lhs = rhs
+  apply Subtype.ext
   calc
     lhs.1 =
         ramseyApprox H (n + k) (lhs.representative H) :=
