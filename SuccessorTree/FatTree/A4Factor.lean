@@ -549,10 +549,8 @@ theorem exists_lastBlock_exactTrace
           (exactTraceToAMExact H (U.initialSegment H m)
             y.height hym p)
           (U.row m)) := by
-  apply exists_lastBlock_exactTrace_of_successors H y U hyU
-    (fun x hx => H.exists_immediateSuccessor_of_level_pos x (by
-      rw [hx]
-      exact hsourcePos))
+  exact exists_lastBlock_exactTrace_of_sourceLetter H y U hyU
+    (duplicateHistoryLetter H 0 y.terminalCut hsourcePos)
     m hym g hg
 
 end FatTree
