@@ -344,7 +344,8 @@ theorem shapeAct_tail_oneBlockOccurs
     OneBlockOccurs H (U.initialSegment H n) U
       (FatTree.castRow H hc.symm (H.shapeAct c W r)) := by
   cases hc
-  dsimp
+  change OneBlockOccurs H (U.initialSegment H n) U
+    (FatTree.castRow H _ (tailCoordinateRow H U n r))
   rw [castRow_initialSegment H U n]
   exact tailCoordinateRow_oneBlockOccurs H U n r
 
