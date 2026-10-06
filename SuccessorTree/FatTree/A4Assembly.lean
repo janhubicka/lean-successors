@@ -81,10 +81,10 @@ theorem typed_pigeonhole_of_fixedStem
 noncomputable def ramseySpaceOfFixedStemPigeonhole
     (hP : FixedStemPigeonhole H) :
     RamseySpace.AbstractRamseySpace (approximationSystem H) :=
-  RamseySpace.AbstractRamseySpace.ofStandardAxioms
+  RamseySpace.AbstractRamseySpace.ofPublishedAxioms
     (finitization H)
     (typed_amalgamation_nonempty H)
-    (typed_amalgamation_refine_standard H)
+    (typed_amalgamation_refine_published H)
     (typed_pigeonhole_of_fixedStem H hP)
 
 /-- Conditional integration endpoint in the literal basic-neighbourhood
