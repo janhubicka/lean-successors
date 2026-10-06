@@ -1,0 +1,71 @@
+name: Shape Ellentuck
+
+on:
+  push:
+    branches: [shape-ellentuck-formalization]
+    paths:
+      - 'SuccessorTree/RamseySpace/**'
+      - 'SuccessorTree/FatTree/ShapeTransfer.lean'
+      - 'SuccessorTree.lean'
+      - 'scripts/CheckShapeEllentuck.lean'
+      - '.github/workflows/shape-ellentuck.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shape-ellentuck-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shape-ellentuck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Download Mathlib cache
+        run: lake exe cache get
+      - name: Build endpoint
+        run: lake build SuccessorTree.RamseySpace.Ellentuck
+      - name: Audit endpoint axioms
+        run: |
+          set -o pipefail
+          lake env lean scripts/CheckShapeEllentuck.lean 2>&1 | tee shape-ellentuck-audit.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text = Path('shape-ellentuck-audit.log').read_text()
+          reports = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
+          if len(reports) != 7:
+              raise SystemExit(f'Expected 7 axiom reports, got {len(reports)}')
+          allowed = {'propext', 'Classical.choice', 'Quot.sound'}
+          for report in reports:
+              actual = {x.strip() for x in report.split(',') if x.strip()}
+              if actual - allowed:
+                  raise SystemExit(f'Unexpected theorem axioms: {actual - allowed}')
+          if 'sorryAx' in text or re.search(r'\berror:', text):
+              raise SystemExit('Axiom audit contains an error or admitted proof')
+          print('PASS: optional shape Ellentuck endpoint uses standard Lean axioms only')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shape-ellentuck-audit
+          path: shape-ellentuck-audit.log
+          retention-days: 30
