@@ -108,6 +108,7 @@ private theorem forward_trace_level
 /-- An admissible full successor image at a reachable history produces an
 actual seen profile by M2 and global saturation. The raw fan itself is not
 required to be admissible. -/
+omit [Nonempty C] in
 theorem review_seen_of_admissible_successors
     (hglobal : ProfileCollector.GloballySaturated H U a trace hend K)
     (R : ProfileReplayState H U a trace hend K) (j : C)
@@ -144,6 +145,7 @@ theorem review_seen_of_admissible_successors
 
 /-- The canonical head transports every raw fan edge with its actual code.
 This is a pointwise statement and does not assert that the fan is admissible. -/
+omit [Nonempty C] in
 theorem review_head_raw_fan_edge
     (R : ProfileReplayState H U a trace hend K) (j : C)
     (e : RawSuccessorFan H (trace j))
