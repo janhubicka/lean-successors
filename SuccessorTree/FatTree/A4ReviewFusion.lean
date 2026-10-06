@@ -4,10 +4,10 @@ import SuccessorTree.FatTree.A4PairPersistence
 # Fixed-source fusion in the review proof of A4
 
 This file isolates the persistence and fixed-source fusion machinery from
-the local two-block combinatorics.  The generic core accepts a dense supply
-of good pairs; a compatibility wrapper states the older
-`ReviewGoodPairPrinciple` interface.  The completed source-letter proof in
-`A4ReviewGoodPair` and `A4ReviewSourceFusion` reuses the same core.
+the local two-block combinatorics.  The generic persistence core accepts a
+dense supply of good pairs, and the generic fusion core accepts the resulting
+persistent extension step.  The completed source-letter proof in
+`A4ReviewGoodPair` and `A4ReviewSourceFusion` supplies these inputs.
 
 Pair persistence is derived by finite-depth avoidance and metric fusion.
 Last-block factorisation, rather than first-head factorisation, is used by the
@@ -45,8 +45,8 @@ def ReviewStepGood (c n : Nat) (O : Set (AM H c 1))
 /-- Core persistence step.  The only local input is a supply of good
 two-block pairs in every stem-preserving reduction.  The finite-depth
 Baumgartner argument below turns that dense pair supply into a large
-continuation.  Separating this core avoids duplicating the persistence proof
-for the abstract and source-letter versions of the good-pair lemma. -/
+continuation.  Separating this core keeps the finite-depth avoidance
+argument independent of the Hales--Jewett good-pair construction. -/
 theorem review_trace_persistence_core
     (c n : Nat) (O : Set (AM H c 1))
     (y : FiniteFatTree H) (U : FatTree H)
