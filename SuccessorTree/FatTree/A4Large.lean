@@ -172,7 +172,7 @@ theorem oneBlockLarge_mono
     {O : Set (AM H x.terminalCut 1)}
     (hlarge : OneBlockLarge H x U O)
     (hVU : FatTree.Reduces H V U)
-    (hxV : ExtendsStem H x V) :
+    (_hxV : ExtendsStem H x V) :
     OneBlockLarge H x V O := by
   intro W hWV hxW
   exact hlarge W
