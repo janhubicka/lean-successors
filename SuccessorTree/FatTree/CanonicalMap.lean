@@ -168,6 +168,85 @@ theorem canonicalMap_level_lt_cut
   have h := canonicalMap_level_succ_cut H U j
   omega
 
+/-- The first n row products depend only on the first n rows of the fat
+tree. -/
+theorem prefixProduct_eq_of_initialSegment
+    {U V : FatTree H} :
+    ∀ n : Nat,
+      U.initialSegment H n = V.initialSegment H n →
+        prefixProduct H U n = prefixProduct H V n := by
+  intro n
+  induction n with
+  | zero =>
+      intro _
+      rfl
+  | succ n ih =>
+      intro hseg
+      have hprev :
+          U.initialSegment H n = V.initialSegment H n :=
+        (a1_three H hseg).2 n (by omega)
+      have hprod : prefixProduct H U n = prefixProduct H V n :=
+        ih hprev
+      let i : Fin (n + 1) := Fin.last n
+      have hrowSeg :
+          (U.initialSegment H (n + 1)).rowExtension H i =
+            (V.initialSegment H (n + 1)).rowExtension H i := by
+        rw [hseg]
+      have hrow :
+          U.rowExtension H n = V.rowExtension H n := by
+        simpa [i] using hrowSeg
+      rw [prefixProduct_succ, prefixProduct_succ, hprod, hrow]
+
+/-- Equal n-row fat prefixes induce equal n-th finite approximations of their
+canonical shape maps. -/
+theorem canonicalMap_ramseyApprox_eq_of_initialSegment
+    {U V : FatTree H} {n : Nat}
+    (hseg : U.initialSegment H n = V.initialSegment H n) :
+    ramseyApprox H n (canonicalMap H U) =
+      ramseyApprox H n (canonicalMap H V) := by
+  cases n with
+  | zero =>
+      rfl
+  | succ n =>
+      have hprod :
+          prefixProduct H U (n + 1) =
+            prefixProduct H V (n + 1) :=
+        prefixProduct_eq_of_initialSegment H (n + 1) hseg
+      apply Subtype.ext
+      funext x
+      have hU :
+          canonicalMap H U x.1 =
+            prefixProduct H U (n + 1) x.1 := by
+        exact MMap.fusionLimit_eq_stage H
+          (fun i => prefixProduct H U (i + 1))
+          (prefixProduct_stable H U) x.2
+      have hV :
+          canonicalMap H V x.1 =
+            prefixProduct H V (n + 1) x.1 := by
+        exact MMap.fusionLimit_eq_stage H
+          (fun i => prefixProduct H V (i + 1))
+          (prefixProduct_stable H V) x.2
+      rw [hU, hV, hprod]
+
+/-- Finite projection y ↦ F_y, defined invariantly by completing the finite
+fat tree and taking the corresponding finite approximation of its canonical
+map. -/
+noncomputable def exactCanonicalApprox
+    {n : Nat} (x : ExactApprox H n) :
+    (ramseyApproximationSystem H).Approx n :=
+  ramseyApprox H n (canonicalMap H (completeExact H x))
+
+/-- The finite projection of the actual n-th prefix of U is precisely the
+n-th finite approximation of F_U. -/
+theorem exactCanonicalApprox_exactApprox
+    (U : FatTree H) (n : Nat) :
+    exactCanonicalApprox H (exactApprox H n U) =
+      ramseyApprox H n (canonicalMap H U) := by
+  apply canonicalMap_ramseyApprox_eq_of_initialSegment H
+  have hcomplete :=
+    exactApprox_completeExact H (exactApprox H n U)
+  exact congrArg Subtype.val hcomplete
+
 end FatTree
 end SMTree
 end SuccessorTree
