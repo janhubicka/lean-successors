@@ -48,15 +48,15 @@ theorem finiteApproximationColouring
         ∀ Y, Y ∈ S.neighborhood a B →
           colour (S.approx m X) = colour (S.approx m Y) := by
   classical
-  let class : κ → Set S.Point :=
+  let fibre : κ → Set S.Point :=
     fun c => {X | colour (S.approx m X) = c}
 
   have hdecide :
       ∀ s : Finset κ, ∀ B : S.Point,
         B ∈ S.neighborhood a A →
         ∃ C, C ∈ S.neighborhood a B ∧
-          ((∃ c ∈ s, S.neighborhood a C ⊆ class c) ∨
-            ∀ c ∈ s, Disjoint (S.neighborhood a C) (class c)) := by
+          ((∃ c ∈ s, S.neighborhood a C ⊆ fibre c) ∨
+            ∀ c ∈ s, Disjoint (S.neighborhood a C) (fibre c)) := by
     intro s
     induction s using Finset.induction_on with
     | empty =>
@@ -73,11 +73,13 @@ theorem finiteApproximationColouring
         · have hneC : (S.neighborhood a C).Nonempty :=
             ⟨C, S.le_refl C, hCB.2⟩
           have hopen :
-              @BaireMeasurableSet S.Point S.ellentuckTopology (class c) :=
+              @BaireMeasurableSet S.Point S.ellentuckTopology (fibre c) :=
             (S.isOpen_approxColourClass m colour c).baireMeasurableSet
           obtain ⟨D, hDC, hhom⟩ :=
-            hTR.1 (class c) hopen a C hneC
-          refine ⟨D, hDC, ?_⟩
+            hTR.1 (fibre c) hopen a C hneC
+          have hDB : D ∈ S.neighborhood a B :=
+            S.neighborhood_mono hCB.1 hDC
+          refine ⟨D, hDB, ?_⟩
           rcases hhom with hsub | hdis
           · exact Or.inl ⟨c, Finset.mem_insert_self c s, hsub⟩
           · apply Or.inr
@@ -103,7 +105,7 @@ theorem finiteApproximationColouring
     have hdis := havoid c (Finset.mem_univ c)
     have hB : B ∈ S.neighborhood a B :=
       ⟨S.le_refl B, hBB0.2⟩
-    have hBc : B ∈ class c := rfl
+    have hBc : B ∈ fibre c := rfl
     exact Set.disjoint_left.1 hdis hB hBc
 
 end RamseySpace
