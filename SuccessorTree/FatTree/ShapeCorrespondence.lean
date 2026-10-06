@@ -266,10 +266,13 @@ noncomputable def ofShapeMap (K : MMap H) : FatTree H where
         rw [rowEndLevel_toAM H K 0 (MMap.fixesBelow_zero H K)]
     | succ i =>
         let Q := shapeNextFactor H K i
+        have hQfix :
+            Q.FixesBelow H (H.levelMap K.map i + 1) :=
+          (shapeNextFactor_spec H K i).1
         change
-          ((Q.toAM H (H.levelMap K.map i + 1) 1 _).rowEndLevel H) + 1 =
+          ((Q.toAM H (H.levelMap K.map i + 1) 1 hQfix).rowEndLevel H) + 1 =
             H.levelMap K.map (i + 1) + 1
-        rw [rowEndLevel_toAM H Q (H.levelMap K.map i + 1)]
+        rw [rowEndLevel_toAM H Q (H.levelMap K.map i + 1) hQfix]
         exact congrArg (fun z => z + 1)
           (shapeNextFactor_spec H K i).2.1
 
@@ -463,7 +466,9 @@ theorem intervalMap_level_tail (U : FatTree H) :
             omega
       rw [hrow]
       have hih := ih (i := i + 1) k
-      convert hih using 1 <;> omega
+      have hind : i + 1 + steps = i + (steps + 1) := by omega
+      rw [hind] at hih
+      exact hih
 
 /-- An interval product fixes everything below its initial cut. -/
 theorem intervalMap_fixesBelow (U : FatTree H) :
