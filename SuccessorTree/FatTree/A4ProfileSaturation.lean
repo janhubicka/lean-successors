@@ -233,8 +233,7 @@ noncomputable def advance
     (trace : C → AM H c 1)
     (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
     (K : ProfileCollector H U a trace)
-    (E : OneLevelLetter H (U.cut (a + K.index)))
-    (hnew : currentProfile H U a trace K E ∉ K.seen) :
+    (E : OneLevelLetter H (U.cut (a + K.index))) :
     ProfileCollector H U a trace := by
   classical
   let alpha := currentProfile H U a trace K E
@@ -261,9 +260,8 @@ noncomputable def advance
     (trace : C → AM H c 1)
     (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
     (K : ProfileCollector H U a trace)
-    (E : OneLevelLetter H (U.cut (a + K.index)))
-    (hnew : currentProfile H U a trace K E ∉ K.seen) :
-    (advance H U a trace hend K E hnew).seen =
+    (E : OneLevelLetter H (U.cut (a + K.index))) :
+    (advance H U a trace hend K E).seen =
       insert (currentProfile H U a trace K E) K.seen := by
   rfl
 
@@ -287,7 +285,7 @@ theorem missingCount_advance_lt
     (K : ProfileCollector H U a trace)
     (E : OneLevelLetter H (U.cut (a + K.index)))
     (hnew : currentProfile H U a trace K E ∉ K.seen) :
-    missingCount H trace (advance H U a trace hend K E hnew) <
+    missingCount H trace (advance H U a trace hend K E) <
       missingCount H trace K := by
   classical
   letI : Fintype (FanProfile H C trace) :=
@@ -337,7 +335,7 @@ theorem exists_saturated
               currentProfile H U a trace K E ∉ K.seen := by
             simpa [Saturated] using hsat
           rcases hex with ⟨E, hE⟩
-          let K' := advance H U a trace hend K E hE
+          let K' := advance H U a trace hend K E
           have hlt : measure K' < N := by
             rw [← hKN]
             exact missingCount_advance_lt H U a trace hend K E hE
