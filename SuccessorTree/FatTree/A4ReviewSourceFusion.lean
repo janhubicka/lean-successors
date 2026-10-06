@@ -111,7 +111,7 @@ theorem review_rows_eq_of_no_sourceLetter
 /-- Full geometric fixed-stem pigeonhole theorem.  If there is no source
 letter, M3 forces the source cut to be zero and every root row is the same;
 then the original ambient tree is already homogeneous. -/
-theorem review_fixedStemPigeonhole
+theorem fatTreeFixedStemPigeonhole
     (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
     (O : Set (AM H y.terminalCut 1)) :
     ∃ V : FatTree H, Reduces H V U ∧ ExtendsStem H y V ∧
