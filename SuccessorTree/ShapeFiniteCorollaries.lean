@@ -40,7 +40,7 @@ theorem finiteShapeComp_toAM_eq_shapeActK
       H.shapeActK n k W g := by
   apply Subtype.ext
   unfold finiteShapeComp shapeActK
-  apply ramseyApprox_eq_of_apply H
+  apply AM.ramseyApprox_eq_of_apply H
   intro x hx
   change
     (W.1.toAM H n m W.2).representative H
