@@ -73,3 +73,4 @@ import SuccessorTree.FatTree.ShapeRealization
 import SuccessorTree.FatTree.ShapeEllentuckOne
 import SuccessorTree.ShapeEllentuckRamsey
 import SuccessorTree.ShapeFiniteBounds
+import SuccessorTree.ShapeFiniteCorollaries

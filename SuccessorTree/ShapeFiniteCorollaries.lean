@@ -486,7 +486,10 @@ theorem padApproxTo_comp_exact
       rw [hl, hpadf, hr]
       unfold paddingComposite
       dsimp only
-      rw [hterm, hfgrep]
+      cases hterm
+      have hp : htfg = ht := Subsingleton.elim _ _
+      cases hp
+      rw [hfgrep]
     _ = rhs.1 := rhs.representative_top H
 
 
