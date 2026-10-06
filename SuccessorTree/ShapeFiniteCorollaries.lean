@@ -486,7 +486,7 @@ theorem padApproxTo_comp_exact
       rw [hl, hpadf, hr]
       unfold paddingComposite
       dsimp only
-      rw [hterm, hfgrep]
+      simp only [hterm, hfgrep]
     _ = rhs.1 := rhs.representative_top H
 
 
