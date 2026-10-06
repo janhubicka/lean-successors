@@ -330,6 +330,24 @@ theorem tailCoordinateRow_oneBlockOccurs
     omega
   exact ⟨n + k + 1, tailCoordinateRow_occurs H U n k r hr⟩
 
+/-- Tail action commutes with identifying an external source level with the
+selected fat-tree cut. -/
+theorem cast_shapeAct_tail_eq
+    (U : FatTree H) (n c : Nat)
+    (hc : U.cut n = c)
+    (r : AM H c 1) :
+    let W : ShapeSubspace H c :=
+      ⟨tailMap H U n, by
+        intro x hx
+        exact tailMap_fixesBelow H U n x (by simpa [hc] using hx)⟩
+    FatTree.castRow H hc.symm (H.shapeAct c W r) =
+      tailCoordinateRow H U n (FatTree.castRow H hc.symm r) := by
+  cases hc
+  dsimp only
+  rw [castRow_self H, castRow_self H]
+  apply Subtype.ext
+  rfl
+
 /-- The same statement after identifying the selected fat-tree cut with an
 external source level.  The row transport is explicit because the row type
 remembers its source cut. -/
@@ -343,11 +361,21 @@ theorem shapeAct_tail_oneBlockOccurs
         exact tailMap_fixesBelow H U n x (by simpa [hc] using hx)⟩
     OneBlockOccurs H (U.initialSegment H n) U
       (FatTree.castRow H hc.symm (H.shapeAct c W r)) := by
-  cases hc
-  change OneBlockOccurs H (U.initialSegment H n) U
-    (FatTree.castRow H _ (tailCoordinateRow H U n r))
-  rw [castRow_initialSegment H U n]
-  exact tailCoordinateRow_oneBlockOccurs H U n r
+  let r0 : AM H (U.cut n) 1 := FatTree.castRow H hc.symm r
+  have hocc :
+      OneBlockOccurs H (U.initialSegment H n) U
+        (tailCoordinateRow H U n r0) :=
+    tailCoordinateRow_oneBlockOccurs H U n r0
+  let W : ShapeSubspace H c :=
+    ⟨tailMap H U n, by
+      intro x hx
+      exact tailMap_fixesBelow H U n x (by simpa [hc] using hx)⟩
+  have heq :
+      FatTree.castRow H hc.symm (H.shapeAct c W r) =
+        tailCoordinateRow H U n r0 := by
+    exact cast_shapeAct_tail_eq H U n c hc r
+  exact heq.symm ▸ hocc
+
 
 end FatTree
 end SMTree
