@@ -53,19 +53,26 @@ def ReviewStepGood (c n : Nat) (O : Set (AM H c 1))
   ∃ (y : FiniteFatTree H) (h : AM H y.terminalCut 1),
     z = FiniteFatTree.appendRow H y h ∧ ReviewTraceGood H c n O y h
 
-/-- The local good-pair lemma implies persistence for the entire updated
-trace family. This is precisely `lem:trace-persistence`, with its finite
-batch fusion supplied by `persistentAcceptedPair_of_dense_pairs`. -/
-theorem review_trace_persistence
-    (hp : ReviewGoodPairPrinciple H)
+/-- Core persistence step.  The only local input is a supply of good
+two-block pairs in every stem-preserving reduction.  The finite-depth
+Baumgartner argument below turns that dense pair supply into a large
+continuation.  Separating this core avoids duplicating the persistence proof
+for the abstract and source-letter versions of the good-pair lemma. -/
+theorem review_trace_persistence_core
     (c n : Nat) (O : Set (AM H c 1))
     (y : FiniteFatTree H) (U : FatTree H)
-    (hyU : ExtendsStem H y U) (hlarge : ReviewTraceLarge H c n O y U) :
+    (hn : n ≤ y.height)
+    (hsrc : FiniteFatTree.traceSourceCut H y n hn = c)
+    (hyU : ExtendsStem H y U)
+    (hlarge :
+      OneBlockLarge H y U (FixedTraceGoodRows H c n y hn hsrc O))
+    (hpairs : ∀ A : FatTree H, Reduces H A U → ExtendsStem H y A →
+      ∃ h k, FixedTraceGoodPair H c n y hn hsrc O h k ∧
+        OneBlockOccurs H (FiniteFatTree.appendRow H y h) A k) :
     ∃ (h : AM H y.terminalCut 1) (V : FatTree H),
       ReviewTraceGood H c n O y h ∧ Reduces H V U ∧
       ExtendsStem H (FiniteFatTree.appendRow H y h) V ∧
       ReviewTraceLarge H c n O (FiniteFatTree.appendRow H y h) V := by
-  rcases hlarge with ⟨hn, hsrc, hlarge⟩
   let G := FixedTraceGoodRows H c n y hn hsrc O
   let P : PairContinuation H y := fun h =>
     FixedTraceGoodRows H c n (FiniteFatTree.appendRow H y h)
@@ -75,8 +82,7 @@ theorem review_trace_persistence
       ∃ h, h ∈ G ∧ ∃ k, k ∈ P h ∧
         OneBlockOccurs H (FiniteFatTree.appendRow H y h) A k := by
     intro A hAU hyA
-    obtain ⟨h, k, hpair, hk⟩ := hp c n y hn hsrc O A hyA
-      (oneBlockLarge_mono H hlarge hAU hyA)
+    obtain ⟨h, k, hpair, hk⟩ := hpairs A hAU hyA
     exact ⟨h, hpair.1, k,
       (fixedTraceUpdateGood_iff H c n y hn hsrc O h k).1 hpair.2, hk⟩
   obtain ⟨h, hh, V, hVU, hyhV, hnext⟩ :=
@@ -85,15 +91,42 @@ theorem review_trace_persistence
   exact ⟨by rw [FiniteFatTree.appendRow_height]; omega,
     traceSource_eq_after_append H c n y hn hsrc h, hnext⟩
 
-/-- Construct the actual fusion sequence and its limit. Both the original
-source cut and the target set O remain fixed at every stage. -/
-theorem review_all_trace_fusion
+/-- The local good-pair principle implies persistence for the entire updated
+trace family. -/
+theorem review_trace_persistence
     (hp : ReviewGoodPairPrinciple H)
+    (c n : Nat) (O : Set (AM H c 1))
+    (y : FiniteFatTree H) (U : FatTree H)
+    (hyU : ExtendsStem H y U) (hlarge : ReviewTraceLarge H c n O y U) :
+    ∃ (h : AM H y.terminalCut 1) (V : FatTree H),
+      ReviewTraceGood H c n O y h ∧ Reduces H V U ∧
+      ExtendsStem H (FiniteFatTree.appendRow H y h) V ∧
+      ReviewTraceLarge H c n O (FiniteFatTree.appendRow H y h) V := by
+  rcases hlarge with ⟨hn, hsrc, hrows⟩
+  apply review_trace_persistence_core H c n O y U hn hsrc hyU hrows
+  intro A hAU hyA
+  exact hp c n y hn hsrc O A hyA
+    (oneBlockLarge_mono H hrows hAU hyA)
+
+/-- Generic fixed-source fusion.  All combinatorics are isolated in
+`hpersist`; this theorem only performs the exact-depth fusion and transports
+the finite-prefix invariant to its limit. -/
+theorem review_all_trace_fusion_of_persistence
     (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
-    (O : Set (AM H y.terminalCut 1)) (hlarge : OneBlockLarge H y U O) :
+    (O : Set (AM H y.terminalCut 1)) (hlarge : OneBlockLarge H y U O)
+    (hpersist : ∀ (z : FiniteFatTree H) (A : FatTree H),
+      ExtendsStem H y A →
+      ExtendsStem H z A →
+      ReviewTraceLarge H y.terminalCut y.height O z A →
+      ∃ (h : AM H z.terminalCut 1) (V : FatTree H),
+        ReviewTraceGood H y.terminalCut y.height O z h ∧ Reduces H V A ∧
+        ExtendsStem H (FiniteFatTree.appendRow H z h) V ∧
+        ReviewTraceLarge H y.terminalCut y.height O
+          (FiniteFatTree.appendRow H z h) V) :
     ∃ V : FatTree H, Reduces H V U ∧ ExtendsStem H y V ∧
       ∀ m : Nat, y.height ≤ m →
-        ReviewStepGood H y.terminalCut y.height O (V.initialSegment H (m + 1)) := by
+        ReviewStepGood H y.terminalCut y.height O
+          (V.initialSegment H (m + 1)) := by
   classical
   let State (i : Nat) := {A : FatTree H //
     Reduces H A U ∧ ExtendsStem H y A ∧
@@ -112,9 +145,9 @@ theorem review_all_trace_fusion
         (B.1.initialSegment H (y.height + i + 1)) := by
     intro i A
     let z := A.1.initialSegment H (y.height + i)
-    obtain ⟨h, V, hgood, hVA, hzV, hnext⟩ := review_trace_persistence H hp
-      y.terminalCut y.height O z A.1
-      (initialSegment_extendsStem H A.1 (y.height + i)) A.2.2.2
+    obtain ⟨h, V, hgood, hVA, hzV, hnext⟩ :=
+      hpersist z A.1 A.2.2.1
+        (initialSegment_extendsStem H A.1 (y.height + i)) A.2.2.2
     have hcone : InDepthCone H (y.height + i) A.1 V :=
       ⟨hVA, extendsStem_of_appendRow H hzV⟩
     have hyV : ExtendsStem H y V :=
@@ -145,7 +178,9 @@ theorem review_all_trace_fusion
     extendsStem_of_depthCone H (Y 0).2.2.1 (hVcone 0) (by omega), ?_⟩
   intro m hm
   let i := m - y.height
-  have hid : y.height + i = m := by dsimp [i]; omega
+  have hid : y.height + i = m := by
+    dsimp [i]
+    omega
   have hprefix : V.initialSegment H (y.height + (i + 1)) =
       (Y (i + 1)).1.initialSegment H (y.height + (i + 1)) :=
     initialSegment_eq_of_extendsStem H (hVcone (i + 1)).2
@@ -160,6 +195,19 @@ theorem review_all_trace_fusion
       V.initialSegment H (m + 1) :=
     congrArg (fun d => V.initialSegment H d) htarget
   exact (congrArg (ReviewStepGood H y.terminalCut y.height O) hdepth).mp hlimit
+
+/-- Construct the fixed-source fusion from the abstract good-pair principle. -/
+theorem review_all_trace_fusion
+    (hp : ReviewGoodPairPrinciple H)
+    (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
+    (O : Set (AM H y.terminalCut 1)) (hlarge : OneBlockLarge H y U O) :
+    ∃ V : FatTree H, Reduces H V U ∧ ExtendsStem H y V ∧
+      ∀ m : Nat, y.height ≤ m →
+        ReviewStepGood H y.terminalCut y.height O
+          (V.initialSegment H (m + 1)) := by
+  apply review_all_trace_fusion_of_persistence H y U hyU O hlarge
+  intro z A _ hzA hzlarge
+  exact review_trace_persistence H hp y.terminalCut y.height O z A hzA hzlarge
 
 /-- Transport the good-row statement across equality of finite prefixes,
 using heterogeneous equality only for the indexed row itself. -/
