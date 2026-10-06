@@ -14,6 +14,8 @@ open SuccessorTree.SMTree.FatTree
 #check exists_lastBlock_exactTrace_of_successors
 #check exists_lastBlock_exactTrace_of_sourceLetter
 #check review_goodPair_of_sourceLetter
+#check review_trace_persistence_core
+#check review_all_trace_fusion_of_persistence
 #check review_trace_persistence_of_sourceLetter
 #check review_all_trace_fusion_of_sourceLetter
 #check review_fixedStemPigeonhole_of_sourceLetter
@@ -21,6 +23,9 @@ open SuccessorTree.SMTree.FatTree
 #check fixedStemPigeonhole_review
 #check abstractRamseySpace_review
 #check ellentuck_review
+#check fatTreeA4
+#check fatTreeAbstractRamseySpace
+#check fatTreeEllentuck
 #print axioms oneBlockOccurs_of_reduces
 #print axioms oneBlockOccurs_of_pair
 #print axioms appendRow_injective
@@ -85,6 +90,8 @@ open SuccessorTree.SMTree.FatTree
 #print axioms review_goodPair_of_sourceLetter
 #print axioms oneBlock_mem_of_all_fixedTraceGoodRows_of_successors
 #print axioms oneBlock_mem_of_all_fixedTraceGoodRows_of_sourceLetter
+#print axioms review_trace_persistence_core
+#print axioms review_all_trace_fusion_of_persistence
 #print axioms review_trace_persistence_of_sourceLetter
 #print axioms review_all_trace_fusion_of_sourceLetter
 #print axioms review_large_set_homogeneous_of_sourceLetter
@@ -92,6 +99,9 @@ open SuccessorTree.SMTree.FatTree
 #print axioms review_fixedStemPigeonhole
 #print axioms fixedStemPigeonhole_review
 #print axioms ellentuck_review
+#print axioms fatTreeA4
+#print axioms fatTreeAbstractRamseySpace
+#print axioms fatTreeEllentuck
 
 /- These endpoint types must not silently acquire A4, good-pair,
 saturation, positivity, or root-cut premises. -/
@@ -121,8 +131,20 @@ example (H : SMTree S) (c n : Nat) (y : FiniteFatTree H)
 example (H : SMTree S) : FixedStemPigeonhole H :=
   fixedStemPigeonhole_review H
 
+example (H : SMTree S) : FixedStemPigeonhole H :=
+  fatTreeA4 H
+
+example (H : SMTree S) :
+    RamseySpace.AbstractRamseySpace (approximationSystem H) :=
+  fatTreeAbstractRamseySpace H
+
 example (H : SMTree S) :
     RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
       (S := approximationSystem H) :=
   ellentuck_review H
+
+example (H : SMTree S) :
+    RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
+      (S := approximationSystem H) :=
+  fatTreeEllentuck H
 end InterfaceGuard
