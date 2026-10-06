@@ -4,14 +4,15 @@ import SuccessorTree.FatTree.A4Assembly
 
 /-!
 The coverage and replay lemmas are unconditional structural results.
-The last three reports are CONDITIONAL on `FixedStemPigeonhole`.
-Printing their complete types makes that remaining obligation visible;
-standard transitive axioms alone must not be mistaken for a proof of A4.
+The last three reports deliberately audit the conditional assembly interface:
+`A4Assembly` keeps `FixedStemPigeonhole` explicit so A3 transfer can be
+checked independently.  `A4ReviewComplete` discharges that premise
+unconditionally and is audited separately.
 -/
 
 open SuccessorTree.SMTree.FatTree
 
-#check oneBlock_mem_of_all_fixedTraceGoodRows
+#check oneBlock_mem_of_all_fixedTraceGoodRows_of_sourceLetter
 #check duplicate_replay_from_repeated_edge
 #check ProfileCollector.reachable_state_mono
 #check ProfileCollector.original_occurrence_endpoint_below
@@ -22,7 +23,7 @@ open SuccessorTree.SMTree.FatTree
 #check ramseySpaceOfFixedStemPigeonhole
 #check ellentuck_of_fixedStemPigeonhole
 
-#print axioms oneBlock_mem_of_all_fixedTraceGoodRows
+#print axioms oneBlock_mem_of_all_fixedTraceGoodRows_of_sourceLetter
 #print axioms duplicate_replay_from_repeated_edge
 #print axioms ProfileCollector.reachable_state_mono
 #print axioms ProfileCollector.original_occurrence_endpoint_below
