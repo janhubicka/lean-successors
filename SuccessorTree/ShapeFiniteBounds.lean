@@ -192,8 +192,10 @@ theorem finiteShapeComp_terminalLevel_le
   rw [H.levelMap_comp F G (n + k - 1)]
   change
     H.levelMap F.map (g.terminalLevel H) ≤ f.terminalLevel H
+  have hg' : g.terminalLevel H ≤ n + m - 1 := by
+    omega
   unfold AM.terminalLevel
-  exact (H.levelMap_strictMono F.map).monotone (by omega)
+  exact (H.levelMap_strictMono F.map).monotone hg'
 
 
 end SMTree
