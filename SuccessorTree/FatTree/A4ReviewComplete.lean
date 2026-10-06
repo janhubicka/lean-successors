@@ -11,7 +11,9 @@ Metric closedness and the abstract Ellentuck theorem then give the
 topological Ramsey-space conclusion.
 
 The `*_review` names at the end are compatibility aliases for earlier
-development checkpoints.  The public endpoints are the `fatTree*` names.
+development checkpoints.  The public endpoints are the `fatTree*` names;
+all of them are unconditional and carry no hidden A4, positivity, root-cut,
+or good-pair premise.
 -/
 
 namespace SuccessorTree.SMTree.FatTree
