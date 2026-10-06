@@ -16,10 +16,6 @@ open SuccessorTree.SMTree.FatTree
 #check review_trace_persistence_of_sourceLetter
 #check review_all_trace_fusion_of_sourceLetter
 #check review_fixedStemPigeonhole_of_sourceLetter
-#check review_fixedStemPigeonhole
-#check fixedStemPigeonhole_review
-#check abstractRamseySpace_review
-#check ellentuck_review
 #check fatTreeFixedStemPigeonhole
 #check fatTreeA4
 #check fatTreeAbstractRamseySpace
@@ -85,8 +81,6 @@ open SuccessorTree.SMTree.FatTree
 #print axioms review_large_set_homogeneous_of_sourceLetter
 #print axioms review_fixedStemPigeonhole_of_sourceLetter
 #print axioms review_fixedStemPigeonhole
-#print axioms fixedStemPigeonhole_review
-#print axioms ellentuck_review
 #print axioms fatTreeFixedStemPigeonhole
 #print axioms fatTreeA4
 #print axioms fatTreeAbstractRamseySpace
@@ -109,9 +103,6 @@ example {c : Nat} {C : Type w1} [Fintype C] [Nonempty C]
   exists_reviewFanLine_of_sourceLetter H U a trace hend E chi
 
 example (H : SMTree S) : FixedStemPigeonhole H :=
-  fixedStemPigeonhole_review H
-
-example (H : SMTree S) : FixedStemPigeonhole H :=
   fatTreeFixedStemPigeonhole H
 
 example (H : SMTree S)
@@ -127,11 +118,6 @@ example (H : SMTree S)
 noncomputable example (H : SMTree S) :
     RamseySpace.AbstractRamseySpace (approximationSystem H) :=
   fatTreeAbstractRamseySpace H
-
-example (H : SMTree S) :
-    RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
-      (S := approximationSystem H) :=
-  ellentuck_review H
 
 example (H : SMTree S) :
     RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
