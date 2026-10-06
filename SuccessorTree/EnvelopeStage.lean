@@ -185,6 +185,52 @@ theorem preimage_has_no_level_of_fixesThrough
   simpa [hGz] using hzlev
 
 
+/-- A shape map cannot send source level `n` below `n`. -/
+theorem sourceLevel_le_levelMap
+    (H : SMTree S) (G : ShapeMap S) (n : Nat) :
+    n ≤ H.levelMap G n := by
+  induction n with
+  | zero => omega
+  | succ n ih =>
+      have hs := H.levelMap_strictMono G (Nat.lt_succ_self n)
+      omega
+
+/-- If a target set is bounded by `ell`, then every source level above `m`
+which occurs before one of its pulled-back nodes maps to an indexed target
+level, provided all range levels in that interval are indexed. -/
+theorem pulledBack_sourceLevel_indexed
+    (H : SMTree S) (G : ShapeMap S) (m ell : Nat)
+    (C : Set T) (I : Set Nat)
+    (hbound : C ⊆ levelLe (T := T) ell)
+    (hindexed : ∀ ⦃q : Nat⦄, q ∈ G.levelRange → m < q → q ≤ ell → q ∈ I) :
+    ∀ ⦃z : T⦄, G z ∈ C → ∀ ⦃j : Nat⦄,
+      m < j → j < LevelTree.lev z → H.levelMap G j ∈ I := by
+  intro z hz j hmj hjz
+  have hqRange : H.levelMap G j ∈ G.levelRange := by
+    rw [← H.range_levelMap G]
+    exact ⟨j, rfl⟩
+  have hmq : m < H.levelMap G j := by
+    have hm0 := sourceLevel_le_levelMap H G m
+    have hm1 := H.levelMap_strictMono G hmj
+    omega
+  have hqz : H.levelMap G j < LevelTree.lev (G z) := by
+    have hmono := H.levelMap_strictMono G hjz
+    exact hmono.trans_eq (H.levelMap_eq G (a := z))
+  have hzBound : LevelTree.lev (G z) ≤ ell := hbound hz
+  exact hindexed hqRange hmq (by omega)
+
+/-- Parameter closure therefore pulls back from a bounded target closure when
+its met range levels are precisely among the indexed levels of the invariant. -/
+theorem preimage_parameterClosed_of_bounded_indexed
+    (H : SMTree S) (G : ShapeMap S) (m ell : Nat)
+    (C : Set T) (I : Set Nat)
+    (hC : ParameterClosedOver S C I)
+    (hbound : C ⊆ levelLe (T := T) ell)
+    (hindexed : ∀ ⦃q : Nat⦄, q ∈ G.levelRange → m < q → q ≤ ell → q ∈ I) :
+    ParameterClosedOver S (G ⁻¹' C) {j | m < j} :=
+  preimage_parameterClosed_above H G m C I hC
+    (pulledBack_sourceLevel_indexed H G m ell C I hbound hindexed)
+
 /-- The complete noninteresting-stage pullback: if the later map fixes through
 `m`, the target closure has no node at `m`, the target parameters used above
 `m` lie on indexed levels, and the one-level factor extends the crossing map,
@@ -206,6 +252,26 @@ theorem preimage_subset_range_of_oneLevel
   · exact preimage_parameterClosed_above H G m C I hC hI
   · exact preimage_has_no_level_of_fixesThrough G m hfix hno
   · exact pullback_crossing_of_extension G D m hfix C hD
+
+
+/-- Manuscript-ready form of the noninteresting-stage argument. The boundedness
+of the closure and the outer invariant supply the parameter-index hypothesis. -/
+theorem preimage_subset_range_of_bounded_indexed
+    (H : SMTree S) (G D : ShapeMap S) (m ell : Nat)
+    (hfix : FixesThrough G m)
+    (hskip : D.SkipsOnly m) (hE : PullbackDefined S D)
+    (C : Set T) (I : Set Nat)
+    (hC : ParameterClosedOver S C I)
+    (hbound : C ⊆ levelLe (T := T) ell)
+    (hindexed : ∀ ⦃q : Nat⦄, q ∈ G.levelRange → m < q → q ≤ ell → q ∈ I)
+    (hno : ∀ ⦃x : T⦄, x ∈ C → LevelTree.lev x ≠ m)
+    (hD : ∀ ⦃c : T⦄, c ∈ C → ∀ (hmc : m < LevelTree.lev c),
+      D (LevelTree.ancestor c m (Nat.le_of_lt hmc)) =
+        LevelTree.ancestor c (m + 1) (Nat.succ_le_iff.mpr hmc)) :
+    G ⁻¹' C ⊆ Set.range D := by
+  exact preimage_subset_range_of_oneLevel H G D m hfix hskip hE C I hC
+    (pulledBack_sourceLevel_indexed H G m ell C I hbound hindexed)
+    hno hD
 
 end Envelope
 end SMTree
