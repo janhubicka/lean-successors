@@ -80,7 +80,6 @@ open SuccessorTree.SMTree.FatTree
 #print axioms review_all_trace_fusion_of_sourceLetter
 #print axioms review_large_set_homogeneous_of_sourceLetter
 #print axioms review_fixedStemPigeonhole_of_sourceLetter
-#print axioms review_fixedStemPigeonhole
 #print axioms fatTreeFixedStemPigeonhole
 #print axioms fatTreeA4
 #print axioms fatTreeAbstractRamseySpace
