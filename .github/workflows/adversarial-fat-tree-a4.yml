@@ -21,7 +21,7 @@ jobs:
     name: Referee A — unconditional endpoint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/cache@v5
         with:
           path: ~/.elan/toolchains
@@ -45,26 +45,21 @@ jobs:
       - name: Run endpoint audit
         run: |
           set -o pipefail
-          lake env lean scripts/RefereeFatTreeA4A.lean 2>&1 | tee referee-a.log
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          text=Path("referee-a.log").read_text()
-          reports=re.findall(r"depends on axioms:\s*\[([^\]]*)\]",text,re.S)
-          assert len(reports)==4, len(reports)
-          allowed={"propext","Classical.choice","Quot.sound"}
-          for report in reports:
-              actual={x.strip() for x in report.split(",") if x.strip()}
-              assert actual <= allowed, actual
-          assert "sorryAx" not in text and not re.search(r"\berror:",text)
-          print("PASS: public A4/Ellentuck endpoint is unconditional and axiom-clean")
-          PY
+          if ! lake env lean scripts/RefereeFatTreeA4A.lean > referee-a.log 2>&1; then
+            cat referee-a.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py referee-a.log 4 || {
+            cat referee-a.log
+            exit 1
+          }
+          echo "PASS: public A4/Ellentuck endpoint is unconditional and axiom-clean"
 
   referee-b-edge-cases:
     name: Referee B — root and coverage cases
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/cache@v5
         with:
           path: ~/.elan/toolchains
@@ -88,26 +83,21 @@ jobs:
       - name: Run edge-case audit
         run: |
           set -o pipefail
-          lake env lean scripts/RefereeFatTreeA4B.lean 2>&1 | tee referee-b.log
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          text=Path("referee-b.log").read_text()
-          reports=re.findall(r"depends on axioms:\s*\[([^\]]*)\]",text,re.S)
-          assert len(reports)==6, len(reports)
-          allowed={"propext","Classical.choice","Quot.sound"}
-          for report in reports:
-              actual={x.strip() for x in report.split(",") if x.strip()}
-              assert actual <= allowed, actual
-          assert "sorryAx" not in text and not re.search(r"\berror:",text)
-          print("PASS: moving-root, no-letter-root and last-block coverage interfaces compile")
-          PY
+          if ! lake env lean scripts/RefereeFatTreeA4B.lean > referee-b.log 2>&1; then
+            cat referee-b.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py referee-b.log 6 || {
+            cat referee-b.log
+            exit 1
+          }
+          echo "PASS: moving-root, no-letter-root and last-block coverage interfaces compile"
 
   referee-c-dependency-firewall:
     name: Referee C — circularity firewall
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/cache@v5
         with:
           path: ~/.elan/toolchains
