@@ -53,8 +53,6 @@ theorem review_trace_persistence_core
     (hn : n ≤ y.height)
     (hsrc : FiniteFatTree.traceSourceCut H y n hn = c)
     (hyU : ExtendsStem H y U)
-    (hlarge :
-      OneBlockLarge H y U (FixedTraceGoodRows H c n y hn hsrc O))
     (hpairs : ∀ A : FatTree H, Reduces H A U → ExtendsStem H y A →
       ∃ h k, FixedTraceGoodPair H c n y hn hsrc O h k ∧
         OneBlockOccurs H (FiniteFatTree.appendRow H y h) A k) :
