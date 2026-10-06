@@ -695,7 +695,8 @@ theorem tailStage_fusionStable (U : FatTree H) (n : Nat) :
     have hcount :
         (j + 1 - U.cut n + 1) = (j - U.cut n + 1) + 1 := by
       omega
-    rw [hcount, intervalMap_snoc]
+    rw [hcount]
+    rw [intervalMap_snoc H U n (j - U.cut n + 1)]
     change
       intervalMap H U n (j - U.cut n + 1) x =
         U.rowExtension H (n + (j - U.cut n + 1))
