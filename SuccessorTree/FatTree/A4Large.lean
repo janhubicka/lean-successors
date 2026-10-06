@@ -30,6 +30,29 @@ def OneBlockOccurs
     (g : AM H x.terminalCut 1) : Prop :=
   ∃ m : Nat, StemAt H (FiniteFatTree.appendRow H x g) U m
 
+/-- Exact agreement with an appended stem implies agreement with the old
+stem.  This is purely geometric and belongs below the typed A4 interface. -/
+theorem extendsStem_of_appendRow
+    {x : FiniteFatTree H} {g : AM H x.terminalCut 1} {X : FatTree H}
+    (hx : ExtendsStem H (FiniteFatTree.appendRow H x g) X) :
+    ExtendsStem H x X := by
+  constructor
+  · intro i
+    exact (hx.1 i.castSucc).trans
+      (FiniteFatTree.appendRow_cut_old H x g i)
+  · intro i
+    exact (hx.2 i.castSucc).trans
+      (FiniteFatTree.appendRow_row_old H x g i)
+
+/-- Occurrence is hereditary upwards along geometric reductions. -/
+theorem oneBlockOccurs_of_reduces
+    {x : FiniteFatTree H} {U V : FatTree H}
+    {g : AM H x.terminalCut 1}
+    (hg : OneBlockOccurs H x V g) (hVU : Reduces H V U) :
+    OneBlockOccurs H x U g := by
+  rcases hg with ⟨d, hd⟩
+  exact exists_stemAt_of_reduces H hd hVU
+
 /-- The ambient row immediately after a literal finite stem, transported
 to the stem's terminal-cut type. -/
 noncomputable def ambientNextRow
