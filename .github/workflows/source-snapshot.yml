@@ -2,6 +2,9 @@ name: Fat-tree source checkpoint
 
 on:
   workflow_dispatch:
+  push:
+    branches: [cleanup-shape-proof-v8]
+    paths: [.github/workflows/source-snapshot.yml]
 
 permissions:
   contents: read
