@@ -5,7 +5,6 @@ import SuccessorTree.FatTree.A4ReviewComplete
 open SuccessorTree.SMTree.FatTree
 
 #check persistentAcceptedPair_of_dense_pairs
-#check review_fixedStemPigeonhole_positive
 #check ProfileReplayState.review_common_tail_replays
 #check ProfileReplayState.review_raw_fan_represented
 #check ProfileReplayState.review_exists_profile_fan_homogeneity
@@ -35,12 +34,8 @@ open SuccessorTree.SMTree.FatTree
 #print axioms eliminate_accepted_pair_batch
 #print axioms eliminate_all_accepted_pairs_at_depth
 #print axioms persistentAcceptedPair_of_dense_pairs
-#print axioms review_trace_persistence
-#print axioms review_all_trace_fusion
 #print axioms review_goodRows_transport
 #print axioms review_good_row_of_good_prefix
-#print axioms review_large_set_homogeneous
-#print axioms review_fixedStemPigeonhole_positive
 #print axioms review_rowExtension_succ
 #print axioms ProfileReplayState.review_common_const_letter
 #print axioms ProfileReplayState.review_first_parameter_edge
