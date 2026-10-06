@@ -59,6 +59,35 @@ theorem ext_apply {H : SMTree S} {F G : MMap H}
     (h : ∀ a : T, F a = G a) : F = G :=
   ext_map (ShapeMap.ext_apply h)
 
+/-- Level maps respect composition in the distinguished monoid. -/
+theorem levelMap_comp
+    (H : SMTree S) (F G : MMap H) (n : Nat) :
+    H.levelMap (MMap.comp H F G).map n =
+      H.levelMap F.map (H.levelMap G.map n) := by
+  obtain ⟨x, hx⟩ := H.level_nonempty n
+  calc
+    H.levelMap (MMap.comp H F G).map n =
+        LevelTree.lev (F (G x)) := by
+      simpa [hx] using
+        H.levelMap_eq (MMap.comp H F G).map (a := x)
+    _ = H.levelMap F.map (LevelTree.lev (G x)) := by
+      exact (H.levelMap_eq F.map (a := G x)).symm
+    _ = H.levelMap F.map (H.levelMap G.map n) := by
+      have hG := H.levelMap_eq G.map (a := x)
+      rw [hx] at hG
+      rw [hG]
+
+/-- The identity fixes every level. -/
+theorem levelMap_id (H : SMTree S) (n : Nat) :
+    H.levelMap (MMap.id H).map n = n := by
+  obtain ⟨x, hx⟩ := H.level_nonempty n
+  calc
+    H.levelMap (MMap.id H).map n =
+        LevelTree.lev ((MMap.id H) x) := by
+      simpa [hx] using H.levelMap_eq (MMap.id H).map (a := x)
+    _ = LevelTree.lev x := rfl
+    _ = n := hx
+
 end MMap
 
 /-- A letter of the Hales--Jewett alphabet at level n.

@@ -191,34 +191,6 @@ theorem shapeRamsey_bounded
 
 /-! ## Exact terminal padding -/
 
-private theorem padding_levelMap_comp
-    (H : SMTree S) (F G : MMap H) (q : Nat) :
-    H.levelMap (MMap.comp H F G).map q =
-      H.levelMap F.map (H.levelMap G.map q) := by
-  obtain ⟨x, hx⟩ := H.level_nonempty q
-  calc
-    H.levelMap (MMap.comp H F G).map q =
-        LevelTree.lev (F (G x)) := by
-      simpa [hx] using
-        H.levelMap_eq (MMap.comp H F G).map (a := x)
-    _ = H.levelMap F.map (LevelTree.lev (G x)) :=
-      (H.levelMap_eq F.map (a := G x)).symm
-    _ = H.levelMap F.map (H.levelMap G.map q) := by
-      have hG := H.levelMap_eq G.map (a := x)
-      rw [hx] at hG
-      rw [hG]
-
-private theorem padding_levelMap_id
-    (H : SMTree S) (q : Nat) :
-    H.levelMap (MMap.id H).map q = q := by
-  obtain ⟨x, hx⟩ := H.level_nonempty q
-  calc
-    H.levelMap (MMap.id H).map q =
-        LevelTree.lev ((MMap.id H) x) := by
-      simpa [hx] using H.levelMap_eq (MMap.id H).map (a := x)
-    _ = LevelTree.lev x := rfl
-    _ = q := hx
-
 /-- The M3 factor which inserts one target level at t. -/
 noncomputable def paddingLetter
     (H : SMTree S) (t : Nat) (ht : 0 < t) :
@@ -227,14 +199,14 @@ noncomputable def paddingLetter
   have hD := Classical.choose_spec (H.m3 0 t ht)
   exact ⟨⟨D, hD.1⟩, hD.2.1⟩
 
-/-- Product of the consecutive M3 insertions at t,...,t+s-1. -/
+/-- The s-fold power of the fixed M3 duplication at t. -/
 noncomputable def paddingMap
     (H : SMTree S) (t : Nat) (ht : 0 < t) :
     Nat → MMap H
   | 0 => MMap.id H
   | s + 1 =>
       MMap.comp H
-        (paddingLetter H (t + s) (by omega)).toMMap
+        (paddingLetter H t ht).toMMap
         (paddingMap H t ht s)
 
 theorem paddingMap_fixesBelow
@@ -248,8 +220,7 @@ theorem paddingMap_fixesBelow
       intro x hx
       rw [paddingMap, MMap.comp_apply, ih x hx]
       exact
-        (paddingLetter H (t + s) (by omega)).eq_id_below H
-          (by omega)
+        (paddingLetter H t ht).eq_id_below H hx
 
 theorem paddingMap_level_start
     (H : SMTree S) (t : Nat) (ht : 0 < t) :
@@ -258,17 +229,16 @@ theorem paddingMap_level_start
   intro s
   induction s with
   | zero =>
-      simpa [paddingMap] using padding_levelMap_id H t
+      simpa [paddingMap] using MMap.levelMap_id H t
   | succ s ih =>
-      rw [paddingMap, padding_levelMap_comp, ih]
+      rw [paddingMap, MMap.levelMap_comp, ih]
       have hlev :=
         H.levelMap_of_skipsOnly
-          (paddingLetter H (t + s) (by omega)).toMMap.map
+          (paddingLetter H t ht).toMMap.map
+          t
+          (paddingLetter H t ht).skips
           (t + s)
-          (paddingLetter H (t + s) (by omega)).skips
-          (t + s)
-      simp at hlev
-      omega
+      simpa [Nat.not_lt.mpr (Nat.le_add_right t s), Nat.add_assoc] using hlev
 
 theorem AM.sourceLast_le_terminalLevel
     (H : SMTree S) {n k : Nat} (hk : 0 < k)
@@ -295,7 +265,7 @@ theorem finiteShapeComp_terminalLevel_eq_left
       (g.1.representative_fixesBelow H)
   unfold finiteShapeComp
   rw [MMap.toAM_terminalLevel H (MMap.comp H F G) n k hfix (by omega)]
-  rw [padding_levelMap_comp]
+  rw [MMap.levelMap_comp]
   change H.levelMap F.map (g.1.terminalLevel H) = f.terminalLevel H
   rw [g.2]
   rfl
@@ -356,7 +326,7 @@ noncomputable def padApproxTo
   refine ⟨out, ?_⟩
   rw [MMap.toAM_terminalLevel H C n k hCfix (by omega)]
   unfold C paddingComposite
-  rw [padding_levelMap_comp]
+  rw [MMap.levelMap_comp]
   change
     H.levelMap
         (paddingMap H (a.1.terminalLevel H) ht
@@ -486,7 +456,7 @@ theorem padApproxTo_comp_exact
       rw [hl, hpadf, hr]
       unfold paddingComposite
       dsimp only
-      simp only [hterm, hfgrep]
+      simp only [MMap.comp_apply, hterm, hfgrep]
     _ = rhs.1 := rhs.representative_top H
 
 
@@ -550,7 +520,7 @@ theorem shapeRamsey_exact_of_two_le
     extended (boundedComp H hm hk f gb) =
       extended (boundedComp H hm hk f hb) at hhom
   dsimp only [extended] at hhom
-  rw [dif_pos hgbpos, dif_pos hhbpos] at hhom
+  rw [dite_eq_left hgbpos, dite_eq_left hhbpos] at hhom
 
   have hpadg :=
     congrArg colour (padApproxTo_comp_exact H hm hk f hft g)

@@ -145,7 +145,7 @@ theorem shapePreservingRamsey_of_oneDimensional
     else default
   have hext (a : AM H n k) : extended a.1 = colour a := by
     dsimp only [extended]
-    rw [dif_pos a.2]
+    rw [dite_eq_left a.2]
     exact congrArg colour (Subtype.ext rfl)
   obtain ⟨W, _, hW⟩ :=
     H.shapeRamsey_approximations_of_oneDimensional
