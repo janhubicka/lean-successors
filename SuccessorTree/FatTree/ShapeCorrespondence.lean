@@ -715,8 +715,9 @@ theorem tailStage_fusionStable (U : FatTree H) (n : Nat) :
     have hcutpos :
         0 < U.cut (n + (j - U.cut n + 1)) := by
       have hindex : 0 < n + (j - U.cut n + 1) := by omega
-      exact lt_of_le_of_lt hindex
-        (lt_of_lt_of_le (Nat.zero_lt_succ _) (U.index_le_cut H _ le_rfl))
+      have hcut :=
+        U.cut_strictMono H hindex
+      simpa [U.cut_zero] using hcut
     rw [hlast] at hlev
     omega
   · by_cases hj1 : U.cut n ≤ j + 1
