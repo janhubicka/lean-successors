@@ -134,7 +134,7 @@ example (H : SMTree S) : FixedStemPigeonhole H :=
 example (H : SMTree S) : FixedStemPigeonhole H :=
   fatTreeA4 H
 
-example (H : SMTree S) :
+noncomputable example (H : SMTree S) :
     RamseySpace.AbstractRamseySpace (approximationSystem H) :=
   fatTreeAbstractRamseySpace H
 
