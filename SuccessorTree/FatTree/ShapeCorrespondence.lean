@@ -832,6 +832,94 @@ theorem tailMap_mem_relativeFatLevel
       (U.row (n + k)).representative H y
   exact U.rowExtension_agrees H (n + k) y (Nat.le_of_eq hyLev)
 
+/-- The tail map as a frozen-prefix shape subspace. -/
+noncomputable def tailSubspace
+    (U : FatTree H) (n : Nat) :
+    ShapeSubspace H (U.cut n) :=
+  ⟨tailMap H U n, tailMap_fixesBelow H U n⟩
+
+/-- Top levels compose under the shape action. -/
+theorem shapeAct_topLevel
+    (F : ShapeSubspace H n) (g : AM H n 1) :
+    (H.shapeAct n F g).topLevel H =
+      H.levelMap F.1.map (g.topLevel H) := by
+  obtain ⟨x, hx⟩ := H.level_nonempty n
+  have hact :=
+    H.shapeAct_representative_agrees n F g x (by simpa [hx])
+  unfold AM.topLevel
+  calc
+    H.levelMap (H.shapeAct n F g).representative.map n =
+        LevelTree.lev ((H.shapeAct n F g).representative H x) := by
+      simpa [hx] using
+        H.levelMap_eq (H.shapeAct n F g).representative.map (a := x)
+    _ = LevelTree.lev (F.1 (g.representative H x)) := by rw [hact]
+    _ = H.levelMap F.1.map
+          (LevelTree.lev (g.representative H x)) := by
+      exact (H.levelMap_eq F.1.map (a := g.representative H x)).symm
+    _ = H.levelMap F.1.map
+          (H.levelMap (g.representative H).map n) := by
+      have hg := H.levelMap_eq (g.representative H).map (a := x)
+      rw [hx] at hg
+      rw [hg]
+
+/-- Apply the tail map to a one-row algebraic coordinate. -/
+noncomputable def tailCoordinateRow
+    (U : FatTree H) (n : Nat)
+    (r : AM H (U.cut n) 1) :
+    AM H (U.cut n) 1 :=
+  H.shapeAct (U.cut n) (tailSubspace H U n) r
+
+/-- Exact terminal cut of a tail coordinate with prescribed excess k. -/
+theorem tailCoordinateRow_end
+    (U : FatTree H) (n k : Nat)
+    (r : AM H (U.cut n) 1)
+    (hr : r.topLevel H = U.cut n + k) :
+    (tailCoordinateRow H U n r).rowEndLevel H + 1 =
+      U.cut (n + k + 1) := by
+  have htop :
+      (tailCoordinateRow H U n r).topLevel H =
+        U.cut (n + k + 1) - 1 := by
+    rw [tailCoordinateRow, shapeAct_topLevel H]
+    rw [hr, tailMap_level H U n k]
+  change (tailCoordinateRow H U n r).topLevel H + 1 =
+    U.cut (n + k + 1)
+  rw [htop]
+  have hpos : 0 < U.cut (n + k + 1) := by
+    have hidx : 0 < n + k + 1 := by omega
+    have hcut := U.cut_strictMono H hidx
+    simpa [U.cut_zero] using hcut
+  omega
+
+/-- The top-level range of an algebraic coordinate transported by the tail
+map lies in the corresponding geometric fat level. -/
+theorem tailCoordinateRow_range
+    (U : FatTree H) (n k : Nat)
+    (r : AM H (U.cut n) 1)
+    (hr : r.topLevel H = U.cut n + k)
+    (a : T) (ha : LevelTree.lev a = U.cut n) :
+    ∃ y,
+      y ∈ U.liftSteps H n k (TreeLevel (T := T) (U.cut n)) ∧
+      (tailCoordinateRow H U n r).representative H a =
+        (U.row (n + k)).representative H y := by
+  have hact :=
+    H.shapeAct_representative_agrees
+      (U.cut n) (tailSubspace H U n) r a (by omega)
+  have hra :
+      LevelTree.lev (r.representative H a) = U.cut n + k := by
+    calc
+      LevelTree.lev (r.representative H a) =
+          H.levelMap (r.representative H).map (LevelTree.lev a) :=
+        (H.levelMap_eq (r.representative H).map (a := a)).symm
+      _ = r.topLevel H := by rw [ha]
+      _ = U.cut n + k := hr
+  obtain ⟨y, hy, htail⟩ :=
+    tailMap_mem_relativeFatLevel H U n k (r.representative H a) hra
+  refine ⟨y, hy, ?_⟩
+  calc
+    (tailCoordinateRow H U n r).representative H a =
+        tailMap H U n (r.representative H a) := hact
+    _ = (U.row (n + k)).representative H y := htail
+
 /-- At the tail level reached after an interval, the interval product sends
 an edge to an edge. -/
 theorem intervalMap_covBy_tail
