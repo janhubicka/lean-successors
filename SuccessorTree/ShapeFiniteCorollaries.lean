@@ -188,5 +188,195 @@ theorem shapeRamsey_bounded
     _ = globalColour (finiteShapeComp H f0 h.1) := by rw [hfinite h]
     _ = (seq N).1 (boundedComp H hm hk f h) := hglobal h
 
+
+/-! ## Exact terminal padding -/
+
+private theorem padding_levelMap_comp
+    (H : SMTree S) (F G : MMap H) (q : Nat) :
+    H.levelMap (MMap.comp H F G).map q =
+      H.levelMap F.map (H.levelMap G.map q) := by
+  obtain ⟨x, hx⟩ := H.level_nonempty q
+  calc
+    H.levelMap (MMap.comp H F G).map q =
+        LevelTree.lev (F (G x)) := by
+      simpa [hx] using
+        H.levelMap_eq (MMap.comp H F G).map (a := x)
+    _ = H.levelMap F.map (LevelTree.lev (G x)) :=
+      (H.levelMap_eq F.map (a := G x)).symm
+    _ = H.levelMap F.map (H.levelMap G.map q) := by
+      have hG := H.levelMap_eq G.map (a := x)
+      rw [hx] at hG
+      rw [hG]
+
+private theorem padding_levelMap_id
+    (H : SMTree S) (q : Nat) :
+    H.levelMap (MMap.id H).map q = q := by
+  obtain ⟨x, hx⟩ := H.level_nonempty q
+  calc
+    H.levelMap (MMap.id H).map q =
+        LevelTree.lev ((MMap.id H) x) := by
+      simpa [hx] using H.levelMap_eq (MMap.id H).map (a := x)
+    _ = LevelTree.lev x := rfl
+    _ = q := hx
+
+/-- The M3 factor which inserts one target level at t. -/
+noncomputable def paddingLetter
+    (H : SMTree S) (t : Nat) (ht : 0 < t) :
+    OneLevelLetter H t := by
+  obtain ⟨D, hD, hskip, _⟩ := H.m3 0 t ht
+  exact ⟨⟨D, hD⟩, hskip⟩
+
+/-- Product of the consecutive M3 insertions at t,...,t+s-1. -/
+noncomputable def paddingMap
+    (H : SMTree S) (t : Nat) (ht : 0 < t) :
+    Nat → MMap H
+  | 0 => MMap.id H
+  | s + 1 =>
+      MMap.comp H
+        (paddingLetter H (t + s) (by omega)).toMMap
+        (paddingMap H t ht s)
+
+theorem paddingMap_fixesBelow
+    (H : SMTree S) (t : Nat) (ht : 0 < t) :
+    ∀ s : Nat, (paddingMap H t ht s).FixesBelow H t := by
+  intro s
+  induction s with
+  | zero =>
+      exact MMap.id_fixesBelow H t
+  | succ s ih =>
+      intro x hx
+      rw [paddingMap, MMap.comp_apply, ih x hx]
+      exact
+        (paddingLetter H (t + s) (by omega)).eq_id_below H
+          (by omega)
+
+theorem paddingMap_level_start
+    (H : SMTree S) (t : Nat) (ht : 0 < t) :
+    ∀ s : Nat,
+      H.levelMap (paddingMap H t ht s).map t = t + s := by
+  intro s
+  induction s with
+  | zero =>
+      simpa [paddingMap] using padding_levelMap_id H t
+  | succ s ih =>
+      rw [paddingMap, padding_levelMap_comp, ih]
+      have hlev :=
+        H.levelMap_of_skipsOnly
+          (paddingLetter H (t + s) (by omega)).toMMap.map
+          (t + s)
+          (paddingLetter H (t + s) (by omega)).skips
+          (t + s)
+      simp at hlev
+      omega
+
+theorem AM.sourceLast_le_terminalLevel
+    (H : SMTree S) {n k : Nat} (hk : 0 < k)
+    (a : AM H n k) :
+    n + k - 1 ≤ a.terminalLevel H := by
+  unfold AM.terminalLevel
+  exact H.levelMap_id_le (a.representative H).map (n + k - 1)
+
+/-- Composition with a coordinate ending at the last source level of f has
+the same terminal target level as f. -/
+theorem finiteShapeComp_terminalLevel_eq_left
+    (H : SMTree S) {n m k : Nat}
+    (hm : 0 < m) (hk : 0 < k)
+    (f : AM H n m)
+    (g : AM.At H n k (n + m - 1)) :
+    (finiteShapeComp H f g.1).terminalLevel H =
+      f.terminalLevel H := by
+  let F := f.representative H
+  let G := g.1.representative H
+  have hfix :
+      (MMap.comp H F G).FixesBelow H n :=
+    MMap.comp_fixesBelow H F G n
+      (f.representative_fixesBelow H)
+      (g.1.representative_fixesBelow H)
+  unfold finiteShapeComp
+  rw [MMap.toAM_terminalLevel H (MMap.comp H F G) n k hfix (by omega)]
+  rw [padding_levelMap_comp]
+  change H.levelMap F.map (g.1.terminalLevel H) = f.terminalLevel H
+  rw [g.2]
+  rfl
+
+/-- Exact-terminal finite composition. -/
+noncomputable def exactComp
+    (H : SMTree S) {n m k N : Nat}
+    (hm : 0 < m) (hk : 0 < k)
+    (f : AM.At H n m N)
+    (g : AM.At H n k (n + m - 1)) :
+    AM.At H n k N :=
+  ⟨finiteShapeComp H f.1 g.1,
+    (finiteShapeComp_terminalLevel_eq_left H hm hk f.1 g).trans f.2⟩
+
+/-- Total map used to pad a bounded approximation from its terminal level to
+a prescribed ambient level N. -/
+noncomputable def paddingComposite
+    (H : SMTree S) {n k N : Nat}
+    (hk : 0 < k)
+    (a : AM.AtMost H n k N)
+    (ht : 0 < a.1.terminalLevel H) : MMap H :=
+  let t := a.1.terminalLevel H
+  MMap.comp H
+    (paddingMap H t ht (N - t))
+    (a.1.representative H)
+
+theorem paddingComposite_fixesBelow
+    (H : SMTree S) {n k N : Nat}
+    (hk : 0 < k)
+    (a : AM.AtMost H n k N)
+    (ht : 0 < a.1.terminalLevel H) :
+    (paddingComposite H hk a ht).FixesBelow H n := by
+  let t := a.1.terminalLevel H
+  have hlast : n + k - 1 ≤ t :=
+    a.1.sourceLast_le_terminalLevel H hk
+  have hnt : n ≤ t := by omega
+  have hpad :
+      (paddingMap H t ht (N - t)).FixesBelow H n := by
+    intro x hx
+    exact paddingMap_fixesBelow H t ht (N - t) x
+      (lt_of_lt_of_le hx hnt)
+  exact MMap.comp_fixesBelow H
+    (paddingMap H t ht (N - t))
+    (a.1.representative H) n
+    hpad (a.1.representative_fixesBelow H)
+
+/-- Pad a bounded nonempty approximation to the exact ambient terminal level. -/
+noncomputable def padApproxTo
+    (H : SMTree S) {n k N : Nat}
+    (hk : 0 < k)
+    (a : AM.AtMost H n k N)
+    (ht : 0 < a.1.terminalLevel H) :
+    AM.At H n k N := by
+  let C := paddingComposite H hk a ht
+  have hCfix : C.FixesBelow H n :=
+    paddingComposite_fixesBelow H hk a ht
+  let out : AM H n k := C.toAM H n k hCfix
+  refine ⟨out, ?_⟩
+  rw [MMap.toAM_terminalLevel H C n k hCfix (by omega)]
+  unfold C paddingComposite
+  rw [padding_levelMap_comp]
+  change
+    H.levelMap
+        (paddingMap H (a.1.terminalLevel H) ht
+          (N - a.1.terminalLevel H)).map
+        (a.1.terminalLevel H) = N
+  rw [paddingMap_level_start]
+  omega
+
+theorem padApproxTo_representative_agrees
+    (H : SMTree S) {n k N : Nat}
+    (hk : 0 < k)
+    (a : AM.AtMost H n k N)
+    (ht : 0 < a.1.terminalLevel H)
+    (x : T) (hx : LevelTree.lev x < n + k) :
+    (padApproxTo H hk a ht).1.representative H x =
+      paddingComposite H hk a ht x := by
+  unfold padApproxTo
+  exact MMap.toAM_representative_agrees H
+    (paddingComposite H hk a ht) n k
+    (paddingComposite_fixesBelow H hk a ht) x hx
+
+
 end SMTree
 end SuccessorTree
