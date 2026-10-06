@@ -48,6 +48,7 @@ theorem finiteApproximationColouring
         ∀ Y, Y ∈ S.neighborhood a B →
           colour (S.approx m X) = colour (S.approx m Y) := by
   classical
+  letI : TopologicalSpace S.Point := S.ellentuckTopology
   let fibre : κ → Set S.Point :=
     fun c => {X | colour (S.approx m X) = c}
 
