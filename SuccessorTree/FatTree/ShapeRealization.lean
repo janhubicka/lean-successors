@@ -243,6 +243,42 @@ theorem tailCoordinateRow_occurs
   simpa [hdiff] using hy
 
 
+/-- Appending commutes with transporting the finite stem. -/
+theorem appendRow_transport_stem
+    {x y : FiniteFatTree H} (hxy : x = y)
+    (g : AM H x.terminalCut 1) :
+    FiniteFatTree.appendRow H x g =
+      FiniteFatTree.appendRow H y
+        (FatTree.castRow H
+          (congrArg FiniteFatTree.terminalCut hxy) g) := by
+  cases hxy
+  rfl
+
+/-- Occurrence of a row transports along equality of the finite stem. -/
+theorem oneBlockOccurs_transport_stem
+    {x y : FiniteFatTree H} {U : FatTree H}
+    (hxy : x = y) (g : AM H x.terminalCut 1)
+    (hg : OneBlockOccurs H x U g) :
+    OneBlockOccurs H y U
+      (FatTree.castRow H
+        (congrArg FiniteFatTree.terminalCut hxy) g) := by
+  rcases hg with ⟨m, hm⟩
+  refine ⟨m, ?_⟩
+  have happ := appendRow_transport_stem H hxy g
+  rw [← happ]
+  exact hm
+
+/-- Three successive transports around an equality triangle cancel. -/
+theorem castRow_cancel_chain
+    {a b c : Nat} (hab : a = b) (hbc : b = c)
+    (g : AM H c 1) :
+    FatTree.castRow H hbc
+      (FatTree.castRow H hab
+        (FatTree.castRow H (hab.trans hbc).symm g)) = g := by
+  cases hab
+  cases hbc
+  rfl
+
 /-- Appending a row to a fixed finite stem is injective. -/
 theorem appendApprox_injective
     {n : Nat} (a : (approximationSystem H).Approx n) :
