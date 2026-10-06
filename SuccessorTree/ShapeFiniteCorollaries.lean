@@ -40,7 +40,6 @@ theorem finiteShapeComp_toAM_eq_shapeActK
       H.shapeActK n k W g := by
   apply Subtype.ext
   unfold finiteShapeComp shapeActK
-  apply Subtype.ext
   apply ramseyApprox_eq_of_apply H
   intro x hx
   change
@@ -71,7 +70,7 @@ theorem shapeRamsey_bounded
     ∃ N : Nat, BoundedRamseyAt H κ n k m N hm hk := by
   classical
   by_contra hno
-  push_neg at hno
+  push Not at hno
 
   let BadColour : Nat → Type max u w :=
     fun N =>
@@ -88,7 +87,7 @@ theorem shapeRamsey_bounded
             c (boundedComp H hm hk f g) ≠
               c (boundedComp H hm hk f h) := by
     by_contra h
-    push_neg at h
+    push Not at h
     exact hno N h
 
   letI : ∀ N : Nat, Nonempty (BadColour N) :=
