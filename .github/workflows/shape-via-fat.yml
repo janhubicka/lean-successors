@@ -6,6 +6,7 @@ on:
     paths:
       - 'SuccessorTree/FatTree/FiniteRamsey.lean'
       - 'SuccessorTree/FatTree/ShapeCorrespondence.lean'
+      - 'SuccessorTree/FatTree/ShapeRealization.lean'
       - '.github/workflows/shape-via-fat.yml'
   workflow_dispatch:
 
@@ -37,4 +38,4 @@ jobs:
       - name: Download Mathlib cache
         run: lake exe cache get
       - name: Build correspondence
-        run: lake build SuccessorTree.FatTree.ShapeCorrespondence
+        run: lake build SuccessorTree.FatTree.ShapeRealization
