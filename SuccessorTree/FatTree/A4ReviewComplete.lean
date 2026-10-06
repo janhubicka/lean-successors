@@ -34,4 +34,20 @@ theorem ellentuck_review :
       (S := approximationSystem H) :=
   ellentuck_of_fixedStemPigeonhole H (fixedStemPigeonhole_review H)
 
+/-- Final public A4 endpoint.  The `review` suffix on the construction
+lemmas is historical; no additional hypothesis remains here. -/
+theorem fatTreeA4 : FixedStemPigeonhole H :=
+  fixedStemPigeonhole_review H
+
+/-- Final public A1--A4 structure for fat trees. -/
+noncomputable def fatTreeAbstractRamseySpace :
+    RamseySpace.AbstractRamseySpace (approximationSystem H) :=
+  ramseySpaceOfFixedStemPigeonhole H (fatTreeA4 H)
+
+/-- Final public Ellentuck endpoint for the fat-tree space. -/
+theorem fatTreeEllentuck :
+    RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
+      (S := approximationSystem H) :=
+  ellentuck_of_fixedStemPigeonhole H (fatTreeA4 H)
+
 end SuccessorTree.SMTree.FatTree
