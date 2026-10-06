@@ -45,7 +45,7 @@ theorem exists_exact_avoidance
         ¬ StemAt H (FiniteFatTree.appendRow H x g) C (q + 1) := by
   classical
   unfold OneBlockExactPersistent at hnot
-  push_neg at hnot
+  push Not at hnot
   rcases hnot with ⟨C, hCA, havoid⟩
   exact ⟨C, hCA, fun g hg => havoid g hg⟩
 
