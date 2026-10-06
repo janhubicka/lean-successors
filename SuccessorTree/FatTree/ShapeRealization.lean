@@ -279,7 +279,8 @@ theorem tailCoordinateRow_oneBlockOccurs
   exact ⟨n + k + 1, tailCoordinateRow_occurs H U n k r hr⟩
 
 /-- The same statement after identifying the selected fat-tree cut with an
-external source level. -/
+external source level.  The row transport is explicit because the row type
+remembers its source cut. -/
 theorem shapeAct_tail_oneBlockOccurs
     (U : FatTree H) (n c : Nat)
     (hc : U.cut n = c)
@@ -289,7 +290,7 @@ theorem shapeAct_tail_oneBlockOccurs
         intro x hx
         exact tailMap_fixesBelow H U n x (by simpa [hc] using hx)⟩
     OneBlockOccurs H (U.initialSegment H n) U
-      (H.shapeAct c W r) := by
+      (FatTree.castRow H hc.symm (H.shapeAct c W r)) := by
   subst c
   simpa [tailCoordinateRow, tailSubspace] using
     tailCoordinateRow_oneBlockOccurs H U n r
