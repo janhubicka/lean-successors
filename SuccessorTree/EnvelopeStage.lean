@@ -22,6 +22,20 @@ variable {S : STree T Label}
 def FixesThrough (F : ShapeMap S) (n : Nat) : Prop :=
   ∀ ⦃x : T⦄, LevelTree.lev x ≤ n → F x = x
 
+/-- Pointwise fixing of a finite parameter list fixes its image list. -/
+private theorem list_map_eq_self_of_pointwise
+    (F : T → T) (p : List T)
+    (h : ∀ x ∈ p, F x = x) :
+    p.map F = p := by
+  induction p with
+  | nil => rfl
+  | cons x xs ih =>
+      have hx : F x = x := h x (by simp)
+      have hxs : ∀ y ∈ xs, F y = y := by
+        intro y hy
+        exact h y (by simp [hy])
+      simp [hx, ih hxs]
+
 /-- If a shape map fixes through level `n`, then the next source prefix still
 lies below the image. This is the formal version of the sentence used in the
 base case of the envelope invariant. -/
@@ -54,15 +68,8 @@ theorem nextPrefix_le_map_of_fixesThrough
     have hxlt := S.parameter_level_lt hs hx
     rw [halev] at hxlt
     omega
-  have hpmap : p.map F = p := by
-    induction p with
-    | nil => rfl
-    | cons x xs ih =>
-        have hx : F x = x := hpfix x (by simp)
-        have hxs : ∀ y ∈ xs, F y = y := by
-          intro y hy
-          exact hpfix y (by simp [hy])
-        simp [hx, ih hxs]
+  have hpmap : p.map F = p :=
+    list_map_eq_self_of_pointwise F p hpfix
   obtain ⟨d, hFd, hdb⟩ := F.weak_succ' hs
   have hFd' : S.succ a p c = some d := by
     simpa [hFa, hpmap] using hFd
@@ -80,8 +87,9 @@ theorem prefix_of_map_eq_of_fixesThrough
   intro a
   have haz : a ≤ z := LevelTree.ancestor_le z n hnz
   have halev : LevelTree.lev a = n := LevelTree.level_ancestor z n hnz
-  rw [← hfix (by simpa [halev])]
-  exact F.map_le_of_le haz
+  have hFa : F a = a := hfix (by simpa [halev])
+  have hle : F a ≤ F z := F.map_le_of_le haz
+  simpa [hFa] using hle
 
 /-- If `D` extends the target crossing map on `C`, then after pulling `C` back
 through a map fixing through `m`, `D` extends the source crossing map as well. -/
