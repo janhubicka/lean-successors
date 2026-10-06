@@ -176,6 +176,29 @@ theorem preimage_has_no_level_of_fixesThrough
   apply hno hz
   simpa [hGz] using hzlev
 
+
+/-- The complete noninteresting-stage pullback: if the later map fixes through
+`m`, the target closure has no node at `m`, the target parameters used above
+`m` lie on indexed levels, and the one-level factor extends the crossing map,
+then every pulled-back closure node lies in the factor's range. -/
+theorem preimage_subset_range_of_oneLevel
+    (H : SMTree S) (G D : ShapeMap S) (m : Nat)
+    (hfix : FixesThrough G m)
+    (hskip : D.SkipsOnly m) (hE : PullbackDefined S D)
+    (C : Set T) (I : Set Nat)
+    (hC : ParameterClosedOver S C I)
+    (hI : ∀ ⦃z : T⦄, G z ∈ C → ∀ ⦃j : Nat⦄,
+      m < j → j < LevelTree.lev z → H.levelMap G j ∈ I)
+    (hno : ∀ ⦃x : T⦄, x ∈ C → LevelTree.lev x ≠ m)
+    (hD : ∀ ⦃c : T⦄, c ∈ C → ∀ (hmc : m < LevelTree.lev c),
+      D (LevelTree.ancestor c m (Nat.le_of_lt hmc)) =
+        LevelTree.ancestor c (m + 1) (Nat.succ_le_iff.mpr hmc)) :
+    G ⁻¹' C ⊆ Set.range D := by
+  apply subset_range_of_oneLevel H D m hskip hE (G ⁻¹' C)
+  · exact preimage_parameterClosed_above H G m C I hC hI
+  · exact preimage_has_no_level_of_fixesThrough G m hfix hno
+  · exact pullback_crossing_of_extension G D m hfix C hD
+
 end Envelope
 end SMTree
 end SuccessorTree
