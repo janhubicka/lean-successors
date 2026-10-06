@@ -31,10 +31,10 @@ theorem exists_list_preimage
   induction p with
   | nil => exact ⟨[], rfl⟩
   | cons x xs ih =>
-      obtain ⟨y, hy⟩ := h (by simp)
+      obtain ⟨y, hy⟩ := h (x := x) (by simp)
       have htail : ∀ ⦃z : T⦄, z ∈ xs → z ∈ Set.range F := by
         intro z hz
-        exact h (by simp [hz])
+        exact h (x := z) (by simp [hz])
       obtain ⟨q, hq⟩ := ih htail
       refine ⟨y :: q, ?_⟩
       simp [hy, hq]
@@ -97,14 +97,13 @@ theorem mem_range_of_oneLevel
         exact hxne (hn.trans hnm.symm))
       by_cases hfirst : n = m + 1
       · have hmz : m < LevelTree.lev z := by
-          have hnz := LevelTree.level_le_of_le hxz
-          rw [← hn, hfirst] at hnz
+          have hnz : n ≤ LevelTree.lev z := by
+            simpa [hn] using (LevelTree.level_le_of_le hxz)
           omega
         have hxanc :
             x = LevelTree.ancestor z (m + 1) (Nat.succ_le_iff.mpr hmz) := by
           apply LevelTree.eq_ancestor_of_le hxz
           · exact hn.trans hfirst
-          · exact Nat.succ_le_iff.mpr hmz
         refine ⟨LevelTree.ancestor z m (Nat.le_of_lt hmz), ?_⟩
         rw [hcross hz hmz, ← hxanc]
       · have hm1n : m + 1 < n := by omega
@@ -129,12 +128,12 @@ theorem mem_range_of_oneLevel
           omega
         have harange : a ∈ Set.range F := by
           apply ih (LevelTree.lev a)
-          · rw [halev, hn]
+          · rw [halev]
             omega
-          · exact rfl
           · exact hz
           · exact hax.trans hxz
           · exact Nat.ne_of_gt hma
+          · exact rfl
         have hpZ : ∀ ⦃y : T⦄, y ∈ p → y ∈ Z := by
           intro y hy
           have hnz : n ≤ LevelTree.lev z := by
@@ -147,11 +146,9 @@ theorem mem_range_of_oneLevel
           have haAnc : a = LevelTree.ancestor z k hkz := by
             apply LevelTree.eq_ancestor_of_le (hax.trans hxz)
             · exact halev
-            · exact hkz
           have hxAnc : x = LevelTree.ancestor z (k + 1) hk1z := by
             apply LevelTree.eq_ancestor_of_le hxz
             · exact hn.trans hk.symm
-            · exact hk1z
           have htarget :
               S.succ (LevelTree.ancestor z k hkz) p c =
                 some (LevelTree.ancestor z (k + 1) hk1z) := by
@@ -167,12 +164,11 @@ theorem mem_range_of_oneLevel
           have hylevlt : LevelTree.lev y < LevelTree.lev a :=
             S.parameter_level_lt hstep hy
           apply ih (LevelTree.lev y)
-          · rw [hn]
-            exact hylevlt.trans (by rw [halev]; dsimp [k]; omega)
-          · exact rfl
+          · exact hylevlt.trans (by rw [halev]; dsimp [k]; omega)
           · exact hyZ
           · exact le_rfl
           · exact hno hyZ
+          · exact rfl
         exact successor_mem_range_of_pullback H F m hskip hE
           hstep harange hpRange hma
 
