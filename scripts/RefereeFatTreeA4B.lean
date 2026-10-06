@@ -45,11 +45,12 @@ example (H : SMTree S)
   exists_lastBlock_exactTrace_of_sourceLetter H y U hyU E m hym g hg
 
 example (H : SMTree S) : FixedStemPigeonhole H :=
-  fatTreeA4 H
+  fatTreeFixedStemPigeonhole H
 end
 
 #print axioms review_fixedStemPigeonhole_of_sourceLetter
 #print axioms review_rows_eq_of_no_sourceLetter
 #print axioms exists_lastBlock_exactTrace_of_sourceLetter
 #print axioms review_goodPair_at_prefix_of_sourceLetter
+#print axioms fatTreeFixedStemPigeonhole
 #print axioms fatTreeA4
