@@ -49,10 +49,11 @@ theorem shapePigeonhole_zero
     (O : Set (RamseyApprox H 1)) :
     ∃ A : MMap H,
       A ∈ (ramseyApproximationSystem H).levelNeighborhood 0 B ∧
-      ((ramseyApproximationSystem H).oneStepApproximations a A ⊆ O ∨
+      ((ramseyApproximationSystem H).oneStepApproximations (n := 0) a A ⊆ O ∨
         Disjoint
-          ((ramseyApproximationSystem H).oneStepApproximations a A) O) := by
+          ((ramseyApproximationSystem H).oneStepApproximations (n := 0) a A) O) := by
   classical
+  cases a
   let colour : RamseyApprox H 1 → Bool := fun b => decide (b ∈ O)
   obtain ⟨W, hWB, hhom⟩ :=
     H.shapeRamsey_one_relative 0 (shapeSubspaceZero H B) colour
@@ -65,6 +66,7 @@ theorem shapePigeonhole_zero
   · left
     intro b hb
     rcases hb with ⟨X, hXaW, hXb⟩
+    change ramseyApprox H 1 X = b at hXb
     obtain ⟨K, hXeq⟩ := mmap_eq_comp_of_ramseyReduction H hXaW.1
     let K0 : ShapeSubspace H 0 := shapeSubspaceZero H K
     let I0 : ShapeSubspace H 0 := ShapeSubspace.id H 0
@@ -76,7 +78,8 @@ theorem shapePigeonhole_zero
       rfl
     have hleft :
         ramseyApprox H 1 (MMap.comp H W.1 K0.1) = b := by
-      rw [← hXb, hXeq]
+      have heq := congrArg (ramseyApprox H 1) hXeq
+      simpa only [K0] using heq.symm
     have hbool : colour b = colour base := by
       rw [← hleft, ← hright]
       exact hconst
@@ -89,6 +92,7 @@ theorem shapePigeonhole_zero
     rw [Set.disjoint_left]
     intro b hb hbO
     rcases hb with ⟨X, hXaW, hXb⟩
+    change ramseyApprox H 1 X = b at hXb
     obtain ⟨K, hXeq⟩ := mmap_eq_comp_of_ramseyReduction H hXaW.1
     let K0 : ShapeSubspace H 0 := shapeSubspaceZero H K
     let I0 : ShapeSubspace H 0 := ShapeSubspace.id H 0
@@ -100,7 +104,8 @@ theorem shapePigeonhole_zero
       rfl
     have hleft :
         ramseyApprox H 1 (MMap.comp H W.1 K0.1) = b := by
-      rw [← hXb, hXeq]
+      have heq := congrArg (ramseyApprox H 1) hXeq
+      simpa only [K0] using heq.symm
     have hbool : colour b = colour base := by
       rw [← hleft, ← hright]
       exact hconst
@@ -116,8 +121,9 @@ theorem shapePigeonhole_zero
 arbitrarily to the other levels required by the front-fusion interface. -/
 noncomputable def shapeA4Colour
     (H : SMTree S) (n : Nat) (O : Set (RamseyApprox H (n + 1))) :
-    StepColouring H Bool :=
-  fun m b =>
+    StepColouring H Bool := by
+  classical
+  exact fun m b =>
     if h : m = n then
       decide ((h ▸ b) ∈ O)
     else
@@ -127,6 +133,7 @@ noncomputable def shapeA4Colour
     (H : SMTree S) (n : Nat) (O : Set (RamseyApprox H (n + 1)))
     (b : RamseyApprox H (n + 1)) :
     shapeA4Colour H n O n b = decide (b ∈ O) := by
+  classical
   simp [shapeA4Colour]
 
 /-- Todorčević A4 for the shape-preserving-map approximation space. -/
@@ -138,9 +145,9 @@ theorem shapePigeonhole
     (O : Set (RamseyApprox H (n + 1))) :
     ∃ A : MMap H,
       A ∈ (ramseyApproximationSystem H).levelNeighborhood d B ∧
-      ((ramseyApproximationSystem H).oneStepApproximations a A ⊆ O ∨
+      ((ramseyApproximationSystem H).oneStepApproximations (n := n) a A ⊆ O ∨
         Disjoint
-          ((ramseyApproximationSystem H).oneStepApproximations a A) O) := by
+          ((ramseyApproximationSystem H).oneStepApproximations (n := n) a A) O) := by
   classical
   cases n with
   | zero =>
@@ -161,7 +168,7 @@ theorem shapePigeonhole
               ⟨n + 1, a⟩
               ((ramseyApproximationSystem H).finiteApprox 0 B) :=
           hd.1
-        exact hfin
+        simpa [RamseyLeFin] using hfin
       let colour := shapeA4Colour H (n + 1) O
       obtain ⟨A, hAB, c, hc⟩ :=
         H.shapeLocalPigeonhole colour
@@ -176,8 +183,10 @@ theorem shapePigeonhole
           intro b hb hbO
           have h := hc b hb
           have hcolour : colour (n + 1) b = true := by
-            change decide (b ∈ O) = true
-            exact of_decide_eq_true rfl hbO
+            simpa only [colour, shapeA4Colour_at] using
+              (show decide (b ∈ O) = true by
+                simp only [decide_eq_true_eq]
+                exact hbO)
           rw [hcval] at h
           exact Bool.noConfusion (hcolour.symm.trans h)
       | true =>
@@ -185,8 +194,9 @@ theorem shapePigeonhole
           intro b hb
           have h := hc b hb
           rw [hcval] at h
-          change decide (b ∈ O) = true at h
-          exact of_decide_eq_true h
+          have h' : decide (b ∈ O) = true := by
+            simpa only [colour, shapeA4Colour_at] using h
+          exact (decide_eq_true_eq.mp h')
 
 end SMTree
 end SuccessorTree
