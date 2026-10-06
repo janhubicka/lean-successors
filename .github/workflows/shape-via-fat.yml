@@ -8,6 +8,9 @@ on:
       - 'SuccessorTree/FatTree/ShapeCorrespondence.lean'
       - 'SuccessorTree/FatTree/ShapeRealization.lean'
       - 'SuccessorTree/FatTree/ShapeEllentuckOne.lean'
+      - 'SuccessorTree/ShapeLocalPigeonhole.lean'
+      - 'SuccessorTree/ShapeFiniteProduct.lean'
+      - 'SuccessorTree/ShapeEllentuckRamsey.lean'
       - '.github/workflows/shape-via-fat.yml'
   workflow_dispatch:
 
@@ -39,4 +42,4 @@ jobs:
       - name: Download Mathlib cache
         run: lake exe cache get
       - name: Build correspondence
-        run: lake build SuccessorTree.FatTree.ShapeEllentuckOne
+        run: lake build SuccessorTree.ShapeEllentuckRamsey
