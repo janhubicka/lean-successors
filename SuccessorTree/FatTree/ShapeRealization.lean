@@ -242,6 +242,58 @@ theorem tailCoordinateRow_occurs
   have hdiff : n + k - n = k := by omega
   simpa [hdiff] using hy
 
+
+/-- Appending a row to a fixed finite stem is injective. -/
+theorem appendApprox_injective
+    {n : Nat} (a : (approximationSystem H).Approx n) :
+    Function.Injective (appendApprox H a) := by
+  intro g h heq
+  have htree :
+      FiniteFatTree.appendRow H a.1 g =
+        FiniteFatTree.appendRow H a.1 h :=
+    congrArg Subtype.val heq
+  have hr :=
+    FiniteFatTree.row_heq_of_eq H htree (Fin.last a.1.height)
+  have hr' :
+      HEq
+        ((FiniteFatTree.appendRow H a.1 g).row (Fin.last a.1.height))
+        ((FiniteFatTree.appendRow H a.1 h).row (Fin.last a.1.height)) := by
+    simpa using hr
+  have hg := FiniteFatTree.appendRow_row_last H a.1 g
+  have hh := FiniteFatTree.appendRow_row_last H a.1 h
+  exact eq_of_heq (hg.symm.trans (hr'.trans hh))
+
+/-- Every algebraic tail coordinate occurs somewhere as a genuine next
+fat-tree row. -/
+theorem tailCoordinateRow_oneBlockOccurs
+    (U : FatTree H) (n : Nat)
+    (r : AM H (U.cut n) 1) :
+    OneBlockOccurs H (U.initialSegment H n) U
+      (tailCoordinateRow H U n r) := by
+  let k := r.topLevel H - U.cut n
+  have hle : U.cut n ≤ r.topLevel H := by
+    exact H.levelMap_id_le (r.representative H).map (U.cut n)
+  have hr : r.topLevel H = U.cut n + k := by
+    dsimp [k]
+    omega
+  exact ⟨n + k + 1, tailCoordinateRow_occurs H U n k r hr⟩
+
+/-- The same statement after identifying the selected fat-tree cut with an
+external source level. -/
+theorem shapeAct_tail_oneBlockOccurs
+    (U : FatTree H) (n c : Nat)
+    (hc : U.cut n = c)
+    (r : AM H c 1) :
+    let W : ShapeSubspace H c :=
+      ⟨tailMap H U n, by
+        intro x hx
+        exact tailMap_fixesBelow H U n x (by simpa [hc] using hx)⟩
+    OneBlockOccurs H (U.initialSegment H n) U
+      (H.shapeAct c W r) := by
+  subst c
+  simpa [tailCoordinateRow, tailSubspace] using
+    tailCoordinateRow_oneBlockOccurs H U n r
+
 end FatTree
 end SMTree
 end SuccessorTree
