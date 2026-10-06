@@ -267,18 +267,21 @@ structure ShapeProductStep
           (ramseyApprox H m
             (MMap.comp H space.1 K.1))
 
-/-- Settle one source level by the ordinary finite-front Milliken fusion. -/
-noncomputable def buildShapeProductStep
+/-- Settle one source level by finite-front fusion from a supplied local
+pigeonhole principle. -/
+noncomputable def buildShapeProductStep_of_localPigeonhole
     [Fintype κ]
     (H : SMTree S)
     (default : κ)
     {n m : Nat} (hnm : n < m)
     (B : ShapeSubspace H n)
-    (nextColour : RamseyApprox H (m + 1) → κ) :
+    (nextColour : RamseyApprox H (m + 1) → κ)
+    (hpig :
+      LocalPigeonhole H
+        (H.singleLevelStepColour default m nextColour)) :
     ShapeProductStep H n m B nextColour := by
   let sc : StepColouring H κ :=
     H.singleLevelStepColour default m nextColour
-  let hpig : LocalPigeonhole H sc := H.shapeLocalPigeonhole sc
   let Amap : MMap H := H.frontFusion sc hpig n B.1
   have hAfix : Amap.FixesBelow H n :=
     H.frontFusion_fixesBelow sc hpig n B.1 B.2
@@ -313,6 +316,21 @@ noncomputable def buildShapeProductStep
         (⟨m, p⟩ : (ramseyApproximationSystem H).FiniteApprox) A.1 := by
     exact H.frontFusion_homogeneous sc hpig n B.1 ⟨m, p⟩ hd hdpos hnd
   exact (H.previousColour_eq_child default A.1 m nextColour p hhom hFpA).symm
+
+
+/-- Settle one source level using the direct local pigeonhole theorem. -/
+noncomputable def buildShapeProductStep
+    [Fintype κ]
+    (H : SMTree S)
+    (default : κ)
+    {n m : Nat} (hnm : n < m)
+    (B : ShapeSubspace H n)
+    (nextColour : RamseyApprox H (m + 1) → κ) :
+    ShapeProductStep H n m B nextColour :=
+  H.buildShapeProductStep_of_localPigeonhole
+    default hnm B nextColour
+    (H.shapeLocalPigeonhole
+      (H.singleLevelStepColour default m nextColour))
 
 end SMTree
 end SuccessorTree
