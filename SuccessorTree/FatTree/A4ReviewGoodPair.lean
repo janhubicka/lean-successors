@@ -73,10 +73,10 @@ theorem review_goodPair_finite_family_of_sourceLetter
     {g | ∀ j : C, H.composeAcross (trace j) g ∈ O}
   obtain ⟨A, a, hAU, hyA, hya, hP⟩ := oneBlockLarge_exact_persistent_closed H hyU hlarge
   let R := FiniteFatTree.ExactTrace H (A.initialSegment H a) y.height hya
-  letI : Fintype R := by
+  haveI : Fintype R := by
     dsimp [R]
     exact exactTraceFintype H (A.initialSegment H a) y.height hya
-  letI : Nonempty R :=
+  haveI : Nonempty R :=
     review_bridges_nonempty_of_sourceLetter H y A hyA Esource G a hya hP
   let bridge : R → AMExact H y.terminalCut (A.cut a) := reviewBridgeMap H y A hyA a hya
   let family : R × C → AM H c 1 := fun j => H.composeAcross (trace j.2) (bridge j.1).1
@@ -138,8 +138,8 @@ theorem review_goodPair_at_prefix_of_sourceLetter
   let c := FiniteFatTree.traceSourceCut H y n hn
   let C := FiniteFatTree.ExactTrace H y n hn
   by_cases hne : Nonempty C
-  · letI : Fintype C := Fintype.ofFinite C
-    letI : Nonempty C := hne
+  · haveI : Fintype C := Fintype.ofFinite C
+    haveI : Nonempty C := hne
     let trace : C → AMExact H c y.terminalCut := exactTraceToAMExact H y n hn
     obtain ⟨g, k, hg, hk, hupdate⟩ :=
       review_goodPair_finite_family_of_sourceLetter H y U hyU Esource trace O hlarge
