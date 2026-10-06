@@ -100,7 +100,7 @@ theorem appendRow_stemAt_of_oneLift
         unfold FiniteFatTree.oneLift FatTree.oneLift
         rw [hrow, hcut r.castSucc, hi0]
       rw [hs, liftTo_fullLevel_congr H U _ (Nat.le_succ r.1) hi0 hi1,
-        U.liftTo_succ H] <;> exact Set.Subset.refl _
+        U.liftTo_succ H]
     · have hre : r.1 = a := by omega
       have hi1 : (idx r.succ).1 = b := idx_last _ (by change ¬ r.1 + 1 ≤ a; omega)
       have heq : r = Fin.last x.height := Fin.ext hre
