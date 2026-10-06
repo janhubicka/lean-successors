@@ -10,10 +10,8 @@ transfer gives Todorčević A4 for the typed fat-tree approximation system.
 Metric closedness and the abstract Ellentuck theorem then give the
 topological Ramsey-space conclusion.
 
-The `*_review` names at the end are compatibility aliases for earlier
-development checkpoints.  The public endpoints are the `fatTree*` names;
-all of them are unconditional and carry no hidden A4, positivity, root-cut,
-or good-pair premise.
+The public `fatTree*` endpoints below are unconditional: they carry no
+hidden A4, positivity, root-cut, saturation, or good-pair premise.
 -/
 
 namespace SuccessorTree.SMTree.FatTree
@@ -21,12 +19,6 @@ namespace SuccessorTree.SMTree.FatTree
 universe u v
 variable {T : Type u} {Label : Type v} [PartialOrder T] [LevelTree T]
 variable {S : STree T Label} (H : SMTree S)
-
-/-- Geometric fixed-stem pigeonhole theorem for every finite stem and every
-colour class of geometric one-block extensions. -/
-theorem fatTreeFixedStemPigeonhole : FixedStemPigeonhole H := by
-  intro y U hyU O
-  exact review_fixedStemPigeonhole H y U hyU O
 
 /-- Todorčević A4 for the typed fat-tree approximation space. -/
 theorem fatTreeA4
@@ -49,22 +41,6 @@ basic-neighbourhood formulation. -/
 theorem fatTreeEllentuck :
     RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
       (S := approximationSystem H) :=
-  RamseySpace.abstractEllentuck_onBasicNeighborhoods
-    (fatTreeAbstractRamseySpace H) (isMetricallyClosed H)
-
-/-! Compatibility aliases retained for validation links from earlier
-checkpoints. -/
-
-theorem fixedStemPigeonhole_review : FixedStemPigeonhole H :=
-  fatTreeFixedStemPigeonhole H
-
-noncomputable def abstractRamseySpace_review :
-    RamseySpace.AbstractRamseySpace (approximationSystem H) :=
-  fatTreeAbstractRamseySpace H
-
-theorem ellentuck_review :
-    RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
-      (S := approximationSystem H) :=
-  fatTreeEllentuck H
+  ellentuck_of_fixedStemPigeonhole H (fatTreeFixedStemPigeonhole H)
 
 end SuccessorTree.SMTree.FatTree
