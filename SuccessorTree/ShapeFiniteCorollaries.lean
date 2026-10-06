@@ -379,5 +379,115 @@ theorem padApproxTo_representative_agrees
     (paddingComposite_fixesBelow H hk a ht) x hx
 
 
+
+/-- The chosen representative of a literal finite composition agrees with
+literal composition throughout its source domain. -/
+theorem finiteShapeComp_representative_agrees
+    (H : SMTree S) {n m k : Nat}
+    (f : AM H n m) (g : AM H n k)
+    (x : T) (hx : LevelTree.lev x < n + k) :
+    (finiteShapeComp H f g).representative H x =
+      f.representative H (g.representative H x) := by
+  unfold finiteShapeComp
+  exact MMap.toAM_representative_agrees H
+    (MMap.comp H (f.representative H) (g.representative H))
+    n k
+    (MMap.comp_fixesBelow H
+      (f.representative H) (g.representative H) n
+      (f.representative_fixesBelow H)
+      (g.representative_fixesBelow H))
+    x hx
+
+/-- An exact coordinate at the last source level makes the finite composite
+end at exactly the same target level as the outer witness. -/
+theorem boundedComp_terminal_eq
+    (H : SMTree S) {n m k N : Nat}
+    (hm : 0 < m) (hk : 0 < k)
+    (f : AM.AtMost H n m N)
+    (g : AM.At H n k (n + m - 1)) :
+    let gb : AM.Below H n k (n + m) :=
+      ⟨g.1, by rw [g.2]; omega⟩
+    (boundedComp H hm hk f gb).1.terminalLevel H =
+      f.1.terminalLevel H := by
+  dsimp
+  exact finiteShapeComp_terminalLevel_eq_left H hm hk f.1 g
+
+/-- Common padding commutes with right composition by an exact last-level
+coordinate. -/
+theorem padApproxTo_comp_exact
+    (H : SMTree S) {n m k N : Nat}
+    (hm : 0 < m) (hk : 0 < k)
+    (f : AM.AtMost H n m N)
+    (ht : 0 < f.1.terminalLevel H)
+    (g : AM.At H n k (n + m - 1)) :
+    let gb : AM.Below H n k (n + m) :=
+      ⟨g.1, by rw [g.2]; omega⟩
+    let fg : AM.AtMost H n k N :=
+      boundedComp H hm hk f gb
+    let htfg : 0 < fg.1.terminalLevel H := by
+      rw [boundedComp_terminal_eq H hm hk f g]
+      exact ht
+    exactComp H hm hk (padApproxTo H hm f ht) g =
+      padApproxTo H hk fg htfg := by
+  let gb : AM.Below H n k (n + m) :=
+    ⟨g.1, by rw [g.2]; omega⟩
+  let fg : AM.AtMost H n k N :=
+    boundedComp H hm hk f gb
+  have hterm :
+      fg.1.terminalLevel H = f.1.terminalLevel H :=
+    boundedComp_terminal_eq H hm hk f g
+  let htfg : 0 < fg.1.terminalLevel H := by
+    rw [hterm]
+    exact ht
+  apply Subtype.ext
+  let lhs : AM H n k :=
+    (exactComp H hm hk (padApproxTo H hm f ht) g).1
+  let rhs : AM H n k :=
+    (padApproxTo H hk fg htfg).1
+  change lhs.1 = rhs.1
+  calc
+    lhs.1 =
+        ramseyApprox H (n + k) (lhs.representative H) :=
+      (lhs.representative_top H).symm
+    _ = ramseyApprox H (n + k) (rhs.representative H) := by
+      apply AM.ramseyApprox_eq_of_apply H
+      intro x hx
+      have hglev :
+          LevelTree.lev (g.1.representative H x) < n + m := by
+        have hle := g.1.level_le_terminalLevel H hx
+        rw [g.2] at hle
+        omega
+      have hl :
+          lhs.representative H x =
+            (padApproxTo H hm f ht).1.representative H
+              (g.1.representative H x) := by
+        dsimp [lhs, exactComp]
+        exact finiteShapeComp_representative_agrees H
+          (padApproxTo H hm f ht).1 g.1 x hx
+      have hpadf :
+          (padApproxTo H hm f ht).1.representative H
+              (g.1.representative H x) =
+            paddingComposite H hm f ht
+              (g.1.representative H x) :=
+        padApproxTo_representative_agrees H hm f ht
+          (g.1.representative H x) hglev
+      have hfgrep :
+          fg.1.representative H x =
+            f.1.representative H (g.1.representative H x) := by
+        dsimp [fg, gb, boundedComp]
+        exact finiteShapeComp_representative_agrees H
+          f.1 g.1 x hx
+      have hr :
+          rhs.representative H x =
+            paddingComposite H hk fg htfg x := by
+        dsimp [rhs]
+        exact padApproxTo_representative_agrees H hk fg htfg x hx
+      rw [hl, hpadf, hr]
+      unfold paddingComposite
+      dsimp only
+      rw [hterm, hfgrep]
+    _ = rhs.1 := rhs.representative_top H
+
+
 end SMTree
 end SuccessorTree
