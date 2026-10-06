@@ -189,7 +189,7 @@ theorem canonicalExtension_associatedMap
     have hstage :=
       ShapeMap.fusion_stable_of_le
         (fun j => (partialMap H U (j + 1)).map) hs x hx
-    exact hstage.symm
+    exact hstage
   · intro ell hell
     have hbase :
         H.levelMap (associatedMap H U).map i =
@@ -631,7 +631,8 @@ theorem intervalMap_snoc (U : FatTree H) :
           U.rowExtension H (i + (steps + 1))
             (intervalMap H U (i + 1) steps (U.rowExtension H i x))
       rw [ih (i := i + 1)]
-      rfl
+      have hidx : i + 1 + steps = i + (steps + 1) := by omega
+      rw [hidx]
 
 /-- After a nonempty interval, the last active source level lands one level
 below the terminal cut. -/
@@ -662,6 +663,8 @@ theorem cut_add_le (U : FatTree H) (i steps : Nat) :
   | zero => simp
   | succ steps ih =>
       have hs := U.cut_lt_succ H (i + steps)
+      have hidx : i + (steps + 1) = i + steps + 1 := by omega
+      rw [hidx]
       omega
 
 /-- Number of tail rows that have become active by absolute source level j. -/
@@ -670,7 +673,7 @@ def tailStageCount (U : FatTree H) (n j : Nat) : Nat :=
 
 /-- The fusion schedule defining the paper's tail map F_U^n. -/
 noncomputable def tailStage (U : FatTree H) (n j : Nat) : MMap H :=
-  intervalMap H U n (tailStageCount U n j)
+  intervalMap H U n (tailStageCount H U n j)
 
 theorem tailStage_fusionStable (U : FatTree H) (n : Nat) :
     ShapeMap.FusionStable (fun j => (tailStage H U n j).map) := by
