@@ -21,6 +21,11 @@ variable {S : STree T Label}
 
 namespace MMap
 
+theorem fixesBelow_zero (H : SMTree S) (F : MMap H) :
+    F.FixesBelow H 0 := by
+  intro x hx
+  omega
+
 theorem levelMap_comp
     (H : SMTree S) (F G : MMap H) (n : Nat) :
     H.levelMap (MMap.comp H F G).map n =
@@ -232,7 +237,7 @@ theorem rowEndLevel_toAM
         LevelTree.lev ((F.toAM H n 1 hF).representative H x) := by
       simpa [hx] using
         H.levelMap_eq ((F.toAM H n 1 hF).representative H).map (a := x)
-    _ = LevelTree.lev (F x) := by rw [hpoint]
+    _ = LevelTree.lev (F x) := congrArg LevelTree.lev hpoint
     _ = H.levelMap F.map n := by
       simpa [hx] using (H.levelMap_eq F.map (a := x)).symm
 
@@ -240,9 +245,7 @@ theorem rowEndLevel_toAM
 noncomputable def shapeRow (K : MMap H) :
     (i : Nat) → AM H (shapeCut H K i) 1
   | 0 =>
-      K.toAM H 0 1 (by
-        intro x hx
-        omega)
+      K.toAM H 0 1 (MMap.fixesBelow_zero H K)
   | i + 1 =>
       let Q := shapeNextFactor H K i
       Q.toAM H (H.levelMap K.map i + 1) 1
@@ -258,9 +261,9 @@ noncomputable def ofShapeMap (K : MMap H) : FatTree H where
     cases i with
     | zero =>
         change
-          ((K.toAM H 0 1 _).rowEndLevel H) + 1 =
+          ((K.toAM H 0 1 (MMap.fixesBelow_zero H K)).rowEndLevel H) + 1 =
             H.levelMap K.map 0 + 1
-        rw [rowEndLevel_toAM H K 0]
+        rw [rowEndLevel_toAM H K 0 (MMap.fixesBelow_zero H K)]
     | succ i =>
         let Q := shapeNextFactor H K i
         change
@@ -303,15 +306,17 @@ theorem ofShapeMap_partialMap_canonical (K : MMap H) :
       · intro x hx
         change
           H.canonicalExtension
-              (((K.toAM H 0 1 _).representative H)) 0 x =
+              (((K.toAM H 0 1 (MMap.fixesBelow_zero H K)).representative H)) 0 x =
             K x
-        exact rowExtension_toAM_agrees H K 0 _ x hx
+        exact rowExtension_toAM_agrees H K 0 (MMap.fixesBelow_zero H K) x hx
       · intro ell hell
         change ell ∈
-          (H.canonicalExtension ((K.toAM H 0 1 _).representative H) 0).map.levelRange
+          (H.canonicalExtension
+            ((K.toAM H 0 1 (MMap.fixesBelow_zero H K)).representative H) 0).map.levelRange
         apply H.canonicalExtension_tail_mem_levelRange
-        rw [rowEndLevel_toAM H K 0]
-        exact hell
+        have hrow :=
+          rowEndLevel_toAM H K 0 (MMap.fixesBelow_zero H K)
+        simpa [AM.rowEndLevel] using hrow.trans_le hell
   | succ i ih =>
       rw [partialMap_succ, ih]
       let Q := shapeNextFactor H K i
@@ -360,8 +365,8 @@ theorem ofShapeMap_partialMap_canonical (K : MMap H) :
             H.levelMap (H.canonicalExtension K i).map j =
               c + t := by
           dsimp [j, c]
-          rw [H.canonicalExtension_level_tail K i (1 + t)]
-          omega
+          simpa [Nat.add_assoc] using
+            H.canonicalExtension_level_tail K i (1 + t)
         rw [hinner]
         change
           H.levelMap
@@ -370,7 +375,12 @@ theorem ofShapeMap_partialMap_canonical (K : MMap H) :
               (c + t) = ell
         rw [H.canonicalExtension_level_tail
           ((Q.toAM H c 1 hQfix).representative H) c t]
-        rw [rowEndLevel_toAM H Q c hQfix, hQlev]
+        have hrepQ :
+            H.levelMap ((Q.toAM H c 1 hQfix).representative H).map c =
+              H.levelMap Q.map c := by
+          simpa [AM.rowEndLevel] using
+            rowEndLevel_toAM H Q c hQfix
+        rw [hrepQ, hQlev]
         dsimp [t]
         omega
 
@@ -440,14 +450,20 @@ theorem intervalMap_level_tail (U : FatTree H) :
               (U.cut i + (steps + 1) + k) =
             U.cut (i + 1) + steps + k := by
         unfold rowExtension
-        have h :=
-          H.canonicalExtension_level_tail
-            ((U.row i).representative H) (U.cut i) (steps + 1 + k)
-        rw [h]
-        rw [← U.row_cut i]
-        omega
+        calc
+          H.levelMap
+              (H.canonicalExtension ((U.row i).representative H) (U.cut i)).map
+              (U.cut i + (steps + 1) + k) =
+              (U.row i).rowEndLevel H + (steps + 1 + k) := by
+            simpa [AM.rowEndLevel, Nat.add_assoc] using
+              H.canonicalExtension_level_tail
+                ((U.row i).representative H) (U.cut i) (steps + 1 + k)
+          _ = U.cut (i + 1) + steps + k := by
+            rw [← U.row_cut i]
+            omega
       rw [hrow]
-      simpa [Nat.add_assoc] using ih (i := i + 1) k
+      have hih := ih (i := i + 1) k
+      convert hih using 1 <;> omega
 
 /-- An interval product fixes everything below its initial cut. -/
 theorem intervalMap_fixesBelow (U : FatTree H) :
@@ -484,7 +500,7 @@ theorem intervalMap_mem_liftSteps_of_le
   | zero =>
       intro x z hx hz hxz
       have hzx : z = x := by
-        exact (LevelTree.same_level_of_le hxz (hz.trans hx.symm)).symm
+        exact (LevelTree.same_level_of_le hxz (hx.trans hz.symm)).symm
       subst z
       simp [intervalMap]
   | succ steps ih =>
@@ -530,6 +546,7 @@ theorem intervalMap_mem_liftSteps_of_le
           _ = (U.row i).rowEndLevel H + (steps + 1) := by
             unfold rowExtension
             rw [H.canonicalExtension_level_tail]
+            rfl
           _ = U.cut (i + 1) + steps := by
             rw [← U.row_cut i]
             omega
@@ -576,8 +593,10 @@ theorem intervalMap_covBy_tail
       exact intervalMap_level_tail H U i steps 1
     _ = H.levelMap (intervalMap H U i steps).map
           (LevelTree.lev y) + 1 := by
-      rw [hy, intervalMap_level_tail H U i steps 0]
-      omega
+      have h0 := intervalMap_level_tail H U i steps 0
+      rw [Nat.add_zero] at h0
+      rw [hy]
+      exact congrArg (fun q => q + 1) h0.symm
     _ = LevelTree.lev (intervalMap H U i steps y) + 1 := by
       rw [H.levelMap_eq]
 
