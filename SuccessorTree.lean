@@ -94,3 +94,5 @@ import SuccessorTree.FatTree.A4ReviewComplete
 import SuccessorTree.RamseySpace.Closed
 import SuccessorTree.RamseySpace.Pigeonhole
 import SuccessorTree.RamseySpace.Ellentuck
+import SuccessorTree.RamseySpace.EA
+import SuccessorTree.FatTree.CanonicalMap
