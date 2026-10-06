@@ -81,19 +81,19 @@ theorem review_exists_fan_of_pointwise {c : Nat}
     toFun := table
     eq_id_below := by
       intro x hx
-      simp only [table, dif_pos hx]
+      simp only [table, dite_eq_left hx]
     top_covBy := by
       intro x hx
       have hn : ¬ LevelTree.lev x.1 < c := by omega
       dsimp only [table]
-      simp only [dif_neg hn]
+      simp only [dite_eq_right hn]
       exact (Classical.choose_spec (hraw x.1 hx)).1
   }
   refine ⟨e, ?_⟩
   intro x hx
   have hn : ¬ LevelTree.lev x.1 < c := by omega
   change theta x.1 = F (table x).1
-  simp only [table, dif_neg hn]
+  simp only [table, dite_eq_right hn]
   exact (Classical.choose_spec (hraw x.1 hx)).2
 
 /-- Transfer one coordinate of a simultaneous line to a head which factors
