@@ -31,7 +31,7 @@ theorem levelLe_finite (N : Nat) : (levelLe (T := T) N).Finite := by
           levelLe (T := T) (N + 1) =
             levelLe (T := T) N ∪ {x : T | LevelTree.lev x = N + 1} := by
         ext x
-        simp only [levelLe, Set.mem_setOf_eq, Set.mem_union]
+        simp only [levelLe, Set.mem_ofPred_eq, Set.mem_union]
         omega
       rw [hEq]
       exact ih.union (LevelTree.level_finite (T := T) (N + 1))
@@ -45,6 +45,7 @@ theorem levelLe_meetClosed (N : Nat) :
 theorem levelLe_parameterClosed (N : Nat) (I : Set Nat) :
     ParameterClosedOver S (levelLe (T := T) N) I := by
   intro a ha i hi hia p c hs x hx
+  change LevelTree.lev a ≤ N at ha
   change LevelTree.lev x ≤ N
   have hxi := S.parameter_level_lt hs hx
   have hbase :=
