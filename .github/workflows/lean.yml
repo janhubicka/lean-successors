@@ -78,13 +78,13 @@ jobs:
           set -o pipefail
           lake env lean scripts/CheckFatTreeReplay.lean 2>&1 | tee proof-audit/fat-tree-replay-axioms.log
           python3 scripts/check-axiom-log.py proof-audit/fat-tree-replay-axioms.log 13
-      - name: Check coverage and conditional first-application endpoint
+      - name: Check coverage and conditional assembly interface
         if: always()
         run: |
           set -o pipefail
           lake env lean scripts/CheckFatTreeFirstApplication.lean 2>&1 | tee proof-audit/fat-tree-first-application.log
           python3 scripts/check-axiom-log.py proof-audit/fat-tree-first-application.log 9
-          echo 'The Ellentuck assembly still has the explicit FixedStemPigeonhole hypothesis.'
+          echo 'A4Assembly is deliberately conditional; A4ReviewComplete discharges FixedStemPigeonhole unconditionally.'
       - name: Check localized manuscript patches
         if: always()
         run: |
