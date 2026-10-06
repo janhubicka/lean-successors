@@ -1,5 +1,4 @@
 import SuccessorTree.FatTree.A4ReplaySemantics
-import SuccessorTree.FatTree.A4ReplayColour
 
 /-!
 # Actual-edge correctness of the review's common second block
