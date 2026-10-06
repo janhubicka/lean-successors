@@ -85,8 +85,15 @@ theorem shapeA4Colour_true_iff
     (b : (ramseyApproximationSystem H).Approx (n + 1)) :
     shapeA4Colour H n O n b = true ↔ b ∈ O := by
   classical
-  simp only [shapeA4Colour, if_eq_true_eq]
-  exact mem_taggedOneStepTarget_iff H n O b
+  let q : (ramseyApproximationSystem H).FiniteApprox := ⟨n + 1, b⟩
+  have hq :
+      q ∈ taggedOneStepTarget H n O ↔ b ∈ O := by
+    exact mem_taggedOneStepTarget_iff H n O b
+  by_cases hmem : q ∈ taggedOneStepTarget H n O
+  · have hb : b ∈ O := hq.mp hmem
+    simp [shapeA4Colour, q, hmem, hb]
+  · have hb : b ∉ O := fun hb => hmem (hq.mpr hb)
+    simp [shapeA4Colour, q, hmem, hb]
 
 /-- The A4 conclusion at the empty approximation. -/
 theorem shapePigeonhole_zero
@@ -134,9 +141,12 @@ theorem shapePigeonhole_zero
     have hbaseColour : colour base = true := by
       simp [colour, hbase]
     have hbColour : colour b = true := hbool.trans hbaseColour
-    by_contra hnot
-    have : colour b = false := by simp [colour, hnot]
-    exact Bool.noConfusion (hbColour.symm.trans this)
+    by_cases hbO : b ∈ O
+    · exact hbO
+    · have hbFalse : colour b = false := by
+        dsimp [colour]
+        rw [if_neg hbO]
+      exact False.elim (Bool.noConfusion (hbColour.symm.trans hbFalse))
   · right
     rw [Set.disjoint_left]
     intro b hb hbO
@@ -159,9 +169,14 @@ theorem shapePigeonhole_zero
     have hbool : colour b = colour base := by
       rw [← hleft, ← hright]
       exact hconst
-    have hbColour : colour b = true := by simp [colour, hbO]
-    have hbaseColour : colour base = false := by simp [colour, hbase]
-    exact Bool.noConfusion (hbColour.symm.trans (hbool.trans hbaseColour))
+    have hbColour : colour b = true := by
+      dsimp [colour]
+      rw [if_pos hbO]
+    have hbaseColour : colour base = false := by
+      dsimp [colour]
+      rw [if_neg hbase]
+    exact False.elim
+      (Bool.noConfusion (hbColour.symm.trans (hbool.trans hbaseColour)))
 
 /-- Todorčević A4 for the shape-preserving-map approximation space. -/
 theorem shapePigeonhole
