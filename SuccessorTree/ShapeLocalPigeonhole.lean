@@ -123,15 +123,19 @@ theorem prefixCanonical_eq_of_levelNeighborhood
     _ = CB := huniq.symm
     _ = H.prefixCanonical hdB := rfl
 
-/-- The global one-dimensional Ramsey theorem implies the arbitrary-prefix
-local pigeonhole principle required by the ordinary Milliken front fusion. -/
-theorem shapeLocalPigeonhole
+/-- Any one-dimensional Ramsey principle for the shape action gives the
+arbitrary-prefix local pigeonhole principle required by the ordinary
+Milliken front fusion. -/
+theorem shapeLocalPigeonhole_of_oneDimensional
     [Fintype κ]
     (H : SMTree S)
-    (colour : StepColouring H κ) :
+    (colour : StepColouring H κ)
+    (oneDim :
+      ∀ (m : Nat) (c : AM H m 1 → κ),
+        ∃ W : ShapeSubspace H m,
+          (H.shapeSubspaceAction m).Homogeneous c W) :
     LocalPigeonhole H colour := by
   classical
-  letI : DecidableEq κ := Classical.decEq κ
   intro p B D hDpos hdepth
   rcases p with ⟨m, a⟩
   cases m with
@@ -151,7 +155,7 @@ theorem shapeLocalPigeonhole
               (MMap.comp H B
                 (MMap.comp H (q.representative H) C)))
       obtain ⟨W, hW⟩ :=
-        H.shapeOneDimensionalRamsey (d + 1) localColour
+        oneDim (d + 1) localColour
       let A : MMap H := MMap.comp H B W.1
       have hAB :
           A ∈ (ramseyApproximationSystem H).levelNeighborhood (d + 1) B := by
@@ -237,6 +241,19 @@ theorem shapeLocalPigeonhole
         _ = localColour (H.shapeAct (d + 1) W q0) :=
           hW qAM q0
         _ = c0 := rfl
+
+
+/-- The direct one-dimensional theorem supplies the local pigeonhole
+principle used by the direct finite-dimensional proof. -/
+theorem shapeLocalPigeonhole
+    [Fintype κ]
+    (H : SMTree S)
+    (colour : StepColouring H κ) :
+    LocalPigeonhole H colour := by
+  classical
+  letI : DecidableEq κ := Classical.decEq κ
+  exact H.shapeLocalPigeonhole_of_oneDimensional colour
+    (fun m c => H.shapeOneDimensionalRamsey m c)
 
 end SMTree
 end SuccessorTree

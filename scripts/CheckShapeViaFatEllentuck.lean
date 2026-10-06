@@ -1,0 +1,5 @@
+import SuccessorTree.ShapeEllentuckRamsey
+
+#print axioms SuccessorTree.SMTree.FatTree.shapeOneDimensionalRamsey_viaFatEllentuck
+#print axioms SuccessorTree.SMTree.FatTree.shapeLocalPigeonhole_viaFatEllentuck
+#print axioms SuccessorTree.SMTree.shapePreservingRamsey_viaFatEllentuck

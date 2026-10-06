@@ -166,6 +166,29 @@ theorem exists_frozen_rightFactor
   intro x
   exact hR x
 
+/-- Postcomposition respects equality of finite approximations. -/
+theorem ramseyApprox_comp_congr
+    (H : SMTree S) {m : Nat} (F : MMap H) {G K : MMap H}
+    (h : ramseyApprox H m G = ramseyApprox H m K) :
+    ramseyApprox H m (MMap.comp H F G) =
+      ramseyApprox H m (MMap.comp H F K) := by
+  cases m with
+  | zero => rfl
+  | succ m =>
+      apply Subtype.ext
+      funext x
+      exact congrArg F (H.ramseyApprox_apply_eq h x.1 (by omega))
+
+/-- Acting on the finite restriction of a total map is literal composition
+on that finite source domain, independent of the chosen representative. -/
+theorem shapeActK_toAM_val
+    (H : SMTree S) (n k : Nat)
+    (W K : ShapeSubspace H n) :
+    (H.shapeActK n k W (K.1.toAM H n k K.2)).1 =
+      ramseyApprox H (n + k) (MMap.comp H W.1 K.1) := by
+  exact H.ramseyApprox_comp_congr W.1
+    (AM.representative_top H (K.1.toAM H n k K.2))
+
 /-- A step colouring concentrated on one absolute approximation level. -/
 def singleLevelStepColour
     (H : SMTree S) {κ : Type w}
@@ -267,18 +290,21 @@ structure ShapeProductStep
           (ramseyApprox H m
             (MMap.comp H space.1 K.1))
 
-/-- Settle one source level by the ordinary finite-front Milliken fusion. -/
-noncomputable def buildShapeProductStep
+/-- Settle one source level by finite-front fusion from a supplied local
+pigeonhole principle. -/
+noncomputable def buildShapeProductStep_of_localPigeonhole
     [Fintype κ]
     (H : SMTree S)
     (default : κ)
     {n m : Nat} (hnm : n < m)
     (B : ShapeSubspace H n)
-    (nextColour : RamseyApprox H (m + 1) → κ) :
+    (nextColour : RamseyApprox H (m + 1) → κ)
+    (hpig :
+      LocalPigeonhole H
+        (H.singleLevelStepColour default m nextColour)) :
     ShapeProductStep H n m B nextColour := by
   let sc : StepColouring H κ :=
     H.singleLevelStepColour default m nextColour
-  let hpig : LocalPigeonhole H sc := H.shapeLocalPigeonhole sc
   let Amap : MMap H := H.frontFusion sc hpig n B.1
   have hAfix : Amap.FixesBelow H n :=
     H.frontFusion_fixesBelow sc hpig n B.1 B.2
@@ -313,6 +339,21 @@ noncomputable def buildShapeProductStep
         (⟨m, p⟩ : (ramseyApproximationSystem H).FiniteApprox) A.1 := by
     exact H.frontFusion_homogeneous sc hpig n B.1 ⟨m, p⟩ hd hdpos hnd
   exact (H.previousColour_eq_child default A.1 m nextColour p hhom hFpA).symm
+
+
+/-- Settle one source level using the direct local pigeonhole theorem. -/
+noncomputable def buildShapeProductStep
+    [Fintype κ]
+    (H : SMTree S)
+    (default : κ)
+    {n m : Nat} (hnm : n < m)
+    (B : ShapeSubspace H n)
+    (nextColour : RamseyApprox H (m + 1) → κ) :
+    ShapeProductStep H n m B nextColour :=
+  H.buildShapeProductStep_of_localPigeonhole
+    default hnm B nextColour
+    (H.shapeLocalPigeonhole
+      (H.singleLevelStepColour default m nextColour))
 
 end SMTree
 end SuccessorTree

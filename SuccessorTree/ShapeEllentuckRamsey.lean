@@ -1,16 +1,13 @@
+import SuccessorTree.FatTree.ShapeEllentuckOne
 import SuccessorTree.ShapeFiniteProduct
 
 /-!
-# The finite-dimensional Ramsey theorem for shape-preserving functions
+# Finite-dimensional shape Ramsey theorem from fat-tree Ellentuck
 
-This is the paper's theorem for every frozen prefix n and finite width k.
-The one-moving-level case comes from the two large-set fusions. For larger
-widths the ordinary finite-front fusion makes the colour depend only on the
-shorter prefix; induction then homogenises that prefix.
-
-No Ellentuck amalgamation hypothesis, fat-tree projection, or unproved
-pigeonhole hypothesis is used. The intermediate theorem is relative to an
-arbitrary prescribed subspace. Width zero is included.
+This is an alternative proof of the finite-dimensional theorem.  Its Ramsey
+input is the topological Ramsey theorem for fat trees.  The remaining
+finite-front fusion and product induction are shared structural machinery.
+The direct Hales--Jewett/large-set one-dimensional theorem is not used.
 -/
 
 namespace SuccessorTree
@@ -22,8 +19,8 @@ variable {T : Type u} {Label : Type v}
 variable [PartialOrder T] [LevelTree T]
 variable {S : STree T Label}
 
-/-- One-moving-level homogeneity inside a prescribed subspace. -/
-theorem shapeRamsey_one_relative
+/-- Relative one-moving-level homogeneity from fat-tree Ellentuck. -/
+theorem shapeRamsey_one_relative_viaFatEllentuck
     {κ : Type w} [Fintype κ]
     (H : SMTree S) (n : Nat)
     (B : ShapeSubspace H n)
@@ -35,7 +32,8 @@ theorem shapeRamsey_one_relative
           colour (ramseyApprox H (n + 1) (MMap.comp H W.1 L.1)) := by
   classical
   let c : AM H n 1 → κ := fun a => colour (H.shapeAct n B a).1
-  obtain ⟨U, hU⟩ := H.shapeOneDimensionalRamsey n c
+  obtain ⟨U, hU⟩ :=
+    FatTree.shapeOneDimensionalRamsey_viaFatEllentuck H n c
   let W : ShapeSubspace H n := ShapeSubspace.comp H B U
   have hval (K : ShapeSubspace H n) :
       (H.shapeAct n B
@@ -58,9 +56,24 @@ theorem shapeRamsey_one_relative
     rw [hval K, hval L] at h
     exact h
 
-/-- Relative finite-dimensional homogeneity in absolute approximation
-coordinates. The right factors preserve exactly the requested frozen prefix. -/
-theorem shapeRamsey_approximations
+/-- One backward product step whose local pigeonhole input comes from
+fat-tree Ellentuck. -/
+noncomputable def buildShapeProductStep_viaFatEllentuck
+    [Fintype κ]
+    (H : SMTree S)
+    (default : κ)
+    {n m : Nat} (hnm : n < m)
+    (B : ShapeSubspace H n)
+    (nextColour : RamseyApprox H (m + 1) → κ) :
+    ShapeProductStep H n m B nextColour :=
+  H.buildShapeProductStep_of_localPigeonhole
+    default hnm B nextColour
+    (FatTree.shapeLocalPigeonhole_viaFatEllentuck H
+      (H.singleLevelStepColour default m nextColour))
+
+/-- Relative finite-dimensional homogeneity, with all pigeonhole input supplied
+by fat-tree Ellentuck. -/
+theorem shapeRamsey_approximations_viaFatEllentuck
     {κ : Type w} [Fintype κ]
     (H : SMTree S) (n : Nat) :
     ∀ (k : Nat) (B : ShapeSubspace H n)
@@ -87,13 +100,15 @@ theorem shapeRamsey_approximations
       intro B colour
       cases k with
       | zero =>
-          exact H.shapeRamsey_one_relative n B colour
+          exact H.shapeRamsey_one_relative_viaFatEllentuck n B colour
       | succ k =>
           let m : Nat := n + (k + 1)
-          have hnm : n < m := by dsimp [m]; omega
+          have hnm : n < m := by
+            dsimp [m]
+            omega
           let default : κ := colour (ramseyApprox H (m + 1) (MMap.id H))
           let P : ShapeProductStep H n m B colour :=
-            H.buildShapeProductStep default hnm B colour
+            H.buildShapeProductStep_viaFatEllentuck default hnm B colour
           obtain ⟨W, hWP, hW⟩ := ih P.space P.colour
           obtain ⟨R, hRfix, hR⟩ :=
             H.exists_frozen_rightFactor W.2 P.space.2 hWP
@@ -113,9 +128,9 @@ theorem shapeRamsey_approximations
           intro K L
           exact (hchild K).trans ((hW K L).trans (hchild L).symm)
 
-/-- The paper's finite-dimensional Ramsey theorem: for every finite colouring
-of AM^n_k, some F in M^n makes all Fg, g in AM^n_k, the same colour. -/
-theorem shapePreservingRamsey
+/-- Alternative proof of the paper's finite-dimensional shape-preserving
+Ramsey theorem, derived from fat-tree Ellentuck. -/
+theorem shapePreservingRamsey_viaFatEllentuck
     {κ : Type w} [Fintype κ]
     (H : SMTree S) (n k : Nat)
     (colour : AM H n k → κ) :
@@ -136,7 +151,8 @@ theorem shapePreservingRamsey
     rw [dif_pos a.2]
     exact congrArg colour (Subtype.ext rfl)
   obtain ⟨W, _, hW⟩ :=
-    H.shapeRamsey_approximations n k (ShapeSubspace.id H n) extended
+    H.shapeRamsey_approximations_viaFatEllentuck
+      n k (ShapeSubspace.id H n) extended
   refine ⟨W, ?_⟩
   intro a b
   let K : ShapeSubspace H n :=
