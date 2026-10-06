@@ -20,17 +20,6 @@ universe u v
 variable {T : Type u} {Label : Type v} [PartialOrder T] [LevelTree T]
 variable {S : STree T Label} (H : SMTree S)
 
-/-- The local finite-prefix statement in `lem:trace-good-pair`.
-Unlike A4, it asks only for two compatible blocks. -/
-def ReviewGoodPairPrinciple : Prop :=
-  ∀ (c n : Nat) (y : FiniteFatTree H) (hn : n ≤ y.height)
-    (hsrc : FiniteFatTree.traceSourceCut H y n hn = c)
-    (O : Set (AM H c 1)) (U : FatTree H),
-    ExtendsStem H y U →
-    OneBlockLarge H y U (FixedTraceGoodRows H c n y hn hsrc O) →
-    ∃ h k, FixedTraceGoodPair H c n y hn hsrc O h k ∧
-      OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k
-
 /-- Package the fixed-source large-set invariant without exposing its proof
 fields to rewrites of a finite prefix. -/
 def ReviewTraceLarge (c n : Nat) (O : Set (AM H c 1))
@@ -90,23 +79,6 @@ theorem review_trace_persistence_core
   refine ⟨h, V, ⟨hn, hsrc, hh⟩, hVU, hyhV, ?_⟩
   exact ⟨by rw [FiniteFatTree.appendRow_height]; omega,
     traceSource_eq_after_append H c n y hn hsrc h, hnext⟩
-
-/-- The local good-pair principle implies persistence for the entire updated
-trace family. -/
-theorem review_trace_persistence
-    (hp : ReviewGoodPairPrinciple H)
-    (c n : Nat) (O : Set (AM H c 1))
-    (y : FiniteFatTree H) (U : FatTree H)
-    (hyU : ExtendsStem H y U) (hlarge : ReviewTraceLarge H c n O y U) :
-    ∃ (h : AM H y.terminalCut 1) (V : FatTree H),
-      ReviewTraceGood H c n O y h ∧ Reduces H V U ∧
-      ExtendsStem H (FiniteFatTree.appendRow H y h) V ∧
-      ReviewTraceLarge H c n O (FiniteFatTree.appendRow H y h) V := by
-  rcases hlarge with ⟨hn, hsrc, hrows⟩
-  apply review_trace_persistence_core H c n O y U hn hsrc hyU hrows
-  intro A hAU hyA
-  exact hp c n y hn hsrc O A hyA
-    (oneBlockLarge_mono H hrows hAU hyA)
 
 /-- Generic fixed-source fusion.  All combinatorics are isolated in
 `hpersist`; this theorem only performs the exact-depth fusion and transports
@@ -196,19 +168,6 @@ theorem review_all_trace_fusion_of_persistence
     congrArg (fun d => V.initialSegment H d) htarget
   exact (congrArg (ReviewStepGood H y.terminalCut y.height O) hdepth).mp hlimit
 
-/-- Construct the fixed-source fusion from the abstract good-pair principle. -/
-theorem review_all_trace_fusion
-    (hp : ReviewGoodPairPrinciple H)
-    (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
-    (O : Set (AM H y.terminalCut 1)) (hlarge : OneBlockLarge H y U O) :
-    ∃ V : FatTree H, Reduces H V U ∧ ExtendsStem H y V ∧
-      ∀ m : Nat, y.height ≤ m →
-        ReviewStepGood H y.terminalCut y.height O
-          (V.initialSegment H (m + 1)) := by
-  apply review_all_trace_fusion_of_persistence H y U hyU O hlarge
-  intro z A _ hzA hzlarge
-  exact review_trace_persistence H hp y.terminalCut y.height O z A hzA hzlarge
-
 /-- Transport the good-row statement across equality of finite prefixes,
 using heterogeneous equality only for the indexed row itself. -/
 theorem review_goodRows_transport
@@ -256,36 +215,5 @@ theorem review_good_row_of_good_prefix
     exact hr0.symm.trans (hrow_congr hzheight)
   exact review_goodRows_transport H y.terminalCut y.height O hz.symm hr
     hn hym hs (initialSegment_traceSource_of_extendsStem H y U hyU m hym) hgood
-
-/-- The global large-set theorem in the review: every large O has a
-homogeneous stem-preserving reduction. Only the local good-pair theorem
-remains as a hypothesis, and the original source cut is positive. -/
-theorem review_large_set_homogeneous
-    (hp : ReviewGoodPairPrinciple H)
-    (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
-    (hpos : 0 < y.terminalCut)
-    (O : Set (AM H y.terminalCut 1)) (hlarge : OneBlockLarge H y U O) :
-    ∃ V : FatTree H, Reduces H V U ∧ ExtendsStem H y V ∧
-      ∀ g, OneBlockOccurs H y V g → g ∈ O := by
-  obtain ⟨V, hVU, hyV, hgood⟩ := review_all_trace_fusion H hp y U hyU O hlarge
-  refine ⟨V, hVU, hyV, ?_⟩
-  exact oneBlock_mem_of_all_fixedTraceGoodRows H y V hyV hpos O
-    (fun m hm => review_good_row_of_good_prefix H y V hyV O m hm (hgood m hm))
-
-/-- Positive-source-cut A4 from the review's local two-block lemma.
-The alternative is immediate avoidance when O is not large. -/
-theorem review_fixedStemPigeonhole_positive
-    (hp : ReviewGoodPairPrinciple H)
-    (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
-    (hpos : 0 < y.terminalCut) (O : Set (AM H y.terminalCut 1)) :
-    ∃ V : FatTree H, Reduces H V U ∧ ExtendsStem H y V ∧
-      ((∀ g, OneBlockOccurs H y V g → g ∈ O) ∨
-       (∀ g, OneBlockOccurs H y V g → g ∉ O)) := by
-  classical
-  by_cases hlarge : OneBlockLarge H y U O
-  · obtain ⟨V, hVU, hyV, hgood⟩ := review_large_set_homogeneous H hp y U hyU hpos O hlarge
-    exact ⟨V, hVU, hyV, Or.inl hgood⟩
-  · obtain ⟨V, hVU, hyV, havoid⟩ := exists_avoiding_refinement_of_not_large H hlarge
-    exact ⟨V, hVU, hyV, Or.inr havoid⟩
 
 end SuccessorTree.SMTree.FatTree
