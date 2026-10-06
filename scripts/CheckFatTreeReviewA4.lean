@@ -104,9 +104,9 @@ example {c : Nat} {C : Type w1} [Fintype C] [Nonempty C]
     (H : SMTree S) (U : SuccessorTree.SMTree.FatTree H) (a : Nat)
     (trace : C → AM H c 1)
     (hend : ∀ j : C, (trace j).rowEndLevel H = U.cut a)
-    (hpos : 0 < U.cut a) (chi : AM H c 1 → κ) :
+    (E : OneLevelLetter H (U.cut a)) (chi : AM H c 1 → κ) :
     Nonempty (ReviewFanLine H U a trace hend chi) :=
-  exists_reviewFanLine_positive H U a trace hend hpos chi
+  exists_reviewFanLine_of_sourceLetter H U a trace hend E chi
 
 example (H : SMTree S) : FixedStemPigeonhole H :=
   fixedStemPigeonhole_review H
