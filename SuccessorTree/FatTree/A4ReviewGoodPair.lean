@@ -182,40 +182,6 @@ theorem review_goodPair_at_prefix_of_sourceLetter
     · intro theta q hraw
       exact False.elim (hne ⟨q⟩)
 
-/-- Positive-cut compatibility wrapper for the finite-family lemma. -/
-theorem review_goodPair_finite_family_positive
-    {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
-    (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
-    (hpos : 0 < y.terminalCut)
-    (trace : C → AMExact H c y.terminalCut) (O : Set (AM H c 1))
-    (hlarge : OneBlockLarge H y U
-      {g | ∀ j : C, H.composeAcross (trace j) g ∈ O}) :
-    ∃ (g : AM H y.terminalCut 1)
-      (k : AM H (FiniteFatTree.appendRow H y g).terminalCut 1),
-      (∀ j : C, H.composeAcross (trace j) g ∈ O) ∧
-      OneBlockOccurs H (FiniteFatTree.appendRow H y g) U k ∧
-      ∀ (j : C) (e : RawSuccessorFan H (trace j).1)
-        (theta : AMExact H c (FiniteFatTree.appendRow H y g).terminalCut),
-        (∀ (x : InitialNode T c), LevelTree.lev x.1 = c →
-          theta.1.representative H x.1 =
-            H.canonicalExtension (g.representative H) y.terminalCut (e.toFun x).1) →
-        H.composeAcross theta k ∈ O :=
-  review_goodPair_finite_family_of_sourceLetter H y U hyU
-    (duplicateHistoryLetter H 0 y.terminalCut hpos) trace O hlarge
-
-/-- Positive-cut compatibility wrapper for the all-exact-traces instance. -/
-theorem review_goodPair_at_prefix_positive
-    (n : Nat) (y : FiniteFatTree H) (hn : n ≤ y.height)
-    (O : Set (AM H (FiniteFatTree.traceSourceCut H y n hn) 1))
-    (U : FatTree H) (hyU : ExtendsStem H y U) (hpos : 0 < y.terminalCut)
-    (hlarge : OneBlockLarge H y U
-      (FixedTraceGoodRows H (FiniteFatTree.traceSourceCut H y n hn) n y hn rfl O)) :
-    ∃ h k,
-      FixedTraceGoodPair H (FiniteFatTree.traceSourceCut H y n hn) n y hn rfl O h k ∧
-      OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k :=
-  review_goodPair_at_prefix_of_sourceLetter H n y hn O U hyU
-    (duplicateHistoryLetter H 0 y.terminalCut hpos) hlarge
-
 /-- Source-facing version of the local review lemma from an explicit source
 letter. This includes the moving-root case. -/
 theorem review_goodPair_of_sourceLetter
@@ -228,17 +194,5 @@ theorem review_goodPair_of_sourceLetter
       OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k := by
   cases hsrc
   exact review_goodPair_at_prefix_of_sourceLetter H n y hn O U hyU Esource hlarge
-
-/-- Source-facing positive-current-cut version of the local review lemma. -/
-theorem review_goodPair_positive
-    (c n : Nat) (y : FiniteFatTree H) (hn : n ≤ y.height)
-    (hsrc : FiniteFatTree.traceSourceCut H y n hn = c)
-    (O : Set (AM H c 1)) (U : FatTree H)
-    (hyU : ExtendsStem H y U) (hpos : 0 < y.terminalCut)
-    (hlarge : OneBlockLarge H y U (FixedTraceGoodRows H c n y hn hsrc O)) :
-    ∃ h k, FixedTraceGoodPair H c n y hn hsrc O h k ∧
-      OneBlockOccurs H (FiniteFatTree.appendRow H y h) U k :=
-  review_goodPair_of_sourceLetter H c n y hn hsrc O U hyU
-    (duplicateHistoryLetter H 0 y.terminalCut hpos) hlarge
 
 end SuccessorTree.SMTree.FatTree
