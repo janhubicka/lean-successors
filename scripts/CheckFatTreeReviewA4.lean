@@ -23,6 +23,7 @@ open SuccessorTree.SMTree.FatTree
 #check fixedStemPigeonhole_review
 #check abstractRamseySpace_review
 #check ellentuck_review
+#check fatTreeFixedStemPigeonhole
 #check fatTreeA4
 #check fatTreeAbstractRamseySpace
 #check fatTreeEllentuck
@@ -99,6 +100,7 @@ open SuccessorTree.SMTree.FatTree
 #print axioms review_fixedStemPigeonhole
 #print axioms fixedStemPigeonhole_review
 #print axioms ellentuck_review
+#print axioms fatTreeFixedStemPigeonhole
 #print axioms fatTreeA4
 #print axioms fatTreeAbstractRamseySpace
 #print axioms fatTreeEllentuck
@@ -132,7 +134,17 @@ example (H : SMTree S) : FixedStemPigeonhole H :=
   fixedStemPigeonhole_review H
 
 example (H : SMTree S) : FixedStemPigeonhole H :=
-  fatTreeA4 H
+  fatTreeFixedStemPigeonhole H
+
+example (H : SMTree S)
+    {n : Nat} (a : (approximationSystem H).Approx n)
+    (B : SuccessorTree.SMTree.FatTree H) {d : Nat}
+    (hd : (finitization H).HasDepth a B d)
+    (O : Set ((approximationSystem H).Approx (n + 1))) :
+    ∃ V, V ∈ (approximationSystem H).levelNeighborhood d B ∧
+      ((approximationSystem H).oneStepApproximations a V ⊆ O ∨
+        Disjoint ((approximationSystem H).oneStepApproximations a V) O) :=
+  fatTreeA4 H a B hd O
 
 noncomputable example (H : SMTree S) :
     RamseySpace.AbstractRamseySpace (approximationSystem H) :=
