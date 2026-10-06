@@ -328,6 +328,8 @@ theorem shapeAct_tail_oneBlockOccurs
     OneBlockOccurs H (U.initialSegment H n) U
       (FatTree.castRow H hc.symm (H.shapeAct c W r)) := by
   subst c
+  have hhc : hc = rfl := Subsingleton.elim _ _
+  cases hhc
   simpa [tailCoordinateRow, tailSubspace] using
     tailCoordinateRow_oneBlockOccurs H U n r
 
