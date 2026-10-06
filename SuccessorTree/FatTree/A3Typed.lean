@@ -1,13 +1,12 @@
 import SuccessorTree.FatTree.RamseyFinitization
 import SuccessorTree.FatTree.Amalgamation
-import RamseySpace.Axioms
 
 /-!
 # Typed A3 interface for the fat-tree Ramsey space
 
-This file translates the concrete stem/depth-cone amalgamation lemmas into
-the typed `RamseySpace.ApproximationSystem` interface.  No A4 or topological
-Ramsey theorem is used.
+Translate the concrete amalgamation lemmas into the approximation-system
+interface. The published A3(2) follows directly from the same splice used
+in the manuscript; the basic-member version is a consequence.
 -/
 
 namespace SuccessorTree
@@ -23,14 +22,12 @@ namespace FatTree
 
 variable (H : SMTree S)
 
-private noncomputable def S0 := approximationSystem H
-
 /-- Abstract basic-neighborhood membership is exactly the manuscript's
 concrete fat-tree neighborhood predicate. -/
 theorem mem_neighborhood_iff_inNeighborhood
-    {n : Nat} (a : (S0 H).Approx n)
+    {n : Nat} (a : (approximationSystem H).Approx n)
     (U W : FatTree H) :
-    W ∈ (S0 H).neighborhood a U ↔
+    W ∈ (approximationSystem H).neighborhood a U ↔
       InNeighborhood H a.1 U W := by
   constructor
   · intro h
@@ -48,70 +45,59 @@ theorem mem_neighborhood_iff_inNeighborhood
 
 /-- Todorčević A3(1) in the typed approximation-system interface. -/
 theorem typed_amalgamation_nonempty
-    {n : Nat} (a : (S0 H).Approx n)
+    {n : Nat} (a : (approximationSystem H).Approx n)
     (B : FatTree H) {d : Nat}
     (hd : (finitization H).HasDepth a B d)
     ⦃A : FatTree H⦄
-    (hA : A ∈ (S0 H).levelNeighborhood d B) :
-    ((S0 H).neighborhood a A).Nonempty := by
+    (hA : A ∈ (approximationSystem H).levelNeighborhood d B) :
+    ((approximationSystem H).neighborhood a A).Nonempty := by
   have hxB : StemAt H a.1 B d :=
     (hasDepth_iff_stemAt H a B).1 hd
   have hcone : InDepthCone H d B A :=
     (mem_levelNeighborhood_iff_depthCone H d B A).1 hA
   obtain ⟨W, hW⟩ := a3_one_nonempty H hxB hcone
-  refine ⟨W, ?_⟩
-  exact (mem_neighborhood_iff_inNeighborhood H a A W).2 hW
+  exact ⟨W, (mem_neighborhood_iff_inNeighborhood H a A W).2 hW⟩
 
-/-- Useful basic-member special case of A3(2) in the typed approximation-system interface. -/
+/-- Todorčević's printed A3(2), including nonemptiness of the refined
+neighborhood, obtained directly from the concrete amalgamation theorem. -/
+theorem typed_amalgamation_refine_published
+    {n : Nat} (a : (approximationSystem H).Approx n)
+    (B : FatTree H) {d : Nat}
+    (hd : (finitization H).HasDepth a B d)
+    {A : FatTree H} (hAB : (approximationSystem H).le A B)
+    (hne : ((approximationSystem H).neighborhood a A).Nonempty) :
+    ∃ A', A' ∈ (approximationSystem H).levelNeighborhood d B ∧
+      ((approximationSystem H).neighborhood a A').Nonempty ∧
+      (approximationSystem H).neighborhood a A' ⊆
+        (approximationSystem H).neighborhood a A := by
+  obtain ⟨W, hW⟩ := hne
+  obtain ⟨m, A', hm, hdepth, ⟨X, hX⟩, hsub⟩ :=
+    a3_two_amalgamation H hAB
+      ⟨W, (mem_neighborhood_iff_inNeighborhood H a A W).1 hW⟩
+  have hmd : m = d :=
+    stemAt_unique H hm ((hasDepth_iff_stemAt H a B).1 hd)
+  subst m
+  refine ⟨A', (mem_levelNeighborhood_iff_depthCone H d B A').2 hdepth,
+    ⟨X, (mem_neighborhood_iff_inNeighborhood H a A' X).2 hX⟩, ?_⟩
+  intro W hW
+  exact (mem_neighborhood_iff_inNeighborhood H a A W).2
+    (hsub W ((mem_neighborhood_iff_inNeighborhood H a A' W).1 hW))
+
+/-- The basic-member special case of A3(2). -/
 theorem typed_amalgamation_refine_standard
-    {n : Nat} (a : (S0 H).Approx n)
+    {n : Nat} (a : (approximationSystem H).Approx n)
     (B : FatTree H) {d : Nat}
     (hd : (finitization H).HasDepth a B d)
     {A : FatTree H}
-    (hA : A ∈ (S0 H).neighborhood a B) :
-    ∃ A', A' ∈ (S0 H).levelNeighborhood d B ∧
-      (S0 H).neighborhood a A' ⊆
-        (S0 H).neighborhood a A := by
-  have hxB : StemAt H a.1 B d :=
-    (hasDepth_iff_stemAt H a B).1 hd
-  have hconcreteA : InNeighborhood H a.1 B A :=
-    (mem_neighborhood_iff_inNeighborhood H a B A).1 hA
-  have hne :
-      ∃ W : FatTree H, InNeighborhood H a.1 A W := by
-    exact ⟨A, FatTree.reduces_refl H A, hconcreteA.2⟩
-  obtain ⟨m, A', hxm, hdepth, hne', hsub⟩ :=
-    a3_two_amalgamation H hconcreteA.1 hne
-  have hmd : m = d :=
-    stemAt_unique H hxm hxB
-  subst m
-  refine ⟨A',
-    (mem_levelNeighborhood_iff_depthCone H d B A').2 hdepth,
-    ?_⟩
-  intro W hW
-  have hWc : InNeighborhood H a.1 A' W :=
-    (mem_neighborhood_iff_inNeighborhood H a A' W).1 hW
-  exact (mem_neighborhood_iff_inNeighborhood H a A W).2
-    (hsub W hWc)
-
-/-- Todorčević's printed A3(2): if `A ≤ B` and `[a,A]` is nonempty,
-then some `A' ∈ [depth_B(a),B]` has nonempty `[a,A'] ⊆ [a,A]`.
-The proof reduces it to the basic-member special case above. -/
-theorem typed_amalgamation_refine_published
-    {n : Nat} (a : (S0 H).Approx n)
-    (B : FatTree H) {d : Nat}
-    (hd : (finitization H).HasDepth a B d)
-    {A : FatTree H} (hAB : (S0 H).le A B)
-    (hne : ((S0 H).neighborhood a A).Nonempty) :
-    ∃ A', A' ∈ (S0 H).levelNeighborhood d B ∧
-      ((S0 H).neighborhood a A').Nonempty ∧
-      (S0 H).neighborhood a A' ⊆ (S0 H).neighborhood a A := by
-  rcases hne with ⟨X, hXaA⟩
-  have hXaB : X ∈ (S0 H).neighborhood a B :=
-    (S0 H).neighborhood_mono hAB hXaA
-  rcases typed_amalgamation_refine_standard H a B hd hXaB with
-    ⟨A', hA'B, hsub⟩
-  refine ⟨A', hA'B, typed_amalgamation_nonempty H a B hd hA'B, ?_⟩
-  exact hsub.trans ((S0 H).neighborhood_mono hXaA.1)
+    (hA : A ∈ (approximationSystem H).neighborhood a B) :
+    ∃ A', A' ∈ (approximationSystem H).levelNeighborhood d B ∧
+      (approximationSystem H).neighborhood a A' ⊆
+        (approximationSystem H).neighborhood a A := by
+  have hne : ((approximationSystem H).neighborhood a A).Nonempty :=
+    ⟨A, (approximationSystem H).le_refl A, hA.2⟩
+  obtain ⟨A', hA'B, _, hsub⟩ :=
+    typed_amalgamation_refine_published H a B hd hA.1 hne
+  exact ⟨A', hA'B, hsub⟩
 
 end FatTree
 end SMTree
