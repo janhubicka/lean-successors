@@ -275,6 +275,15 @@ theorem castRow_self
     FatTree.castRow H h g = g := by
   exact eq_of_heq (FatTree.castRow_heq H h g)
 
+/-- Transport from an ambient cut to the terminal cut of its literal
+initial segment is the identity.  The equality proof itself is irrelevant. -/
+theorem castRow_initialSegment
+    (U : FatTree H) (n : Nat)
+    (h : U.cut n = (U.initialSegment H n).terminalCut)
+    (g : AM H (U.cut n) 1) :
+    FatTree.castRow H h g = g := by
+  exact eq_of_heq (FatTree.castRow_heq H h g)
+
 /-- Three successive transports around an equality triangle cancel. -/
 theorem castRow_cancel_chain
     {a b c : Nat} (hab : a = b) (hbc : b = c)
@@ -336,8 +345,8 @@ theorem shapeAct_tail_oneBlockOccurs
       (FatTree.castRow H hc.symm (H.shapeAct c W r)) := by
   cases hc
   dsimp
-  convert tailCoordinateRow_oneBlockOccurs H U n r using 1
-  exact eq_of_heq (FatTree.castRow_heq H _ (tailCoordinateRow H U n r))
+  rw [castRow_initialSegment H U n]
+  exact tailCoordinateRow_oneBlockOccurs H U n r
 
 end FatTree
 end SMTree
