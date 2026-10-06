@@ -99,14 +99,24 @@ theorem shapeOneDimensionalRamsey_viaFatEllentuck
   have realize (g : AM H n 1) :
       ∃ X : FatTree H,
         X ∈ (approximationSystem H).neighborhood a B ∧
-        fatColour (exactApprox H (n + 1) X) =
+        fatColour ((approximationSystem H).approx (n + 1) X) =
           colour (H.shapeAct n W g) := by
     let rowB : AM H (B.cut n) 1 :=
       FatTree.castRow H hBcut.symm (H.shapeAct n W g)
+    let gB : AM H (B.cut n) 1 :=
+      FatTree.castRow H hBcut.symm g
+    have hoccB :
+        OneBlockOccurs H (B.initialSegment H n) B
+          (tailCoordinateRow H B n gB) :=
+      tailCoordinateRow_oneBlockOccurs H B n gB
+    have hrowEq :
+        rowB = tailCoordinateRow H B n gB := by
+      dsimp [rowB, gB, W]
+      exact cast_shapeAct_tail_eq H B n n hBcut g
     have hrowB :
         OneBlockOccurs H (B.initialSegment H n) B rowB := by
-      simpa [rowB, W] using
-        shapeAct_tail_oneBlockOccurs H B n n hBcut g
+      rw [hrowEq]
+      exact hoccB
 
     let rowA : AM H a.1.terminalCut 1 :=
       FatTree.castRow H hterm rowB
@@ -122,7 +132,7 @@ theorem shapeOneDimensionalRamsey_viaFatEllentuck
     refine ⟨X, hXaB, ?_⟩
 
     calc
-      fatColour (exactApprox H (n + 1) X) =
+      fatColour ((approximationSystem H).approx (n + 1) X) =
           fatColour (appendApprox H a rowA) := by
             rw [hXapp]
       _ = colour (FatTree.castRow H haCut rowA) := by
