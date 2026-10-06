@@ -611,6 +611,226 @@ theorem intervalMap_mem_liftSteps_of_le
             (U.oneLift H i ({x} : Set T))
       exact hmono
 
+/-- Appending the last row to an interval product. -/
+theorem intervalMap_snoc (U : FatTree H) :
+    ∀ (i steps : Nat),
+      intervalMap H U i (steps + 1) =
+        MMap.comp H (U.rowExtension H (i + steps))
+          (intervalMap H U i steps) := by
+  intro i steps
+  induction steps generalizing i with
+  | zero =>
+      apply MMap.ext_apply
+      intro x
+      rfl
+  | succ steps ih =>
+      apply MMap.ext_apply
+      intro x
+      change
+        intervalMap H U (i + 1) (steps + 1) (U.rowExtension H i x) =
+          U.rowExtension H (i + (steps + 1))
+            (intervalMap H U (i + 1) steps (U.rowExtension H i x))
+      rw [ih (i := i + 1)]
+      rfl
+
+/-- After a nonempty interval, the last active source level lands one level
+below the terminal cut. -/
+theorem intervalMap_level_last (U : FatTree H) (i steps : Nat) :
+    H.levelMap (intervalMap H U i (steps + 1)).map
+        (U.cut i + steps) =
+      U.cut (i + steps + 1) - 1 := by
+  rw [intervalMap_snoc, MMap.levelMap_comp]
+  have hbefore :
+      H.levelMap (intervalMap H U i steps).map
+          (U.cut i + steps) =
+        U.cut (i + steps) := by
+    simpa using intervalMap_level_tail H U i steps 0
+  rw [hbefore]
+  have hrow :=
+    U.rowExtension_level_at_cut H (i + steps)
+  rw [hrow]
+  have hpos : 0 < U.cut (i + steps + 1) := by
+    have h := U.cut_strictMono H (Nat.zero_lt_succ (i + steps))
+    simpa [U.cut_zero] using h
+  rw [← U.row_cut (i + steps)]
+  omega
+
+/-- Cut growth dominates growth of the row index. -/
+theorem cut_add_le (U : FatTree H) (i steps : Nat) :
+    U.cut i + steps ≤ U.cut (i + steps) := by
+  induction steps with
+  | zero => simp
+  | succ steps ih =>
+      have hs := U.cut_lt_succ H (i + steps)
+      omega
+
+/-- Number of tail rows that have become active by absolute source level j. -/
+def tailStageCount (U : FatTree H) (n j : Nat) : Nat :=
+  if U.cut n ≤ j then j - U.cut n + 1 else 0
+
+/-- The fusion schedule defining the paper's tail map F_U^n. -/
+noncomputable def tailStage (U : FatTree H) (n j : Nat) : MMap H :=
+  intervalMap H U n (tailStageCount U n j)
+
+theorem tailStage_fusionStable (U : FatTree H) (n : Nat) :
+    ShapeMap.FusionStable (fun j => (tailStage H U n j).map) := by
+  intro j x hx
+  unfold tailStage tailStageCount
+  by_cases hj : U.cut n ≤ j
+  · have hj1 : U.cut n ≤ j + 1 := hj.trans (Nat.le_succ j)
+    rw [if_pos hj, if_pos hj1]
+    have hcount :
+        (j + 1 - U.cut n + 1) = (j - U.cut n + 1) + 1 := by
+      omega
+    rw [hcount, intervalMap_snoc]
+    change
+      intervalMap H U n (j - U.cut n + 1) x =
+        U.rowExtension H (n + (j - U.cut n + 1))
+          (intervalMap H U n (j - U.cut n + 1) x)
+    symm
+    apply U.rowExtension_fixesBelow H
+    have hlev :
+        LevelTree.lev (intervalMap H U n (j - U.cut n + 1) x) ≤
+          H.levelMap
+            (intervalMap H U n (j - U.cut n + 1)).map j := by
+      calc
+        LevelTree.lev (intervalMap H U n (j - U.cut n + 1) x) =
+            H.levelMap
+              (intervalMap H U n (j - U.cut n + 1)).map
+              (LevelTree.lev x) :=
+          (H.levelMap_eq
+            (intervalMap H U n (j - U.cut n + 1)).map (a := x)).symm
+        _ ≤ H.levelMap
+              (intervalMap H U n (j - U.cut n + 1)).map j :=
+          (H.levelMap_strictMono
+            (intervalMap H U n (j - U.cut n + 1)).map).monotone hx
+    have hlast :
+        H.levelMap
+            (intervalMap H U n (j - U.cut n + 1)).map j =
+          U.cut (n + (j - U.cut n + 1)) - 1 := by
+      have hsource :
+          j = U.cut n + (j - U.cut n) := by omega
+      rw [hsource]
+      exact intervalMap_level_last H U n (j - U.cut n)
+    have hcutpos :
+        0 < U.cut (n + (j - U.cut n + 1)) := by
+      have hindex : 0 < n + (j - U.cut n + 1) := by omega
+      exact lt_of_le_of_lt hindex
+        (lt_of_lt_of_le (Nat.zero_lt_succ _) (U.index_le_cut H _ le_rfl))
+    rw [hlast] at hlev
+    omega
+  · by_cases hj1 : U.cut n ≤ j + 1
+    · have heq : U.cut n = j + 1 := by omega
+      rw [if_neg hj, if_pos hj1]
+      have hzero : j + 1 - U.cut n + 1 = 1 := by omega
+      rw [hzero]
+      change x = U.rowExtension H n x
+      symm
+      apply U.rowExtension_fixesBelow H
+      omega
+    · rw [if_neg hj, if_neg hj1]
+
+/-- The tail shape map F_U^n. -/
+noncomputable def tailMap (U : FatTree H) (n : Nat) : MMap H := by
+  let F : Nat → ShapeMap S := fun j => (tailStage H U n j).map
+  have hs : ShapeMap.FusionStable F := tailStage_fusionStable H U n
+  exact {
+    map := ShapeMap.fusionLimit F hs
+    mem := H.fusion_mem F (fun j => (tailStage H U n j).mem) hs
+  }
+
+theorem tailMap_apply_at_level
+    (U : FatTree H) (n k : Nat) (x : T)
+    (hx : LevelTree.lev x = U.cut n + k) :
+    tailMap H U n x = intervalMap H U n (k + 1) x := by
+  change tailStage H U n (LevelTree.lev x) x =
+    intervalMap H U n (k + 1) x
+  rw [hx]
+  unfold tailStage tailStageCount
+  have hle : U.cut n ≤ U.cut n + k := Nat.le_add_right _ _
+  rw [if_pos hle]
+  congr 2
+  omega
+
+/-- The tail map fixes every level below its starting cut. -/
+theorem tailMap_fixesBelow
+    (U : FatTree H) (n : Nat) :
+    (tailMap H U n).FixesBelow H (U.cut n) := by
+  intro x hx
+  change tailStage H U n (LevelTree.lev x) x = x
+  unfold tailStage tailStageCount
+  rw [if_neg (Nat.not_le.mpr hx)]
+  rfl
+
+/-- Exact level behaviour of the tail map on consecutive source levels. -/
+theorem tailMap_level
+    (U : FatTree H) (n k : Nat) :
+    H.levelMap (tailMap H U n).map (U.cut n + k) =
+      U.cut (n + k + 1) - 1 := by
+  obtain ⟨x, hx⟩ := H.level_nonempty (U.cut n + k)
+  calc
+    H.levelMap (tailMap H U n).map (U.cut n + k) =
+        LevelTree.lev (tailMap H U n x) := by
+      simpa [hx] using H.levelMap_eq (tailMap H U n).map (a := x)
+    _ = LevelTree.lev (intervalMap H U n (k + 1) x) := by
+      rw [tailMap_apply_at_level H U n k x hx]
+    _ = H.levelMap (intervalMap H U n (k + 1)).map
+          (U.cut n + k) := by
+      simpa [hx] using
+        (H.levelMap_eq (intervalMap H U n (k + 1)).map (a := x)).symm
+    _ = U.cut (n + k + 1) - 1 :=
+      intervalMap_level_last H U n k
+
+/-- Before the last tail row is applied, a source node on level c_n+k has
+already reached the geometric lift from cut n to cut n+k. -/
+theorem intervalMap_mem_relativeLift
+    (U : FatTree H) (n k : Nat) (z : T)
+    (hz : LevelTree.lev z = U.cut n + k) :
+    intervalMap H U n k z ∈
+      U.liftSteps H n k (TreeLevel (T := T) (U.cut n)) := by
+  let x := LevelTree.ancestor z (U.cut n) (by rw [hz]; omega)
+  have hxz : x ≤ z :=
+    LevelTree.ancestor_le z (U.cut n) (by rw [hz]; omega)
+  have hx : LevelTree.lev x = U.cut n :=
+    LevelTree.level_ancestor z (U.cut n) (by rw [hz]; omega)
+  have hmem :=
+    intervalMap_mem_liftSteps_of_le H U n k hx hz hxz
+  exact U.liftSteps_mono H n k
+    (by
+      intro q hq
+      have hq : q = x := by simpa using hq
+      subst q
+      exact hx)
+    hmem
+
+/-- The direction of the relative-level correspondence needed to turn an
+algebraic coordinate into a geometric one-block reduction. -/
+theorem tailMap_mem_relativeFatLevel
+    (U : FatTree H) (n k : Nat) (z : T)
+    (hz : LevelTree.lev z = U.cut n + k) :
+    tailMap H U n z ∈
+      (U.row (n + k)).representative H ''
+        U.liftSteps H n k (TreeLevel (T := T) (U.cut n)) := by
+  let y := intervalMap H U n k z
+  have hyMem :
+      y ∈ U.liftSteps H n k (TreeLevel (T := T) (U.cut n)) :=
+    intervalMap_mem_relativeLift H U n k z hz
+  have hyLev : LevelTree.lev y = U.cut (n + k) := by
+    calc
+      LevelTree.lev y =
+          H.levelMap (intervalMap H U n k).map (LevelTree.lev z) :=
+        (H.levelMap_eq (intervalMap H U n k).map (a := z)).symm
+      _ = H.levelMap (intervalMap H U n k).map (U.cut n + k) := by
+        rw [hz]
+      _ = U.cut (n + k) := by
+        simpa using intervalMap_level_tail H U n k 0
+  refine ⟨y, hyMem, ?_⟩
+  rw [tailMap_apply_at_level H U n k z hz, intervalMap_snoc]
+  change
+    U.rowExtension H (n + k) y =
+      (U.row (n + k)).representative H y
+  exact U.rowExtension_agrees H (n + k) y (Nat.le_of_eq hyLev)
+
 /-- At the tail level reached after an interval, the interval product sends
 an edge to an edge. -/
 theorem intervalMap_covBy_tail
