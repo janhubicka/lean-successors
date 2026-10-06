@@ -1,5 +1,5 @@
 import SuccessorTree.FatTree.RamseyFinitization
-import RamseySpace.Closed
+import RamseySpace.ClosedTopology
 
 /-!
 # Metric closedness of the fat-tree approximation space
@@ -105,6 +105,13 @@ theorem isMetricallyClosed :
 
 /-- A2 and closedness supply fusion before A3 or A4 is assumed. The general
 construction now lives in the abstract Ramsey-space library. -/
+/-- Literal published closedness of the fat-tree approximation-code image
+in the Tychonoff power of discrete finite approximations. -/
+theorem isTychonoffClosed :
+    (approximationSystem H).IsTychonoffClosed :=
+  ((approximationSystem H).isTychonoffClosed_iff_isClosedApproximationImage).2
+    (isMetricallyClosed H)
+
 theorem fusionComplete :
     RamseySpace.FusionComplete (approximationSystem H) :=
   (finitization H).fusionComplete_of_isMetricallyClosed (isMetricallyClosed H)
