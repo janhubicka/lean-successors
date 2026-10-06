@@ -37,4 +37,4 @@ jobs:
       - name: Download Mathlib cache
         run: lake exe cache get
       - name: Build finite bounds
-        run: lake build SuccessorTree.ShapeFiniteBounds
+        run: lake build SuccessorTree.ShapeFiniteCorollaries
