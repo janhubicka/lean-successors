@@ -1,4 +1,4 @@
-import SuccessorTree.RamseySpace.Ellentuck
+import SuccessorTree.FatTree.ShapeTransfer
 
 open SuccessorTree
 open SuccessorTree.SMTree
@@ -9,19 +9,33 @@ open SuccessorTree.SMTree
 #check ShapeEllentuckAmalgamation
 #check shapeAbstractRamseySpace
 #check shapeEllentuck
-#check shapeEllentuck_baire
-#check shapeEllentuck_meagre
+#check ShapeNormalizedEA
+#check shapeNormalizedEA_iff
+#check shapeEllentuck_of_normalizedEA
+#check FatTree.canonicalMap
+#check FatTree.exactCanonicalApprox
+#check FatShapeEllentuckTransfer
+#check FatShapeEllentuckTransfer.shapeAmalgamation
+#check FatShapeEllentuckTransfer.normalizedEA
+#check FatShapeEllentuckTransfer.shapeEllentuck_from_fatTree
 
 #print axioms shapeIsMetricallyClosed
 #print axioms shapePigeonhole_zero
 #print axioms shapePigeonhole
 #print axioms shapeAbstractRamseySpace
 #print axioms shapeEllentuck
-#print axioms shapeEllentuck_baire
-#print axioms shapeEllentuck_meagre
+#print axioms shapeNormalizedEA_iff
+#print axioms shapeEllentuck_of_normalizedEA
+#print axioms FatTree.canonicalMap
+#print axioms FatTree.exactCanonicalApprox_exactApprox
+#print axioms FatShapeEllentuckTransfer.levelNeighborhood_forward
+#print axioms FatShapeEllentuckTransfer.shapeAmalgamation
+#print axioms FatShapeEllentuckTransfer.normalizedEA
+#print axioms FatShapeEllentuckTransfer.shapeEllentuck_from_fatTree
 
 /- Interface guards: A4 and closedness do not take EA; the final
-topological endpoint takes exactly the optional A3(2) hypothesis. -/
+topological endpoint takes exactly A3(2), while the fat-tree transfer
+discharges that hypothesis from exact canonical neighborhood geometry. -/
 section InterfaceGuard
 universe u v
 variable {T : Type u} {Label : Type v}
@@ -33,9 +47,10 @@ example (H : SMTree S) :
   shapeIsMetricallyClosed H
 
 example (H : SMTree S)
-    {n : Nat} (a : RamseyApprox H n) (B : MMap H) {d : Nat}
+    {n : Nat} (a : (ramseyApproximationSystem H).Approx n)
+    (B : MMap H) {d : Nat}
     (hd : (ramseyFinitization H).HasDepth a B d)
-    (O : Set (RamseyApprox H (n + 1))) :
+    (O : Set ((ramseyApproximationSystem H).Approx (n + 1))) :
     ∃ A : MMap H,
       A ∈ (ramseyApproximationSystem H).levelNeighborhood d B ∧
       ((ramseyApproximationSystem H).oneStepApproximations a A ⊆ O ∨
@@ -46,4 +61,9 @@ example (H : SMTree S) (hEA : ShapeEllentuckAmalgamation H) :
     RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
       (S := ramseyApproximationSystem H) :=
   shapeEllentuck H hEA
+
+example (H : SMTree S) (Q : FatShapeEllentuckTransfer H) :
+    RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
+      (S := ramseyApproximationSystem H) :=
+  Q.shapeEllentuck_from_fatTree H
 end InterfaceGuard
