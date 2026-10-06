@@ -67,3 +67,5 @@ import SuccessorTree.FatTree.Finitization
 import SuccessorTree.FatTree.Amalgamation
 import SuccessorTree.FatTree.A3Typed
 import SuccessorTree.FatTree.A4ReviewComplete
+
+import SuccessorTree.FatTree.ShapeCorrespondence
