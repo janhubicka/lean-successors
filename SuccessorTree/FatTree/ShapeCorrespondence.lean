@@ -393,3 +393,195 @@ end FatTree
 
 end SMTree
 end SuccessorTree
+
+namespace SuccessorTree
+namespace SMTree
+
+universe u v
+
+variable {T : Type u} {Label : Type v}
+variable [PartialOrder T] [LevelTree T]
+variable {S : STree T Label}
+
+namespace FatTree
+
+variable (H : SMTree S)
+
+/-- Composition of a consecutive interval of fat-tree row extensions. -/
+noncomputable def intervalMap (U : FatTree H) : Nat → Nat → MMap H
+  | _, 0 => MMap.id H
+  | i, steps + 1 =>
+      MMap.comp H (intervalMap U (i + 1) steps) (U.rowExtension H i)
+
+@[simp] theorem intervalMap_zero (U : FatTree H) (i : Nat) :
+    intervalMap H U i 0 = MMap.id H := rfl
+
+@[simp] theorem intervalMap_succ (U : FatTree H) (i steps : Nat) :
+    intervalMap H U i (steps + 1) =
+      MMap.comp H (intervalMap H U (i + 1) steps) (U.rowExtension H i) := rfl
+
+/-- After crossing a finite interval of rows, the canonical tail remains
+consecutive. -/
+theorem intervalMap_level_tail (U : FatTree H) :
+    ∀ (i steps k : Nat),
+      H.levelMap (intervalMap H U i steps).map
+          (U.cut i + steps + k) =
+        U.cut (i + steps) + k := by
+  intro i steps
+  induction steps generalizing i with
+  | zero =>
+      intro k
+      simp [intervalMap, MMap.levelMap_id]
+  | succ steps ih =>
+      intro k
+      rw [intervalMap_succ, MMap.levelMap_comp]
+      have hrow :
+          H.levelMap (U.rowExtension H i).map
+              (U.cut i + (steps + 1) + k) =
+            U.cut (i + 1) + steps + k := by
+        unfold rowExtension
+        have h :=
+          H.canonicalExtension_level_tail
+            ((U.row i).representative H) (U.cut i) (steps + 1 + k)
+        rw [h]
+        rw [← U.row_cut i]
+        omega
+      rw [hrow]
+      simpa [Nat.add_assoc] using ih (i := i + 1) k
+
+/-- An interval product fixes everything below its initial cut. -/
+theorem intervalMap_fixesBelow (U : FatTree H) :
+    ∀ (i steps : Nat),
+      (intervalMap H U i steps).FixesBelow H (U.cut i) := by
+  intro i steps
+  induction steps generalizing i with
+  | zero =>
+      exact MMap.id_fixesBelow H (U.cut i)
+  | succ steps ih =>
+      have htail :
+          (intervalMap H U (i + 1) steps).FixesBelow H (U.cut (i + 1)) :=
+        ih (i := i + 1)
+      have htail' :
+          (intervalMap H U (i + 1) steps).FixesBelow H (U.cut i) := by
+        intro x hx
+        exact htail x (lt_trans hx (U.cut_lt_succ H i))
+      exact MMap.comp_fixesBelow H
+        (intervalMap H U (i + 1) steps) (U.rowExtension H i)
+        (U.cut i) htail' (U.rowExtension_fixesBelow H i)
+
+/-- A path of the right length is sent by the interval product to an endpoint
+of the corresponding fat-tree lift. -/
+theorem intervalMap_mem_liftSteps_of_le
+    (U : FatTree H) :
+    ∀ (i steps : Nat) {x z : T},
+      LevelTree.lev x = U.cut i →
+      LevelTree.lev z = U.cut i + steps →
+      x ≤ z →
+      intervalMap H U i steps z ∈
+        U.liftSteps H i steps ({x} : Set T) := by
+  intro i steps
+  induction steps generalizing i with
+  | zero =>
+      intro x z hx hz hxz
+      have hzx : z = x := by
+        exact (LevelTree.same_level_of_le hxz (hz.trans hx.symm)).symm
+      subst z
+      simp [intervalMap]
+  | succ steps ih =>
+      intro x z hx hz hxz
+      have hcut : U.cut i + 1 ≤ LevelTree.lev z := by
+        rw [hz]
+        omega
+      let y := LevelTree.ancestor z (U.cut i + 1) hcut
+      have hyz : y ≤ z :=
+        LevelTree.ancestor_le z (U.cut i + 1) hcut
+      have hy : LevelTree.lev y = U.cut i + 1 :=
+        LevelTree.level_ancestor z (U.cut i + 1) hcut
+      have hxy : x ≤ y := by
+        rcases LevelTree.comparable_below hxz hyz with h | h
+        · exact h
+        · have hlev := LevelTree.level_le_of_le h
+          rw [hx, hy] at hlev
+          omega
+      have hcov : x ⋖ y :=
+        LevelTree.covBy_of_le_level_succ hxy (by rw [hx, hy])
+      let x' := U.rowExtension H i y
+      let z' := U.rowExtension H i z
+      have hx'mem : x' ∈ U.oneLift H i ({x} : Set T) := by
+        exact ⟨y, ⟨x, by simp, hcov⟩, rfl⟩
+      have hx' :
+          LevelTree.lev x' = U.cut (i + 1) := by
+        apply U.oneLift_subset_nextLevel H i
+          (by
+            intro q hq
+            have hq : q = x := by simpa using hq
+            subst q
+            exact hx)
+          hx'mem
+      have hz' :
+          LevelTree.lev z' = U.cut (i + 1) + steps := by
+        dsimp [z']
+        calc
+          LevelTree.lev (U.rowExtension H i z) =
+              H.levelMap (U.rowExtension H i).map (LevelTree.lev z) :=
+            (H.levelMap_eq (U.rowExtension H i).map (a := z)).symm
+          _ = H.levelMap (U.rowExtension H i).map
+              (U.cut i + (steps + 1)) := by rw [hz]
+          _ = (U.row i).rowEndLevel H + (steps + 1) := by
+            unfold rowExtension
+            rw [H.canonicalExtension_level_tail]
+          _ = U.cut (i + 1) + steps := by
+            rw [← U.row_cut i]
+            omega
+      have hx'z' : x' ≤ z' :=
+        (U.rowExtension H i).map.map_le_of_le hyz
+      have hrec :
+          intervalMap H U (i + 1) steps z' ∈
+            U.liftSteps H (i + 1) steps ({x'} : Set T) :=
+        ih (i := i + 1) hx' hz' hx'z'
+      have hsub :
+          ({x'} : Set T) ⊆ U.oneLift H i ({x} : Set T) := by
+        intro q hq
+        have hq : q = x' := by simpa using hq
+        subst q
+        exact hx'mem
+      have hmono :=
+        U.liftSteps_mono H (i + 1) steps hsub hrec
+      change
+        intervalMap H U (i + 1) steps (U.rowExtension H i z) ∈
+          U.liftSteps H (i + 1) steps
+            (U.oneLift H i ({x} : Set T))
+      exact hmono
+
+/-- At the tail level reached after an interval, the interval product sends
+an edge to an edge. -/
+theorem intervalMap_covBy_tail
+    (U : FatTree H) (i steps : Nat)
+    {y z : T} (hyz : y ⋖ z)
+    (hy : LevelTree.lev y = U.cut i + steps) :
+    intervalMap H U i steps y ⋖
+      intervalMap H U i steps z := by
+  have hz : LevelTree.lev z = U.cut i + steps + 1 := by
+    rw [LevelTree.covBy_level_eq hyz, hy]
+  have hlt :=
+    (intervalMap H U i steps).map.map_lt_of_covBy hyz
+  apply LevelTree.covBy_of_le_level_succ hlt.le
+  calc
+    LevelTree.lev (intervalMap H U i steps z) =
+        H.levelMap (intervalMap H U i steps).map
+          (LevelTree.lev z) :=
+      (H.levelMap_eq (intervalMap H U i steps).map (a := z)).symm
+    _ = U.cut (i + steps) + 1 := by
+      rw [hz]
+      exact intervalMap_level_tail H U i steps 1
+    _ = H.levelMap (intervalMap H U i steps).map
+          (LevelTree.lev y) + 1 := by
+      rw [hy, intervalMap_level_tail H U i steps 0]
+      omega
+    _ = LevelTree.lev (intervalMap H U i steps y) + 1 := by
+      rw [H.levelMap_eq]
+
+end FatTree
+
+end SMTree
+end SuccessorTree
