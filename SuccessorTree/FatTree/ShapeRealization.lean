@@ -327,9 +327,7 @@ theorem shapeAct_tail_oneBlockOccurs
         exact tailMap_fixesBelow H U n x (by simpa [hc] using hx)⟩
     OneBlockOccurs H (U.initialSegment H n) U
       (FatTree.castRow H hc.symm (H.shapeAct c W r)) := by
-  subst c
-  have hhc : hc = rfl := Subsingleton.elim _ _
-  cases hhc
+  cases hc
   simpa [tailCoordinateRow, tailSubspace] using
     tailCoordinateRow_oneBlockOccurs H U n r
 
