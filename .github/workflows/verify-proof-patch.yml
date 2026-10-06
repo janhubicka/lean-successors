@@ -47,6 +47,16 @@ jobs:
           git apply --index proof-patches/v8-cleanup.patch
           git apply --check --index proof-audit/second.patch
           git apply --index proof-audit/second.patch
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/CheckShapeProofRoutes.lean')
+          s = p.read_text().replace('throwError "', 'throwError m!"').replace('logInfo "', 'logInfo m!"')
+          p.write_text(s)
+          for name in ['ShapeFiniteInduction', 'ShapeFiniteCorollaries']:
+              p = Path('SuccessorTree') / (name + '.lean')
+              p.write_text(p.read_text().replace('dif_pos', 'dite_eq_left').replace('dif_neg', 'dite_eq_right'))
+          PY
+          git add scripts/CheckShapeProofRoutes.lean SuccessorTree/ShapeFiniteInduction.lean SuccessorTree/ShapeFiniteCorollaries.lean
           git diff --cached --check
       - name: Prepare exact Lean toolchain
         run: |
@@ -67,8 +77,10 @@ jobs:
           set -o pipefail
           lake env lean scripts/CheckShapeProofRoutes.lean | tee proof-audit/shape-proof-routes.log
           python3 scripts/check-axiom-log.py proof-audit/shape-proof-routes.log 10
+          mapfile -t targets < <(sed -n 's/^import //p' scripts/CheckFatTree*.lean | sort -u)
+          lake build "${targets[@]}" > proof-audit/audit-imports-build.log 2>&1 || { cat proof-audit/audit-imports-build.log; exit 1; }
           for f in scripts/CheckShapeRamsey.lean scripts/CheckFatTree*.lean; do
-            lake env lean "$f"
+            lake env lean "$f" || exit 1
           done | tee proof-audit/axioms.log
           python3 - <<'PY'
           import re
@@ -90,6 +102,12 @@ jobs:
           git commit -m 'Simplify correspondence and padding; audit independent shape proof routes'
           git rev-parse HEAD > proof-audit/verified-commit
           git push origin HEAD:"$GITHUB_REF_NAME"
+      - name: Cache verified workspace
+        if: success()
+        uses: actions/cache/save@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-v8-verified-${{ github.sha }}
       - name: Record tested sources
         if: always()
         run: |
