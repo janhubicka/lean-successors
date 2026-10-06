@@ -10,9 +10,11 @@ pigeonhole theorem for a literal stem. A3 transfers it to an arbitrary stem
 at its original depth, and the abstract library then gives the actual
 Ellentuck-topology conclusions.
 
-IMPORTANT: this file proves the assembly, not `FixedStemPigeonhole` itself.
-Consequently its endpoints are conditional and must not receive an
-unconditional A4/Ellentuck validation marker in the manuscript.
+This file deliberately keeps the geometric fixed-stem theorem as an
+explicit parameter, so that the A3 transfer and abstract Ellentuck assembly
+can be audited independently.  The parameter is discharged in
+`A4ReviewComplete`, whose `fatTreeA4` and `fatTreeEllentuck` endpoints
+are unconditional.
 -/
 
 namespace SuccessorTree.SMTree.FatTree
