@@ -570,5 +570,65 @@ theorem shapeRamsey_exact_of_two_le
       simpa [F, hb] using hpadh.symm
 
 
+
+/-- At source level zero there is at most one positive-width approximation
+whose terminal target level is zero. -/
+theorem AM.at_zero_unique
+    (H : SMTree S) {k : Nat} (hk : 0 < k)
+    (a b : AM.At H 0 k 0) :
+    a = b := by
+  have hlast := a.1.sourceLast_le_terminalLevel H hk
+  rw [a.2] at hlast
+  have hk1 : k = 1 := by omega
+  subst k
+  have hatop : a.1.topLevel H ≤ 0 := by
+    change a.1.terminalLevel H ≤ 0
+    rw [a.2]
+  have hbtop : b.1.topLevel H ≤ 0 := by
+    change b.1.terminalLevel H ≤ 0
+    rw [b.2]
+  have haid := AM.eq_id1_of_topLevel_le H a.1 hatop
+  have hbid := AM.eq_id1_of_topLevel_le H b.1 hbtop
+  apply Subtype.ext
+  exact haid.trans hbid.symm
+
+/-- The exact-end conclusion in the unique case where the last source level
+is zero. -/
+theorem shapeRamsey_exact_zero_boundary
+    {κ : Type w}
+    (H : SMTree S) (k : Nat) (hk : 0 < k) :
+    ∃ N : Nat,
+      ExactRamseyAt H κ 0 k 1 N (by omega) hk := by
+  let f0 : AM H 0 1 := AM.id1 H 0
+  have hf0 : f0.terminalLevel H = 0 := by
+    change f0.topLevel H = 0
+    exact AM.id1_topLevel H 0
+  let f : AM.At H 0 1 0 := ⟨f0, hf0⟩
+  refine ⟨0, ?_⟩
+  intro colour
+  refine ⟨f, ?_⟩
+  intro g h
+  have hgh : g = h := AM.at_zero_unique H hk g h
+  subst h
+  rfl
+
+/-- Corollary 1.8: the exact-terminal finite Ramsey theorem. -/
+theorem shapeRamsey_exact
+    {κ : Type w} [Fintype κ] [Nonempty κ]
+    (H : SMTree S) (n k m : Nat)
+    (hk : 0 < k) (hm : 0 < m) :
+    ∃ N : Nat, ExactRamseyAt H κ n k m N hm hk := by
+  by_cases hboundary : n + m = 1
+  · have hn : n = 0 := by omega
+    have hm1 : m = 1 := by omega
+    subst n
+    subst m
+    simpa using
+      (shapeRamsey_exact_zero_boundary
+        (κ := κ) H k hk)
+  · have htwo : 2 ≤ n + m := by omega
+    exact shapeRamsey_exact_of_two_le H n k m hk hm htwo
+
+
 end SMTree
 end SuccessorTree
