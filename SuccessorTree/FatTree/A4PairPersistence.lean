@@ -35,15 +35,6 @@ private theorem pairCone_trans {d : Nat} {U V W : FatTree H}
     initialSegment_eq_of_extendsStem H hVU.2
   simpa only [heq] using hWV.2
 
-/-- Occurrence is hereditary upwards along geometric reductions. -/
-theorem oneBlockOccurs_of_reduces
-    {y : FiniteFatTree H} {U V : FatTree H}
-    {g : AM H y.terminalCut 1}
-    (hg : OneBlockOccurs H y V g) (hVU : Reduces H V U) :
-    OneBlockOccurs H y U g := by
-  rcases hg with ⟨d, hd⟩
-  exact exists_stemAt_of_reduces H hd hVU
-
 /-- A geometric two-block occurrence includes its first block. -/
 theorem oneBlockOccurs_of_pair
     (y : FiniteFatTree H) (U : FatTree H)
