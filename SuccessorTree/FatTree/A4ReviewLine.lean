@@ -50,10 +50,17 @@ theorem ReviewFanLine.depths_strict
     {chi : AM H c 1 → κ}
     (L : ReviewFanLine H U a trace hend chi) :
     a < L.headDepth ∧ L.headDepth < L.tailDepth := by
-  exact ⟨height_lt_of_appended_stemAt H (U.initialSegment H a) U
-    L.head L.headDepth L.head_geometric,
-    height_lt_of_appended_stemAt H (U.initialSegment H L.headDepth) U
-      L.tail L.tailDepth L.tail_geometric⟩
+  have hhead : a < L.headDepth := by
+    rcases L.head_geometric.1 with ⟨w⟩
+    have h := w.height_le H
+    change a + 1 ≤ L.headDepth at h
+    omega
+  have htail : L.headDepth < L.tailDepth := by
+    rcases L.tail_geometric.1 with ⟨w⟩
+    have h := w.height_le H
+    change L.headDepth + 1 ≤ L.tailDepth at h
+    omega
+  exact ⟨hhead, htail⟩
 
 /-- The review's simultaneous raw-fan construction from a source letter.
 All saturation and Hales--Jewett data are supplied by the tree axioms and
