@@ -31,7 +31,7 @@ theorem review_trace_persistence_of_sourceLetter
       ExtendsStem H (FiniteFatTree.appendRow H y h) V ∧
       ReviewTraceLarge H c n O (FiniteFatTree.appendRow H y h) V := by
   rcases hlarge with ⟨hn, hsrc, hrows⟩
-  apply review_trace_persistence_core H c n O y U hn hsrc hyU hrows
+  apply review_trace_persistence_core H c n O y U hn hsrc hyU
   intro A hAU hyA
   exact review_goodPair_of_sourceLetter H c n y hn hsrc O A hyA Esource
     (oneBlockLarge_mono H hrows hAU hyA)
