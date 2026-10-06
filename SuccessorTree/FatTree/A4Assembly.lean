@@ -7,8 +7,8 @@ import RamseySpace.AbstractEllentuck
 
 The only hypothesis left explicit here is `FixedStemPigeonhole`: the geometric
 pigeonhole theorem for a literal stem. A3 transfers it to an arbitrary stem
-at its original depth, and the abstract library then gives the actual
-Ellentuck-topology conclusions.
+at its original depth, and the abstract library then gives the literal published
+Ellentuck-topology conclusion.
 
 This file deliberately keeps the geometric fixed-stem theorem as an
 explicit parameter, so that the A3 transfer and abstract Ellentuck assembly
@@ -93,7 +93,7 @@ theorem ellentuck_of_fixedStemPigeonhole
     (hP : FixedStemPigeonhole H) :
     RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
       (S := approximationSystem H) :=
-  RamseySpace.abstractEllentuck_onBasicNeighborhoods
-    (ramseySpaceOfFixedStemPigeonhole H hP) (isMetricallyClosed H)
+  RamseySpace.abstractEllentuck_textbook
+    (ramseySpaceOfFixedStemPigeonhole H hP) (isTychonoffClosed H)
 
 end SuccessorTree.SMTree.FatTree
