@@ -2,8 +2,8 @@ name: Verify proof patch
 
 on:
   push:
-    branches: [fat-tree-formalization]
-    paths: [proof-patches/active.patch, .github/workflows/verify-proof-patch.yml]
+    branches: [cleanup-shape-proof-v8]
+    paths: [proof-patches/v8-cleanup.patch, .github/workflows/verify-proof-patch.yml]
   workflow_dispatch:
 
 permissions:
@@ -34,9 +34,9 @@ jobs:
         run: |
           mkdir -p proof-audit
           git rev-parse HEAD > proof-audit/input-commit
-          test -s proof-patches/active.patch
-          git apply --check --index proof-patches/active.patch
-          git apply --index proof-patches/active.patch
+          test -s proof-patches/v8-cleanup.patch
+          git apply --check --index proof-patches/v8-cleanup.patch
+          git apply --index proof-patches/v8-cleanup.patch
           git diff --cached --check
       - name: Prepare exact Lean toolchain
         run: |
@@ -51,10 +51,12 @@ jobs:
           set -o pipefail
           lake build 2>&1 | tee proof-audit/build.log
           if grep -E "declaration uses .sorry.|sorryAx|error:" proof-audit/build.log; then exit 1; fi
-      - name: Audit proof axioms
+      - name: Audit proof routes and axioms
         run: |
           export PATH="$HOME/.elan/bin:$PATH"
           set -o pipefail
+          lake env lean scripts/CheckShapeProofRoutes.lean | tee proof-audit/shape-proof-routes.log
+          python3 scripts/check-axiom-log.py proof-audit/shape-proof-routes.log 8
           for f in scripts/CheckShapeRamsey.lean scripts/CheckFatTree*.lean; do
             lake env lean "$f"
           done | tee proof-audit/axioms.log
@@ -75,7 +77,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Apply fully checked fat-tree proof repairs'
+          git commit -m 'Simplify shape realization and padding; audit independent proof routes'
           git rev-parse HEAD > proof-audit/verified-commit
           git push origin HEAD:"$GITHUB_REF_NAME"
       - name: Record tested sources
