@@ -5,6 +5,7 @@ on:
     branches: [shape-ellentuck-formalization]
     paths:
       - 'SuccessorTree/RamseySpace/**'
+      - 'SuccessorTree/FatTree/CanonicalMap.lean'
       - 'SuccessorTree/FatTree/ShapeTransfer.lean'
       - 'SuccessorTree.lean'
       - 'scripts/CheckShapeEllentuck.lean'
@@ -42,7 +43,7 @@ jobs:
       - name: Download Mathlib cache
         run: lake exe cache get
       - name: Build endpoint
-        run: lake build SuccessorTree.RamseySpace.Ellentuck
+        run: lake build SuccessorTree.FatTree.ShapeTransfer
       - name: Audit endpoint axioms
         run: |
           set -o pipefail
@@ -52,8 +53,8 @@ jobs:
           import re
           text = Path('shape-ellentuck-audit.log').read_text()
           reports = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text, re.S)
-          if len(reports) != 7:
-              raise SystemExit(f'Expected 7 axiom reports, got {len(reports)}')
+          if len(reports) != 13:
+              raise SystemExit(f'Expected 13 axiom reports, got {len(reports)}')
           allowed = {'propext', 'Classical.choice', 'Quot.sound'}
           for report in reports:
               actual = {x.strip() for x in report.split(',') if x.strip()}
@@ -61,7 +62,7 @@ jobs:
                   raise SystemExit(f'Unexpected theorem axioms: {actual - allowed}')
           if 'sorryAx' in text or re.search(r'\berror:', text):
               raise SystemExit('Axiom audit contains an error or admitted proof')
-          print('PASS: optional shape Ellentuck endpoint uses standard Lean axioms only')
+          print('PASS: shape Ellentuck and fat-transfer endpoints use standard Lean axioms only')
           PY
       - uses: actions/upload-artifact@v4
         if: always()
