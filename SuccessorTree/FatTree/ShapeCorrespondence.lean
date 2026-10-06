@@ -180,6 +180,7 @@ theorem canonicalExtension_associatedMap
     (U : FatTree H) (i : Nat) :
     H.canonicalExtension (associatedMap H U) i =
       partialMap H U (i + 1) := by
+  symm
   apply H.canonicalExtension_unique (associatedMap H U)
     (partialMap H U (i + 1)) i
   · intro x hx
