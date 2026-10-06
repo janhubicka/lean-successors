@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Cache Lean toolchain
@@ -38,52 +38,103 @@ jobs:
         run: lake exe cache get
       - name: Build
         run: |
-          set -o pipefail
           mkdir -p proof-audit
-          lake build 2>&1 | tee proof-audit/build.log
+          if ! lake build > proof-audit/build.log 2>&1; then
+            cat proof-audit/build.log
+            exit 1
+          fi
+          python3 - <<'PY'
+          from pathlib import Path
+          text = Path("proof-audit/build.log").read_text(encoding="utf-8")
+          warnings = sum("warning:" in line for line in text.splitlines())
+          hints = sum("Hint:" in line for line in text.splitlines())
+          print(f"PASS: full build ({warnings} warning lines, {hints} hints; full log in artifact)")
+          PY
 
       - name: Check shape Ramsey statement and axioms
         run: |
           set -o pipefail
-          lake env lean scripts/CheckShapeRamsey.lean 2>&1 | tee proof-audit/axioms.log
-          python3 scripts/check-axiom-log.py proof-audit/axioms.log 8
+          if ! lake env lean scripts/CheckShapeRamsey.lean > proof-audit/axioms.log 2>&1; then
+            cat proof-audit/axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/axioms.log 8 || {
+            cat proof-audit/axioms.log
+            exit 1
+          }
       - name: Check fat-tree A1 sequencing axioms
         if: always()
         run: |
           set -o pipefail
           mkdir -p proof-audit
-          lake env lean scripts/CheckFatTreeA1.lean 2>&1 | tee proof-audit/fat-tree-a1-axioms.log
-          python3 scripts/check-axiom-log.py proof-audit/fat-tree-a1-axioms.log 3
+          if ! lake env lean scripts/CheckFatTreeA1.lean > proof-audit/fat-tree-a1-axioms.log 2>&1; then
+            cat proof-audit/fat-tree-a1-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/fat-tree-a1-axioms.log 3 || {
+            cat proof-audit/fat-tree-a1-axioms.log
+            exit 1
+          }
       - name: Check fat-tree structural statements and axioms
         if: always()
         run: |
           set -o pipefail
-          lake env lean scripts/CheckFatTree.lean 2>&1 | tee proof-audit/fat-tree-axioms.log
-          python3 scripts/check-axiom-log.py proof-audit/fat-tree-axioms.log 14
+          if ! lake env lean scripts/CheckFatTree.lean > proof-audit/fat-tree-axioms.log 2>&1; then
+            cat proof-audit/fat-tree-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/fat-tree-axioms.log 14 || {
+            cat proof-audit/fat-tree-axioms.log
+            exit 1
+          }
       - name: Check fat-tree A3 splice statements and axioms
         if: always()
         run: |
           set -o pipefail
-          lake env lean scripts/CheckFatTreeA3.lean 2>&1 | tee proof-audit/fat-tree-a3-axioms.log
-          python3 scripts/check-axiom-log.py proof-audit/fat-tree-a3-axioms.log 7
+          if ! lake env lean scripts/CheckFatTreeA3.lean > proof-audit/fat-tree-a3-axioms.log 2>&1; then
+            cat proof-audit/fat-tree-a3-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/fat-tree-a3-axioms.log 7 || {
+            cat proof-audit/fat-tree-a3-axioms.log
+            exit 1
+          }
       - name: Check fat-tree A4 bridge axioms
         if: always()
         run: |
           set -o pipefail
-          lake env lean scripts/CheckFatTreeA4.lean 2>&1 | tee proof-audit/fat-tree-a4-axioms.log
-          python3 scripts/check-axiom-log.py proof-audit/fat-tree-a4-axioms.log 10
+          if ! lake env lean scripts/CheckFatTreeA4.lean > proof-audit/fat-tree-a4-axioms.log 2>&1; then
+            cat proof-audit/fat-tree-a4-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/fat-tree-a4-axioms.log 10 || {
+            cat proof-audit/fat-tree-a4-axioms.log
+            exit 1
+          }
       - name: Check intermediate fat-tree replay axioms
         if: always()
         run: |
           set -o pipefail
-          lake env lean scripts/CheckFatTreeReplay.lean 2>&1 | tee proof-audit/fat-tree-replay-axioms.log
-          python3 scripts/check-axiom-log.py proof-audit/fat-tree-replay-axioms.log 13
+          if ! lake env lean scripts/CheckFatTreeReplay.lean > proof-audit/fat-tree-replay-axioms.log 2>&1; then
+            cat proof-audit/fat-tree-replay-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/fat-tree-replay-axioms.log 13 || {
+            cat proof-audit/fat-tree-replay-axioms.log
+            exit 1
+          }
       - name: Check coverage and conditional assembly interface
         if: always()
         run: |
           set -o pipefail
-          lake env lean scripts/CheckFatTreeFirstApplication.lean 2>&1 | tee proof-audit/fat-tree-first-application.log
-          python3 scripts/check-axiom-log.py proof-audit/fat-tree-first-application.log 9
+          if ! lake env lean scripts/CheckFatTreeFirstApplication.lean > proof-audit/fat-tree-first-application.log 2>&1; then
+            cat proof-audit/fat-tree-first-application.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/fat-tree-first-application.log 9 || {
+            cat proof-audit/fat-tree-first-application.log
+            exit 1
+          }
           echo 'A4Assembly is deliberately conditional; A4ReviewComplete discharges FixedStemPigeonhole unconditionally.'
       - name: Check localized manuscript patches
         if: always()
@@ -103,13 +154,13 @@ jobs:
           git diff "$BASE" HEAD -- SuccessorTree.lean SuccessorTree scripts manuscript docs .github/workflows/lean.yml lakefile.toml > proof-audit/shape-ramsey-completion.patch
           git diff "$MERGE_BASE" HEAD -- SuccessorTree.lean SuccessorTree scripts manuscript docs .github/workflows/lean.yml lakefile.toml > proof-audit/shape-ramsey-branch.patch
           mkdir -p proof-audit/lean-progress-series
-          git format-patch --output-directory proof-audit/lean-progress-series edf623cca331b08e1fc17fb3010d312714caf7c8..HEAD
+          git format-patch --quiet --output-directory proof-audit/lean-progress-series edf623cca331b08e1fc17fb3010d312714caf7c8..HEAD
           if test -d manuscript; then cp -R manuscript proof-audit/; fi
           if test -f docs/shape-ramsey-audit.md; then cp docs/shape-ramsey-audit.md proof-audit/; fi
           (cd proof-audit && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
       - name: Upload proof audit and patches
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: shape-ramsey-proof-audit
           path: proof-audit/
