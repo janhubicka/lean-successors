@@ -34,20 +34,34 @@ theorem ellentuck_review :
       (S := approximationSystem H) :=
   ellentuck_of_fixedStemPigeonhole H (fixedStemPigeonhole_review H)
 
-/-- Final public A4 endpoint.  The `review` suffix on the construction
-lemmas is historical; no additional hypothesis remains here. -/
-theorem fatTreeA4 : FixedStemPigeonhole H :=
+/-- Final public geometric fixed-stem pigeonhole theorem.  The `review`
+suffix on the construction lemmas is historical; no additional hypothesis
+remains here. -/
+theorem fatTreeFixedStemPigeonhole : FixedStemPigeonhole H :=
   fixedStemPigeonhole_review H
+
+/-- Final public Todorčević A4 theorem for the typed fat-tree approximation
+space. -/
+theorem fatTreeA4
+    {n : Nat} (a : (approximationSystem H).Approx n)
+    (B : FatTree H) {d : Nat}
+    (hd : (finitization H).HasDepth a B d)
+    (O : Set ((approximationSystem H).Approx (n + 1))) :
+    ∃ V, V ∈ (approximationSystem H).levelNeighborhood d B ∧
+      ((approximationSystem H).oneStepApproximations a V ⊆ O ∨
+        Disjoint ((approximationSystem H).oneStepApproximations a V) O) :=
+  typed_pigeonhole_of_fixedStem H (fatTreeFixedStemPigeonhole H) a B hd O
 
 /-- Final public A1--A4 structure for fat trees. -/
 noncomputable def fatTreeAbstractRamseySpace :
     RamseySpace.AbstractRamseySpace (approximationSystem H) :=
-  ramseySpaceOfFixedStemPigeonhole H (fatTreeA4 H)
+  ramseySpaceOfFixedStemPigeonhole H (fatTreeFixedStemPigeonhole H)
 
 /-- Final public Ellentuck endpoint for the fat-tree space. -/
 theorem fatTreeEllentuck :
     RamseySpace.IsTopologicalRamseySpaceOnBasicNeighborhoods
       (S := approximationSystem H) :=
-  ellentuck_of_fixedStemPigeonhole H (fatTreeA4 H)
+  RamseySpace.abstractEllentuck_onBasicNeighborhoods
+    (fatTreeAbstractRamseySpace H) (isMetricallyClosed H)
 
 end SuccessorTree.SMTree.FatTree
