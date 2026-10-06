@@ -51,7 +51,7 @@ jobs:
           import re
           text=Path("referee-a.log").read_text()
           reports=re.findall(r"depends on axioms:\s*\[([^\]]*)\]",text,re.S)
-          assert len(reports)==3, len(reports)
+          assert len(reports)==4, len(reports)
           allowed={"propext","Classical.choice","Quot.sound"}
           for report in reports:
               actual={x.strip() for x in report.split(",") if x.strip()}
@@ -94,7 +94,7 @@ jobs:
           import re
           text=Path("referee-b.log").read_text()
           reports=re.findall(r"depends on axioms:\s*\[([^\]]*)\]",text,re.S)
-          assert len(reports)==5, len(reports)
+          assert len(reports)==6, len(reports)
           allowed={"propext","Classical.choice","Quot.sound"}
           for report in reports:
               actual={x.strip() for x in report.split(",") if x.strip()}
