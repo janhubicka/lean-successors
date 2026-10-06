@@ -374,7 +374,10 @@ theorem shapeAct_tail_oneBlockOccurs
       FatTree.castRow H hc.symm (H.shapeAct c W r) =
         tailCoordinateRow H U n r0 := by
     exact cast_shapeAct_tail_eq H U n c hc r
-  exact heq.symm ▸ hocc
+  change OneBlockOccurs H (U.initialSegment H n) U
+    (FatTree.castRow H hc.symm (H.shapeAct c W r))
+  rw [heq]
+  exact hocc
 
 
 end FatTree
