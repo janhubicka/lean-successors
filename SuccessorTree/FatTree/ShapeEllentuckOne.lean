@@ -1,4 +1,5 @@
 import SuccessorTree.FatTree.ShapeRealization
+import SuccessorTree.ShapeLocalPigeonhole
 
 /-!
 # One-dimensional shape Ramsey theorem from fat-tree Ellentuck
@@ -138,6 +139,15 @@ theorem shapeOneDimensionalRamsey_viaFatEllentuck
   obtain ⟨Xg, hXg, hcg⟩ := realize g
   obtain ⟨Xh, hXh, hch⟩ := realize h
   exact hcg.symm.trans ((hhom Xg hXg Xh hXh).trans hch)
+
+
+/-- The local one-step pigeonhole principle obtained from fat-tree Ellentuck. -/
+theorem shapeLocalPigeonhole_viaFatEllentuck
+    {κ : Type w} [Fintype κ]
+    (colour : StepColouring H κ) :
+    LocalPigeonhole H colour :=
+  H.shapeLocalPigeonhole_of_oneDimensional colour
+    (fun m c => shapeOneDimensionalRamsey_viaFatEllentuck H m c)
 
 end FatTree
 end SMTree
