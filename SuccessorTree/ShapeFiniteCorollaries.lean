@@ -223,8 +223,9 @@ private theorem padding_levelMap_id
 noncomputable def paddingLetter
     (H : SMTree S) (t : Nat) (ht : 0 < t) :
     OneLevelLetter H t := by
-  obtain ⟨D, hD, hskip, _⟩ := H.m3 0 t ht
-  exact ⟨⟨D, hD⟩, hskip⟩
+  let D : ShapeMap S := Classical.choose (H.m3 0 t ht)
+  have hD := Classical.choose_spec (H.m3 0 t ht)
+  exact ⟨⟨D, hD.1⟩, hD.2.1⟩
 
 /-- Product of the consecutive M3 insertions at t,...,t+s-1. -/
 noncomputable def paddingMap
