@@ -40,9 +40,10 @@ theorem height_lt_of_appended_stemAt
   change y.height + 1 ≤ k at h
   omega
 
-/-- Last-block coverage of the all-trace invariant. Positivity is precisely
-the source-successor hypothesis of the existing last-block factorisation;
-the root case remains separate. -/
+/-- Last-block coverage of the all-trace invariant.  The exact hypothesis is
+that every node on the original source cut has an immediate successor.  A
+source letter supplies this at a moving root; the no-letter root case is
+handled separately by row uniqueness. -/
 theorem oneBlock_mem_of_all_fixedTraceGoodRows_of_successors
     (y : FiniteFatTree H) (U : FatTree H)
     (hyU : ExtendsStem H y U)
