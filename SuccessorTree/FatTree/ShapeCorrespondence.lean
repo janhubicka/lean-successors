@@ -158,6 +158,22 @@ theorem associatedMap_apply (U : FatTree H) (x : T) :
       partialMap H U (LevelTree.lev x + 1) x := by
   rfl
 
+/-- The associated map has exactly the level function stated in the paper. -/
+theorem associatedMap_level (U : FatTree H) (i : Nat) :
+    H.levelMap (associatedMap H U).map i =
+      U.cut (i + 1) - 1 := by
+  obtain ⟨x, hx⟩ := H.level_nonempty i
+  calc
+    H.levelMap (associatedMap H U).map i =
+        LevelTree.lev (associatedMap H U x) := by
+      simpa [hx] using H.levelMap_eq (associatedMap H U).map (a := x)
+    _ = LevelTree.lev (partialMap H U (i + 1) x) := by
+      rw [associatedMap_apply, hx]
+    _ = H.levelMap (partialMap H U (i + 1)).map i := by
+      simpa [hx] using
+        (H.levelMap_eq (partialMap H U (i + 1)).map (a := x)).symm
+    _ = U.cut (i + 1) - 1 := partialMap_level_last H U i
+
 /-- The canonical extension of the associated map through source level i
 is exactly the product of the first i+1 fat-tree rows. -/
 theorem canonicalExtension_associatedMap
@@ -192,22 +208,6 @@ theorem canonicalExtension_associatedMap
       rw [← H.range_levelMap]
       refine ⟨i + 1 + k, ?_⟩
       simpa [hk] using partialMap_level_tail H U (i + 1) k
-
-/-- The associated map has exactly the level function stated in the paper. -/
-theorem associatedMap_level (U : FatTree H) (i : Nat) :
-    H.levelMap (associatedMap H U).map i =
-      U.cut (i + 1) - 1 := by
-  obtain ⟨x, hx⟩ := H.level_nonempty i
-  calc
-    H.levelMap (associatedMap H U).map i =
-        LevelTree.lev (associatedMap H U x) := by
-      simpa [hx] using H.levelMap_eq (associatedMap H U).map (a := x)
-    _ = LevelTree.lev (partialMap H U (i + 1) x) := by
-      rw [associatedMap_apply, hx]
-    _ = H.levelMap (partialMap H U (i + 1)).map i := by
-      simpa [hx] using
-        (H.levelMap_eq (partialMap H U (i + 1)).map (a := x)).symm
-    _ = U.cut (i + 1) - 1 := partialMap_level_last H U i
 
 end FatTree
 
