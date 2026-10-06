@@ -618,7 +618,7 @@ theorem exists_globallySaturated_from
             GloballySaturated H U a trace hend K
         · exact ⟨K, ReachableFrom.refl, hglobal⟩
         · unfold GloballySaturated at hglobal
-          push_neg at hglobal
+          push Not at hglobal
           rcases hglobal with ⟨M, hKM, hMnew⟩
           rcases reachable_first_new H U a trace hend hKM hMnew with
             ⟨P, E, hKP, hPsub, hEnewK⟩
