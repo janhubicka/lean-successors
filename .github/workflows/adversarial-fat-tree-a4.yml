@@ -83,6 +83,8 @@ jobs:
         run: lake update
       - name: Download Mathlib cache
         run: lake exe cache get
+      - name: Build final endpoint
+        run: lake build SuccessorTree.FatTree.A4ReviewComplete
       - name: Run edge-case audit
         run: |
           set -o pipefail
