@@ -9,8 +9,9 @@ depth. The accepted head is then selected by exact-depth persistence.
 Canonical transport of raw fans proves that its common tail is good after
 EVERY raw trace update. This file does not assume the good-pair principle.
 
-The current geometric factorisation interface requires a positive terminal
-cut of the finite prefix. The root cases remain separate.
+The geometric factorisation only needs an immediate successor on the source
+cut.  An explicit source letter supplies this also at cut zero; the no-letter
+root case is handled separately in the final theorem.
 -/
 
 namespace SuccessorTree.SMTree.FatTree
@@ -47,8 +48,9 @@ theorem review_composeAcross_cast_source {c c' d : Nat}
   cases hc
   rfl
 
-/-- A good pair for any nonempty finite family of exact traces, at a
-positive current cut. Neither the local good-pair lemma nor A4 is assumed. -/
+/-- A good pair for any nonempty finite family of exact traces from a prefix
+whose source cut carries a one-level letter.  Neither A4 nor a global
+good-pair principle is assumed. -/
 theorem review_goodPair_finite_family_of_sourceLetter
     {c : Nat} {C : Type w} [Fintype C] [Nonempty C]
     (y : FiniteFatTree H) (U : FatTree H) (hyU : ExtendsStem H y U)
