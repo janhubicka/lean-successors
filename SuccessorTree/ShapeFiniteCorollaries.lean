@@ -490,5 +490,85 @@ theorem padApproxTo_comp_exact
     _ = rhs.1 := rhs.representative_top H
 
 
+
+/-- Exact-terminal finite Ramsey conclusion at a fixed ambient level. -/
+def ExactRamseyAt
+    (H : SMTree S) (κ : Type w) (n k m N : Nat)
+    (hm : 0 < m) (hk : 0 < k) : Prop :=
+  ∀ colour : AM.At H n k N → κ,
+    ∃ f : AM.At H n m N,
+      ∀ g h : AM.At H n k (n + m - 1),
+        colour (exactComp H hm hk f g) =
+          colour (exactComp H hm hk f h)
+
+/-- Corollary 1.8 away from the unique terminal-level-zero boundary case. -/
+theorem shapeRamsey_exact_of_two_le
+    {κ : Type w} [Fintype κ] [Nonempty κ]
+    (H : SMTree S) (n k m : Nat)
+    (hk : 0 < k) (hm : 0 < m)
+    (htwo : 2 ≤ n + m) :
+    ∃ N : Nat, ExactRamseyAt H κ n k m N hm hk := by
+  classical
+  obtain ⟨N, hN⟩ :=
+    shapeRamsey_bounded (κ := κ) H n k m hk hm
+  refine ⟨N, ?_⟩
+  intro colour
+
+  let default : κ := Classical.choice (inferInstance : Nonempty κ)
+  let extended : AM.AtMost H n k N → κ :=
+    fun a =>
+      if ht : 0 < a.1.terminalLevel H then
+        colour (padApproxTo H hk a ht)
+      else default
+
+  obtain ⟨f, hf⟩ := hN extended
+
+  have hft : 0 < f.1.terminalLevel H := by
+    have hlast := f.1.sourceLast_le_terminalLevel H hm
+    omega
+
+  let F : AM.At H n m N := padApproxTo H hm f hft
+  refine ⟨F, ?_⟩
+  intro g h
+
+  let gb : AM.Below H n k (n + m) :=
+    ⟨g.1, by rw [g.2]; omega⟩
+  let hb : AM.Below H n k (n + m) :=
+    ⟨h.1, by rw [h.2]; omega⟩
+
+  have hgbpos :
+      0 < (boundedComp H hm hk f gb).1.terminalLevel H := by
+    rw [boundedComp_terminal_eq H hm hk f g]
+    exact hft
+  have hhbpos :
+      0 < (boundedComp H hm hk f hb).1.terminalLevel H := by
+    rw [boundedComp_terminal_eq H hm hk f h]
+    exact hft
+
+  have hhom := hf gb hb
+  change
+    extended (boundedComp H hm hk f gb) =
+      extended (boundedComp H hm hk f hb) at hhom
+  dsimp only [extended] at hhom
+  rw [dif_pos hgbpos, dif_pos hhbpos] at hhom
+
+  have hpadg :=
+    congrArg colour (padApproxTo_comp_exact H hm hk f hft g)
+  have hpadh :=
+    congrArg colour (padApproxTo_comp_exact H hm hk f hft h)
+
+  calc
+    colour (exactComp H hm hk F g) =
+        colour
+          (padApproxTo H hk
+            (boundedComp H hm hk f gb) hgbpos) := by
+      simpa [F, gb] using hpadg
+    _ = colour
+          (padApproxTo H hk
+            (boundedComp H hm hk f hb) hhbpos) := hhom
+    _ = colour (exactComp H hm hk F h) := by
+      simpa [F, hb] using hpadh.symm
+
+
 end SMTree
 end SuccessorTree
