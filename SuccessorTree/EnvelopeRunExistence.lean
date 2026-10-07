@@ -40,6 +40,8 @@ noncomputable def constructionState
   | d + 1 =>
       let prev := constructionState H X ell d
       let i := ell - (d + 1)
+      letI : Decidable (IsInterestingAt H (closure S prev.1 X) i) :=
+        Classical.propDecidable _
       if h : IsInterestingAt H (closure S prev.1 X) i then
         (insert i prev.1, prev.2)
       else
