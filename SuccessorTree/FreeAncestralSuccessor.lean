@@ -301,14 +301,6 @@ theorem freeSucc_s3
   obtain ⟨t, c, rfl⟩ := exists_child_of_covBy hab
   exact ⟨paramNodes a t, c, freeSucc_paramNodes a t c⟩
 
-/-- The free ancestral successor tree. -/
-noncomputable def freeSTree :
-    STree (Node Label arity) Label where
-  succ := freeSucc
-  s1 := freeSucc_s1
-  s2 := freeSucc_s2
-  s3 := freeSucc_s3
-
 theorem freeSucc_s1
     {a b : Node Label arity}
     {p : List (Node Label arity)}
@@ -321,6 +313,14 @@ theorem freeSucc_s1
   intro x hx
   apply mem_paramNodes_level_lt (t := t)
   simpa [htp] using hx
+
+/-- The free ancestral successor tree. -/
+noncomputable def freeSTree :
+    STree (Node Label arity) Label where
+  succ := freeSucc
+  s1 := freeSucc_s1
+  s2 := freeSucc_s2
+  s3 := freeSucc_s3
 
 end FreeAncestral
 end SuccessorTree
