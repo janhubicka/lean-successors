@@ -52,17 +52,20 @@ theorem oneGapShapeMap_skipsOnly
         k ≠ m
   constructor
   · rintro ⟨x, hx⟩ hkm
-    subst k
+    have hxM :
+        (gapNode m choose x).level = m := by
+      rw [← oneGapShapeMap_apply]
+      exact hx.trans hkm
     by_cases hlt : x.level < m
     · have hlev :=
         gapNode_level_of_lt m choose hlt
-      rw [oneGapShapeMap_apply] at hx
+      rw [hlev] at hxM
       omega
     · have hge : m ≤ x.level :=
         Nat.le_of_not_gt hlt
       have hlev :=
         gapNode_level_of_ge m choose hge
-      rw [oneGapShapeMap_apply] at hx
+      rw [hlev] at hxM
       omega
   · intro hkm
     by_cases hlt : k < m
