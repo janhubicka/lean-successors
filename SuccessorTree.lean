@@ -80,3 +80,4 @@ import SuccessorTree.EnvelopeAlgorithm
 import SuccessorTree.EnvelopeStage
 import SuccessorTree.EnvelopeInvariant
 import SuccessorTree.EnvelopeMinimal
+import SuccessorTree.EnvelopePrefix
