@@ -1,0 +1,25 @@
+name: Successor v8 type audit
+
+on:
+  push:
+    paths:
+      - "scripts/successor_boring_type_validation.py"
+      - "manuscript/annotate_successors_v8.py"
+      - "docs/v8-envelope-and-boring-type-audit-20261008.md"
+      - ".github/workflows/successor-v8-type-audit.yml"
+  pull_request:
+    paths:
+      - "scripts/successor_boring_type_validation.py"
+      - "manuscript/annotate_successors_v8.py"
+      - "docs/v8-envelope-and-boring-type-audit-20261008.md"
+      - ".github/workflows/successor-v8-type-audit.yml"
+
+jobs:
+  counterexample:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify scripts compile
+        run: python3 -m py_compile scripts/successor_boring_type_validation.py manuscript/annotate_successors_v8.py
+      - name: Verify boring-extension obstruction
+        run: python3 scripts/successor_boring_type_validation.py
