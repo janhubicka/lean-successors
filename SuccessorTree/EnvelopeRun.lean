@@ -110,7 +110,7 @@ theorem nextI_eq
     have hrep : q ∈ representedLevels (R.F (i + 1)).map (i + 1) ell := by
       rw [← hnext.1.2.2]
       exact hq
-    omega
+    exact lt_of_lt_of_le (Nat.lt_succ_self i) hrep.2.1
   by_cases hinter :
       IsInterestingAt H (closure S (R.I (i + 1)) X) i
   · rcases R.interesting_step i hilt hinter with ⟨hI, _⟩
@@ -122,7 +122,7 @@ theorem nextI_eq
       rw [hI] at hq
       rcases hq with hqi | hq
       · subst q
-        omega
+        exact False.elim ((Nat.lt_irrefl i) hiq)
       · exact hq
   · rcases R.noninteresting_step i hilt hinter with
       ⟨D, hDskip, hDcross, hI, hF⟩
@@ -159,12 +159,12 @@ theorem I_eq_final_tail
       · intro hq
         have hpair := hn.mp hq
         have hfinal := hp.mp hpair.1
-        exact ⟨hfinal.1, by omega⟩
+        exact ⟨hfinal.1, Nat.succ_le_iff.mpr hpair.2⟩
       · intro hq
         apply hn.mpr
-        refine ⟨?_, by omega⟩
+        refine ⟨?_, Nat.lt_of_succ_le hq.2⟩
         apply hp.mpr
-        exact ⟨hq.1, by omega⟩
+        exact ⟨hq.1, Nat.le_trans (Nat.le_succ i) hq.2⟩
 
 /-- The next-stage level set is the final set of selected levels above i. -/
 theorem I_succ_eq_higher_final
@@ -176,7 +176,7 @@ theorem I_succ_eq_higher_final
   have htail := R.I_eq_final_tail hE1 hXbound (i + 1) (by omega)
   rw [htail]
   ext q
-  simp only [Set.mem_setOf_eq, higherLevels]
+  simp only [Set.mem_ofPred_eq, higherLevels]
   constructor
   · rintro ⟨hq, hiq⟩
     exact ⟨hq, by omega⟩
