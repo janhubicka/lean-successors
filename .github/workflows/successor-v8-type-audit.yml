@@ -7,6 +7,7 @@ on:
       - "manuscript/annotate_successors_v8.py"
       - "docs/v8-envelope-and-boring-type-audit-20261008.md"
       - ".github/workflows/successor-v8-type-audit.yml"
+      - "tests/test_v8_annotation.py"
   pull_request:
     paths:
       - "scripts/successor_boring_type_validation.py"
@@ -23,3 +24,5 @@ jobs:
         run: python3 -m py_compile scripts/successor_boring_type_validation.py manuscript/annotate_successors_v8.py
       - name: Verify boring-extension obstruction
         run: python3 scripts/successor_boring_type_validation.py
+      - name: Verify annotation safety and idempotence
+        run: python3 -m unittest discover -s tests -p 'test_v8_annotation.py' -v
