@@ -137,11 +137,16 @@ theorem map_level_paramNodes
     (t : ParamTuple arity a.level) :
     (paramNodes a t).map Node.level = levelList t := by
   simp only [paramNodes, levelList, List.map_ofFn]
-  apply List.ofFn_injective
-  funext j
-  simpa only [Node.level] using
-    (LevelTree.level_ancestor
-      a (t.value j).val (Nat.le_of_lt (t.value j).isLt))
+  have hfun :
+      (Node.level ∘ fun j =>
+        LevelTree.ancestor a (t.value j).val
+          (Nat.le_of_lt (t.value j).isLt)) =
+        (fun j => (t.value j).val) := by
+    funext j
+    simpa only [Node.level] using
+      (LevelTree.level_ancestor
+        a (t.value j).val (Nat.le_of_lt (t.value j).isLt))
+  exact congrArg List.ofFn hfun
 
 theorem levelList_injective :
     Function.Injective (levelList : ParamTuple arity n → List Nat) := by
