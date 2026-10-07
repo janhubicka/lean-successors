@@ -106,9 +106,37 @@ noncomputable def m2InnerParamTupleAt
         x.level = n → (F x).level = h + 1)
     (a : Node Label arity)
     (t : ParamTuple arity a.level) :
-    ParamTuple arity (m2InnerNode F n h hskip hlevel a).level :=
-  (m2InnerNode_level F n h hskip hlevel a).symm ▸
-    m2InnerParamTuple F n h hskip hlevel a.level t
+    ParamTuple arity (m2InnerNode F n h hskip hlevel a).level where
+  len := t.len
+  value := fun j =>
+    ⟨m2InnerLevel F n h (t.value j).val, by
+      rw [m2InnerNode_level]
+      exact m2InnerLevel_strictMono F n h hskip hlevel
+        (t.value j).isLt⟩
+
+@[simp] theorem m2InnerParamTupleAt_len
+    (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
+    (n h : Nat)
+    (hskip : F.Skips h)
+    (hlevel :
+      ∀ x : Node Label arity,
+        x.level = n → (F x).level = h + 1)
+    (a : Node Label arity)
+    (t : ParamTuple arity a.level) :
+    (m2InnerParamTupleAt F n h hskip hlevel a t).len = t.len := rfl
+
+@[simp] theorem m2InnerParamTupleAt_value_val
+    (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
+    (n h : Nat)
+    (hskip : F.Skips h)
+    (hlevel :
+      ∀ x : Node Label arity,
+        x.level = n → (F x).level = h + 1)
+    (a : Node Label arity)
+    (t : ParamTuple arity a.level)
+    (j : Fin t.len.val) :
+    ((m2InnerParamTupleAt F n h hskip hlevel a t).value j).val =
+      m2InnerLevel F n h (t.value j).val := rfl
 
 theorem m2InnerNode_eq_F_of_lt
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
@@ -192,16 +220,12 @@ theorem m2InnerNode_child_of_ge
   rw [dif_neg (by omega : ¬ k + 1 = n)]
   let gp :=
     m2InnerNodeAux F n h hskip hlevel k hist
-  change
-    child gp.1
-        (gp.2.symm ▸
-          m2InnerParamTuple F n h hskip hlevel k t) c =
-      child gp.1
-        (m2InnerParamTupleAt
-          F n h hskip hlevel
-          (⟨k, hist⟩ : Node Label arity) t) c
-  unfold m2InnerParamTupleAt
-  rfl
+  congr 1
+  apply ParamTuple.ext
+  · rfl
+  · funext j
+    apply Fin.ext
+    rfl
 
 end FreeAncestral
 end SuccessorTree
