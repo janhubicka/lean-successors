@@ -10,6 +10,7 @@ import SuccessorTree.FreeAncestral
 import SuccessorTree.FreeAncestralOrder
 import SuccessorTree.FreeAncestralLevelTree
 import SuccessorTree.FreeAncestralSuccessor
+import SuccessorTree.FreeAncestralCover
 import SuccessorTree.FreeAncestralGap
 import SuccessorTree.FreeAncestralGapMap
 import SuccessorTree.FreeAncestralGapShape
