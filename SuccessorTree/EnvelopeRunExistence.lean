@@ -132,10 +132,9 @@ noncomputable def canonicalAlgorithmRun
     constructor
     · simp only [constructionI, if_pos hi, if_pos hi1]
       rw [hdist, hstep]
-      simp [d]
+      simpa [hidx]
     · simp only [constructionF, if_pos hi, if_pos hi1]
       rw [hdist, hstep]
-      simp [d]
   noninteresting_step := by
     intro i hilt hinter
     have hi : i ≤ ell := Nat.le_of_lt hilt
@@ -173,10 +172,8 @@ noncomputable def canonicalAlgorithmRun
     refine ⟨D, hDskip, hDcross, ?_, ?_⟩
     · simp only [constructionI, if_pos hi, if_pos hi1]
       rw [hdist, hstep]
-      simp [d]
     · simp only [constructionF, if_pos hi, if_pos hi1]
       rw [hdist, hstep]
-      simp [d]
 
 /-- Algorithm 5.4 always has a run. -/
 theorem algorithmRun_nonempty
