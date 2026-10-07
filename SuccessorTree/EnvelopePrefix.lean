@@ -1,4 +1,5 @@
-import SuccessorTree.EnvelopeMinimal
+import SuccessorTree.Envelope
+import SuccessorTree.Approximation
 import Mathlib.Tactic
 
 /-!
