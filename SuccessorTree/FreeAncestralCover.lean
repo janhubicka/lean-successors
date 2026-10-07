@@ -43,9 +43,15 @@ theorem freeSucc_cover
         (paramNodes a (coverTuple hab))
         (coverLabel hab) =
       some b := by
-  rw [cover_eq_child hab]
-  exact freeSucc_paramNodes
-    a (coverTuple hab) (coverLabel hab)
+  calc
+    freeSucc a
+        (paramNodes a (coverTuple hab))
+        (coverLabel hab) =
+      some (child a (coverTuple hab) (coverLabel hab)) :=
+        freeSucc_paramNodes
+          a (coverTuple hab) (coverLabel hab)
+    _ = some b :=
+      congrArg some (cover_eq_child hab).symm
 
 theorem cover_data_eq_of_child
     {a b : Node Label arity}
@@ -56,8 +62,8 @@ theorem cover_data_eq_of_child
     coverTuple hab = t ∧ coverLabel hab = c := by
   have hchild :
       child a (coverTuple hab) (coverLabel hab) =
-        child a t c := by
-    rw [← cover_eq_child hab, ← hbc]
+        child a t c :=
+    (cover_eq_child hab).symm.trans hbc
   exact child_eq_data hchild
 
 end FreeAncestral
