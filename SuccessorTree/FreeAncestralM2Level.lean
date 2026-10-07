@@ -29,16 +29,27 @@ theorem imageLevel_eq
     (hx : x.level = k) :
     (F x).level = imageLevel F k := by
   unfold imageLevel
-  apply F.level_eq_of_level_eq
-  simpa [canonicalNode_level] using hx
+  change
+    LevelTree.lev (F x) =
+      LevelTree.lev
+        (F (canonicalNode (Label := Label) (arity := arity) k))
+  exact F.level_eq_of_level_eq (by
+    change x.level = k
+    exact hx)
 
 theorem imageLevel_strictMono
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity))) :
     StrictMono (imageLevel F) := by
   intro i j hij
   unfold imageLevel
+  change
+    LevelTree.lev
+        (F (canonicalNode (Label := Label) (arity := arity) i)) <
+      LevelTree.lev
+        (F (canonicalNode (Label := Label) (arity := arity) j))
   apply F.level_lt_of_level_lt
-  simpa using hij
+  change i < j
+  exact hij
 
 theorem imageLevel_ne_of_skips
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
@@ -47,10 +58,13 @@ theorem imageLevel_ne_of_skips
     (k : Nat) :
     imageLevel F k ≠ h := by
   intro heq
+  unfold imageLevel at heq
   apply hskip
-  exact
-    ⟨canonicalNode (Label := Label) (arity := arity) k,
-      by simpa [imageLevel] using heq⟩
+  refine
+    ⟨canonicalNode (Label := Label) (arity := arity) k, ?_⟩
+  change
+    (F (canonicalNode (Label := Label) (arity := arity) k)).level = h
+  exact heq
 
 /-- Level map of the inner M2 compression. -/
 noncomputable def m2InnerLevel
@@ -85,9 +99,10 @@ theorem imageLevel_cut
       ∀ x : Node Label arity,
         x.level = n → (F x).level = h + 1) :
     imageLevel F n = h + 1 := by
-  symm
-  apply hlevel
-  exact canonicalNode_level n
+  unfold imageLevel
+  exact hlevel
+    (canonicalNode (Label := Label) (arity := arity) n)
+    (canonicalNode_level n)
 
 theorem imageLevel_below_lt_missing
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
