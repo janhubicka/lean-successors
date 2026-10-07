@@ -49,10 +49,11 @@ theorem lowerNode_eq_mk_lowerHistory
   let z := lowerImage F n h hlevel x
   have hz : z.level = h :=
     lowerImage_level F n h hlevel x
-  rcases z with ⟨k, zhist⟩
-  change k = h at hz
-  subst k
-  rfl
+  change z =
+    (⟨h, lowerHistory F n h hlevel x⟩ :
+      Node Label arity)
+  apply Sigma.ext hz
+  simp [lowerHistory, z]
 
 theorem lowerHistory_injective
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
@@ -132,22 +133,8 @@ noncomputable def m2GapChoice
     (y : History Label arity h) :
     Code Label arity h := by
   classical
-  match hs : lowerSource? F n h hlevel y with
+  match lowerSource? F n h hlevel y with
   | some x =>
-      have hy :
-          y = lowerHistory F n h hlevel x := by
-        unfold lowerSource? at hs
-        split at hs
-        next hex =>
-          have hxopt :
-              some (Classical.choose hex) = some x := hs
-          have hx : Classical.choose hex = x :=
-            Option.some.inj hxopt
-          rw [← hx]
-          exact (Classical.choose_spec hex).symm
-        next hno =>
-          simp at hs
-      subst y
       exact coverCode (lowerCover F n h hlevel x)
   | none =>
       exact ⟨defaultLabel, emptyParamTuple arity h⟩
@@ -164,9 +151,8 @@ theorem m2GapChoice_lowerHistory
         (lowerHistory F n h hlevel x) =
       coverCode (lowerCover F n h hlevel x) := by
   classical
-  unfold m2GapChoice
-  rw [lowerSource?_eq_some F n h hskip hlevel x]
-  rfl
+  simp [m2GapChoice,
+    lowerSource?_eq_some F n h hskip hlevel x]
 
 /-- The outer one-gap map sends every lowered top-level image back to its
 original F-image. -/
@@ -184,7 +170,7 @@ theorem m2Gap_hits_lowerImage
   rw [lowerNode_eq_mk_lowerHistory F n h hlevel x]
   rw [oneGapShapeMap_apply, gapNode_at_level]
   rw [m2GapChoice_lowerHistory F n h hskip hlevel x]
-  exact cover_eq_child (lowerCover F n h hlevel x)
+  exact (cover_eq_child (lowerCover F n h hlevel x)).symm
 
 end FreeAncestral
 end SuccessorTree
