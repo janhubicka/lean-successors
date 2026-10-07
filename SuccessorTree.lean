@@ -24,6 +24,7 @@ import SuccessorTree.FreeAncestralM2InnerOrder
 import SuccessorTree.FreeAncestralM2InnerShape
 import SuccessorTree.FreeAncestralM2
 import SuccessorTree.FreeAncestralSMTree
+import SuccessorTree.FreeAncestralFiniteRamsey
 import SuccessorTree.Pigeonhole
 import SuccessorTree.HalesJewett.VariableWord
 import SuccessorTree.HalesJewett.Forcing
