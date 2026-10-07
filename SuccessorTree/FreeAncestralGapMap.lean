@@ -198,14 +198,13 @@ theorem gapNode_child_of_ge
   rcases a with ⟨n, h⟩
   change ParamTuple arity n at t
   change m ≤ n at ha
-  change gapNode m choose
-      (⟨n + 1, History.step h ⟨c, t⟩⟩ :
-        Node Label arity) =
-    child (gapNode m choose (⟨n, h⟩ : Node Label arity))
-      (gapShiftParamTuple m choose
-        (⟨n, h⟩ : Node Label arity) t ha) c
-  unfold gapNode
-  simp only [gapNodeAux]
+  change
+    (gapNodeAux m choose (n + 1)
+      (History.step h ⟨c, t⟩)).1 =
+      child (gapNodeAux m choose n h).1
+        (gapShiftParamTuple m choose
+          (⟨n, h⟩ : Node Label arity) t ha) c
+  rw [gapNodeAux]
   rw [dif_neg (by omega : ¬ n + 1 < m)]
   rw [dif_neg (by omega : ¬ n + 1 = m)]
   let gp := gapNodeAux m choose n h
@@ -216,7 +215,7 @@ theorem gapNode_child_of_ge
             ⟨(shiftFin m n (t.value j)).val, by
               rw [gp.2, gapLevel_of_ge ha]
               exact (shiftFin m n (t.value j)).isLt⟩ } c =
-      child (gapNodeAux m choose n h).1
+      child gp.1
         (gapShiftParamTuple m choose
           (⟨n, h⟩ : Node Label arity) t ha) c
   congr 1
@@ -315,11 +314,11 @@ theorem gapNode_injective_at_level
               | step py cy =>
                   change
                     gapNode m choose
-                        (⟨n + 1, History.step px cx⟩ :
-                          Node Label arity) =
+                        (child (⟨n, px⟩ : Node Label arity)
+                          cx.params cx.label) =
                       gapNode m choose
-                        (⟨n + 1, History.step py cy⟩ :
-                          Node Label arity)
+                        (child (⟨n, py⟩ : Node Label arity)
+                          cy.params cy.label)
                     at hxy
                   have hxform :=
                     gapNode_child_of_ge m choose
@@ -519,12 +518,17 @@ theorem map_paramNodes_gap_of_ge
       ((gapShiftParamTuple m choose a t ha).value j).val <
         (gapNode m choose a).level := by
     exact ((gapShiftParamTuple m choose a t ha).value j).isLt
+  have hxbase :
+      x.level = (t.value j).val := by
+    dsimp [x]
+    exact LevelTree.level_ancestor
+      a (t.value j).val
+        (Nat.le_of_lt (t.value j).isLt)
   have hxlev :
       (gapNode m choose x).level =
         ((gapShiftParamTuple m choose a t ha).value j).val := by
-    rw [gapNode_level]
-    dsimp [x, gapShiftParamTuple]
-    rw [LevelTree.level_ancestor]
+    rw [gapNode_level, hxbase]
+    dsimp [gapShiftParamTuple]
     by_cases hj : (t.value j).val < m
     · simp [gapLevel, shiftFin, hj]
     · simp [gapLevel, shiftFin, hj]
