@@ -14,3 +14,5 @@ Run after `lake build` via `lake env lean scripts/CheckFreeAncestral.lean`.
 #print axioms SuccessorTree.FreeAncestral.freeSMTree
 #print axioms SuccessorTree.FreeAncestral.finiteShapeRamsey
 #print axioms SuccessorTree.ShapeMap.mapEvent_injective
+#print axioms SuccessorTree.ShapeMap.mapPointed_injective
+#print axioms SuccessorTree.ShapeMap.mapPointed_ne_of_address_ne
