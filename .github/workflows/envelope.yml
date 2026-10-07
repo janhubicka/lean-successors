@@ -1,0 +1,56 @@
+name: Envelope
+
+on:
+  push:
+    paths:
+      - 'SuccessorTree/Envelope*.lean'
+      - 'scripts/CheckEnvelope.lean'
+      - '.github/workflows/envelope.yml'
+  pull_request:
+    paths:
+      - 'SuccessorTree/Envelope*.lean'
+      - 'scripts/CheckEnvelope.lean'
+      - '.github/workflows/envelope.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: envelope-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  envelope:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Cache Lean toolchain
+        uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - name: Cache Lake workspace
+        uses: actions/cache@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Download Mathlib cache
+        run: lake exe cache get
+      - name: Build envelope stack
+        run: lake build SuccessorTree.EnvelopeRunExistence
+      - name: Audit envelope endpoints
+        run: |
+          lake env lean scripts/CheckEnvelope.lean > envelope-axioms.log 2>&1 || {
+            cat envelope-axioms.log
+            exit 1
+          }
+          python3 scripts/check-axiom-log.py envelope-axioms.log 26 || {
+            cat envelope-axioms.log
+            exit 1
+          }
