@@ -24,6 +24,18 @@ structure IntrinsicEvent {T : Type u} {Label : Type v}
   label : Label
   has_child : ∃ b : T, S.succ base params label = some b
 
+/-- A marked support occurrence keeps both its intrinsic event (which
+fixes the label/port/projection role) and a possibly later history address
+(which distinguishes copies after arbitrary shape-map stretching). -/
+structure PointedOccurrence {T : Type u} {Label : Type v}
+    [PartialOrder T] [LevelTree T] (S : STree T Label) where
+  event : IntrinsicEvent S
+  address : T
+  event_below :
+    ∃ b : T,
+      S.succ event.base event.params event.label = some b ∧
+        b ≤ address
+
 namespace ShapeMap
 
 variable {T : Type u} {Label : Type v}
@@ -97,6 +109,58 @@ theorem mapEvent_injective (F : ShapeMap S) :
         subst q
         subst d
         rfl
+
+/-- Transport the point together with its intrinsic role.  This is the
+correct action on support-atom or principal-copy addresses under weak
+successor preservation. -/
+def mapPointed (F : ShapeMap S) (x : PointedOccurrence S) :
+    PointedOccurrence S where
+  event := F.mapEvent x.event
+  address := F x.address
+  event_below := by
+    obtain ⟨b, hb, hba⟩ := x.event_below
+    obtain ⟨d, hd, hdb⟩ := F.weak_succ' hb
+    exact ⟨d, hd, hdb.trans (F.map_le_of_le hba)⟩
+
+@[simp] theorem mapPointed_address (F : ShapeMap S)
+    (x : PointedOccurrence S) :
+    (F.mapPointed x).address = F x.address := rfl
+
+@[simp] theorem mapPointed_event (F : ShapeMap S)
+    (x : PointedOccurrence S) :
+    (F.mapPointed x).event = F.mapEvent x.event := rfl
+
+/-- Both the role and the address of a marked occurrence are retained
+injectively by a shape map. -/
+theorem mapPointed_injective (F : ShapeMap S) :
+    Function.Injective (F.mapPointed) := by
+  intro x y h
+  have hev : x.event = y.event := by
+    apply F.mapEvent_injective
+    have hrole := congrArg (fun z : PointedOccurrence S => z.event) h
+    simpa only [mapPointed] using hrole
+  have haddr : x.address = y.address := by
+    apply F.injective
+    have hp := congrArg (fun z : PointedOccurrence S => z.address) h
+    simpa only [mapPointed] using hp
+  rcases x with ⟨ex, ax, hx⟩
+  rcases y with ⟨ey, ay, hy⟩
+  dsimp at hev haddr
+  subst ey
+  subst ay
+  rfl
+
+/-- Two copies of one marked occurrence are distinct as soon as their
+history addresses are distinct, even if their transported intrinsic event
+happens to coincide.  This is the separator needed for two-copy tests. -/
+theorem mapPointed_ne_of_address_ne
+    (F G : ShapeMap S) (x : PointedOccurrence S)
+    (h : F x.address ≠ G x.address) :
+    F.mapPointed x ≠ G.mapPointed x := by
+  intro heq
+  apply h
+  have ha := congrArg (fun z : PointedOccurrence S => z.address) heq
+  simpa only [mapPointed] using ha
 
 end ShapeMap
 end SuccessorTree
