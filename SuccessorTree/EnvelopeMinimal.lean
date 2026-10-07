@@ -120,9 +120,7 @@ theorem exists_oneLevel_skip_extension_of_gap
           intro x hx
           exact hP1agree x (by omega)
         refine ⟨by omega, ?_⟩
-        change H.levelMap P1.map k < i
-        rw [hprev]
-        exact hmin k (by omega)
+        simpa [hprev] using hmin k (by omega)
   obtain ⟨P0, Q, hP0agree, hP0top, hQfix, hQP0⟩ :=
     H.exists_shapeSplit_factor P1 n i hcut0
   have hQnext : H.levelMap Q.map i = i + 1 := by
