@@ -30,7 +30,7 @@ theorem representedBefore_iff_level_prefixRange
   constructor
   · rintro ⟨n, hnm, hn⟩
     obtain ⟨x, hx⟩ := H.level_nonempty n
-    refine ⟨F x, ⟨x, hnm, rfl⟩, ?_⟩
+    refine ⟨F x, ⟨x, (by simpa [hx] using hnm), rfl⟩, ?_⟩
     calc
       LevelTree.lev (F x) = H.levelMap F n := by
         simpa [hx] using (H.levelMap_eq F (a := x)).symm
