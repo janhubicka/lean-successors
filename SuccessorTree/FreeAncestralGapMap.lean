@@ -202,7 +202,7 @@ theorem gapNode_eq_self_of_lt
   | root =>
       simp [gapNode, gapHistory, gapLevel, Node.level, hx]
   | step p c =>
-      simp [gapNode, gapHistory, gapLevel, hx]
+      simp [gapNode, gapHistory, gapLevel, Node.level, hx]
 
 theorem gapNode_at_level
     (m : Nat)
