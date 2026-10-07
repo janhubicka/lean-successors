@@ -27,7 +27,7 @@ theorem shiftNat_injective (m : Nat) :
   by_cases hi : i < m <;> by_cases hj : j < m <;>
     simp [hi, hj] at hij ⊢ <;> omega
 
-private theorem list_map_injective_of_injective
+theorem list_map_injective_of_injective
     {α β : Type*} {g : α → β}
     (hg : Function.Injective g) :
     Function.Injective (List.map g) := by
