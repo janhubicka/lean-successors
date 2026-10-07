@@ -189,6 +189,53 @@ theorem gapNode_level_of_ge
   simp [gapNode_level, gapLevel, Nat.not_lt.mpr hx]
 
 
+
+theorem gapNode_eq_self_of_lt
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    {x : Node Label arity}
+    (hx : x.level < m) :
+    gapNode m choose x = x := by
+  rcases x with ⟨n, h⟩
+  change n < m at hx
+  cases h with
+  | root =>
+      simp [gapNode, gapHistory, gapLevel, hx]
+  | step p c =>
+      simp [gapNode, gapHistory, gapLevel, hx]
+
+theorem gapNode_at_level
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    (h : History Label arity m) :
+    gapNode m choose ⟨m, h⟩ =
+      child (⟨m, h⟩ : Node Label arity)
+        (choose h).params (choose h).label := by
+  cases m with
+  | zero =>
+      have hroot : h = History.root := history_zero_unique h
+      subst h
+      simp [gapNode, gapHistory, gapLevel, child]
+  | succ n =>
+      cases h with
+      | step p c =>
+          simp [gapNode, gapHistory, gapLevel, child]
+
+theorem gapNode_child_of_ge
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    (a : Node Label arity)
+    (t : ParamTuple arity a.level)
+    (c : Label)
+    (ha : m ≤ a.level) :
+    gapNode m choose (child a t c) =
+      child (gapNode m choose a)
+        (shiftParamTuple m t) c := by
+  rcases a with ⟨n, h⟩
+  change m ≤ n at ha
+  simp [gapNode, child, gapHistory, gapLevel,
+    Nat.not_lt.mpr ha, Nat.not_lt.mpr (by omega : m ≤ n + 1)]
+
 theorem gapNode_level_eq_of_level_eq
     (m : Nat)
     (choose : History Label arity m → Code Label arity m)
