@@ -234,12 +234,6 @@ theorem m2InnerNode_child_of_ge
         (m2InnerParamTupleAt F n h hskip hlevel
           (⟨k, hist⟩ : Node Label arity) t) c
   congr 1
-  apply (paramTupleEquiv arity _).injective
-  apply Sigma.ext rfl
-  apply HEq.of_eq
-  funext j
-  apply Fin.ext
-  rfl
 
 end FreeAncestral
 end SuccessorTree
