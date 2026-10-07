@@ -15,6 +15,40 @@ universe u
 
 variable {Label : Type u} {arity : Nat} [Fintype Label]
 
+
+/-- Numerical level shift associated with one inserted gap. -/
+def shiftNat (m k : Nat) : Nat :=
+  if k < m then k else k + 1
+
+theorem shiftNat_injective (m : Nat) :
+    Function.Injective (shiftNat m) := by
+  intro i j hij
+  unfold shiftNat at hij
+  by_cases hi : i < m <;> by_cases hj : j < m <;>
+    simp [hi, hj] at hij ⊢ <;> omega
+
+private theorem list_map_injective_of_injective
+    {α β : Type*} {g : α → β}
+    (hg : Function.Injective g) :
+    Function.Injective (List.map g) := by
+  intro xs ys h
+  induction xs generalizing ys with
+  | nil =>
+      cases ys with
+      | nil => rfl
+      | cons y ys => simp at h
+  | cons x xs ih =>
+      cases ys with
+      | nil => simp at h
+      | cons y ys =>
+          simp only [List.map_cons] at h
+          have hxy : g x = g y := (List.cons.inj h).1
+          have htail : List.map g xs = List.map g ys :=
+            (List.cons.inj h).2
+          have hxy' : x = y := hg hxy
+          have htail' : xs = ys := ih htail
+          simp [hxy', htail']
+
 /-- Insert one gap at m in a source level below n. -/
 def shiftFin (m n : Nat) (i : Fin n) : Fin (n + 1) :=
   if hi : i.val < m then
@@ -57,6 +91,54 @@ def shiftCode (m : Nat) {n : Nat}
 @[simp] theorem shiftCode_params
     (m : Nat) {n : Nat} (c : Code Label arity n) :
     (shiftCode m c).params = shiftParamTuple m c.params := rfl
+
+
+theorem levelList_shiftParamTuple
+    (m : Nat) {n : Nat} (t : ParamTuple arity n) :
+    levelList (shiftParamTuple m t) =
+      (levelList t).map (shiftNat m) := by
+  simp only [levelList, shiftParamTuple, List.map_ofFn]
+  apply congrArg List.ofFn
+  funext j
+  by_cases hj : (t.value j).val < m
+  · simp [shiftNat, shiftFin, hj, Function.comp_def]
+  · simp [shiftNat, shiftFin, hj, Function.comp_def]
+
+theorem shiftParamTuple_injective
+    (m : Nat) {n : Nat} :
+    Function.Injective
+      (shiftParamTuple (arity := arity) m :
+        ParamTuple arity n → ParamTuple arity (n + 1)) := by
+  intro t u htu
+  apply levelList_injective
+  have hlevels :=
+    congrArg (levelList (arity := arity)) htu
+  rw [levelList_shiftParamTuple, levelList_shiftParamTuple] at hlevels
+  exact
+    list_map_injective_of_injective
+      (shiftNat_injective m) hlevels
+
+theorem shiftCode_injective
+    (m : Nat) {n : Nat} :
+    Function.Injective
+      (shiftCode (Label := Label) (arity := arity) m :
+        Code Label arity n → Code Label arity (n + 1)) := by
+  intro c d h
+  cases c with
+  | mk cl cp =>
+      cases d with
+      | mk dl dp =>
+          have hl : cl = dl := by
+            exact congrArg Code.label h
+          have hp :
+              shiftParamTuple m cp =
+                shiftParamTuple m dp := by
+            exact congrArg Code.params h
+          have hpeq : cp = dp :=
+            shiftParamTuple_injective m hp
+          subst dl
+          subst dp
+          rfl
 
 end FreeAncestral
 end SuccessorTree
