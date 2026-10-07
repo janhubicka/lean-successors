@@ -1,7 +1,7 @@
 import Mathlib.Data.Fintype.Basic
-import Mathlib.Data.Fintype.Option
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.Pi
+import Mathlib.Data.Fintype.Sigma
 
 /-! # Free ancestral history syntax
 
@@ -17,18 +17,45 @@ namespace FreeAncestral
 
 universe u
 
+/-- Canonical bounded tuple of ancestral parameter levels.
+
+The tuple has a length at most arity; the j-th used parameter stores its
+ancestor level below the current source level n. -/
+structure ParamTuple (arity n : Nat) where
+  len : Fin (arity + 1)
+  value : Fin len.val → Fin n
+
+def paramTupleEquiv (arity n : Nat) :
+    ParamTuple arity n ≃
+      Sigma (fun len : Fin (arity + 1) => Fin len.val → Fin n) where
+  toFun p := ⟨p.len, p.value⟩
+  invFun p := ⟨p.1, p.2⟩
+  left_inv := by
+    intro p
+    cases p
+    rfl
+  right_inv := by
+    intro p
+    rcases p with ⟨len, value⟩
+    rfl
+
+noncomputable instance instFintypeParamTuple (arity n : Nat) :
+    Fintype (ParamTuple arity n) :=
+  Fintype.ofEquiv
+    (Sigma (fun len : Fin (arity + 1) => Fin len.val → Fin n))
+    (paramTupleEquiv arity n).symm
+
 /-- One intrinsic transition code at source level n.
 
-A parameter value some i means that the slot points to the unique ancestor on
-level i < n; none means that parameter slot is unused. -/
+The external successor API supplies the actual parameter nodes.  Internally we
+remember only the ordered tuple of their ancestor levels; this is enough because
+a rooted history has a unique ancestor on every lower level. -/
 structure Code (Label : Type u) (arity n : Nat) where
   label : Label
-  params : Fin arity → Option (Fin n)
-deriving DecidableEq
+  params : ParamTuple arity n
 
 def codeEquiv (Label : Type u) (arity n : Nat) :
-    Code Label arity n ≃
-      Label × (Fin arity → Option (Fin n)) where
+    Code Label arity n ≃ Label × ParamTuple arity n where
   toFun c := ⟨c.label, c.params⟩
   invFun x := ⟨x.1, x.2⟩
   left_inv := by
@@ -44,7 +71,7 @@ noncomputable instance instFintypeCode
     [Fintype Label] (arity n : Nat) :
     Fintype (Code Label arity n) :=
   Fintype.ofEquiv
-    (Label × (Fin arity → Option (Fin n)))
+    (Label × ParamTuple arity n)
     (codeEquiv Label arity n).symm
 
 /-- Histories indexed by their level. -/
@@ -54,7 +81,6 @@ inductive History (Label : Type u) (arity : Nat) : Nat → Type u
       History Label arity n →
       Code Label arity n →
       History Label arity (n + 1)
-deriving DecidableEq
 
 variable {Label : Type u} {arity : Nat}
 
