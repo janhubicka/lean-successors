@@ -78,3 +78,4 @@ import SuccessorTree.Envelope
 import SuccessorTree.EnvelopePullback
 import SuccessorTree.EnvelopeAlgorithm
 import SuccessorTree.EnvelopeStage
+import SuccessorTree.EnvelopeInvariant
