@@ -82,3 +82,4 @@ import SuccessorTree.EnvelopeInvariant
 import SuccessorTree.EnvelopeMinimal
 import SuccessorTree.EnvelopePrefix
 import SuccessorTree.EnvelopeMinimalityCore
+import SuccessorTree.EnvelopeInvariantLevels
