@@ -69,9 +69,7 @@ theorem oneLevel_preimage_unique_below
         have he : e = x := E.injective (hEx.trans hEfix.symm)
         exact hd.trans he.symm
       have hin : i ≤ n := Nat.le_of_not_gt hbelow
-      have hstrict : i < n := lt_of_le_of_ne hin (by
-        intro hni
-        exact hxne (hn.trans hni.symm))
+      have hstrict : i < n := by omega
       by_cases hfirst : n = i + 1
       · have hiz : i < LevelTree.lev z := by
           have hle := LevelTree.level_le_of_le hxz
@@ -155,15 +153,11 @@ theorem oneLevel_preimage_unique_below
           rw [htargetBaseLevel]
           omega
         have hd0e0 : d0 = e0 := by
-          apply ih (LevelTree.lev (D d0))
-          · rw [htargetBaseLevel]
-            omega
-          · exact hz
-          · exact hbaseLeZ
-          · exact hbaseNe
-          · exact rfl
-          · exact hbase.symm
-          · exact rfl
+          exact ih (LevelTree.lev (D d0))
+            (by rw [htargetBaseLevel]; omega)
+            (x := D d0) rfl
+            (z := z) (d := d0) (e := e0)
+            hz hbaseLeZ hbaseNe rfl hbase.symm
         have hxAnc :
             x =
               LevelTree.ancestor z n (by
@@ -199,49 +193,63 @@ theorem oneLevel_preimage_unique_below
             have hle := LevelTree.level_le_of_le hxz
             rw [hn] at hle
             omega
-          exact hparam hz hiBase hBaseZ hstepZ hy
-        have hlist : pD = pE := by
-          clear htD0 htE0
-          induction pD generalizing pE with
+          have hstepZ' :
+              S.succ
+                  (LevelTree.ancestor z (n - 1) (by
+                    have hle := LevelTree.level_le_of_le hbaseLeZ
+                    rw [htargetBaseLevel] at hle
+                    exact hle))
+                  (pD.map D) cD =
+                some
+                  (LevelTree.ancestor z ((n - 1) + 1)
+                    (Nat.succ_le_iff.mpr hBaseZ)) := by
+            simpa only [show n - 1 + 1 = n by omega] using hstepZ
+          exact hparam hz hiBase hBaseZ hstepZ' hy
+        have hparamLevel :
+            ∀ ⦃y : T⦄, y ∈ pD.map D → LevelTree.lev y < n := by
+          intro y hy
+          have hlt := S.parameter_level_lt htD hy
+          rw [htargetBaseLevel] at hlt
+          omega
+        have list_preimages_unique :
+            ∀ (p q : List T),
+              p.map D = q.map E →
+              (∀ ⦃y : T⦄, y ∈ p.map D → y ∈ Z) →
+              (∀ ⦃y : T⦄, y ∈ p.map D → LevelTree.lev y < n) →
+              p = q := by
+          intro p
+          induction p with
           | nil =>
-              cases pE with
+              intro q hmap _ _
+              cases q with
               | nil => rfl
-              | cons y ys =>
-                  simp at hparams
+              | cons v vs => simp at hmap
           | cons u us listIH =>
-              cases pE with
-              | nil =>
-                  simp at hparams
+              intro q hmap hZ hLev
+              cases q with
+              | nil => simp at hmap
               | cons v vs =>
-                  simp only [List.map_cons, List.cons.injEq] at hparams
-                  have huvImage : D u = E v := hparams.1
-                  have huTarget : D u ∈ Z := by
-                    apply hparamTarget
-                    simp
-                  have huLevel : LevelTree.lev (D u) < n := by
-                    have hlt := S.parameter_level_lt htD (by simp)
-                    rw [htargetBaseLevel] at hlt
-                    omega
-                  have huNe : LevelTree.lev (D u) ≠ i :=
-                    hno huTarget
+                  simp only [List.map_cons, List.cons.injEq] at hmap
+                  have huZ : D u ∈ Z := hZ (by simp)
+                  have huLt : LevelTree.lev (D u) < n := hLev (by simp)
                   have huv : u = v := by
-                    apply ih (LevelTree.lev (D u))
-                    · exact huLevel
-                    · exact huTarget
-                    · exact le_rfl
-                    · exact huNe
-                    · exact rfl
-                    · exact huvImage.symm
-                    · exact rfl
-                  have htailTarget :
+                    exact ih (LevelTree.lev (D u)) huLt
+                      (x := D u) rfl
+                      (z := D u) (d := u) (e := v)
+                      huZ le_rfl (hno huZ) rfl hmap.1.symm
+                  have htailZ :
                       ∀ ⦃y : T⦄, y ∈ us.map D → y ∈ Z := by
                     intro y hy
-                    exact hparamTarget (by simp [hy])
-                  have htail : us = vs := by
-                    apply listIH
-                    · exact hparams.2
-                    · exact htailTarget
-                  rw [huv, htail]
+                    exact hZ (by simp [hy])
+                  have htailLev :
+                      ∀ ⦃y : T⦄, y ∈ us.map D → LevelTree.lev y < n := by
+                    intro y hy
+                    exact hLev (by simp [hy])
+                  have htail : us = vs :=
+                    listIH vs hmap.2 htailZ htailLev
+                  simp [huv, htail]
+        have hlist : pD = pE :=
+          list_preimages_unique pD pE hparams hparamTarget hparamLevel
         have hsome : (some d : Option T) = some e := by
           calc
             some d = S.succ d0 pD cD := hsD.symm
