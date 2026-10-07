@@ -221,11 +221,11 @@ theorem m2InnerNode_child_of_ge
   let gp :=
     m2InnerNodeAux F n h hskip hlevel k hist
   congr 1
-  apply ParamTuple.ext
-  · rfl
-  · funext j
-    apply Fin.ext
-    rfl
+  apply (paramTupleEquiv arity _).injective
+  apply Sigma.ext rfl
+  funext j
+  apply Fin.ext
+  rfl
 
 end FreeAncestral
 end SuccessorTree
