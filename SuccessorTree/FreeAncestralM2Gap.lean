@@ -88,6 +88,7 @@ noncomputable def lowerSource?
 theorem lowerSource?_eq_some
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
     (n h : Nat)
+    (hskip : F.Skips h)
     (hlevel :
       ∀ x : Node Label arity,
         x.level = n → (F x).level = h + 1)
@@ -99,25 +100,9 @@ theorem lowerSource?_eq_some
   split
   next hex =>
     have hchosen :
-        Classical.choose hex = x := by
-      apply lowerHistory_injective F n h
-        (by
-          intro hbad
-          exact False.elim (by
-            -- This branch is used below only with an actual skip proof.
-            -- Equality of preimages itself does not depend on hskip, so use
-            -- the direct node injectivity argument here.
-            have hnode :
-                lowerImage F n h hlevel (Classical.choose hex) =
-                  lowerImage F n h hlevel x := by
-              rw [lowerNode_eq_mk_lowerHistory,
-                  lowerNode_eq_mk_lowerHistory,
-                  Classical.choose_spec hex]
-            exact False.elim (hbad ⟨x.1, by
-              simpa [hlevel x.1 x.2] using
-                lowerImage_level F n h hlevel x⟩)))
-        hlevel
-      exact Classical.choose_spec hex
+        Classical.choose hex = x :=
+      lowerHistory_injective F n h hskip hlevel
+        (Classical.choose_spec hex)
     simp [hchosen]
   next hno =>
     exfalso
@@ -170,6 +155,7 @@ noncomputable def m2GapChoice
 theorem m2GapChoice_lowerHistory
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
     (n h : Nat)
+    (hskip : F.Skips h)
     (hlevel :
       ∀ x : Node Label arity,
         x.level = n → (F x).level = h + 1)
@@ -179,7 +165,7 @@ theorem m2GapChoice_lowerHistory
       coverCode (lowerCover F n h hlevel x) := by
   classical
   unfold m2GapChoice
-  rw [lowerSource?_eq_some F n h hlevel x]
+  rw [lowerSource?_eq_some F n h hskip hlevel x]
   rfl
 
 /-- The outer one-gap map sends every lowered top-level image back to its
@@ -187,6 +173,7 @@ original F-image. -/
 theorem m2Gap_hits_lowerImage
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
     (n h : Nat)
+    (hskip : F.Skips h)
     (hlevel :
       ∀ x : Node Label arity,
         x.level = n → (F x).level = h + 1)
@@ -196,7 +183,7 @@ theorem m2Gap_hits_lowerImage
       F x.1 := by
   rw [lowerNode_eq_mk_lowerHistory F n h hlevel x]
   rw [oneGapShapeMap_apply, gapNode_at_level]
-  rw [m2GapChoice_lowerHistory F n h hlevel x]
+  rw [m2GapChoice_lowerHistory F n h hskip hlevel x]
   exact cover_eq_child (lowerCover F n h hlevel x)
 
 end FreeAncestral
