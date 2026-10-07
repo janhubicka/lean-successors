@@ -52,10 +52,11 @@ noncomputable def gapNodeAux
             (gapLevel_of_lt hm).symm⟩
       · have hm0 : m = 0 := Nat.eq_zero_of_not_pos hm
         subst m
-        exact
+        refine
           ⟨(⟨1, History.step History.root (choose History.root)⟩ :
-              Node Label arity),
-            by simp [gapLevel]⟩
+              Node Label arity), ?_⟩
+        change 1 = gapLevel 0 0
+        rfl
   | n + 1, h => by
       cases h with
       | step p c =>
@@ -65,12 +66,13 @@ noncomputable def gapNodeAux
                 (gapLevel_of_lt hlt).symm⟩
           · by_cases heq : n + 1 = m
             · subst m
-              exact
+              refine
                 ⟨(⟨n + 2,
                     History.step (History.step p c)
                       (choose (History.step p c))⟩ :
-                    Node Label arity),
-                  by simp [gapLevel]⟩
+                    Node Label arity), ?_⟩
+              change n + 2 = gapLevel (n + 1) (n + 1)
+              simp [gapLevel]
             · have hnge : m ≤ n := by omega
               let gp := gapNodeAux m choose n p
               let t' : ParamTuple arity gp.1.level :=
@@ -130,11 +132,17 @@ theorem gapNode_eq_self_of_lt
   | zero =>
       have hroot : h = History.root := history_zero_unique h
       subst h
-      simp [gapNode, gapNodeAux, hx]
+      change (gapNodeAux m choose 0 History.root).1 =
+        (⟨0, History.root⟩ : Node Label arity)
+      simp [gapNodeAux, hx]
   | succ n =>
       cases h with
       | step p c =>
-          simp [gapNode, gapNodeAux, hx]
+          change
+            (gapNodeAux m choose (n + 1)
+              (History.step p c)).1 =
+              (⟨n + 1, History.step p c⟩ : Node Label arity)
+          simp [gapNodeAux, hx]
 
 theorem gapNode_at_level
     (m : Nat)
@@ -147,11 +155,24 @@ theorem gapNode_at_level
   | zero =>
       have hroot : h = History.root := history_zero_unique h
       subst h
-      simp [gapNode, gapNodeAux, child, gapLevel]
+      change
+        (gapNodeAux 0 choose 0 History.root).1 =
+          child (⟨0, History.root⟩ : Node Label arity)
+            (choose History.root).params
+            (choose History.root).label
+      simp [gapNodeAux, child, gapLevel]
   | succ n =>
       cases h with
       | step p c =>
-          simp [gapNode, gapNodeAux, child, gapLevel]
+          change
+            (gapNodeAux (n + 1) choose (n + 1)
+              (History.step p c)).1 =
+              child
+                (⟨n + 1, History.step p c⟩ :
+                  Node Label arity)
+                (choose (History.step p c)).params
+                (choose (History.step p c)).label
+          simp [gapNodeAux, child, gapLevel]
 
 /-- Shift a parameter tuple to the actual level of the gapped base node. -/
 def gapShiftParamTuple
