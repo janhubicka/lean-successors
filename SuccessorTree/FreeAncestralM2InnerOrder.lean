@@ -135,5 +135,43 @@ theorem map_paramNodes_m2Inner
     hmap hmaplev (Nat.le_of_lt htarget)
 
 
+theorem levelList_m2InnerParamTupleAt
+    (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
+    (n h : Nat)
+    (hskip : F.Skips h)
+    (hlevel :
+      ∀ x : Node Label arity,
+        x.level = n → (F x).level = h + 1)
+    (a : Node Label arity)
+    (t : ParamTuple arity a.level) :
+    levelList (m2InnerParamTupleAt F n h hskip hlevel a t) =
+      (levelList t).map (m2InnerLevel F n h) := by
+  simp only [levelList, m2InnerParamTupleAt, List.map_ofFn]
+  apply congrArg List.ofFn
+  funext j
+  rfl
+
+theorem m2InnerParamTupleAt_injective
+    (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
+    (n h : Nat)
+    (hskip : F.Skips h)
+    (hlevel :
+      ∀ x : Node Label arity,
+        x.level = n → (F x).level = h + 1)
+    (a : Node Label arity) :
+    Function.Injective
+      (m2InnerParamTupleAt F n h hskip hlevel a) := by
+  intro t u htu
+  apply levelList_injective
+  have hlevels :=
+    congrArg (levelList (arity := arity)) htu
+  rw [levelList_m2InnerParamTupleAt,
+      levelList_m2InnerParamTupleAt] at hlevels
+  exact
+    list_map_injective_of_injective
+      (m2InnerLevel_strictMono F n h hskip hlevel).injective
+      hlevels
+
+
 end FreeAncestral
 end SuccessorTree
