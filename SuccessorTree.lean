@@ -15,6 +15,7 @@ import SuccessorTree.FreeAncestralGap
 import SuccessorTree.FreeAncestralGapMap
 import SuccessorTree.FreeAncestralGapShape
 import SuccessorTree.FreeAncestralMonoid
+import SuccessorTree.FreeAncestralM3
 import SuccessorTree.Pigeonhole
 import SuccessorTree.HalesJewett.VariableWord
 import SuccessorTree.HalesJewett.Forcing
