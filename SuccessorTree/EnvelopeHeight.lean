@@ -216,6 +216,31 @@ theorem minimal_output_height
   rw [hCard] at hCardLe
   exact hCardLe
 
+
+/-- A finite approximation is an envelope when its finite source prefix,
+equivalently the same prefix of its canonical total representative, covers X. -/
+def IsAMEnvelope
+    (H : SMTree S) {m : Nat} (a : AM H 0 m) (X : Set T) : Prop :=
+  IsPrefixEnvelope (a.representative H).map m X
+
+/-- The minimality theorem also compares directly with every finite
+approximation in the manuscript's class AM. -/
+theorem minimal_output_height_AM
+    (R : AlgorithmRun H X ell)
+    (hE1 : OneLevelPullback H)
+    (hXbound : X ⊆ levelLe ell)
+    (hTop : ∃ x ∈ X, LevelTree.lev x = ell) :
+    ∃ m : Nat,
+      IsPrefixEnvelope (R.F 0).map m X ∧
+      R.selectedLevels.card = m ∧
+      ∀ (m' : Nat) (a : AM H 0 m'),
+        IsAMEnvelope H a X → m ≤ m' := by
+  obtain ⟨m, hEnv, hCard, hMin⟩ :=
+    R.minimal_output_height hE1 hXbound hTop
+  refine ⟨m, hEnv, hCard, ?_⟩
+  intro m' a ha
+  exact hMin (a.representative H) m' ha
+
 end AlgorithmRun
 
 end Envelope
