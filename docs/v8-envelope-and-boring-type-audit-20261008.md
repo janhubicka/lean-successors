@@ -93,13 +93,37 @@ I_E(P[Y]) = {1,3},      tau_E(P[Y]) = {0,1}.
 ```
 
 Consequently, **the simultaneous-deletion embedding type is not preserved by
-all maps in the monoid under (B1)–(B2)**. This refutes the type-invariance /
-reconstruction *step* appealed to in the proof of `thm:boring1`. It does not
-prove that the Ramsey conclusion of `thm:boring1` is false. The same issue
-propagates to `thm:boring2` when its proof uses that identification. These
-applications should remain unvalidated pending a corrected type theorem, an
-explicitly verified extra hypothesis (such as a suitable hereditary condition),
-or a different envelope-based definition of the type.
+all maps in the monoid under (B1)–(B2)**. More strongly, both general Ramsey
+theorems are **false under those hypotheses**. Take X={01} and Y={01,11}.
+Then tau(X)={1} and tau(Y)={01,11}. Colour singleton copies of type {1}
+by their first letter. Every Y' of type {01,11} consists of one word
+beginning 01 and one beginning 11, both singleton members having type {1}.
+Thus every Y' contains both colours, at every length (and in the infinite
+tree). This refutes both clauses of thm:boring1 and the cube thm:boring2.
+
+A sufficient application-level repair is the **reverse insertion axiom**
+(B3): for all m<=n, e1 in E_m and e3 in E_{n+1}, there exists e2 in E_n
+such that e2(a b)=e3(a e1(a) b) for all words a,b of lengths m,n-m.
+Under B2+B3, the interesting levels after inserting a boring coordinate
+are precisely the old interesting levels shifted past that coordinate.
+Consequently the finite type tau is invariant under every map in M_E,
+by the finite insertion normal form. All three standard families
+(maximal functions, projections only, projections plus constants) satisfy
+B3. This is a proposed amendment to the **embedding-type applications**,
+not a new assumption on the successor-tree theorem itself.
+
+Separately, both Graham–Rothschild formulations thm:GR1 and thm:GR2
+are false for proper Pi subsetneq Sigma: with Pi={0}, Sigma={0,1},
+k=1, m=2, colour a one-parameter word by whether the literal constant
+1 occurs. The allowed substitutions U=lambda0 lambda0 and U=1 lambda0
+force opposite colours for any two-parameter W with constants from Pi.
+The correction is to take Pi=Sigma, or to restrict the substitution U
+to constants in Pi. The manuscript proof actually handles the latter.
+
+These are **mathematical counterexamples**, not only missing formal steps.
+The standalone note supplies proofs and a conditional repair; the finite
+scripts provide independent bounded diagnostics. No newly proposed
+conditional theorem is claimed Lean-certified.
 
 `successor_boring_type_validation.py` checks the finite extension families,
 the two level-set computations and the type inequality. The unbounded (B2)
@@ -111,25 +135,22 @@ the domain of the colouring being pulled back is copies of `X`, not copies of
 `Y`, since the very next formula reads `chi(f[tau_E(X)])`. The annotation script
 corrects this exact `Y` to `X` only when a unique matching expression occurs.
 
-## Delivery / provenance
+## Delivery / provenance (updated after exact upload)
 
-The earlier reviewed manuscript archive
-`successors-v8-reviewed.tgz` is visible in the Project Library but its raw
-bytes could not be mounted in the current container. Hence **this pass did
-not directly edit or build that source archive**, and it would be misleading
-to call the manuscript patch tested against its exact bytes. Instead the
-provided `annotate_successors_v8.py` is a strict, idempotent, label-anchored
-patch generator, which can run on either an extracted v8 tree or a v8 `.tgz`
-and can emit both the exact unified diff and a patched `.tgz`.
+The user supplied the exact manuscript archive successors-v8(1).tgz.
+Its content hash matches the previous v8 checkpoint
+b104586c62ff4a3a859950965107d2fa2af4d9a66ebd7a0f6f3fd03c5e5c4c95;
+the embedded Git revision is b36a2772093c783cd03760edeb49f4e35b655db4.
+The Section 5 validation and TODO patch was applied to those source
+bytes and independently rebuilt with pdfLaTeX/BibTeX (39 pages).
+The subsequent Section 6 counterexample review updates the same tree:
+four red counterexample markers, proposed B3, corrected AH indices,
+and explicit TODOs. A fresh LaTeX/BibTeX build of this second stage
+completed (40 pages, no undefined citations/references). These source
+artifacts and the four-page standalone mathematical review note are
+produced in the conversation, not stored in this Lean repository.
 
-Its functionality has been checked on a clean synthetic TeX tree:
-required anchors and annotation insertions, second-pass idempotence,
-mechanical `X/Y` correction, `git apply --check` on the generated patch,
-and a tar archive extract/annotate/repack cycle. This is an **integration
-harness check**, not a claim that the current manuscript compiled.
-
-The next verification work is the boring-extension type/reconstruction claim
-and then the individual applications (Milliken, Carlson–Simpson, Graham–Rothschild,
-Abramson–Harrington) with explicit statement-level links to their Lean
-formalisation. The core Section 5 PR should remain reviewable without merging
-unaccepted mathematical prose changes.
+The manuscript is not silently converted to the proposed conditional
+B3 theorem; the new theorem requires editorial approval and kernel
+verification. PR #107 still contains the separately checked envelope
+formalisation. The full manuscript's applications are not all certified.
