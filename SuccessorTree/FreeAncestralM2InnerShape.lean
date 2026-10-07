@@ -109,8 +109,10 @@ theorem m2InnerNode_injective_at_level
                   have hdata := child_eq_data hxy
                   have hparams :
                       cx.params = cy.params :=
-                    m2InnerParamTuple_injective
-                      F n h hskip hlevel k hdata.1
+                    m2InnerParamTupleAt_injective
+                      F n h hskip hlevel
+                      (⟨k, px⟩ : Node Label arity)
+                      hdata.1
                   have hlabel : cx.label = cy.label := hdata.2
                   cases cx with
                   | mk cl cp =>
@@ -286,8 +288,8 @@ theorem m2InnerNode_weak_succ
       · simpa [hinnerChild] using hdLeZ
   · have hge : n ≤ a.level := Nat.le_of_not_gt ha
     let t' :=
-      m2InnerParamTuple
-        F n h hskip hlevel a.level t
+      m2InnerParamTupleAt
+        F n h hskip hlevel a t
     let d :=
       child (m2InnerNode F n h hskip hlevel a) t' c
     refine ⟨d, ?_, ?_⟩
