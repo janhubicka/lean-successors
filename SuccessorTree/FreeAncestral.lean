@@ -1,5 +1,5 @@
-import Mathlib.Data.Finite.Basic
-import Mathlib.Data.Fin.Basic
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Pi
 
 /-! # Free ancestral history syntax
 
