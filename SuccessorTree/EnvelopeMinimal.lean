@@ -48,7 +48,7 @@ theorem canonicalExtension_skipsOnly
   change (H.canonicalExtension Q i).map.levelRange = {q | q ≠ i}
   rw [← H.range_levelMap (H.canonicalExtension Q i).map]
   ext q
-  simp only [Set.mem_range, Set.mem_setOf_eq]
+  simp only [Set.mem_range, Set.mem_ofPred_eq]
   constructor
   · rintro ⟨k, hk⟩
     by_cases hki : k < i
@@ -120,6 +120,7 @@ theorem exists_oneLevel_skip_extension_of_gap
           intro x hx
           exact hP1agree x (by omega)
         refine ⟨by omega, ?_⟩
+        change H.levelMap P1.map k < i
         rw [hprev]
         exact hmin k (by omega)
   obtain ⟨P0, Q, hP0agree, hP0top, hQfix, hQP0⟩ :=
