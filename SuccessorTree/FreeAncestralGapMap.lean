@@ -521,13 +521,8 @@ theorem map_paramNodes_gap_of_ge
   have hxlev :
       (gapNode m choose x).level =
         ((gapShiftParamTuple m choose a t ha).value j).val := by
-    dsimp [x]
-    change
-      gapLevel m
-          (LevelTree.lev
-            (LevelTree.ancestor a (t.value j).val
-              (Nat.le_of_lt (t.value j).isLt))) =
-        (shiftFin m a.level (t.value j)).val
+    rw [gapNode_level]
+    dsimp [x, gapShiftParamTuple]
     rw [LevelTree.level_ancestor]
     by_cases hj : (t.value j).val < m
     · simp [gapLevel, shiftFin, hj]
