@@ -23,8 +23,9 @@ variable {H : SMTree S} {X : Set T} {ell : Nat}
 
 /-- The final selected levels, as a finite set. -/
 noncomputable def AlgorithmRun.selectedLevels
-    (R : AlgorithmRun H X ell) : Finset Nat :=
-  (Finset.range (ell + 1)).filter (fun q => q ∈ R.I 0)
+    (R : AlgorithmRun H X ell) : Finset Nat := by
+  classical
+  exact (Finset.range (ell + 1)).filter (fun q => q ∈ R.I 0)
 
 namespace AlgorithmRun
 
@@ -110,6 +111,7 @@ theorem selectedLevels_eq_prefixLevels_of_top_preimage
       have hstrict :=
         H.levelMap_strictMono (R.F 0).map hyn
       rw [hn, htop] at hstrict
+      have hqell : q ≤ ell := hrep.2.2
       omega
     exact ⟨n, Nat.lt_succ_iff.mpr hnle, hn⟩
   · rintro ⟨n, hny, hnq⟩
