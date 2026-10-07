@@ -26,6 +26,7 @@ noncomputable def lowerImage
     (x : {x : Node Label arity // x.level = n}) :
     Node Label arity :=
   LevelTree.ancestor (F x.1) h (by
+    change h ≤ (F x.1).level
     have hx := hlevel x.1 x.2
     omega)
 
@@ -37,7 +38,8 @@ noncomputable def lowerImage
         x.level = n → (F x).level = h + 1)
     (x : {x : Node Label arity // x.level = n}) :
     (lowerImage F n h hlevel x).level = h := by
-  simp [lowerImage, LevelTree.level_ancestor]
+  change LevelTree.lev (lowerImage F n h hlevel x) = h
+  exact LevelTree.level_ancestor _ _ _
 
 theorem lowerImage_le
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
@@ -59,7 +61,14 @@ theorem lowerImage_covBy
     lowerImage F n h hlevel x ⋖ F x.1 := by
   apply LevelTree.covBy_of_le_level_succ
     (lowerImage_le F n h hlevel x)
-  rw [lowerImage_level, hlevel x.1 x.2]
+  have hlo :
+      LevelTree.lev (lowerImage F n h hlevel x) = h := by
+    exact LevelTree.level_ancestor _ _ _
+  have hhi :
+      LevelTree.lev (F x.1) = h + 1 := by
+    change (F x.1).level = h + 1
+    exact hlevel x.1 x.2
+  rw [hlo, hhi]
 
 /-- Lowered level-n images are distinct whenever the missing predecessor level
 is genuinely skipped by F. -/
