@@ -132,7 +132,7 @@ noncomputable def canonicalAlgorithmRun
     constructor
     · simp only [constructionI, if_pos hi, if_pos hi1]
       rw [hdist, hstep]
-      simpa [hidx]
+      simpa [d, hidx]
     · simp only [constructionF, if_pos hi, if_pos hi1]
       rw [hdist, hstep]
   noninteresting_step := by
