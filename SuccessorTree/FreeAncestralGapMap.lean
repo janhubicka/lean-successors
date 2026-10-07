@@ -121,10 +121,10 @@ theorem gapHistory_injective
                   have hp :
                       gapHistory m choose n px =
                         gapHistory m choose n py := by
-                    injection hnorm
+                    exact congrArg parent hnorm
                   have hc :
                       shiftCode m cx = shiftCode m cy := by
-                    injection hnorm
+                    exact congrArg lastCode hnorm
                   have hpxy : px = py :=
                     gapHistory_injective m choose n hp
                   have hcxy : cx = cy :=
@@ -149,18 +149,19 @@ theorem gapNode_injective
   intro x y hxy
   have hlevels :
       gapLevel m x.level = gapLevel m y.level := by
-    simpa only [gapNode_level] using congrArg Node.level hxy
+    have h := congrArg Node.level hxy
+    exact h
   have hsrc : x.level = y.level :=
     gapLevel_injective m hlevels
   rcases x with ⟨nx, hx⟩
   rcases y with ⟨ny, hy⟩
   change nx = ny at hsrc
   subst ny
+  have hpair := Sigma.mk.inj_iff.mp hxy
   have hhist :
       gapHistory m choose nx hx =
-        gapHistory m choose nx hy := by
-    simpa only [gapNode, Sigma.mk.inj_iff, heq_eq_eq,
-      true_and] using hxy
+        gapHistory m choose nx hy :=
+    eq_of_heq hpair.2
   have hxyHist : hx = hy :=
     gapHistory_injective m choose nx hhist
   subst hy
@@ -198,11 +199,16 @@ theorem gapNode_eq_self_of_lt
     gapNode m choose x = x := by
   rcases x with ⟨n, h⟩
   change n < m at hx
-  cases h with
-  | root =>
-      simp [gapNode, gapHistory, gapLevel, Node.level, hx]
-  | step p c =>
-      simp [gapNode, gapHistory, gapLevel, Node.level, hx]
+  apply Sigma.ext
+  · simp [gapNode, gapLevel, Node.level, hx]
+  · cases h with
+    | root =>
+        simp only [gapNode, gapHistory]
+        exact eqRec_heq _ _
+    | step p c =>
+        simp only [gapNode, gapHistory]
+        simp [hx]
+        exact eqRec_heq _ _
 
 theorem gapNode_at_level
     (m : Nat)
@@ -223,7 +229,7 @@ theorem gapNode_at_level
         ⟨1, History.step History.root ⟨lbl, pars⟩⟩
       apply Sigma.ext
       · simp [gapLevel]
-      · simp only [gapHistory, hchoose]
+      · simp [gapHistory, hchoose]
         exact eqRec_heq _ _
   | succ n =>
       cases h with
@@ -238,7 +244,7 @@ theorem gapNode_at_level
               History.step (History.step p c) ⟨lbl, pars⟩⟩
           apply Sigma.ext
           · simp [gapLevel]
-          · simp only [gapHistory, hchoose]
+          · simp [gapHistory, hchoose]
             exact eqRec_heq _ _
 
 /-- Shift a parameter tuple to the actual level of the gapped base node. -/
