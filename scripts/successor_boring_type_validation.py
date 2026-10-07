@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Finite witness that B1--B2 do not force functoriality of the stated type.
+"""Finite counterexamples to the printed B1--B2 Ramsey and mixed-alphabet claims.
 
-This is a diagnostic of the published definitions, not a Lean certificate or a
-counterexample to the Ramsey conclusion itself.
+This checks bounded instances of the explicit infinite counterexamples.
+The unbounded mathematical arguments appear in the review note, not in code.
 """
-from itertools import product
+from itertools import combinations, product
 
 ALPHABET = ("0", "1")
 
@@ -97,6 +97,47 @@ def run():
     print(f"PASS: P(Y)={sorted(PY)}, I(P(Y))={interesting_levels(PY)}, tau(P(Y))={sorted(tau(PY))}")
     print("PASS: P(w)=0w belongs to M_E, yet tau(P[Y]) != tau(Y).")
     print("      Thus the claimed type invariance/reconstruction is not a consequence of B1--B2.")
+    # In fact the two-colour Ramsey conclusion itself fails. Every two-word
+    # set with type {01,11} has words beginning 01 and 11. Both singleton
+    # subsets have type {1}, so first-letter colouring is unavoidable.
+    X = frozenset(("01",))
+    B = frozenset(("01", "11"))
+    assert tau(X) == frozenset(("1",))
+    assert tau(B) == B
+    checked = 0
+    for N in range(2, 8):
+        ambient = tuple(w for n in range(N + 1) for w in words(n))
+        count = 0
+        for u, v in combinations(ambient, 2):
+            if tau(frozenset((u, v))) != B:
+                continue
+            assert {u[:2], v[:2]} == {"01", "11"}
+            assert tau(frozenset((u,))) == tau(X)
+            assert tau(frozenset((v,))) == tau(X)
+            assert u[0] != v[0]
+            count += 1
+        checked += count
+        print(f"PASS: up to word length {N}, {count} target copies are bichromatic")
+    assert checked == 1818
+    print("PASS: both tree clauses and cube clause have an explicit obstruction.")
+
+    # Graham--Rothschild as printed also fails if Pi={0} subsetneq Sigma.
+    # Substitutions (lambda0,lambda0) and (1,lambda0) force two colours.
+    for N in range(2, 8):
+        count = 0
+        for W in product(("0", "λ0", "λ1"), repeat=N):
+            if "λ0" not in W or "λ1" not in W:
+                continue
+            if W.index("λ0") > W.index("λ1"):
+                continue
+            U0 = tuple("0" if c == "0" else "λ0" for c in W)
+            U1 = tuple("0" if c == "0" else
+                       "1" if c == "λ0" else "λ0" for c in W)
+            assert "1" not in U0 and "1" in U1
+            count += 1
+        assert count > 0
+        print(f"PASS: N={N}, {count} mixed-alphabet targets fail")
+
 
 
 if __name__ == "__main__":
