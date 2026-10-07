@@ -53,10 +53,10 @@ theorem trans
     (hab : Prefix a b)
     (hbc : Prefix b c) :
     Prefix a c := by
-  induction hbc with
+  induction hbc generalizing a with
   | refl => exact hab
   | step h d ih =>
-      exact Prefix.step ih d
+      exact Prefix.step (ih hab) d
 
 /-- A prefix relation on equal levels is equality. -/
 theorem heq_of_level_eq
@@ -69,8 +69,8 @@ theorem heq_of_level_eq
   subst n
   cases h with
   | refl => rfl
-  | @step m n a b h c =>
-      have hle : m ≤ n := h.level_le
+  | step h c =>
+      have hle := Prefix.level_le h
       omega
 
 /-- Two prefixes of one history are comparable. -/
@@ -85,11 +85,11 @@ theorem comparable
   induction hac generalizing b with
   | refl =>
       exact Or.inr hbc
-  | @step l n a c hac d ih =>
+  | step hac d ih =>
       cases hbc with
       | refl =>
           exact Or.inl (Prefix.step hac d)
-      | @step m n' b c' hbc d' =>
+      | step hbc d' =>
           exact ih hbc
 
 /-- Every lower level occurs on a history spine. -/
@@ -104,11 +104,11 @@ theorem exists_at_level
       have hm0 : m = 0 := Nat.eq_zero_of_le_zero hm
       subst m
       exact ⟨History.root, Prefix.refl _⟩
-  | @step n h c ih =>
-      by_cases htop : m = n + 1
+  | step h c ih =>
+      by_cases htop : m = _ + 1
       · subst m
         exact ⟨History.step h c, Prefix.refl _⟩
-      · have hmn : m ≤ n := by omega
+      · have hmn : m ≤ _ := by omega
         obtain ⟨a, ha⟩ := ih m hmn
         exact ⟨a, Prefix.step ha c⟩
 
