@@ -1,4 +1,5 @@
 import SuccessorTree.FreeAncestralFiniteRamsey
+import SuccessorTree.ShapeEvents
 
 /-!
 Focused axiom audit for the concrete free ancestral history tree.
