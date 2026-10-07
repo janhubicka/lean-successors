@@ -10,7 +10,8 @@ ancestral parameter levels shifted across the inserted gap.
 
 The implementation deliberately returns a total history node together with its
 target-level equation.  This avoids transporting indexed histories through the
-piecewise level map at every recursive equation.
+piecewise level map at every recursive equation.  Proofs below normalise the
+dependent level index only after destructing the total node.
 -/
 
 namespace SuccessorTree
