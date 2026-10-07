@@ -73,6 +73,66 @@ noncomputable def gapHistory
                 (History.step gp (shiftCode m c) :
                   History Label arity (n + 2))
 
+
+theorem gapLevel_injective (m : Nat) :
+    Function.Injective (gapLevel m) := by
+  intro i j hij
+  unfold gapLevel at hij
+  by_cases hi : i < m <;> by_cases hj : j < m <;>
+    simp [hi, hj] at hij ⊢ <;> omega
+
+theorem gapHistory_injective
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m) :
+    ∀ n : Nat, Function.Injective (gapHistory m choose n)
+  | 0 => by
+      intro x y hxy
+      exact (history_zero_unique x).trans (history_zero_unique y).symm
+  | n + 1 => by
+      intro x y hxy
+      cases x with
+      | step px cx =>
+          cases y with
+          | step py cy =>
+              by_cases hlt : n + 1 < m
+              · simpa [gapHistory, hlt] using hxy
+              · by_cases heq : n + 1 = m
+                · subst m
+                  have hpred :
+                      History.step px cx =
+                        History.step py cy := by
+                    simpa [gapHistory] using
+                      congrArg
+                        (fun z =>
+                          match z with
+                          | History.step q _ => q)
+                        hxy
+                  exact hpred
+                · have hnge : m ≤ n := by omega
+                  have hnorm :
+                      History.step
+                          (gapHistory m choose n px)
+                          (shiftCode m cx) =
+                        History.step
+                          (gapHistory m choose n py)
+                          (shiftCode m cy) := by
+                    simpa [gapHistory, hlt, heq, gapLevel,
+                      Nat.not_lt.mpr hnge] using hxy
+                  have hp :
+                      gapHistory m choose n px =
+                        gapHistory m choose n py := by
+                    injection hnorm
+                  have hc :
+                      shiftCode m cx = shiftCode m cy := by
+                    injection hnorm
+                  have hpxy : px = py :=
+                    gapHistory_injective m choose n hp
+                  have hcxy : cx = cy :=
+                    shiftCode_injective m hc
+                  subst py
+                  subst cy
+                  rfl
+
 /-- Total-node version of gapHistory. -/
 noncomputable def gapNode
     (m : Nat)
