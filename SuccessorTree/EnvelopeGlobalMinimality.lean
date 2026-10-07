@@ -75,7 +75,7 @@ theorem algorithmLevels_subset_competitor
   exact main (ell - i) i rfl hiI
 
 /-- The target levels represented by a prefix of source height m. -/
-def prefixLevels
+noncomputable def prefixLevels
     (H : SMTree S) (E : MMap H) (m : Nat) : Finset Nat :=
   (Finset.range m).image (H.levelMap E.map)
 
