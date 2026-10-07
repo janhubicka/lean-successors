@@ -45,6 +45,8 @@ structure AlgorithmRun (H : SMTree S) (X : Set T) (ell : Nat) where
 
 namespace AlgorithmRun
 
+variable {H : SMTree S} {X : Set T} {ell : Nat}
+
 /-- Every recorded run satisfies the strengthened invariant of Lemma 5.8. -/
 theorem fullInvariant
     (R : AlgorithmRun H X ell)
