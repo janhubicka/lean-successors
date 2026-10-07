@@ -1,4 +1,6 @@
 import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Option
+import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.Pi
 
 /-! # Free ancestral history syntax
@@ -87,15 +89,15 @@ noncomputable def historyFintype [Fintype Label] :
     (n : Nat) → Fintype (History Label arity n)
   | 0 =>
       Fintype.ofEquiv Unit
-        { toFun := fun _ => ()
-          invFun := fun _ => History.root
+        { toFun := fun _ => History.root
+          invFun := fun _ => ()
           left_inv := by
-            intro h
-            exact history_zero_unique h
-          right_inv := by
             intro u
             cases u
-            rfl }
+            rfl
+          right_inv := by
+            intro h
+            exact history_zero_unique h }
   | n + 1 => by
       letI : Fintype (History Label arity n) := historyFintype n
       letI : Fintype (Code Label arity n) := inferInstance
