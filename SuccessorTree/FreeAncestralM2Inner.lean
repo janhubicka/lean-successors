@@ -94,6 +94,22 @@ noncomputable def m2InnerNode
       m2InnerLevel F n h x.level :=
   (m2InnerNodeAux F n h hskip hlevel x.level x.2).2
 
+
+/-- Transport the numerical M2 parameter tuple to the literal level index of
+the recursive image node. -/
+noncomputable def m2InnerParamTupleAt
+    (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
+    (n h : Nat)
+    (hskip : F.Skips h)
+    (hlevel :
+      ∀ x : Node Label arity,
+        x.level = n → (F x).level = h + 1)
+    (a : Node Label arity)
+    (t : ParamTuple arity a.level) :
+    ParamTuple arity (m2InnerNode F n h hskip hlevel a).level :=
+  (m2InnerNode_level F n h hskip hlevel a).symm ▸
+    m2InnerParamTuple F n h hskip hlevel a.level t
+
 theorem m2InnerNode_eq_F_of_lt
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
     (n h : Nat)
@@ -159,8 +175,8 @@ theorem m2InnerNode_child_of_ge
     (ha : n ≤ a.level) :
     m2InnerNode F n h hskip hlevel (child a t c) =
       child (m2InnerNode F n h hskip hlevel a)
-        (m2InnerParamTuple
-          F n h hskip hlevel a.level t) c := by
+        (m2InnerParamTupleAt
+          F n h hskip hlevel a t) c := by
   rcases a with ⟨k, hist⟩
   change n ≤ k at ha
   change
@@ -168,7 +184,9 @@ theorem m2InnerNode_child_of_ge
       (History.step hist ⟨c, t⟩)).1 =
       child
         (m2InnerNodeAux F n h hskip hlevel k hist).1
-        (m2InnerParamTuple F n h hskip hlevel k t) c
+        (m2InnerParamTupleAt
+          F n h hskip hlevel
+          (⟨k, hist⟩ : Node Label arity) t) c
   rw [m2InnerNodeAux]
   rw [dif_neg (by omega : ¬ k + 1 < n)]
   rw [dif_neg (by omega : ¬ k + 1 = n)]
@@ -179,10 +197,10 @@ theorem m2InnerNode_child_of_ge
         (gp.2.symm ▸
           m2InnerParamTuple F n h hskip hlevel k t) c =
       child gp.1
-        (m2InnerParamTuple F n h hskip hlevel k t) c
-  have hlev :
-      gp.1.level = m2InnerLevel F n h k := gp.2
-  cases hlev
+        (m2InnerParamTupleAt
+          F n h hskip hlevel
+          (⟨k, hist⟩ : Node Label arity) t) c
+  unfold m2InnerParamTupleAt
   rfl
 
 end FreeAncestral
