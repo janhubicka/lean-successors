@@ -22,6 +22,7 @@ import SuccessorTree.FreeAncestralM2Level
 import SuccessorTree.FreeAncestralM2Inner
 import SuccessorTree.FreeAncestralM2InnerOrder
 import SuccessorTree.FreeAncestralM2InnerShape
+import SuccessorTree.FreeAncestralM2
 import SuccessorTree.Pigeonhole
 import SuccessorTree.HalesJewett.VariableWord
 import SuccessorTree.HalesJewett.Forcing
