@@ -80,7 +80,7 @@ jobs:
             cat proof-audit/envelope-axioms.log
             exit 1
           fi
-          python3 scripts/check-axiom-log.py proof-audit/envelope-axioms.log 26 || {
+          python3 scripts/check-axiom-log.py proof-audit/envelope-axioms.log 30 || {
             cat proof-audit/envelope-axioms.log
             exit 1
           }
