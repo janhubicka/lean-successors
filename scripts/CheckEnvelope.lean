@@ -18,3 +18,6 @@ import SuccessorTree.EnvelopeEmbeddingType
 #print axioms SuccessorTree.SMTree.Envelope.oneLevel_preimage_unique_below
 #print axioms SuccessorTree.SMTree.Envelope.preimage_eq_of_oneLevel
 #print axioms SuccessorTree.SMTree.Envelope.embeddingType_noninteresting_choice_independent
+#print axioms SuccessorTree.SMTree.Envelope.algorithmLevels_subset_competitor
+#print axioms SuccessorTree.SMTree.Envelope.card_prefixLevels
+#print axioms SuccessorTree.SMTree.Envelope.card_le_competing_height
