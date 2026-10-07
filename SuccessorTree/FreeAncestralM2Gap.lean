@@ -53,7 +53,7 @@ theorem lowerNode_eq_mk_lowerHistory
     (⟨h, lowerHistory F n h hlevel x⟩ :
       Node Label arity)
   apply Sigma.ext hz
-  simp [lowerHistory, z]
+  exact (eqRec_heq hz z.2).symm
 
 theorem lowerHistory_injective
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
@@ -151,8 +151,9 @@ theorem m2GapChoice_lowerHistory
         (lowerHistory F n h hlevel x) =
       coverCode (lowerCover F n h hlevel x) := by
   classical
-  simp [m2GapChoice,
-    lowerSource?_eq_some F n h hskip hlevel x]
+  unfold m2GapChoice
+  rw [lowerSource?_eq_some F n h hskip hlevel x]
+  congr 1
 
 /-- The outer one-gap map sends every lowered top-level image back to its
 original F-image. -/
