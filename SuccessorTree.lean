@@ -87,3 +87,4 @@ import SuccessorTree.EnvelopeUniqueness
 import SuccessorTree.EnvelopeEmbeddingType
 import SuccessorTree.EnvelopeGlobalMinimality
 import SuccessorTree.EnvelopeRun
+import SuccessorTree.EnvelopeHeight
