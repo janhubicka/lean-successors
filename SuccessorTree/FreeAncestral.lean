@@ -123,7 +123,7 @@ noncomputable def historyFintype [Fintype Label] :
             rfl
           right_inv := by
             intro h
-            exact history_zero_unique h }
+            exact (history_zero_unique h).symm }
   | n + 1 => by
       letI : Fintype (History Label arity n) := historyFintype n
       letI : Fintype (Code Label arity n) := inferInstance
@@ -182,9 +182,8 @@ theorem node_level_finite [Fintype Label] (n : Nat) :
       right_inv := by
         intro h
         rfl }
-  letI : Fintype {x : Node Label arity // x.level = n} :=
-    Fintype.ofEquiv (History Label arity n) e.symm
-  exact Set.toFinite _
+  exact Set.finite_def.mpr
+    ⟨Fintype.ofEquiv (History Label arity n) e.symm⟩
 
 end FreeAncestral
 end SuccessorTree
