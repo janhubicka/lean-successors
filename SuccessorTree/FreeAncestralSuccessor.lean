@@ -75,7 +75,8 @@ theorem base_covBy_child
     a ⋖ child a t c := by
   apply LevelTree.covBy_of_le_level_succ
     (base_le_child a t c)
-  simp [child_level]
+  change (child a t c).level = a.level + 1
+  exact child_level a t c
 
 /-- A parameter list is intrinsic at a when it is the canonical decoding of
 one bounded ancestral tuple. -/
@@ -136,8 +137,9 @@ theorem map_level_paramNodes
     (t : ParamTuple arity a.level) :
     (paramNodes a t).map Node.level = levelList t := by
   simp only [paramNodes, levelList, List.map_ofFn]
+  apply List.ofFn_injective
   funext j
-  simpa using
+  simpa only [Node.level] using
     (LevelTree.level_ancestor
       a (t.value j).val (Nat.le_of_lt (t.value j).isLt))
 
