@@ -158,12 +158,12 @@ theorem oneLevel_preimage_unique_below
           apply ih (LevelTree.lev (D d0))
           · rw [htargetBaseLevel]
             omega
-          · exact rfl
           · exact hz
           · exact hbaseLeZ
           · exact hbaseNe
           · exact rfl
           · exact hbase.symm
+          · exact rfl
         have hxAnc :
             x =
               LevelTree.ancestor z n (by
@@ -227,12 +227,12 @@ theorem oneLevel_preimage_unique_below
                   have huv : u = v := by
                     apply ih (LevelTree.lev (D u))
                     · exact huLevel
-                    · exact rfl
                     · exact huTarget
                     · exact le_rfl
                     · exact huNe
                     · exact rfl
                     · exact huvImage.symm
+                    · exact rfl
                   have htailTarget :
                       ∀ ⦃y : T⦄, y ∈ us.map D → y ∈ Z := by
                     intro y hy
@@ -277,7 +277,7 @@ theorem preimage_eq_of_oneLevel
         H D E i hD hE Z hparam hno hcrossD hcrossE
         hDxZ le_rfl (hno hDxZ) rfl he
     subst e
-    exact he ▸ hDxZ
+    simpa [he] using hDxZ
   · intro hx
     have hExZ : E x ∈ Z := hx
     obtain ⟨d, hd⟩ := hRangeD hExZ
@@ -286,7 +286,7 @@ theorem preimage_eq_of_oneLevel
         H D E i hD hE Z hparam hno hcrossD hcrossE
         hExZ le_rfl (hno hExZ) hd rfl
     subst d
-    exact hd ▸ hExZ
+    simpa [hd] using hExZ
 
 end Envelope
 end SMTree
