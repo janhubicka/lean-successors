@@ -1,4 +1,4 @@
-import SuccessorTree.EnvelopeEmbeddingType
+import SuccessorTree.EnvelopeRun
 
 #print axioms SuccessorTree.SMTree.Envelope.range_meetClosed
 #print axioms SuccessorTree.SMTree.Envelope.range_parameterClosed
@@ -21,3 +21,8 @@ import SuccessorTree.EnvelopeEmbeddingType
 #print axioms SuccessorTree.SMTree.Envelope.algorithmLevels_subset_competitor
 #print axioms SuccessorTree.SMTree.Envelope.card_prefixLevels
 #print axioms SuccessorTree.SMTree.Envelope.card_le_competing_height
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.fullInvariant
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.finalLevel_interesting
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.finalLevels_subset_competitor
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.I_eq
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.embeddingType_eq
