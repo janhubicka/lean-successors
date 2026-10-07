@@ -104,8 +104,9 @@ noncomputable def freeSucc
     (a : Node Label arity)
     (p : List (Node Label arity))
     (c : Label) :
-    Option (Node Label arity) :=
-  if h : HasParams a p then
+    Option (Node Label arity) := by
+  classical
+  exact if h : HasParams a p then
     some (child a (chosenTuple a p h) c)
   else
     none
@@ -134,7 +135,11 @@ theorem map_level_paramNodes
     (a : Node Label arity)
     (t : ParamTuple arity a.level) :
     (paramNodes a t).map Node.level = levelList t := by
-  simp [paramNodes, levelList, List.map_ofFn, LevelTree.level_ancestor]
+  simp only [paramNodes, levelList, List.map_ofFn]
+  funext j
+  simpa using
+    (LevelTree.level_ancestor
+      a (t.value j).val (Nat.le_of_lt (t.value j).isLt))
 
 theorem levelList_injective :
     Function.Injective (levelList : ParamTuple arity n → List Nat) := by
@@ -200,11 +205,13 @@ theorem base_eq_of_child_eq
   have ha : a ⋖ child a t c := base_covBy_child a t c
   have hb : b ⋖ child a t c := by
     simpa [h] using base_covBy_child b u d
+  have hlev : LevelTree.lev a = LevelTree.lev b := by
+    have hla := LevelTree.covBy_level_eq ha
+    have hlb := LevelTree.covBy_level_eq hb
+    omega
   rcases LevelTree.comparable_below ha.le hb.le with hab | hba
-  · exact LevelTree.same_level_of_le hab (by
-      rw [LevelTree.covBy_level_eq ha, LevelTree.covBy_level_eq hb])
-  · exact (LevelTree.same_level_of_le hba (by
-      rw [LevelTree.covBy_level_eq hb, LevelTree.covBy_level_eq ha])).symm
+  · exact LevelTree.same_level_of_le hab hlev
+  · exact (LevelTree.same_level_of_le hba hlev.symm).symm
 
 theorem child_eq_data
     {a : Node Label arity}
