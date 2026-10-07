@@ -320,7 +320,13 @@ noncomputable def m2InnerShapeMap
     exact m2InnerNode_weak_succ F n h hskip hlevel hsucc
   root_le' := by
     intro a ha
-    exact root_le (m2InnerNode F n h hskip hlevel a)
+    have haroot :
+        a = (rootNode (Label := Label) (arity := arity)) :=
+      level_zero_eq_root ha
+    subst a
+    exact root_le
+      (m2InnerNode F n h hskip hlevel
+        (rootNode (Label := Label) (arity := arity)))
 
 @[simp] theorem m2InnerShapeMap_apply
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
