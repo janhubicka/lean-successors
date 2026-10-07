@@ -297,6 +297,12 @@ theorem gapNode_injective_at_level
         exact eq_of_heq (Sigma.mk.inj_iff.mp hnode).2
       · by_cases heq : n + 1 = m
         · subst m
+          change
+            gapNode (n + 1) choose
+                (⟨n + 1, x⟩ : Node Label arity) =
+              gapNode (n + 1) choose
+                (⟨n + 1, y⟩ : Node Label arity)
+            at hxy
           rw [gapNode_at_level, gapNode_at_level] at hxy
           have hbase :=
             base_eq_of_child_eq hxy
