@@ -22,7 +22,28 @@ level i < n; none means that parameter slot is unused. -/
 structure Code (Label : Type u) (arity n : Nat) where
   label : Label
   params : Fin arity → Option (Fin n)
-deriving DecidableEq, Fintype
+deriving DecidableEq
+
+def codeEquiv (Label : Type u) (arity n : Nat) :
+    Code Label arity n ≃
+      Label × (Fin arity → Option (Fin n)) where
+  toFun c := ⟨c.label, c.params⟩
+  invFun x := ⟨x.1, x.2⟩
+  left_inv := by
+    intro c
+    cases c
+    rfl
+  right_inv := by
+    intro x
+    rcases x with ⟨l, p⟩
+    rfl
+
+noncomputable instance instFintypeCode
+    [Fintype Label] (arity n : Nat) :
+    Fintype (Code Label arity n) :=
+  Fintype.ofEquiv
+    (Label × (Fin arity → Option (Fin n)))
+    (codeEquiv Label arity n)
 
 /-- Histories indexed by their level. -/
 inductive History (Label : Type u) (arity : Nat) : Nat → Type u
@@ -72,12 +93,12 @@ finite. -/
 noncomputable def historyFintype [Fintype Label] :
     (n : Nat) → Fintype (History Label arity n)
   | 0 =>
-      Fintype.ofEquiv PUnit.{u} historyZeroEquiv.symm
+      Fintype.ofEquiv PUnit.{u} historyZeroEquiv
   | n + 1 =>
       letI : Fintype (History Label arity n) := historyFintype n
       Fintype.ofEquiv
         (History Label arity n × Code Label arity n)
-        (historySuccEquiv n).symm
+        (historySuccEquiv n)
 
 noncomputable instance instFintypeHistory [Fintype Label] (n : Nat) :
     Fintype (History Label arity n) :=
@@ -113,22 +134,23 @@ theorem node_level_finite [Fintype Label] (n : Nat) :
   classical
   let e :
       {x : Node Label arity // x.level = n} ≃
-        History Label arity n where
-    toFun x := by
-      rcases x with ⟨⟨m, h⟩, hm⟩
-      simp only [Node.level] at hm
-      subst m
-      exact h
-    invFun h := ⟨⟨n, h⟩, rfl⟩
-    left_inv := by
-      intro x
-      rcases x with ⟨⟨m, h⟩, hm⟩
-      simp only [Node.level] at hm
-      subst m
-      rfl
-    right_inv := by
-      intro h
-      rfl
+        History Label arity n :=
+    { toFun := by
+        intro x
+        rcases x with ⟨⟨m, h⟩, hm⟩
+        simp only [Node.level] at hm
+        subst m
+        exact h
+      invFun := fun h => ⟨⟨n, h⟩, rfl⟩
+      left_inv := by
+        intro x
+        rcases x with ⟨⟨m, h⟩, hm⟩
+        simp only [Node.level] at hm
+        subst m
+        rfl
+      right_inv := by
+        intro h
+        rfl }
   haveI : Finite {x : Node Label arity // x.level = n} :=
     Finite.of_injective e.toFun e.injective
   exact Set.toFinite _
