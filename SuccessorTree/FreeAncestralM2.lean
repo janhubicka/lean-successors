@@ -67,7 +67,6 @@ theorem free_m2_exists
           F n h hskip' hlevel hxn
       rw [hF1]
       dsimp [F2]
-      rw [oneGapShapeMap_apply]
       exact gapNode_eq_self_of_lt h choose hFlev
     · have hxeq : x.level = n := by omega
       let sx : {y : Node Label arity // y.level = n} :=
