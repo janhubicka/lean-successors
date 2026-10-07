@@ -236,6 +236,68 @@ theorem gapNode_child_of_ge
   simp [gapNode, child, gapHistory, gapLevel,
     Nat.not_lt.mpr ha, Nat.not_lt.mpr (by omega : m ≤ n + 1)]
 
+
+theorem gapNode_base_le_child
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    (a : Node Label arity)
+    (t : ParamTuple arity a.level)
+    (c : Label) :
+    gapNode m choose a ≤
+      gapNode m choose (child a t c) := by
+  by_cases hlt : a.level + 1 < m
+  · rw [gapNode_eq_self_of_lt m choose (by omega)]
+    rw [gapNode_eq_self_of_lt m choose (by
+      simpa [child_level] using hlt)]
+    exact base_le_child a t c
+  · by_cases heq : a.level + 1 = m
+    · have haLt : a.level < m := by omega
+      rw [gapNode_eq_self_of_lt m choose haLt]
+      rcases a with ⟨n, h⟩
+      change n + 1 = m at heq
+      subst m
+      change
+        (⟨n, h⟩ : Node Label arity) ≤
+          gapNode (n + 1) choose
+            (child (⟨n, h⟩ : Node Label arity) t c)
+      have hfirst :
+          (⟨n, h⟩ : Node Label arity) ≤
+            child (⟨n, h⟩ : Node Label arity) t c :=
+        base_le_child _ _ _
+      let b :=
+        child (⟨n, h⟩ : Node Label arity) t c
+      rcases b with ⟨k, hb⟩
+      have hk : k = n + 1 := by
+        simpa [b, child_level]
+      subst k
+      rw [gapNode_at_level]
+      exact hfirst.trans (base_le_child _ _ _)
+    · have hge : m ≤ a.level := by omega
+      rw [gapNode_child_of_ge m choose a t c hge]
+      exact base_le_child _ _ _
+
+theorem gapNode_monotone
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    {x y : Node Label arity}
+    (hxy : x ≤ y) :
+    gapNode m choose x ≤ gapNode m choose y := by
+  rcases x with ⟨l, hx⟩
+  rcases y with ⟨n, hy⟩
+  change Prefix hx hy at hxy
+  induction hxy with
+  | refl => exact le_rfl
+  | @step l n hx hy hprefix c ih =>
+      have hedge :
+          gapNode m choose (⟨n, hy⟩ : Node Label arity) ≤
+            gapNode m choose
+              (⟨n + 1, History.step hy c⟩ :
+                Node Label arity) := by
+        exact gapNode_base_le_child
+          m choose (⟨n, hy⟩ : Node Label arity)
+          c.params c.label
+      exact ih.trans hedge
+
 theorem gapNode_level_eq_of_level_eq
     (m : Nat)
     (choose : History Label arity m → Code Label arity m)
