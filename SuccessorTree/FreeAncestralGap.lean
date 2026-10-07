@@ -66,6 +66,44 @@ def shiftFin (m n : Nat) (i : Fin n) : Fin (n + 1) :=
     (shiftFin m n i).val = i.val + 1 := by
   simp [shiftFin, Nat.not_lt.mpr hi]
 
+
+/-- Include an old ancestral level into a later source level. -/
+def liftFin {n m : Nat} (h : n ≤ m) (i : Fin n) : Fin m :=
+  ⟨i.val, lt_of_lt_of_le i.isLt h⟩
+
+@[simp] theorem liftFin_val
+    {n m : Nat} (h : n ≤ m) (i : Fin n) :
+    (liftFin h i).val = i.val := rfl
+
+/-- Reuse the same ancestral parameter levels at a later base level. -/
+def liftParamTuple {n m : Nat} (h : n ≤ m)
+    (t : ParamTuple arity n) :
+    ParamTuple arity m where
+  len := t.len
+  value := fun j => liftFin h (t.value j)
+
+@[simp] theorem liftParamTuple_len
+    {n m : Nat} (h : n ≤ m)
+    (t : ParamTuple arity n) :
+    (liftParamTuple h t).len = t.len := rfl
+
+/-- Reuse one intrinsic transition code at a later base level. -/
+def liftCode {n m : Nat} (h : n ≤ m)
+    (c : Code Label arity n) :
+    Code Label arity m where
+  label := c.label
+  params := liftParamTuple h c.params
+
+@[simp] theorem liftCode_label
+    {n m : Nat} (h : n ≤ m)
+    (c : Code Label arity n) :
+    (liftCode h c).label = c.label := rfl
+
+@[simp] theorem liftCode_params
+    {n m : Nat} (h : n ≤ m)
+    (c : Code Label arity n) :
+    (liftCode h c).params = liftParamTuple h c.params := rfl
+
 /-- Shift every ancestral parameter level across one inserted gap. -/
 def shiftParamTuple (m : Nat) {n : Nat}
     (t : ParamTuple arity n) :
