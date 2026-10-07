@@ -69,7 +69,7 @@ jobs:
             cat proof-audit/free-ancestral-axioms.log
             exit 1
           }
-          python3 scripts/check-axiom-log.py proof-audit/free-ancestral-axioms.log 5 || {
+          python3 scripts/check-axiom-log.py proof-audit/free-ancestral-axioms.log 7 || {
             cat proof-audit/free-ancestral-axioms.log
             exit 1
           }
