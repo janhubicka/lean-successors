@@ -84,9 +84,8 @@ theorem le_meetNode
   classical
   have hbound :
       c.level ≤ min x.level y.level := by
-    exact Nat.le_min
-      (node_level_le hcx)
-      (node_level_le hcy)
+    exact Nat.le_min.mpr
+      ⟨node_level_le hcx, node_level_le hcy⟩
   have hcCommon :
       CommonLevel x y c.level :=
     ⟨c, hcx, hcy, rfl⟩
@@ -99,10 +98,14 @@ theorem le_meetNode
   · have hmcle :
         (meetNode x y).level ≤ c.level :=
       node_level_le hmc
+    have hmcle' :
+        meetLevel x y ≤ c.level := by
+      rw [← level_meetNode]
+      exact hmcle
     have hlev :
         (meetNode x y).level = c.level := by
       rw [level_meetNode]
-      exact Nat.le_antisymm hmcle hcle
+      exact Nat.le_antisymm hmcle' hcle
     have heq :
         meetNode x y = c :=
       node_eq_of_le_level_eq hmc hlev
