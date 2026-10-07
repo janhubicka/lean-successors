@@ -98,7 +98,8 @@ theorem levelRange_comp_skipsOnly
       intro h
       subst k
       rw [hGm] at hk
-      exact hkne hk
+      apply hkne
+      simpa using hk.symm
     have hkRange : k ∈ D.map.levelRange := by
       rw [hD]
       exact hkm
@@ -116,7 +117,7 @@ theorem representedLevels_comp_skipsOnly
   rw [representedLevels, representedLevels,
     levelRange_comp_skipsOnly H G D i hGfix hDskip]
   ext q
-  simp only [Set.mem_setOf_eq, Set.mem_diff, Set.mem_singleton_iff]
+  simp only [Set.mem_ofPred_eq, Set.mem_sdiff, Set.mem_singleton_iff]
   constructor
   · rintro ⟨⟨hq, hqi⟩, hiq, hqell⟩
     exact ⟨hq, by omega, hqell⟩
@@ -166,7 +167,7 @@ theorem stageInvariant_interesting
       · exact hISub hq
   · rw [hRange]
     ext q
-    simp only [Set.mem_insert_iff, representedLevels, Set.mem_setOf_eq]
+    simp only [Set.mem_insert_iff, representedLevels, Set.mem_ofPred_eq]
     constructor
     · intro hq
       rcases hq with rfl | hq
