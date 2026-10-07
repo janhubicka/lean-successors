@@ -215,11 +215,11 @@ theorem gapNode_at_level
   | zero =>
       have hroot : h = History.root := history_zero_unique h
       subst h
-      simp [gapNode, gapHistory, gapLevel, child]
+      simp [gapNode, gapHistory, gapLevel, child, Node.level]
   | succ n =>
       cases h with
       | step p c =>
-          simp [gapNode, gapHistory, gapLevel, child]
+          simp [gapNode, gapHistory, gapLevel, child, Node.level]
 
 /-- Shift a parameter tuple to the actual level of the gapped base node. -/
 def gapShiftParamTuple
@@ -265,7 +265,7 @@ theorem gapNode_child_of_ge
         (gapShiftParamTuple m choose a t ha) c := by
   rcases a with ⟨n, h⟩
   change m ≤ n at ha
-  simp [gapNode, child, gapHistory, gapLevel,
+  simp [gapNode, child, gapHistory, gapLevel, Node.level,
     Nat.not_lt.mpr ha,
     Nat.not_lt.mpr (by omega : m ≤ n + 1),
     gapShiftParamTuple, shiftFin]
@@ -319,11 +319,10 @@ theorem gapNode_monotone
   change Prefix hx hy at hxy
   induction hxy with
   | refl => exact le_rfl
-  | @step l n a b hp code ih =>
-      exact ih.trans
-        (gapNode_base_le_child
-          m choose (⟨n, b⟩ : Node Label arity)
-          code.params code.label)
+  | step hp code ih =>
+      apply le_trans ih
+      exact gapNode_base_le_child
+        m choose _ code.params code.label
 
 theorem paramNodes_lift_of_le
     {a b : Node Label arity}
@@ -413,7 +412,7 @@ theorem map_paramNodes_gap_of_ge
       (gapNode m choose x).level =
         ((gapShiftParamTuple m choose a t ha).value j).val := by
     dsimp [x]
-    rw [gapNode_level, LevelTree.level_ancestor]
+    rw [LevelTree.level_ancestor]
     by_cases hj : (t.value j).val < m
     · simp [gapLevel, gapShiftParamTuple, shiftFin, hj]
     · simp [gapLevel, gapShiftParamTuple, shiftFin, hj]
