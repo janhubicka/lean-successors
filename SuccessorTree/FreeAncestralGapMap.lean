@@ -85,11 +85,15 @@ theorem gapHistory_heq_of_lt
   | zero =>
       have hroot : h = History.root := history_zero_unique h
       subst h
-      simp [gapHistory, hn, gapLevel]
+      simp only [gapHistory]
+      simp only [gapLevel, hn, if_pos]
+      exact eqRec_heq _ _
   | succ n =>
       cases h with
       | step p c =>
-          simp [gapHistory, hn, gapLevel]
+          simp only [gapHistory]
+          simp only [gapLevel, hn, if_pos]
+          exact eqRec_heq _ _
 
 theorem gapHistory_heq_at_level
     (m : Nat)
@@ -101,11 +105,13 @@ theorem gapHistory_heq_at_level
   | zero =>
       have hroot : h = History.root := history_zero_unique h
       subst h
-      simp [gapHistory, gapLevel]
+      simp only [gapHistory, gapLevel]
+      exact eqRec_heq _ _
   | succ n =>
       cases h with
       | step p c =>
-          simp [gapHistory, gapLevel]
+          simp only [gapHistory, gapLevel]
+          exact eqRec_heq _ _
 
 
 
@@ -174,15 +180,19 @@ theorem gapHistory_injective
                         (gapHistory m choose (n + 1)
                           (History.step px cx))
                         (History.step gx (shiftCode m cx)) := by
-                    simp [gapHistory, hlt, heq, gx, gapLevel,
-                      Nat.not_lt.mpr hnge]
+                    simp only [gapHistory]
+                    simp only [hlt, heq, gapLevel,
+                      Nat.not_lt.mpr hnge, if_false]
+                    exact eqRec_heq _ _
                   have hynorm :
                       HEq
                         (gapHistory m choose (n + 1)
                           (History.step py cy))
                         (History.step gy (shiftCode m cy)) := by
-                    simp [gapHistory, hlt, heq, gy, gapLevel,
-                      Nat.not_lt.mpr hnge]
+                    simp only [gapHistory]
+                    simp only [hlt, heq, gapLevel,
+                      Nat.not_lt.mpr hnge, if_false]
+                    exact eqRec_heq _ _
                   have hnorm :
                       History.step gx (shiftCode m cx) =
                         History.step gy (shiftCode m cy) :=
@@ -288,7 +298,8 @@ theorem gapNode_at_level
       child (⟨m, h⟩ : Node Label arity)
         (choose h).params (choose h).label := by
   apply Sigma.ext
-  · simp [gapNode, gapLevel, child_level]
+  · change gapLevel m m = m + 1
+    simp [gapLevel]
   · exact gapHistory_heq_at_level m choose h
 
 /-- Shift a parameter tuple to the actual level of the gapped base node. -/
