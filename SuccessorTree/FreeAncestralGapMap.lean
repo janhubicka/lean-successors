@@ -74,6 +74,41 @@ noncomputable def gapHistory
                   History Label arity (n + 2))
 
 
+theorem gapHistory_heq_of_lt
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    {n : Nat}
+    (h : History Label arity n)
+    (hn : n < m) :
+    HEq (gapHistory m choose n h) h := by
+  cases n with
+  | zero =>
+      have hroot : h = History.root := history_zero_unique h
+      subst h
+      simp [gapHistory, hn, gapLevel]
+  | succ n =>
+      cases h with
+      | step p c =>
+          simp [gapHistory, hn, gapLevel]
+
+theorem gapHistory_heq_at_level
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    (h : History Label arity m) :
+    HEq (gapHistory m choose m h)
+      (History.step h (choose h)) := by
+  cases m with
+  | zero =>
+      have hroot : h = History.root := history_zero_unique h
+      subst h
+      simp [gapHistory, gapLevel]
+  | succ n =>
+      cases h with
+      | step p c =>
+          simp [gapHistory, gapLevel]
+
+
+
 theorem gapLevel_injective (m : Nat) :
     Function.Injective (gapLevel m) := by
   intro i j hij
@@ -95,36 +130,79 @@ theorem gapHistory_injective
           cases y with
           | step py cy =>
               by_cases hlt : n + 1 < m
-              · simpa [gapHistory, hlt] using hxy
+              · have hxid :
+                    HEq
+                      (gapHistory m choose (n + 1)
+                        (History.step px cx))
+                      (History.step px cx) :=
+                    gapHistory_heq_of_lt m choose
+                      (History.step px cx) hlt
+                have hyid :
+                    HEq
+                      (gapHistory m choose (n + 1)
+                        (History.step py cy))
+                      (History.step py cy) :=
+                    gapHistory_heq_of_lt m choose
+                      (History.step py cy) hlt
+                exact eq_of_heq
+                  (hxid.symm.trans (heq_of_eq hxy) |>.trans hyid)
               · by_cases heq : n + 1 = m
                 · subst m
-                  have hpred :
-                      History.step px cx =
-                        History.step py cy := by
-                    simpa [gapHistory] using
-                      congrArg
-                        (fun z =>
-                          match z with
-                          | History.step q _ => q)
-                        hxy
-                  exact hpred
-                · have hnge : m ≤ n := by omega
+                  have hxid :=
+                    gapHistory_heq_at_level (n + 1) choose
+                      (History.step px cx)
+                  have hyid :=
+                    gapHistory_heq_at_level (n + 1) choose
+                      (History.step py cy)
                   have hnorm :
-                      History.step
-                          (gapHistory m choose n px)
-                          (shiftCode m cx) =
-                        History.step
-                          (gapHistory m choose n py)
-                          (shiftCode m cy) := by
-                    simpa [gapHistory, hlt, heq, gapLevel,
-                      Nat.not_lt.mpr hnge] using hxy
+                      History.step (History.step px cx)
+                          (choose (History.step px cx)) =
+                        History.step (History.step py cy)
+                          (choose (History.step py cy)) :=
+                    eq_of_heq
+                      (hxid.symm.trans (heq_of_eq hxy) |>.trans hyid)
+                  exact congrArg parent hnorm
+                · have hnge : m ≤ n := by omega
+                  let gx : History Label arity (n + 1) := by
+                    simpa [gapLevel, Nat.not_lt.mpr hnge] using
+                      (gapHistory m choose n px)
+                  let gy : History Label arity (n + 1) := by
+                    simpa [gapLevel, Nat.not_lt.mpr hnge] using
+                      (gapHistory m choose n py)
+                  have hxnorm :
+                      HEq
+                        (gapHistory m choose (n + 1)
+                          (History.step px cx))
+                        (History.step gx (shiftCode m cx)) := by
+                    simp [gapHistory, hlt, heq, gx, gapLevel,
+                      Nat.not_lt.mpr hnge]
+                  have hynorm :
+                      HEq
+                        (gapHistory m choose (n + 1)
+                          (History.step py cy))
+                        (History.step gy (shiftCode m cy)) := by
+                    simp [gapHistory, hlt, heq, gy, gapLevel,
+                      Nat.not_lt.mpr hnge]
+                  have hnorm :
+                      History.step gx (shiftCode m cx) =
+                        History.step gy (shiftCode m cy) :=
+                    eq_of_heq
+                      (hxnorm.symm.trans (heq_of_eq hxy) |>.trans hynorm)
+                  have hg : gx = gy := congrArg parent hnorm
+                  have hc :
+                      shiftCode m cx = shiftCode m cy :=
+                    congrArg lastCode hnorm
+                  have hxp :
+                      HEq (gapHistory m choose n px) gx := by
+                    simp [gx]
+                  have hyp :
+                      HEq (gapHistory m choose n py) gy := by
+                    simp [gy]
                   have hp :
                       gapHistory m choose n px =
-                        gapHistory m choose n py := by
-                    exact congrArg parent hnorm
-                  have hc :
-                      shiftCode m cx = shiftCode m cy := by
-                    exact congrArg lastCode hnorm
+                        gapHistory m choose n py :=
+                    eq_of_heq
+                      (hxp.trans (heq_of_eq hg) |>.trans hyp.symm)
                   have hpxy : px = py :=
                     gapHistory_injective m choose n hp
                   have hcxy : cx = cy :=
@@ -149,8 +227,7 @@ theorem gapNode_injective
   intro x y hxy
   have hlevels :
       gapLevel m x.level = gapLevel m y.level := by
-    have h := congrArg Node.level hxy
-    exact h
+    simpa [gapNode] using congrArg Sigma.fst hxy
   have hsrc : x.level = y.level :=
     gapLevel_injective m hlevels
   rcases x with ⟨nx, hx⟩
@@ -201,14 +278,7 @@ theorem gapNode_eq_self_of_lt
   change n < m at hx
   apply Sigma.ext
   · simp [gapNode, gapLevel, Node.level, hx]
-  · cases h with
-    | root =>
-        simp only [gapNode, gapHistory]
-        exact eqRec_heq _ _
-    | step p c =>
-        simp only [gapNode, gapHistory]
-        simp [hx]
-        exact eqRec_heq _ _
+  · exact gapHistory_heq_of_lt m choose h hx
 
 theorem gapNode_at_level
     (m : Nat)
@@ -217,35 +287,9 @@ theorem gapNode_at_level
     gapNode m choose ⟨m, h⟩ =
       child (⟨m, h⟩ : Node Label arity)
         (choose h).params (choose h).label := by
-  cases m with
-  | zero =>
-      have hroot : h = History.root := history_zero_unique h
-      subst h
-      rcases hchoose : choose History.root with ⟨lbl, pars⟩
-      change
-        (⟨gapLevel 0 0,
-            gapHistory 0 choose 0 History.root⟩ :
-          Node Label arity) =
-        ⟨1, History.step History.root ⟨lbl, pars⟩⟩
-      apply Sigma.ext
-      · simp [gapLevel]
-      · simp [gapHistory, hchoose]
-        exact eqRec_heq _ _
-  | succ n =>
-      cases h with
-      | step p c =>
-          rcases hchoose : choose (History.step p c) with ⟨lbl, pars⟩
-          change
-            (⟨gapLevel (n + 1) (n + 1),
-                gapHistory (n + 1) choose (n + 1)
-                  (History.step p c)⟩ :
-              Node Label arity) =
-            ⟨n + 2,
-              History.step (History.step p c) ⟨lbl, pars⟩⟩
-          apply Sigma.ext
-          · simp [gapLevel]
-          · simp [gapHistory, hchoose]
-            exact eqRec_heq _ _
+  apply Sigma.ext
+  · simp [gapNode, gapLevel, child_level]
+  · exact gapHistory_heq_at_level m choose h
 
 /-- Shift a parameter tuple to the actual level of the gapped base node. -/
 def gapShiftParamTuple
