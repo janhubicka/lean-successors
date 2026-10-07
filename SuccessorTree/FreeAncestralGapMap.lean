@@ -238,12 +238,7 @@ theorem gapNode_child_of_ge
       child gp.1
         (gapShiftParamTuple m choose
           (⟨n, h⟩ : Node Label arity) t ha) c
-  congr 1
-  apply ParamTuple.ext
-  · rfl
-  · funext j
-    apply Fin.ext
-    rfl
+  rfl
 
 theorem gapLevel_injective (m : Nat) :
     Function.Injective (gapLevel m) := by
