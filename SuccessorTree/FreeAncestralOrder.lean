@@ -104,11 +104,11 @@ theorem exists_at_level
       have hm0 : m = 0 := Nat.eq_zero_of_le_zero hm
       subst m
       exact ⟨History.root, Prefix.refl _⟩
-  | step h c ih =>
-      by_cases htop : m = _ + 1
+  | @step n h c ih =>
+      by_cases htop : m = n + 1
       · subst m
         exact ⟨History.step h c, Prefix.refl _⟩
-      · have hmn : m ≤ _ := by omega
+      · have hmn : m ≤ n := by omega
         obtain ⟨a, ha⟩ := ih m hmn
         exact ⟨a, Prefix.step ha c⟩
 
