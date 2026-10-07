@@ -58,36 +58,35 @@ noncomputable def gapNodeAux
         change 1 = gapLevel 0 0
         rfl
   | n + 1, h => by
-      cases h with
-      | step p c =>
-          by_cases hlt : n + 1 < m
-          · exact
-              ⟨(⟨n + 1, History.step p c⟩ : Node Label arity),
-                (gapLevel_of_lt hlt).symm⟩
-          · by_cases heq : n + 1 = m
-            · subst m
-              refine
-                ⟨(⟨n + 2,
-                    History.step (History.step p c)
-                      (choose (History.step p c))⟩ :
-                    Node Label arity), ?_⟩
-              change n + 2 = gapLevel (n + 1) (n + 1)
-              simp [gapLevel]
-            · have hnge : m ≤ n := by omega
-              let gp := gapNodeAux m choose n p
-              let t' : ParamTuple arity gp.1.level :=
-                { len := c.params.len
-                  value := fun j =>
-                    ⟨(shiftFin m n (c.params.value j)).val, by
-                      rw [gp.2, gapLevel_of_ge hnge]
-                      exact (shiftFin m n (c.params.value j)).isLt⟩ }
-              let d : Node Label arity :=
-                child gp.1 t' c.label
-              refine ⟨d, ?_⟩
-              dsimp [d]
-              rw [child_level, gp.2,
-                gapLevel_of_ge hnge,
-                gapLevel_of_ge (by omega : m ≤ n + 1)]
+      let pc := historySuccEquiv n h
+      let p : History Label arity n := pc.1
+      let c : Code Label arity n := pc.2
+      by_cases hlt : n + 1 < m
+      · exact
+          ⟨(⟨n + 1, h⟩ : Node Label arity),
+            (gapLevel_of_lt hlt).symm⟩
+      · by_cases heq : n + 1 = m
+        · subst m
+          refine
+            ⟨(⟨n + 2, History.step h (choose h)⟩ :
+                Node Label arity), ?_⟩
+          change n + 2 = gapLevel (n + 1) (n + 1)
+          simp [gapLevel]
+        · have hnge : m ≤ n := by omega
+          let gp := gapNodeAux m choose n p
+          let t' : ParamTuple arity gp.1.level :=
+            { len := c.params.len
+              value := fun j =>
+                ⟨(shiftFin m n (c.params.value j)).val, by
+                  rw [gp.2, gapLevel_of_ge hnge]
+                  exact (shiftFin m n (c.params.value j)).isLt⟩ }
+          let d : Node Label arity :=
+            child gp.1 t' c.label
+          refine ⟨d, ?_⟩
+          dsimp [d]
+          rw [child_level, gp.2,
+            gapLevel_of_ge hnge,
+            gapLevel_of_ge (by omega : m ≤ n + 1)]
 
 /-- Total-node version of the raw one-gap recursion. -/
 noncomputable def gapNode
