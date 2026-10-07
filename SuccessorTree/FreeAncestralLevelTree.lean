@@ -40,8 +40,9 @@ theorem commonLevel_zero (x y : Node Label arity) :
   ⟨rootNode, root_le x, root_le y, rfl⟩
 
 /-- Greatest level on which x,y have a common prefix. -/
-noncomputable def meetLevel (x y : Node Label arity) : Nat :=
-  Nat.findGreatest
+noncomputable def meetLevel (x y : Node Label arity) : Nat := by
+  classical
+  exact Nat.findGreatest
     (CommonLevel x y)
     (min x.level y.level)
 
