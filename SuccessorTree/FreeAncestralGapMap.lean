@@ -188,5 +188,35 @@ theorem gapNode_level_of_ge
     (gapNode m choose x).level = x.level + 1 := by
   simp [gapNode_level, gapLevel, Nat.not_lt.mpr hx]
 
+
+theorem gapNode_level_eq_of_level_eq
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    {x y : Node Label arity}
+    (hxy : x.level = y.level) :
+    (gapNode m choose x).level =
+      (gapNode m choose y).level := by
+  simp only [gapNode_level, hxy]
+
+theorem level_zero_eq_root
+    {x : Node Label arity}
+    (hx : x.level = 0) :
+    x = rootNode := by
+  have hroot : rootNode ≤ x := root_le x
+  have hlev : rootNode.level = x.level := by
+    simp [rootNode, hx, Node.level]
+  exact node_eq_of_le_level_eq hroot hlev
+
+theorem root_le_gapNode
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    {x : Node Label arity}
+    (hx : x.level = 0) :
+    x ≤ gapNode m choose x := by
+  have hxroot : x = rootNode :=
+    level_zero_eq_root hx
+  subst x
+  exact root_le (gapNode m choose rootNode)
+
 end FreeAncestral
 end SuccessorTree
