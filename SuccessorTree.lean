@@ -6,6 +6,7 @@ import SuccessorTree.Tree
 import SuccessorTree.Successor
 import SuccessorTree.StarLine
 import SuccessorTree.Support
+import SuccessorTree.ShapeEvents
 import SuccessorTree.FreeAncestral
 import SuccessorTree.FreeAncestralOrder
 import SuccessorTree.FreeAncestralLevelTree
