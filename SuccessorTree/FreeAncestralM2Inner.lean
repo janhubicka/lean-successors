@@ -57,11 +57,13 @@ noncomputable def m2InnerNodeAux
           | step p c =>
               let gp :=
                 m2InnerNodeAux F n h hskip hlevel k p
-              let t0 :=
-                m2InnerParamTuple
-                  F n h hskip hlevel k c.params
-              let t' : ParamTuple arity gp.1.level :=
-                gp.2.symm ▸ t0
+              let t' : ParamTuple arity gp.1.level where
+                len := c.params.len
+                value := fun j =>
+                  ⟨m2InnerLevel F n h (c.params.value j).val, by
+                    rw [gp.2]
+                    exact m2InnerLevel_strictMono F n h hskip hlevel
+                      (c.params.value j).isLt⟩
               let d : Node Label arity :=
                 child gp.1 t' c.label
               refine ⟨d, ?_⟩
@@ -220,9 +222,21 @@ theorem m2InnerNode_child_of_ge
   rw [dif_neg (by omega : ¬ k + 1 = n)]
   let gp :=
     m2InnerNodeAux F n h hskip hlevel k hist
+  change
+    child gp.1
+        { len := t.len
+          value := fun j =>
+            ⟨m2InnerLevel F n h (t.value j).val, by
+              rw [gp.2]
+              exact m2InnerLevel_strictMono F n h hskip hlevel
+                (t.value j).isLt⟩ } c =
+      child gp.1
+        (m2InnerParamTupleAt F n h hskip hlevel
+          (⟨k, hist⟩ : Node Label arity) t) c
   congr 1
   apply (paramTupleEquiv arity _).injective
   apply Sigma.ext rfl
+  apply HEq.of_eq
   funext j
   apply Fin.ext
   rfl
