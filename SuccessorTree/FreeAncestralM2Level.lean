@@ -162,5 +162,43 @@ noncomputable def m2InnerParamTuple
     (t : ParamTuple arity k) :
     (m2InnerParamTuple F n h hskip hlevel k t).len = t.len := rfl
 
+
+theorem levelList_m2InnerParamTuple
+    (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
+    (n h : Nat)
+    (hskip : F.Skips h)
+    (hlevel :
+      ∀ x : Node Label arity,
+        x.level = n → (F x).level = h + 1)
+    (k : Nat)
+    (t : ParamTuple arity k) :
+    levelList (m2InnerParamTuple F n h hskip hlevel k t) =
+      (levelList t).map (m2InnerLevel F n h) := by
+  simp only [levelList, m2InnerParamTuple, List.map_ofFn]
+  apply congrArg List.ofFn
+  funext j
+  rfl
+
+theorem m2InnerParamTuple_injective
+    (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
+    (n h : Nat)
+    (hskip : F.Skips h)
+    (hlevel :
+      ∀ x : Node Label arity,
+        x.level = n → (F x).level = h + 1)
+    (k : Nat) :
+    Function.Injective
+      (m2InnerParamTuple F n h hskip hlevel k) := by
+  intro t u htu
+  apply levelList_injective
+  have hlevels :=
+    congrArg (levelList (arity := arity)) htu
+  rw [levelList_m2InnerParamTuple,
+      levelList_m2InnerParamTuple] at hlevels
+  exact
+    list_map_injective_of_injective
+      (m2InnerLevel_strictMono F n h hskip hlevel).injective
+      hlevels
+
 end FreeAncestral
 end SuccessorTree
