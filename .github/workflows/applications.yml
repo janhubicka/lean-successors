@@ -1,0 +1,46 @@
+name: Applications
+
+on:
+  push:
+    paths:
+      - 'SuccessorTree/Applications/**'
+      - '.github/workflows/applications.yml'
+      - 'scripts/CheckBoringExtensions.lean'
+  pull_request:
+    paths:
+      - 'SuccessorTree/Applications/**'
+      - '.github/workflows/applications.yml'
+      - 'scripts/CheckBoringExtensions.lean'
+  workflow_dispatch:
+
+concurrency:
+  group: applications-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  boring:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Cache Lean toolchain
+        uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - name: Cache Lake workspace
+        uses: actions/cache@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Download Mathlib cache
+        run: lake exe cache get
+      - name: Build applications stack
+        run: lake build SuccessorTree.Applications.BoringExtensions
