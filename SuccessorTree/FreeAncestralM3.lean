@@ -1,5 +1,5 @@
 import SuccessorTree.FreeAncestralCover
-import SuccessorTree.FreeAncestralGapShape
+import SuccessorTree.FreeAncestralMonoid
 import Mathlib.Tactic
 
 /-! # M3 replay choice for the free ancestral tree -/
@@ -164,6 +164,30 @@ theorem m3_replay
   rw [hparams] at hnew
   rw [oneGapShapeMap_apply, gapNode_at_level, hchoice]
   simpa [liftCode, ha] using hnew
+
+
+variable [Nonempty Label]
+
+theorem free_m3_exists
+    (n m : Nat) (hnm : n < m) :
+    ∃ D : ShapeMap (freeSTree (Label := Label) (arity := arity)),
+      D.SkipsOnly m ∧
+      ∀ (a b : Node Label arity)
+        (p : List (Node Label arity))
+        (c : Label) (s : Node Label arity),
+        a.level = n →
+        b.level = m →
+        freeSucc a p c = some s →
+        s ≤ b →
+        freeSucc b p c = some (D b) := by
+  let D :
+      ShapeMap (freeSTree (Label := Label) (arity := arity)) :=
+    oneGapShapeMap m (m3Choice n m hnm)
+  refine ⟨D, ?_, ?_⟩
+  · exact oneGapShapeMap_skipsOnly
+      m (m3Choice n m hnm)
+  · intro a b p c s ha hb hsucc hsb
+    exact m3_replay n m hnm ha hb hsucc hsb
 
 end FreeAncestral
 end SuccessorTree
