@@ -153,7 +153,6 @@ theorem m2GapChoice_lowerHistory
   classical
   unfold m2GapChoice
   rw [lowerSource?_eq_some F n h hskip hlevel x]
-  congr 1
 
 /-- The outer one-gap map sends every lowered top-level image back to its
 original F-image. -/
