@@ -29,8 +29,13 @@ theorem m2InnerNode_injective_at_level
       · have hxy' :
             F (⟨0, x⟩ : Node Label arity) =
               F (⟨0, y⟩ : Node Label arity) := by
-          simpa [m2InnerNode_eq_F_of_lt F n h hskip hlevel hn]
-            using hxy
+          have hxlt :
+              (⟨0, x⟩ : Node Label arity).level < n := hn
+          have hylt :
+              (⟨0, y⟩ : Node Label arity).level < n := hn
+          rw [m2InnerNode_eq_F_of_lt F n h hskip hlevel hxlt,
+              m2InnerNode_eq_F_of_lt F n h hskip hlevel hylt] at hxy
+          exact hxy
         have hnode := F.injective hxy'
         exact eq_of_heq (Sigma.mk.inj_iff.mp hnode).2
       · have hn0 : n = 0 := Nat.eq_zero_of_not_pos hn
@@ -42,8 +47,11 @@ theorem m2InnerNode_injective_at_level
         have hlow :
             lowerImage F 0 h hlevel sx =
               lowerImage F 0 h hlevel sy := by
-          simpa [sx, sy,
-            m2InnerNode_at_cut F 0 h hskip hlevel] using hxy
+          change m2InnerNode F 0 h hskip hlevel sx.1 =
+            m2InnerNode F 0 h hskip hlevel sy.1 at hxy
+          rw [m2InnerNode_at_cut F 0 h hskip hlevel sx,
+              m2InnerNode_at_cut F 0 h hskip hlevel sy] at hxy
+          exact hxy
         have hsxy :
             sx = sy :=
           lowerImage_injective F 0 h hskip hlevel hlow
@@ -55,8 +63,13 @@ theorem m2InnerNode_injective_at_level
       · have hxy' :
             F (⟨k + 1, x⟩ : Node Label arity) =
               F (⟨k + 1, y⟩ : Node Label arity) := by
-          simpa [m2InnerNode_eq_F_of_lt F n h hskip hlevel hlt]
-            using hxy
+          have hxlt :
+              (⟨k + 1, x⟩ : Node Label arity).level < n := hlt
+          have hylt :
+              (⟨k + 1, y⟩ : Node Label arity).level < n := hlt
+          rw [m2InnerNode_eq_F_of_lt F n h hskip hlevel hxlt,
+              m2InnerNode_eq_F_of_lt F n h hskip hlevel hylt] at hxy
+          exact hxy
         have hnode := F.injective hxy'
         exact eq_of_heq (Sigma.mk.inj_iff.mp hnode).2
       · by_cases heq : k + 1 = n
@@ -67,8 +80,11 @@ theorem m2InnerNode_injective_at_level
           have hlow :
               lowerImage F n h hlevel sx =
                 lowerImage F n h hlevel sy := by
-            simpa [sx, sy,
-              m2InnerNode_at_cut F n h hskip hlevel] using hxy
+            change m2InnerNode F n h hskip hlevel sx.1 =
+              m2InnerNode F n h hskip hlevel sy.1 at hxy
+            rw [m2InnerNode_at_cut F n h hskip hlevel sx,
+                m2InnerNode_at_cut F n h hskip hlevel sy] at hxy
+            exact hxy
           have hsxy :
               sx = sy :=
             lowerImage_injective F n h hskip hlevel hlow
@@ -224,7 +240,8 @@ theorem m2InnerNode_weak_succ
         map_paramNodes_m2Inner_eq_F_of_lt
           F n h hskip hlevel a t ha
       refine ⟨d, ?_, ?_⟩
-      · simpa [hbase, hparams] using hFd
+      · change freeSucc (F a) ((paramNodes a t).map F) c = some d at hFd
+        simpa only [hbase, hparams] using hFd
       · simpa [hchild] using hdb
     · have hcut :
           (child a t c).level = n := by
@@ -284,7 +301,8 @@ theorem m2InnerNode_weak_succ
             node_eq_of_le_level_eq hzd heqLev
           simpa [heq]
       refine ⟨d, ?_, ?_⟩
-      · simpa [hbase, hparams] using hFd
+      · change freeSucc (F a) ((paramNodes a t).map F) c = some d at hFd
+        simpa only [hbase, hparams] using hFd
       · simpa [hinnerChild] using hdLeZ
   · have hge : n ≤ a.level := Nat.le_of_not_gt ha
     let t' :=
@@ -300,7 +318,6 @@ theorem m2InnerNode_weak_succ
     · dsimp [d, t']
       rw [← m2InnerNode_child_of_ge
             F n h hskip hlevel a t c hge]
-      exact le_rfl
 
 noncomputable def m2InnerShapeMap
     (F : ShapeMap (freeSTree (Label := Label) (arity := arity)))
@@ -314,6 +331,9 @@ noncomputable def m2InnerShapeMap
   injective' := m2InnerNode_injective F n h hskip hlevel
   level_preserving' := by
     intro a b hab
+    change a.level = b.level at hab
+    change (m2InnerNode F n h hskip hlevel a).level =
+      (m2InnerNode F n h hskip hlevel b).level
     rw [m2InnerNode_level, m2InnerNode_level, hab]
   weak_succ' := by
     intro a b p c hsucc
