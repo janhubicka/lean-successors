@@ -141,6 +141,31 @@ noncomputable def gapNode
     Node Label arity :=
   ⟨gapLevel m x.level, gapHistory m choose x.level x.2⟩
 
+
+theorem gapNode_injective
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m) :
+    Function.Injective (gapNode m choose) := by
+  intro x y hxy
+  have hlevels :
+      gapLevel m x.level = gapLevel m y.level := by
+    simpa only [gapNode_level] using congrArg Node.level hxy
+  have hsrc : x.level = y.level :=
+    gapLevel_injective m hlevels
+  rcases x with ⟨nx, hx⟩
+  rcases y with ⟨ny, hy⟩
+  change nx = ny at hsrc
+  subst ny
+  have hhist :
+      gapHistory m choose nx hx =
+        gapHistory m choose nx hy := by
+    simpa only [gapNode, Sigma.mk.inj_iff, heq_eq_eq,
+      true_and] using hxy
+  have hxyHist : hx = hy :=
+    gapHistory_injective m choose nx hhist
+  subst hy
+  rfl
+
 @[simp] theorem gapNode_level
     (m : Nat)
     (choose : History Label arity m → Code Label arity m)
