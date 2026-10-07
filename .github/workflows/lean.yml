@@ -73,8 +73,19 @@ jobs:
             cat proof-audit/shape-proof-routes.log
             exit 1
           }
+      - name: Check envelope section statements and axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckEnvelope.lean > proof-audit/envelope-axioms.log 2>&1; then
+            cat proof-audit/envelope-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/envelope-axioms.log 30 || {
+            cat proof-audit/envelope-axioms.log
+            exit 1
+          }
       - name: Check fat-tree A1 sequencing axioms
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           mkdir -p proof-audit
@@ -87,7 +98,7 @@ jobs:
             exit 1
           }
       - name: Check fat-tree structural statements and axioms
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           if ! lake env lean scripts/CheckFatTree.lean > proof-audit/fat-tree-axioms.log 2>&1; then
@@ -99,7 +110,7 @@ jobs:
             exit 1
           }
       - name: Check fat-tree A3 splice statements and axioms
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           if ! lake env lean scripts/CheckFatTreeA3.lean > proof-audit/fat-tree-a3-axioms.log 2>&1; then
@@ -111,7 +122,7 @@ jobs:
             exit 1
           }
       - name: Check fat-tree A4 bridge axioms
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           if ! lake env lean scripts/CheckFatTreeA4.lean > proof-audit/fat-tree-a4-axioms.log 2>&1; then
@@ -123,7 +134,7 @@ jobs:
             exit 1
           }
       - name: Check unconditional fat-tree A4 and Ellentuck endpoints
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           if ! lake env lean scripts/CheckFatTreeReviewA4.lean > proof-audit/fat-tree-review-a4-axioms.log 2>&1; then
@@ -135,7 +146,7 @@ jobs:
             exit 1
           }
       - name: Check intermediate fat-tree replay axioms
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           mapfile -t targets < <(sed -n 's/^import //p' scripts/CheckFatTreeReplay.lean)
@@ -152,7 +163,7 @@ jobs:
             exit 1
           }
       - name: Check coverage and conditional assembly interface
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           if ! lake env lean scripts/CheckFatTreeFirstApplication.lean > proof-audit/fat-tree-first-application.log 2>&1; then
@@ -165,7 +176,7 @@ jobs:
           }
           echo 'A4Assembly is deliberately conditional; A4ReviewComplete discharges FixedStemPigeonhole unconditionally.'
       - name: Check localized manuscript patches
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           python3 manuscript/make-validation-patches.py --reference \
@@ -187,7 +198,7 @@ jobs:
           if test -f docs/shape-ramsey-audit.md; then cp docs/shape-ramsey-audit.md proof-audit/; fi
           (cd proof-audit && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
       - name: Upload proof audit and patches
-        if: always()
+        if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
           name: shape-ramsey-proof-audit
