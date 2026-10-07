@@ -14,6 +14,7 @@ on:
       - "manuscript/annotate_successors_v8.py"
       - "docs/v8-envelope-and-boring-type-audit-20261008.md"
       - ".github/workflows/successor-v8-type-audit.yml"
+      - "tests/test_v8_annotation.py"
 
 jobs:
   counterexample:
