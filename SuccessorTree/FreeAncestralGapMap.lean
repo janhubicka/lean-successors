@@ -300,6 +300,35 @@ theorem gapNode_monotone
 
 
 
+
+theorem paramNodes_lift_of_le
+    {a b : Node Label arity}
+    (hab : a ≤ b)
+    (t : ParamTuple arity a.level) :
+    paramNodes b
+        (liftParamTuple (node_level_le hab) t) =
+      paramNodes a t := by
+  simp only [paramNodes]
+  apply congrArg List.ofFn
+  funext j
+  have hk :
+      (t.value j).val ≤ a.level :=
+    Nat.le_of_lt (t.value j).isLt
+  have hxa :
+      LevelTree.ancestor a (t.value j).val hk ≤ b :=
+    (LevelTree.ancestor_le a (t.value j).val hk).trans hab
+  have hlev :
+      LevelTree.lev
+          (LevelTree.ancestor a (t.value j).val hk) =
+        (t.value j).val :=
+    LevelTree.level_ancestor a (t.value j).val hk
+  have heq :=
+    LevelTree.eq_ancestor_of_le hxa hlev
+      (by
+        have := node_level_le hab
+        omega)
+  simpa [liftParamTuple, liftFin] using heq.symm
+
 theorem le_gapNode_of_level_eq
     (m : Nat)
     (choose : History Label arity m → Code Label arity m)
