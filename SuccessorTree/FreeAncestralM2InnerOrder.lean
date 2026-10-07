@@ -99,8 +99,8 @@ theorem map_paramNodes_m2Inner
         (m2InnerNode F n h hskip hlevel) =
       paramNodes
         (m2InnerNode F n h hskip hlevel a)
-        (m2InnerParamTuple
-          F n h hskip hlevel a.level t) := by
+        (m2InnerParamTupleAt
+          F n h hskip hlevel a t) := by
   simp only [paramNodes, List.map_ofFn]
   apply congrArg List.ofFn
   funext j
@@ -121,18 +121,19 @@ theorem map_paramNodes_m2Inner
       (Nat.le_of_lt (t.value j).isLt)
   have hmaplev :
       (m2InnerNode F n h hskip hlevel x).level =
-        ((m2InnerParamTuple
-          F n h hskip hlevel a.level t).value j).val := by
+        ((m2InnerParamTupleAt
+          F n h hskip hlevel a t).value j).val := by
     rw [m2InnerNode_level, hxlev]
     rfl
   have htarget :
-      ((m2InnerParamTuple
-        F n h hskip hlevel a.level t).value j).val <
+      ((m2InnerParamTupleAt
+        F n h hskip hlevel a t).value j).val <
         (m2InnerNode F n h hskip hlevel a).level :=
-    ((m2InnerParamTuple
-      F n h hskip hlevel a.level t).value j).isLt
+    ((m2InnerParamTupleAt
+      F n h hskip hlevel a t).value j).isLt
   exact LevelTree.eq_ancestor_of_le
     hmap hmaplev (Nat.le_of_lt htarget)
+
 
 end FreeAncestral
 end SuccessorTree
