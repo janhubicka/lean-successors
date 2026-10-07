@@ -1,4 +1,4 @@
-import SuccessorTree.EnvelopePullback
+import SuccessorTree.EnvelopeAlgorithm
 import Mathlib.Tactic
 
 /-!
