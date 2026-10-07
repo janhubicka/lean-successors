@@ -312,6 +312,14 @@ theorem gapNode_injective_at_level
           | step px cx =>
               cases y with
               | step py cy =>
+                  change
+                    gapNode m choose
+                        (⟨n + 1, History.step px cx⟩ :
+                          Node Label arity) =
+                      gapNode m choose
+                        (⟨n + 1, History.step py cy⟩ :
+                          Node Label arity)
+                    at hxy
                   have hxform :=
                     gapNode_child_of_ge m choose
                       (⟨n, px⟩ : Node Label arity)
