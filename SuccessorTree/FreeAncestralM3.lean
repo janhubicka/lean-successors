@@ -119,10 +119,8 @@ theorem m3_lower_eq
   change a = m3Lower n m hnm bh
   unfold m3Lower
   apply LevelTree.eq_ancestor_of_le hab
-  · change a.level = n
-    exact ha
-  · change n ≤ m
-    omega
+  change a.level = n
+  exact ha
 
 theorem m3_upper_eq
     (n m : Nat) (hnm : n < m)
@@ -139,10 +137,8 @@ theorem m3_upper_eq
   change s = m3Upper n m hnm bh
   unfold m3Upper
   apply LevelTree.eq_ancestor_of_le hsb
-  · change s.level = n + 1
-    exact hs
-  · change n + 1 ≤ m
-    omega
+  change s.level = n + 1
+  exact hs
 
 theorem m3_replay
     (n m : Nat) (hnm : n < m)
@@ -208,7 +204,7 @@ theorem m3_replay
       (m3Choice n m hnm bh).params
       (m3Choice n m hnm bh).label
   rw [hparams, hlabel] at hnew
-  rw [oneGapShapeMap_apply, gapNode_at_level]
+  rw [oneGapShapeMap_apply, gapNode_at_level, hlabel]
   exact hnew
 
 
