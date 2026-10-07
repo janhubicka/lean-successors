@@ -195,6 +195,7 @@ theorem gapNode_child_of_ge
       child (gapNode m choose a)
         (gapShiftParamTuple m choose a t ha) c := by
   rcases a with ⟨n, h⟩
+  change ParamTuple arity n at t
   change m ≤ n at ha
   change gapNode m choose
       (⟨n + 1, History.step h ⟨c, t⟩⟩ :
