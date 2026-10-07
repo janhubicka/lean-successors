@@ -85,3 +85,4 @@ import SuccessorTree.EnvelopeMinimalityCore
 import SuccessorTree.EnvelopeInvariantLevels
 import SuccessorTree.EnvelopeUniqueness
 import SuccessorTree.EnvelopeEmbeddingType
+import SuccessorTree.EnvelopeGlobalMinimality
