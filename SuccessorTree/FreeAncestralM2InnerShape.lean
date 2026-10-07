@@ -33,6 +33,14 @@ theorem m2InnerNode_injective_at_level
               Node.level (⟨0, x⟩ : Node Label arity) < n := hn
           have hylt :
               Node.level (⟨0, y⟩ : Node Label arity) < n := hn
+          change
+            m2InnerNode F n h hskip hlevel (⟨0, x⟩ : Node Label arity) =
+              m2InnerNode F n h hskip hlevel (⟨0, y⟩ : Node Label arity)
+              at hxy
+          change
+            m2InnerNode F n h hskip hlevel (⟨k + 1, x⟩ : Node Label arity) =
+              m2InnerNode F n h hskip hlevel (⟨k + 1, y⟩ : Node Label arity)
+              at hxy
           rw [m2InnerNode_eq_F_of_lt F n h hskip hlevel hxlt,
               m2InnerNode_eq_F_of_lt F n h hskip hlevel hylt] at hxy
           exact hxy
