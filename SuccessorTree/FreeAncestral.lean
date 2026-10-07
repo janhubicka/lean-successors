@@ -38,12 +38,12 @@ def codeEquiv (Label : Type u) (arity n : Nat) :
     rcases x with ⟨l, p⟩
     rfl
 
-noncomputable instance instFiniteCode
-    [Finite Label] (arity n : Nat) :
-    Finite (Code Label arity n) :=
-  Finite.of_injective
-    (codeEquiv Label arity n).toFun
-    (codeEquiv Label arity n).injective
+noncomputable instance instFintypeCode
+    [Fintype Label] (arity n : Nat) :
+    Fintype (Code Label arity n) :=
+  Fintype.ofEquiv
+    (Label × (Fin arity → Option (Fin n)))
+    (codeEquiv Label arity n).symm
 
 /-- Histories indexed by their level. -/
 inductive History (Label : Type u) (arity : Nat) : Nat → Type u
@@ -83,24 +83,29 @@ def historySuccEquiv (n : Nat) :
 
 /-- Every fixed history level is finite when the intrinsic label alphabet is
 finite. -/
-noncomputable def historyFinite [Finite Label] :
-    (n : Nat) → Finite (History Label arity n)
+noncomputable def historyFintype [Fintype Label] :
+    (n : Nat) → Fintype (History Label arity n)
   | 0 =>
-      Finite.of_injective
-        (fun _ : History Label arity 0 => PUnit.unit)
-        (by
-          intro x y hxy
-          simpa [history_zero_unique x, history_zero_unique y])
+      Fintype.ofEquiv Unit
+        { toFun := fun _ => ()
+          invFun := fun _ => History.root
+          left_inv := by
+            intro h
+            exact history_zero_unique h
+          right_inv := by
+            intro u
+            cases u
+            rfl }
   | n + 1 => by
-      letI : Finite (History Label arity n) := historyFinite n
-      letI : Finite (Code Label arity n) := inferInstance
-      exact Finite.of_injective
-        (historySuccEquiv n).toFun
-        (historySuccEquiv n).injective
+      letI : Fintype (History Label arity n) := historyFintype n
+      letI : Fintype (Code Label arity n) := inferInstance
+      exact Fintype.ofEquiv
+        (History Label arity n × Code Label arity n)
+        (historySuccEquiv n).symm
 
-noncomputable instance instFiniteHistory [Finite Label] (n : Nat) :
-    Finite (History Label arity n) :=
-  historyFinite n
+noncomputable instance instFintypeHistory [Fintype Label] (n : Nat) :
+    Fintype (History Label arity n) :=
+  historyFintype n
 
 /-- Forget the last transition of a positive-level history. -/
 def parent {n : Nat} :
@@ -127,7 +132,7 @@ abbrev Node (Label : Type u) (arity : Nat) :=
 /-- The level of a total history node. -/
 def Node.level (x : Node Label arity) : Nat := x.1
 
-theorem node_level_finite [Finite Label] (n : Nat) :
+theorem node_level_finite [Fintype Label] (n : Nat) :
     Set.Finite {x : Node Label arity | x.level = n} := by
   classical
   let e :
@@ -149,8 +154,8 @@ theorem node_level_finite [Finite Label] (n : Nat) :
       right_inv := by
         intro h
         rfl }
-  haveI : Finite {x : Node Label arity // x.level = n} :=
-    Finite.of_injective e.toFun e.injective
+  letI : Fintype {x : Node Label arity // x.level = n} :=
+    Fintype.ofEquiv (History Label arity n) e.symm
   exact Set.toFinite _
 
 end FreeAncestral
