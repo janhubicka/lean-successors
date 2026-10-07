@@ -8,6 +8,7 @@ import SuccessorTree.StarLine
 import SuccessorTree.Support
 import SuccessorTree.FreeAncestral
 import SuccessorTree.FreeAncestralOrder
+import SuccessorTree.FreeAncestralLevelTree
 import SuccessorTree.Pigeonhole
 import SuccessorTree.HalesJewett.VariableWord
 import SuccessorTree.HalesJewett.Forcing
