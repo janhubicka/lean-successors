@@ -13,3 +13,4 @@ Run after `lake build` via `lake env lean scripts/CheckFreeAncestral.lean`.
 #print axioms SuccessorTree.FreeAncestral.free_m3_exists
 #print axioms SuccessorTree.FreeAncestral.freeSMTree
 #print axioms SuccessorTree.FreeAncestral.finiteShapeRamsey
+#print axioms SuccessorTree.ShapeMap.mapEvent_injective
