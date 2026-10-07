@@ -299,6 +299,34 @@ theorem gapNode_monotone
       exact ih.trans hedge
 
 
+
+theorem le_gapNode_of_level_eq
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    {x : Node Label arity}
+    (hx : x.level = m) :
+    x ≤ gapNode m choose x := by
+  rcases x with ⟨n, h⟩
+  change n = m at hx
+  subst n
+  rw [gapNode_at_level]
+  exact base_le_child _ _ _
+
+theorem map_paramNodes_gap_of_lt
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    (a : Node Label arity)
+    (t : ParamTuple arity a.level)
+    (ha : a.level < m) :
+    (paramNodes a t).map (gapNode m choose) =
+      paramNodes a t := by
+  simp only [paramNodes, List.map_ofFn]
+  apply congrArg List.ofFn
+  funext j
+  apply gapNode_eq_self_of_lt
+  rw [LevelTree.level_ancestor]
+  exact (t.value j).isLt.trans ha
+
 theorem gapNode_param_ancestor
     (m : Nat)
     (choose : History Label arity m → Code Label arity m)
