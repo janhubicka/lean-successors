@@ -44,7 +44,7 @@ theorem stageFullInvariant_base
     · intro x hx
       exact ⟨x, rfl⟩
     · ext q
-      simp only [representedLevels, Set.mem_singleton_iff, Set.mem_setOf_eq]
+      simp only [representedLevels, Set.mem_singleton_iff, Set.mem_ofPred_eq]
       constructor
       · intro h
         subst q
@@ -147,7 +147,7 @@ theorem stageFullInvariant_skips_iff
     (hInv : StageFullInvariant H X ell i I F) :
     F.map.Skips q ↔ i ≤ q ∧ q ≤ ell ∧ q ∉ I := by
   rw [ShapeMap.Skips, stageFullInvariant_levelRange H X ell i I F hInv]
-  simp only [Set.mem_setOf_eq]
+  simp only [Set.mem_ofPred_eq]
   constructor <;> intro h
   · constructor
     · by_contra hqi
