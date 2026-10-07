@@ -375,6 +375,51 @@ theorem map_paramNodes_gap_of_ge
   funext j
   exact gapNode_param_ancestor m choose a t ha j
 
+
+theorem gapNode_weak_succ
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    {a b : Node Label arity}
+    {p : List (Node Label arity)}
+    {c : Label}
+    (h : freeSucc a p c = some b) :
+    ∃ d : Node Label arity,
+      freeSucc (gapNode m choose a)
+          (p.map (gapNode m choose)) c = some d ∧
+        d ≤ gapNode m choose b := by
+  obtain ⟨t, htp, hbeq⟩ :=
+    freeSucc_eq_some_data h
+  subst b
+  subst p
+  by_cases ha : a.level < m
+  · have hDa :
+        gapNode m choose a = a :=
+      gapNode_eq_self_of_lt m choose ha
+    have hparams :
+        (paramNodes a t).map (gapNode m choose) =
+          paramNodes a t :=
+      map_paramNodes_gap_of_lt m choose a t ha
+    refine ⟨child a t c, ?_, ?_⟩
+    · rw [hDa, hparams]
+      exact freeSucc_paramNodes a t c
+    · by_cases hb :
+          (child a t c).level < m
+      · rw [gapNode_eq_self_of_lt m choose hb]
+      · have hblevel :
+            (child a t c).level = m := by
+          rw [child_level]
+          omega
+        exact le_gapNode_of_level_eq m choose hblevel
+  · have hge : m ≤ a.level :=
+      Nat.le_of_not_gt ha
+    refine
+      ⟨gapNode m choose (child a t c), ?_, le_rfl⟩
+    rw [map_paramNodes_gap_of_ge m choose a t hge]
+    rw [gapNode_child_of_ge m choose a t c hge]
+    exact freeSucc_paramNodes
+      (gapNode m choose a)
+      (shiftParamTuple m t) c
+
 theorem gapNode_level_eq_of_level_eq
     (m : Nat)
     (choose : History Label arity m → Code Label arity m)
