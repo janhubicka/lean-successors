@@ -231,6 +231,115 @@ theorem gapLevel_injective (m : Nat) :
   by_cases hi : i < m <;> by_cases hj : j < m <;>
     simp [hi, hj] at hij ⊢ <;> omega
 
+theorem levelList_gapShiftParamTuple
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    (a : Node Label arity)
+    (t : ParamTuple arity a.level)
+    (ha : m ≤ a.level) :
+    levelList (gapShiftParamTuple m choose a t ha) =
+      (levelList t).map (shiftNat m) := by
+  simp only [levelList, gapShiftParamTuple, List.map_ofFn]
+  apply congrArg List.ofFn
+  funext j
+  by_cases hj : (t.value j).val < m
+  · simp [shiftNat, shiftFin, hj, Function.comp_def]
+  · simp [shiftNat, shiftFin, hj, Function.comp_def]
+
+theorem gapShiftParamTuple_injective
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    (a : Node Label arity)
+    (ha : m ≤ a.level) :
+    Function.Injective
+      (fun t : ParamTuple arity a.level =>
+        gapShiftParamTuple m choose a t ha) := by
+  intro t u htu
+  apply levelList_injective
+  have hlevels :=
+    congrArg (levelList (arity := arity)) htu
+  rw [levelList_gapShiftParamTuple,
+      levelList_gapShiftParamTuple] at hlevels
+  exact
+    list_map_injective_of_injective
+      (shiftNat_injective m) hlevels
+
+theorem gapNode_injective_at_level
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m) :
+    ∀ n : Nat,
+      Function.Injective
+        (fun h : History Label arity n =>
+          gapNode m choose (⟨n, h⟩ : Node Label arity))
+  | 0 => by
+      intro x y hxy
+      exact (history_zero_unique x).trans
+        (history_zero_unique y).symm
+  | n + 1 => by
+      intro x y hxy
+      by_cases hlt : n + 1 < m
+      · have hxid :
+            gapNode m choose
+                (⟨n + 1, x⟩ : Node Label arity) =
+              (⟨n + 1, x⟩ : Node Label arity) :=
+          gapNode_eq_self_of_lt m choose hlt
+        have hyid :
+            gapNode m choose
+                (⟨n + 1, y⟩ : Node Label arity) =
+              (⟨n + 1, y⟩ : Node Label arity) :=
+          gapNode_eq_self_of_lt m choose hlt
+        have hnode :
+            (⟨n + 1, x⟩ : Node Label arity) =
+              (⟨n + 1, y⟩ : Node Label arity) := by
+          rw [← hxid, ← hyid]
+          exact hxy
+        exact eq_of_heq (Sigma.mk.inj_iff.mp hnode).2
+      · by_cases heq : n + 1 = m
+        · subst m
+          rw [gapNode_at_level, gapNode_at_level] at hxy
+          have hbase :=
+            base_eq_of_child_eq hxy
+          exact eq_of_heq (Sigma.mk.inj_iff.mp hbase).2
+        · have hnge : m ≤ n := by omega
+          cases x with
+          | step px cx =>
+              cases y with
+              | step py cy =>
+                  have hxform :=
+                    gapNode_child_of_ge m choose
+                      (⟨n, px⟩ : Node Label arity)
+                      cx.params cx.label hnge
+                  have hyform :=
+                    gapNode_child_of_ge m choose
+                      (⟨n, py⟩ : Node Label arity)
+                      cy.params cy.label hnge
+                  rw [hxform, hyform] at hxy
+                  have hbase :
+                      gapNode m choose
+                          (⟨n, px⟩ : Node Label arity) =
+                        gapNode m choose
+                          (⟨n, py⟩ : Node Label arity) :=
+                    base_eq_of_child_eq hxy
+                  have hp :
+                      px = py :=
+                    gapNode_injective_at_level m choose n hbase
+                  subst py
+                  have hdata := child_eq_data hxy
+                  have hparams :
+                      cx.params = cy.params :=
+                    gapShiftParamTuple_injective
+                      m choose (⟨n, px⟩ : Node Label arity)
+                      hnge hdata.1
+                  have hlabel : cx.label = cy.label := hdata.2
+                  cases cx with
+                  | mk cl cp =>
+                      cases cy with
+                      | mk dl dp =>
+                          simp only at hparams hlabel
+                          subst dl
+                          subst dp
+                          rfl
+
 theorem gapNode_injective
     (m : Nat)
     (choose : History Label arity m → Code Label arity m) :
@@ -239,92 +348,23 @@ theorem gapNode_injective
   have hlevels :
       gapLevel m x.level = gapLevel m y.level := by
     rw [← gapNode_level m choose x,
-      ← gapNode_level m choose y, hxy]
+        ← gapNode_level m choose y, hxy]
   have hsrc : x.level = y.level :=
     gapLevel_injective m hlevels
-  rcases x with ⟨n, hx⟩
+  rcases x with ⟨nx, hx⟩
   rcases y with ⟨ny, hy⟩
-  change n = ny at hsrc
+  change nx = ny at hsrc
   subst ny
-  by_cases hlt : n < m
-  · have hxid :
-        gapNode m choose (⟨n, hx⟩ : Node Label arity) =
-          (⟨n, hx⟩ : Node Label arity) :=
-      gapNode_eq_self_of_lt m choose hlt
-    have hyid :
-        gapNode m choose (⟨n, hy⟩ : Node Label arity) =
-          (⟨n, hy⟩ : Node Label arity) :=
-      gapNode_eq_self_of_lt m choose hlt
-    rw [hxid, hyid] at hxy
-    exact hxy
-  · by_cases heq : n = m
-    · subst n
-      rw [gapNode_at_level, gapNode_at_level] at hxy
-      exact base_eq_of_child_eq hxy
-    · have hnge : m ≤ n := by omega
-      cases n with
-      | zero => omega
-      | succ k =>
-          cases hx with
-          | step px cx =>
-              cases hy with
-              | step py cy =>
-                  have hformulaX :=
-                    gapNode_child_of_ge m choose
-                      (⟨k, px⟩ : Node Label arity)
-                      cx.params cx.label (by omega)
-                  have hformulaY :=
-                    gapNode_child_of_ge m choose
-                      (⟨k, py⟩ : Node Label arity)
-                      cy.params cy.label (by omega)
-                  rw [hformulaX, hformulaY] at hxy
-                  have hbase :
-                      gapNode m choose (⟨k, px⟩ : Node Label arity) =
-                        gapNode m choose (⟨k, py⟩ : Node Label arity) :=
-                    base_eq_of_child_eq hxy
-                  have hp :
-                      (⟨k, px⟩ : Node Label arity) =
-                        (⟨k, py⟩ : Node Label arity) :=
-                    gapNode_injective m choose hbase
-                  have hdata :=
-                    child_eq_data
-                      (a := gapNode m choose
-                        (⟨k, px⟩ : Node Label arity))
-                      (by simpa [hp] using hxy)
-                  have hcxcy : cx = cy := by
-                    cases cx with
-                    | mk cl cp =>
-                        cases cy with
-                        | mk dl dp =>
-                            have hl : cl = dl := hdata.2
-                            have hparams :
-                                gapShiftParamTuple m choose
-                                    (⟨k, px⟩ : Node Label arity)
-                                    cp (by omega) =
-                                  gapShiftParamTuple m choose
-                                    (⟨k, px⟩ : Node Label arity)
-                                    dp (by omega) := by
-                              simpa [hp] using hdata.1
-                            have hlevels :
-                                shiftParamTuple m cp =
-                                  shiftParamTuple m dp := by
-                              apply ParamTuple.ext
-                              · exact congrArg ParamTuple.len hparams
-                              · funext j
-                                apply Fin.ext
-                                exact congrArg Fin.val
-                                  (congrFun
-                                    (congrArg ParamTuple.value hparams) j)
-                            have hcp : cp = dp :=
-                              shiftParamTuple_injective m hlevels
-                            subst dl
-                            subst dp
-                            rfl
-                  have hpxpy : px = py := by
-                    simpa using congrArg Sigma.snd hp
-                  subst py
-                  subst cy
-                  rfl
+  have hhist :
+      gapNode m choose (⟨nx, hx⟩ : Node Label arity) =
+        gapNode m choose (⟨nx, hy⟩ : Node Label arity) :=
+    hxy
+  have heq :
+      hx = hy :=
+    gapNode_injective_at_level m choose nx hhist
+  subst hy
+  rfl
+
 
 theorem gapNode_base_le_child
     (m : Nat)
