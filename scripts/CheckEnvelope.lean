@@ -1,4 +1,4 @@
-import SuccessorTree.EnvelopeRun
+import SuccessorTree.EnvelopeRunExistence
 
 #print axioms SuccessorTree.SMTree.Envelope.range_meetClosed
 #print axioms SuccessorTree.SMTree.Envelope.range_parameterClosed
@@ -26,3 +26,7 @@ import SuccessorTree.EnvelopeRun
 #print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.finalLevels_subset_competitor
 #print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.I_eq
 #print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.embeddingType_eq
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.minimal_output_height
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.minimal_output_height_AM
+#print axioms SuccessorTree.SMTree.Envelope.canonicalAlgorithmRun
+#print axioms SuccessorTree.SMTree.Envelope.algorithmRun_nonempty
