@@ -86,12 +86,14 @@ theorem gapHistory_heq_of_lt
       have hroot : h = History.root := history_zero_unique h
       subst h
       simp only [gapHistory]
+      rw [dif_pos hn]
       simp only [gapLevel, hn, if_pos]
       exact eqRec_heq _ _
   | succ n =>
       cases h with
       | step p c =>
           simp only [gapHistory]
+          rw [dif_pos hn]
           simp only [gapLevel, hn, if_pos]
           exact eqRec_heq _ _
 
@@ -105,12 +107,17 @@ theorem gapHistory_heq_at_level
   | zero =>
       have hroot : h = History.root := history_zero_unique h
       subst h
-      simp only [gapHistory, gapLevel]
+      simp only [gapHistory]
+      rw [dif_neg (by omega : ¬ 0 < 0)]
+      simp only [gapLevel]
       exact eqRec_heq _ _
   | succ n =>
       cases h with
       | step p c =>
-          simp only [gapHistory, gapLevel]
+          simp only [gapHistory]
+          rw [dif_neg (by omega : ¬ n + 1 < n + 1)]
+          rw [dif_pos rfl]
+          simp only [gapLevel]
           exact eqRec_heq _ _
 
 
@@ -181,8 +188,8 @@ theorem gapHistory_injective
                           (History.step px cx))
                         (History.step gx (shiftCode m cx)) := by
                     simp only [gapHistory]
-                    simp only [hlt, heq, gapLevel,
-                      Nat.not_lt.mpr hnge, if_false]
+                    rw [dif_neg hlt, dif_neg heq]
+                    simp only [gapLevel, Nat.not_lt.mpr hnge, if_false]
                     exact eqRec_heq _ _
                   have hynorm :
                       HEq
