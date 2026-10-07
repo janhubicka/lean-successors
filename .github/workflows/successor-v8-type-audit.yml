@@ -4,15 +4,19 @@ on:
   push:
     paths:
       - "scripts/successor_boring_type_validation.py"
+      - "scripts/successor_boring_erasure_audit.py"
       - "manuscript/annotate_successors_v8.py"
       - "docs/v8-envelope-and-boring-type-audit-20261008.md"
+      - "docs/boring-reverse-insertion-proof.md"
       - ".github/workflows/successor-v8-type-audit.yml"
       - "tests/test_v8_annotation.py"
   pull_request:
     paths:
       - "scripts/successor_boring_type_validation.py"
+      - "scripts/successor_boring_erasure_audit.py"
       - "manuscript/annotate_successors_v8.py"
       - "docs/v8-envelope-and-boring-type-audit-20261008.md"
+      - "docs/boring-reverse-insertion-proof.md"
       - ".github/workflows/successor-v8-type-audit.yml"
       - "tests/test_v8_annotation.py"
 
@@ -22,8 +26,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Verify scripts compile
-        run: python3 -m py_compile scripts/successor_boring_type_validation.py manuscript/annotate_successors_v8.py
+        run: python3 -m py_compile scripts/successor_boring_type_validation.py manuscript/annotate_successors_v8.py scripts/successor_boring_erasure_audit.py
       - name: Verify boring-extension obstruction
         run: python3 scripts/successor_boring_type_validation.py
+      - name: Verify reverse insertion and genuine Ramsey obstructions
+        run: python3 scripts/successor_boring_erasure_audit.py
       - name: Verify annotation safety and idempotence
         run: python3 -m unittest discover -s tests -p 'test_v8_annotation.py' -v
