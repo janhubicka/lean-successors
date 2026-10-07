@@ -216,12 +216,30 @@ theorem gapNode_at_level
       have hroot : h = History.root := history_zero_unique h
       subst h
       rcases hchoose : choose History.root with ⟨lbl, pars⟩
-      simp [gapNode, gapHistory, gapLevel, child, Node.level, hchoose]
+      change
+        (⟨gapLevel 0 0,
+            gapHistory 0 choose 0 History.root⟩ :
+          Node Label arity) =
+        ⟨1, History.step History.root ⟨lbl, pars⟩⟩
+      apply Sigma.ext
+      · simp [gapLevel]
+      · simp only [gapHistory, hchoose]
+        exact eqRec_heq _ _
   | succ n =>
       cases h with
       | step p c =>
           rcases hchoose : choose (History.step p c) with ⟨lbl, pars⟩
-          simp [gapNode, gapHistory, gapLevel, child, Node.level, hchoose]
+          change
+            (⟨gapLevel (n + 1) (n + 1),
+                gapHistory (n + 1) choose (n + 1)
+                  (History.step p c)⟩ :
+              Node Label arity) =
+            ⟨n + 2,
+              History.step (History.step p c) ⟨lbl, pars⟩⟩
+          apply Sigma.ext
+          · simp [gapLevel]
+          · simp only [gapHistory, hchoose]
+            exact eqRec_heq _ _
 
 /-- Shift a parameter tuple to the actual level of the gapped base node. -/
 def gapShiftParamTuple
