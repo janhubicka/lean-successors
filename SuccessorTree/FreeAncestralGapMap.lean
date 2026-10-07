@@ -298,6 +298,55 @@ theorem gapNode_monotone
           c.params c.label
       exact ih.trans hedge
 
+
+theorem gapNode_param_ancestor
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    (a : Node Label arity)
+    (t : ParamTuple arity a.level)
+    (ha : m ≤ a.level)
+    (j : Fin t.len.val) :
+    gapNode m choose
+        (LevelTree.ancestor a (t.value j).val
+          (Nat.le_of_lt (t.value j).isLt)) =
+      LevelTree.ancestor (gapNode m choose a)
+        ((shiftParamTuple m t).value j).val
+        (Nat.le_of_lt ((shiftParamTuple m t).value j).isLt) := by
+  let x :=
+    LevelTree.ancestor a (t.value j).val
+      (Nat.le_of_lt (t.value j).isLt)
+  have hxa : x ≤ a :=
+    LevelTree.ancestor_le a (t.value j).val
+      (Nat.le_of_lt (t.value j).isLt)
+  have hmaple :
+      gapNode m choose x ≤ gapNode m choose a :=
+    gapNode_monotone m choose hxa
+  have hxlev :
+      (gapNode m choose x).level =
+        ((shiftParamTuple m t).value j).val := by
+    dsimp [x]
+    rw [gapNode_level, LevelTree.level_ancestor]
+    by_cases hj : (t.value j).val < m
+    · simp [gapLevel, shiftParamTuple, shiftFin, hj]
+    · simp [gapLevel, shiftParamTuple, shiftFin, hj]
+  exact LevelTree.eq_ancestor_of_le
+    hmaple hxlev
+    (Nat.le_of_lt ((shiftParamTuple m t).value j).isLt)
+
+theorem map_paramNodes_gap_of_ge
+    (m : Nat)
+    (choose : History Label arity m → Code Label arity m)
+    (a : Node Label arity)
+    (t : ParamTuple arity a.level)
+    (ha : m ≤ a.level) :
+    (paramNodes a t).map (gapNode m choose) =
+      paramNodes (gapNode m choose a)
+        (shiftParamTuple m t) := by
+  simp only [paramNodes, List.map_ofFn]
+  apply congrArg List.ofFn
+  funext j
+  exact gapNode_param_ancestor m choose a t ha j
+
 theorem gapNode_level_eq_of_level_eq
     (m : Nat)
     (choose : History Label arity m → Code Label arity m)
