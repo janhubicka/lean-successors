@@ -269,9 +269,10 @@ theorem exists_child_of_covBy
     (hab : a ⋖ b) :
     ∃ t : ParamTuple arity a.level, ∃ c : Label,
       b = child a t c := by
+  have hblev := LevelTree.covBy_level_eq hab
   rcases a with ⟨n, ha⟩
-  have hblev : b.level = n + 1 := by
-    simpa [Node.level] using LevelTree.covBy_level_eq hab
+  change ∃ t : ParamTuple arity n, ∃ c : Label,
+      b = child (⟨n, ha⟩ : Node Label arity) t c
   rcases b with ⟨m, hb⟩
   change m = n + 1 at hblev
   subst m
@@ -284,21 +285,25 @@ theorem exists_child_of_covBy
       (historySuccEquiv n).symm_apply_apply hb
     rw [← hstep]
     exact Prefix.step (Prefix.refl _) pc.2
-  have ha_le : (⟨n, ha⟩ : Node Label arity) ≤ ⟨n + 1, hb⟩ :=
+  have ha_le : (⟨n, ha⟩ : Node Label arity) ≤
+      (⟨n + 1, hb⟩ : Node Label arity) :=
     hab.le
   have habp : (⟨n, ha⟩ : Node Label arity) = bp := by
     rcases node_lower_linear ha_le hbp_le with h | h
     · exact node_eq_of_le_level_eq h rfl
     · exact (node_eq_of_le_level_eq h rfl).symm
+  have hparent : ha = pc.1 := by
+    simpa only [bp, Sigma.mk.inj_iff, heq_eq_eq, true_and] using habp
   have hstep :
       History.step pc.1 pc.2 = hb :=
     (historySuccEquiv n).symm_apply_apply hb
-  rcases pc.2 with ⟨c, t⟩
-  refine ⟨?_, c, ?_⟩
-  · simpa [bp] using t
-  · subst bp
-    simp only [child]
-    congr
+  rcases hcode : pc.2 with ⟨c, t⟩
+  refine ⟨t, c, ?_⟩
+  have hhist : hb = History.step ha ⟨c, t⟩ := by
+    rw [← hstep, ← hparent, hcode]
+  change (⟨n + 1, hb⟩ : Node Label arity) =
+    ⟨n + 1, History.step ha ⟨c, t⟩⟩
+  rw [hhist]
 
 theorem freeSucc_s3
     {a b : Node Label arity}
