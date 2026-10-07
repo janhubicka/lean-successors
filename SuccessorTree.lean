@@ -11,6 +11,7 @@ import SuccessorTree.FreeAncestralOrder
 import SuccessorTree.FreeAncestralLevelTree
 import SuccessorTree.FreeAncestralSuccessor
 import SuccessorTree.FreeAncestralGap
+import SuccessorTree.FreeAncestralGapMap
 import SuccessorTree.Pigeonhole
 import SuccessorTree.HalesJewett.VariableWord
 import SuccessorTree.HalesJewett.Forcing
