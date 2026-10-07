@@ -44,7 +44,13 @@ def interesting_levels(x):
                 impossible = True  # One more letter cannot be a prefix of w.
             elif len(w) > i:
                 demand.append((w[:i], w[i]))
-        if impossible or not any(is_witness(e, i, demand) for e in extensions(i)):
+        if i >= 2:
+            # E_i is the full function family. Avoid enumerating
+            # exponentially large output tables.
+            possible = len({prefix for prefix, _ in demand}) == len(set(demand))
+        else:
+            possible = any(is_witness(e, i, demand) for e in extensions(i))
+        if impossible or not possible:
             answer.append(i)
     return tuple(answer)
 
