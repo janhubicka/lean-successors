@@ -192,7 +192,8 @@ theorem sourceLevel_le_levelMap
   induction n with
   | zero => omega
   | succ n ih =>
-      have hs := H.levelMap_strictMono G (Nat.lt_succ_self n)
+      have hs : H.levelMap G n < H.levelMap G (n + 1) :=
+        H.levelMap_strictMono G (by omega)
       omega
 
 /-- If a target set is bounded by `ell`, then every source level above `m`
@@ -201,7 +202,7 @@ level, provided all range levels in that interval are indexed. -/
 theorem pulledBack_sourceLevel_indexed
     (H : SMTree S) (G : ShapeMap S) (m ell : Nat)
     (C : Set T) (I : Set Nat)
-    (hbound : C ⊆ levelLe (T := T) ell)
+    (hbound : C ⊆ levelLe ell)
     (hindexed : ∀ ⦃q : Nat⦄, q ∈ G.levelRange → m < q → q ≤ ell → q ∈ I) :
     ∀ ⦃z : T⦄, G z ∈ C → ∀ ⦃j : Nat⦄,
       m < j → j < LevelTree.lev z → H.levelMap G j ∈ I := by
@@ -225,7 +226,7 @@ theorem preimage_parameterClosed_of_bounded_indexed
     (H : SMTree S) (G : ShapeMap S) (m ell : Nat)
     (C : Set T) (I : Set Nat)
     (hC : ParameterClosedOver S C I)
-    (hbound : C ⊆ levelLe (T := T) ell)
+    (hbound : C ⊆ levelLe ell)
     (hindexed : ∀ ⦃q : Nat⦄, q ∈ G.levelRange → m < q → q ≤ ell → q ∈ I) :
     ParameterClosedOver S (G ⁻¹' C) {j | m < j} :=
   preimage_parameterClosed_above H G m C I hC
@@ -262,7 +263,7 @@ theorem preimage_subset_range_of_bounded_indexed
     (hskip : D.SkipsOnly m) (hE : PullbackDefined S D)
     (C : Set T) (I : Set Nat)
     (hC : ParameterClosedOver S C I)
-    (hbound : C ⊆ levelLe (T := T) ell)
+    (hbound : C ⊆ levelLe ell)
     (hindexed : ∀ ⦃q : Nat⦄, q ∈ G.levelRange → m < q → q ≤ ell → q ∈ I)
     (hno : ∀ ⦃x : T⦄, x ∈ C → LevelTree.lev x ≠ m)
     (hD : ∀ ⦃c : T⦄, c ∈ C → ∀ (hmc : m < LevelTree.lev c),
