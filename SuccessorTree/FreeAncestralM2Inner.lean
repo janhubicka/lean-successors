@@ -57,13 +57,13 @@ noncomputable def m2InnerNodeAux
           | step p c =>
               let gp :=
                 m2InnerNodeAux F n h hskip hlevel k p
-              let t' : ParamTuple arity gp.1.level where
-                len := c.params.len
-                value := fun j =>
-                  ⟨m2InnerLevel F n h (c.params.value j).val, by
-                    rw [gp.2]
-                    exact m2InnerLevel_strictMono F n h hskip hlevel
-                      (c.params.value j).isLt⟩
+              let t' : ParamTuple arity gp.1.level :=
+                { len := c.params.len
+                  value := fun j =>
+                    ⟨m2InnerLevel F n h (c.params.value j).val, by
+                      rw [gp.2]
+                      exact m2InnerLevel_strictMono F n h hskip hlevel
+                        (c.params.value j).isLt⟩ }
               let d : Node Label arity :=
                 child gp.1 t' c.label
               refine ⟨d, ?_⟩
