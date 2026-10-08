@@ -14,3 +14,5 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.traceBit_before_smaller
 #print axioms SuccessorTree.V10.traceBit_first_positive_difference
 #print axioms SuccessorTree.V10.traceBit_equal_generation_zero
+#print axioms SuccessorTree.V10.traceBit_small_at_own
+#print axioms SuccessorTree.V10.positiveMismatch_firstNeighbour
