@@ -74,19 +74,5 @@ import SuccessorTree.FatTree.ShapeEllentuckOne
 import SuccessorTree.ShapeEllentuckRamsey
 import SuccessorTree.ShapeFiniteBounds
 import SuccessorTree.ShapeFiniteCorollaries
-import SuccessorTree.Envelope
-import SuccessorTree.EnvelopePullback
-import SuccessorTree.EnvelopeAlgorithm
-import SuccessorTree.EnvelopeStage
-import SuccessorTree.EnvelopeInvariant
-import SuccessorTree.EnvelopeMinimal
-import SuccessorTree.EnvelopePrefix
-import SuccessorTree.EnvelopeMinimalityCore
-import SuccessorTree.EnvelopeInvariantLevels
-import SuccessorTree.EnvelopeUniqueness
-import SuccessorTree.EnvelopeEmbeddingType
-import SuccessorTree.EnvelopeGlobalMinimality
-import SuccessorTree.EnvelopeRun
-import SuccessorTree.EnvelopeHeight
-import SuccessorTree.EnvelopeRunExistence
+-- The Section 5 entry point imports its verified proof layers.
 import SuccessorTree.EnvelopeTheorem
