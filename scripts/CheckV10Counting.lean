@@ -1,6 +1,7 @@
 import SuccessorTree.V10.Counting
 import SuccessorTree.V10.MeetTrace
 import SuccessorTree.V10.BlockOrder
+import SuccessorTree.V10.MeetBundle
 
 -- The three estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
