@@ -89,3 +89,4 @@ import SuccessorTree.EnvelopeGlobalMinimality
 import SuccessorTree.EnvelopeRun
 import SuccessorTree.EnvelopeHeight
 import SuccessorTree.EnvelopeRunExistence
+import SuccessorTree.EnvelopeTheorem
