@@ -43,14 +43,14 @@ jobs:
       - name: Download Mathlib cache
         run: lake exe cache get
       - name: Build envelope stack
-        run: lake build SuccessorTree.EnvelopeRunExistence
+        run: lake build SuccessorTree.EnvelopeTheorem
       - name: Audit envelope endpoints
         run: |
           lake env lean scripts/CheckEnvelope.lean > envelope-axioms.log 2>&1 || {
             cat envelope-axioms.log
             exit 1
           }
-          python3 scripts/check-axiom-log.py envelope-axioms.log 30 || {
+          python3 scripts/check-axiom-log.py envelope-axioms.log 31 || {
             cat envelope-axioms.log
             exit 1
           }
