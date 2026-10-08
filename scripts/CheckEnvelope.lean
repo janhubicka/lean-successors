@@ -30,3 +30,4 @@ import SuccessorTree.EnvelopeRunExistence
 #print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.minimal_output_height_AM
 #print axioms SuccessorTree.SMTree.Envelope.canonicalAlgorithmRun
 #print axioms SuccessorTree.SMTree.Envelope.algorithmRun_nonempty
+#print axioms SuccessorTree.SMTree.Envelope.exists_minimalEnvelope
