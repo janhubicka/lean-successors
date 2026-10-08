@@ -87,11 +87,16 @@ arbitrary `|w|≥7`. For `|w|=7`, the target
 A strictly increasing level map from nine source levels into
 `{0,...,8}` must be the identity, so the additional retained levels
 are **unique**. The lower bound 9 is valid because the successor character
-7 can occur only at source index at least 7. A corrected *nonunique*
+7 can occur only at source index at least 7. The failure persists for arbitrarily long words: for
+`w=(0,1,...,n-1)` with `n≥7`, every retained target position
+`g(j)` with `j<7` carries character `w[g(j)]=g(j)` while its source
+character cannot exceed `j`. Strict monotonicity gives `g(j)=j`,
+so every minimal height-nine envelope has the same retained level
+set `{0,...,6,n,n+1}`. A corrected *nonunique*
 witness is `w=0^8`: both prepending 0 and inserting 0 at coordinate 7
 embed `{0^7, 0^7 followed by 7}` into the target, have height 9, and
 represent different level sets. A dedicated 3,600-case successor
-diagnostic runs in the focused Envelope workflow. The TeX includes
+diagnostic with additional exhaustive level-profile checks for `n=7,...,12` runs in the focused Envelope workflow. The TeX includes
 an exact inline TODO; the author's example is not rewritten.
 
 **Observation B4 (confirmed):** Independence of the interesting levels
