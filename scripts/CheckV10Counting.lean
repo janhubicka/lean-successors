@@ -18,3 +18,7 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.traceBit_small_at_own
 #print axioms SuccessorTree.V10.positiveMismatch_firstNeighbour
 #print axioms SuccessorTree.V10.firstPositiveDisagreement_block
+#print axioms SuccessorTree.V10.hPosition_lt_of_block_lt
+#print axioms SuccessorTree.V10.hPosition_lt_of_gen_lt
+#print axioms SuccessorTree.V10.hPosition_before
+#print axioms SuccessorTree.V10.firstPositiveDisagreement_realPositions
