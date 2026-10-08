@@ -57,7 +57,8 @@ theorem traceBit_first_positive_difference
     omega
   constructor
   · simp [traceBit, hi, hbit]
-  · simp [traceBit, hj]
+  · have hmne : m ≠ k := by omega
+    simp [traceBit, hmne]
 
 /-- With equal positive generations, any differing base relation bit is
 already visible at generation zero. This excludes a *first* difference
@@ -81,7 +82,8 @@ theorem traceBit_small_at_own
     (k j m u : Nat) (hmk : m < k) :
     traceBit pairBit k j m u m = false := by
   have hfalse : ¬ (m < m ∨ (m = m ∧ m = k)) := by omega
-  simp [traceBit, hfalse]
+  have hmne : m ≠ k := by omega
+  simp [traceBit, hmne]
 
 /-- If an H-trace of generation n first differs from an H-trace of smaller
 generation m at block p and level m, then p is the **first base
@@ -104,7 +106,7 @@ theorem positiveMismatch_firstNeighbour
   have hhigh : traceBit pairBit k i n p m = true := by
     cases hb : traceBit pairBit k i n p m with
     | false => simp [hb, hsmall] at hdiff
-    | true => exact hb
+    | true => rfl
   have hpi : p < i := by
     by_contra hno
     simp [traceBit, hno] at hhigh
