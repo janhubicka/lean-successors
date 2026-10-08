@@ -1,5 +1,35 @@
 import SuccessorTree.EnvelopeTheorem
 
+-- These regressions run in both existing workflows without changing their
+-- 31-endpoint inventory. Those endpoints transitively audit the new proofs.
+set_option autoImplicit false
+open SuccessorTree SuccessorTree.SMTree SuccessorTree.SMTree.Envelope
+
+example (I : Nat → Set Nat) (ell : Nat)
+    (htop : I ell = {ell})
+    (hstep : ∀ i, i < ell →
+      I i = I (i + 1) ∨ I i = insert i (I (i + 1))) :
+    ∀ i, i ≤ ell → I i = {q | q ∈ I 0 ∧ i ≤ q} :=
+  levelSets_eq_final_tail I ell htop hstep
+
+section HypothesisBoundary
+universe u v
+variable {T : Type u} {Label : Type v}
+variable [PartialOrder T] [LevelTree T] {S : STree T Label}
+
+example (H : SMTree S) (ell i : Nat)
+    (R : AlgorithmRun H (∅ : Set T) ell) (hi : i ≤ ell) :
+    R.I i = {q | q ∈ R.I 0 ∧ i ≤ q} :=
+  R.I_eq_final_tail_of_run i hi
+
+example (H : SMTree S) (X : Set T) (ell : Nat)
+    (R : AlgorithmRun H X ell)
+    (hTop : ∃ x ∈ X, LevelTree.lev x = ell)
+    (E : MMap H) (m : Nat) (hEnv : IsPrefixEnvelope E.map m X) :
+    ∀ ⦃i : Nat⦄, i ∈ R.I 0 → RepresentedBefore H E.map m i :=
+  R.finalLevels_subset_competitor_of_run hTop E m hEnv
+end HypothesisBoundary
+
 #print axioms SuccessorTree.SMTree.Envelope.range_meetClosed
 #print axioms SuccessorTree.SMTree.Envelope.range_parameterClosed
 #print axioms SuccessorTree.SMTree.Envelope.closure_subset_range
