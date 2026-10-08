@@ -1,14 +1,15 @@
 import SuccessorTree.EnvelopeEmbeddingType
 import SuccessorTree.EnvelopeGlobalMinimality
+import SuccessorTree.EnvelopeLevelSets
 import Mathlib.Tactic
 
 /-!
 # Proposition-level envelope runs
 
 This packages the local Section 5 lemmas into the decreasing run used by the
-manuscript's envelope algorithm.  A run records only the choices made by the
-algorithm; the theorems below prove the invariant, global minimality of the
-selected levels, and independence of the embedding type.
+manuscript's envelope algorithm. A run records only the choices made by the
+algorithm. Level selection and forced levels of competitors use the run alone;
+coverage of the output and independence of embedding type additionally use E1.
 -/
 
 namespace SuccessorTree
@@ -94,97 +95,116 @@ theorem fullInvariant
   intro i hiell
   exact main (ell - i) i rfl hiell
 
-/-- At stage i+1 the retained levels are exactly the retained stage-i levels
-strictly above i. -/
-theorem nextI_eq
-    (R : AlgorithmRun H X ell)
-    (hE1 : OneLevelPullback H)
-    (hXbound : X ⊆ levelLe ell)
-    (i : Nat) (hilt : i < ell) :
-    R.I (i + 1) = {q | q ∈ R.I i ∧ i < q} := by
-  have hnext :=
-    R.fullInvariant hE1 hXbound (i + 1) (by omega)
-  have hgt :
-      ∀ ⦃q : Nat⦄, q ∈ R.I (i + 1) → i < q := by
-    intro q hq
-    have hrep : q ∈ representedLevels (R.F (i + 1)).map (i + 1) ell := by
-      rw [← hnext.1.2.2]
-      exact hq
-    exact lt_of_lt_of_le (Nat.lt_succ_self i) hrep.2.1
-  by_cases hinter :
-      IsInterestingAt H (closure S (R.I (i + 1)) X) i
-  · rcases R.interesting_step i hilt hinter with ⟨hI, _⟩
-    ext q
-    constructor
-    · intro hq
-      exact ⟨by rw [hI]; exact Set.mem_insert_of_mem i hq, hgt hq⟩
-    · rintro ⟨hq, hiq⟩
-      rw [hI] at hq
-      rcases hq with hqi | hq
-      · subst q
-        exact False.elim ((Nat.lt_irrefl i) hiq)
-      · exact hq
-  · rcases R.noninteresting_step i hilt hinter with
-      ⟨D, hDskip, hDcross, hI, hF⟩
-    ext q
-    constructor
-    · intro hq
-      exact ⟨by rw [hI]; exact hq, hgt hq⟩
-    · rintro ⟨hq, _⟩
-      rw [hI] at hq
-      exact hq
+/-- The level-set part of either algorithm branch. No E1 is needed. -/
+theorem level_step (R : AlgorithmRun H X ell) (i : Nat) (hi : i < ell) :
+    R.I i = R.I (i + 1) ∨ R.I i = insert i (R.I (i + 1)) := by
+  by_cases hinter : IsInterestingAt H (closure S (R.I (i + 1)) X) i
+  · exact Or.inr (R.interesting_step i hi hinter).1
+  · obtain ⟨D, hskip, hcross, hI, hF⟩ := R.noninteresting_step i hi hinter
+    exact Or.inl hI
 
-/-- Stage i contains precisely the final selected levels at least i. -/
-theorem I_eq_final_tail
-    (R : AlgorithmRun H X ell)
-    (hE1 : OneLevelPullback H)
-    (hXbound : X ⊆ levelLe ell) :
-    ∀ (i : Nat), i ≤ ell →
-      R.I i = {q | q ∈ R.I 0 ∧ i ≤ q} := by
-  intro i
-  induction i with
-  | zero =>
-      intro _
-      ext q
-      simp
-  | succ i ih =>
-      intro hisucc
-      have hiell : i < ell := by omega
-      have hnext := R.nextI_eq hE1 hXbound i hiell
-      have hprev := ih (by omega)
-      ext q
-      have hn := Set.ext_iff.mp hnext q
-      have hp := Set.ext_iff.mp hprev q
-      constructor
-      · intro hq
-        have hpair := hn.mp hq
-        have hfinal := hp.mp hpair.1
-        exact ⟨hfinal.1, Nat.succ_le_iff.mpr hpair.2⟩
-      · intro hq
-        apply hn.mpr
-        refine ⟨?_, Nat.lt_of_succ_le hq.2⟩
-        apply hp.mpr
-        exact ⟨hq.1, Nat.le_trans (Nat.le_succ i) hq.2⟩
+/-- Bounds on selected levels follow from the recursion, not map coverage. -/
+theorem I_mem_bounds (R : AlgorithmRun H X ell) :
+    ∀ i, i ≤ ell → ∀ q ∈ R.I i, i ≤ q ∧ q ≤ ell :=
+  levelSets_mem_bounds R.I ell R.topI R.level_step
 
-/-- The next-stage level set is the final set of selected levels above i. -/
-theorem I_succ_eq_higher_final
-    (R : AlgorithmRun H X ell)
-    (hE1 : OneLevelPullback H)
-    (hXbound : X ⊆ levelLe ell)
-    (i : Nat) (hilt : i < ell) :
+/-- The one-stage level-set identity without E1 or a bound on X. -/
+theorem nextI_eq_of_run (R : AlgorithmRun H X ell) (i : Nat) (hi : i < ell) :
+    R.I (i + 1) = {q | q ∈ R.I i ∧ i < q} :=
+  levelSets_next_eq R.I ell R.topI R.level_step i hi
+
+/-- The final-tail identity without E1 or a bound on X. -/
+theorem I_eq_final_tail_of_run (R : AlgorithmRun H X ell) :
+    ∀ i, i ≤ ell → R.I i = {q | q ∈ R.I 0 ∧ i ≤ q} :=
+  levelSets_eq_final_tail R.I ell R.topI R.level_step
+
+/-- The next stage consists of final selected levels strictly above i. -/
+theorem I_succ_eq_higher_final_of_run
+    (R : AlgorithmRun H X ell) (i : Nat) (hi : i < ell) :
     R.I (i + 1) = higherLevels (R.I 0) i := by
-  have htail := R.I_eq_final_tail hE1 hXbound (i + 1) (by omega)
-  rw [htail]
+  rw [R.I_eq_final_tail_of_run (i + 1) (by omega)]
   ext q
-  simp only [Set.mem_ofPred_eq, higherLevels]
+  simp only [Set.mem_setOf_eq, higherLevels]
   constructor
   · rintro ⟨hq, hiq⟩
     exact ⟨hq, by omega⟩
   · rintro ⟨hq, hiq⟩
     exact ⟨hq, by omega⟩
 
-/-- Every final selected level is interesting relative to the final selected
-levels above it. -/
+/-- Compatibility interface; the two hypotheses are no longer needed. -/
+theorem nextI_eq
+    (R : AlgorithmRun H X ell)
+    (hE1 : OneLevelPullback H)
+    (hXbound : X ⊆ levelLe ell)
+    (i : Nat) (hilt : i < ell) :
+    R.I (i + 1) = {q | q ∈ R.I i ∧ i < q} := by
+  clear hE1 hXbound
+  exact R.nextI_eq_of_run i hilt
+
+/-- Compatibility interface for the final-tail identity. -/
+theorem I_eq_final_tail
+    (R : AlgorithmRun H X ell)
+    (hE1 : OneLevelPullback H)
+    (hXbound : X ⊆ levelLe ell) :
+    ∀ (i : Nat), i ≤ ell →
+      R.I i = {q | q ∈ R.I 0 ∧ i ≤ q} := by
+  clear hE1 hXbound
+  exact R.I_eq_final_tail_of_run
+
+/-- Compatibility interface for the next-stage final-tail identity. -/
+theorem I_succ_eq_higher_final
+    (R : AlgorithmRun H X ell)
+    (hE1 : OneLevelPullback H)
+    (hXbound : X ⊆ levelLe ell)
+    (i : Nat) (hilt : i < ell) :
+    R.I (i + 1) = higherLevels (R.I 0) i := by
+  clear hE1 hXbound
+  exact R.I_succ_eq_higher_final_of_run i hilt
+
+/-- Every selected level is interesting relative to the selected levels above
+it. This is a property of the decisions, independent of E1 and output coverage. -/
+theorem finalLevel_interesting_of_run
+    (R : AlgorithmRun H X ell)
+    (hTop : ∃ x ∈ X, LevelTree.lev x = ell) :
+    ∀ ⦃i : Nat⦄, i ∈ R.I 0 →
+      IsInterestingAt H (closure S (higherLevels (R.I 0) i) X) i := by
+  intro i hiI
+  have hiell : i ≤ ell := (R.I_mem_bounds 0 (Nat.zero_le ell) i hiI).2
+  by_cases hieq : i = ell
+  · subst i
+    obtain ⟨x, hx, hxlev⟩ := hTop
+    exact Or.inl ⟨x, subset_closure S (higherLevels (R.I 0) ell) X hx, hxlev⟩
+  · have hilt : i < ell := by omega
+    have hiStage : i ∈ R.I i := by
+      rw [R.I_eq_final_tail_of_run i hiell]
+      exact ⟨hiI, le_rfl⟩
+    have hiNotNext : i ∉ R.I (i + 1) := by
+      intro hmem
+      have hb := R.I_mem_bounds (i + 1) (by omega) i hmem
+      omega
+    have hinter : IsInterestingAt H (closure S (R.I (i + 1)) X) i := by
+      by_contra hnot
+      obtain ⟨D, hskip, hcross, hI, hF⟩ := R.noninteresting_step i hilt hnot
+      exact hiNotNext (hI ▸ hiStage)
+    rw [R.I_succ_eq_higher_final_of_run i hilt] at hinter
+    exact hinter
+
+/-- Every selected level is forced in every competing prefix envelope.
+Unlike correctness of the output map, this implication does not require E1
+or a bound on X. The underlying SMTree hypotheses are unchanged. -/
+theorem finalLevels_subset_competitor_of_run
+    (R : AlgorithmRun H X ell)
+    (hTop : ∃ x ∈ X, LevelTree.lev x = ell)
+    (E : MMap H) (m : Nat)
+    (hEnvelope : IsPrefixEnvelope E.map m X) :
+    ∀ ⦃i : Nat⦄, i ∈ R.I 0 → RepresentedBefore H E.map m i := by
+  apply algorithmLevels_subset_competitor H X ell m (R.I 0) E hTop
+  · intro i hi
+    exact (R.I_mem_bounds 0 (Nat.zero_le ell) i hi).2
+  · exact hEnvelope
+  · exact R.finalLevel_interesting_of_run hTop
+
+/-- Compatibility interface for the selected-level decisions. -/
 theorem finalLevel_interesting
     (R : AlgorithmRun H X ell)
     (hE1 : OneLevelPullback H)
@@ -192,42 +212,10 @@ theorem finalLevel_interesting
     (hTop : ∃ x ∈ X, LevelTree.lev x = ell) :
     ∀ ⦃i : Nat⦄, i ∈ R.I 0 →
       IsInterestingAt H (closure S (higherLevels (R.I 0) i) X) i := by
-  intro i hiI
-  have hfinal := R.fullInvariant hE1 hXbound 0 (Nat.zero_le ell)
-  have hiell : i ≤ ell := by
-    have hrep : i ∈ representedLevels (R.F 0).map 0 ell := by
-      rw [← hfinal.1.2.2]
-      exact hiI
-    exact hrep.2.2
-  by_cases hieq : i = ell
-  · subst i
-    obtain ⟨x, hx, hxlev⟩ := hTop
-    exact Or.inl ⟨x, subset_closure S (higherLevels (R.I 0) ell) X hx, hxlev⟩
-  · have hilt : i < ell := lt_of_le_of_ne hiell hieq
-    have htail := R.I_eq_final_tail hE1 hXbound i (by omega)
-    have hiStage : i ∈ R.I i := by
-      rw [htail]
-      exact ⟨hiI, le_rfl⟩
-    have hnext := R.nextI_eq hE1 hXbound i hilt
-    have hiNotNext : i ∉ R.I (i + 1) := by
-      rw [hnext]
-      intro h
-      exact (lt_irrefl i) h.2
-    have hinter :
-        IsInterestingAt H (closure S (R.I (i + 1)) X) i := by
-      by_contra hnot
-      rcases R.noninteresting_step i hilt hnot with
-        ⟨D, hDskip, hDcross, hI, hF⟩
-      apply hiNotNext
-      rw [← hI]
-      exact hiStage
-    have hlevels :=
-      R.I_succ_eq_higher_final hE1 hXbound i hilt
-    rw [hlevels] at hinter
-    exact hinter
+  clear hE1 hXbound
+  exact R.finalLevel_interesting_of_run hTop
 
-/-- Every selected level of a run is represented by every competing prefix
-envelope. -/
+/-- Compatibility interface for forced levels of competing envelopes. -/
 theorem finalLevels_subset_competitor
     (R : AlgorithmRun H X ell)
     (hE1 : OneLevelPullback H)
@@ -237,17 +225,8 @@ theorem finalLevels_subset_competitor
     (hEnvelope : IsPrefixEnvelope E.map m X) :
     ∀ ⦃i : Nat⦄, i ∈ R.I 0 →
       RepresentedBefore H E.map m i := by
-  have hfinal := R.fullInvariant hE1 hXbound 0 (Nat.zero_le ell)
-  have hbound :
-      ∀ ⦃i : Nat⦄, i ∈ R.I 0 → i ≤ ell := by
-    intro i hi
-    have hrep : i ∈ representedLevels (R.F 0).map 0 ell := by
-      rw [← hfinal.1.2.2]
-      exact hi
-    exact hrep.2.2
-  exact algorithmLevels_subset_competitor
-    H X ell m (R.I 0) E hTop hbound hEnvelope
-    (R.finalLevel_interesting hE1 hXbound hTop)
+  clear hE1 hXbound
+  exact R.finalLevels_subset_competitor_of_run hTop E m hEnvelope
 
 /-- The final level sets of any two runs coincide. -/
 theorem I_eq
