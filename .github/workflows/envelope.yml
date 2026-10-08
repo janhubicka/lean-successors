@@ -5,11 +5,13 @@ on:
     paths:
       - 'SuccessorTree/Envelope*.lean'
       - 'scripts/CheckEnvelope.lean'
+      - 'scripts/check_section5_example.py'
       - '.github/workflows/envelope.yml'
   pull_request:
     paths:
       - 'SuccessorTree/Envelope*.lean'
       - 'scripts/CheckEnvelope.lean'
+      - 'scripts/check_section5_example.py'
       - '.github/workflows/envelope.yml'
   workflow_dispatch:
 
@@ -42,6 +44,8 @@ jobs:
         run: lake update
       - name: Download Mathlib cache
         run: lake exe cache get
+      - name: Check manuscript E1 necessity example
+        run: python3 scripts/check_section5_example.py
       - name: Build envelope stack
         run: lake build SuccessorTree.EnvelopeTheorem
       - name: Audit envelope endpoints
