@@ -119,5 +119,37 @@ theorem positiveMismatch_firstNeighbour
     exact traceBit_small_at_own pairBit k j m u hmk
   simpa [traceBit, hui, hmn] using hzero
 
+/-- Exact first difference in the *ordered block trace*, given matching
+earlier empty base pairs and one common nonempty base pair. The order below
+is lexicographic in the block index and then in the generation coordinate.
+The passage to the meet of full partial types remains a separate theorem. -/
+theorem firstPositiveDisagreement_block
+    (pairBit : Nat → Nat → Bool)
+    (k i j m n p : Nat)
+    (hpi : p < i) (hpj : p < j)
+    (hmn : m < n) (hmk : m < k)
+    (hfirstI : ∀ u < p, pairBit u i = false)
+    (hfirstJ : ∀ u < p, pairBit u j = false)
+    (hmatch : pairBit p i = pairBit p j)
+    (hbit : pairBit p i = true) :
+    (∀ u q : Nat, (u < p ∨ (u = p ∧ q < m)) →
+      traceBit pairBit k i n u q =
+        traceBit pairBit k j m u q) ∧
+    traceBit pairBit k i n p m ≠
+      traceBit pairBit k j m p m := by
+  constructor
+  · intro u q hbefore
+    rcases hbefore with hu | ⟨hu, hq⟩
+    · have hi0 : pairBit u i = false := hfirstI u hu
+      have hj0 : pairBit u j = false := hfirstJ u hu
+      simp [traceBit, hi0, hj0]
+    · subst u
+      exact traceBit_before_smaller pairBit k i j m n p q
+        hpj hpi hq hmn hmatch
+  · obtain ⟨hhi, hlow⟩ :=
+      traceBit_first_positive_difference pairBit k i j m n p
+        hpi hpj hmn hmk hbit
+    simp [hhi, hlow]
+
 end V10
 end SuccessorTree
