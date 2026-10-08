@@ -74,3 +74,36 @@ proof needs local inverse uniqueness on a parameter-closed set.  Keeping these
 requirements separate from the Ramsey proof will make a block/variable-word
 version of the successor theorem substantially easier to compare with the
 current development.
+
+## Public endpoint and maintenance (8 October 2026)
+
+`EnvelopeTheorem.lean` packages the nonempty case of Proposition 5.5 as
+`SMTree.Envelope.exists_minimalEnvelope`. It obtains a genuine finite
+algorithm run, an output prefix envelope, equality of its height with
+the cardinality of selected levels, lower bounds against *both* total
+prefix and `AM H 0 m` competitors, and independence of the selected
+levels and the inverse image of `X` under any two algorithm runs.
+The proof delegates to the audited modules above; no second copy of
+the decreasing induction is introduced.
+
+Its assumptions remain explicit: `OneLevelPullback H`,
+`X ⊆ levelLe ell`, and a member of `X` on top level `ell`.
+The paper's special return on the empty set (height 0) is separate:
+`AlgorithmRun H ∅ ell` is defined for arbitrary `ell` and *must
+not* be used as a nonempty minimality theorem without `hTop`.
+
+`AlgorithmRun.IsAMEnvelope` was retained unchanged for compatibility.
+The general finite-envelope predicate is also available as
+`Envelope.IsAMEnvelope`; the theorem uses that outer name. The root
+library imports the single Section 5 endpoint rather than repeating
+the fifteen transitive import paths.
+
+**Future weakening boundary.** The Section 5 arguments use M2 to
+extract one skipped level from a competing prefix and E1 when pulling
+successor data back across the chosen one-level maps. Mere agreement of
+interesting levels is not enough for independence of embedding types.
+The current `SMTree.level_nonempty` theorem is *proved from M3* and is
+used to define the total level map and in the envelope range arguments.
+Thus removing unrestricted M3 requires an independent replacement for
+inhabited levels, plus audits of canonical extension and the gap
+factorisation. None of these structural facts is silently assumed.
