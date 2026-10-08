@@ -79,3 +79,4 @@ import SuccessorTree.EnvelopeTheorem
 import SuccessorTree.V10.Counting
 import SuccessorTree.V10.MeetTrace
 import SuccessorTree.V10.BlockOrder
+import SuccessorTree.V10.MeetBundle
