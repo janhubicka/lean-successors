@@ -73,17 +73,10 @@ jobs:
             cat proof-audit/shape-proof-routes.log
             exit 1
           }
+      - name: Test axiom-audit checker
+        run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
-        run: |
-          set -o pipefail
-          if ! lake env lean scripts/CheckEnvelope.lean > proof-audit/envelope-axioms.log 2>&1; then
-            cat proof-audit/envelope-axioms.log
-            exit 1
-          fi
-          python3 scripts/check-axiom-log.py proof-audit/envelope-axioms.log 30 || {
-            cat proof-audit/envelope-axioms.log
-            exit 1
-          }
+        run: bash scripts/audit-envelope.sh proof-audit
       - name: Check fat-tree A1 sequencing axioms
         if: ${{ always() && !cancelled() }}
         run: |

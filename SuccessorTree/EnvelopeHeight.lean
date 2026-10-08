@@ -243,6 +243,12 @@ theorem minimal_output_height_AM
 
 end AlgorithmRun
 
+/-- A finite-approximation envelope is independent of the choice of an
+algorithm run. Keep the original qualified name for existing proofs. -/
+abbrev IsAMEnvelope
+    (H : SMTree S) {m : Nat} (a : AM H 0 m) (X : Set T) : Prop :=
+  AlgorithmRun.IsAMEnvelope H a X
+
 end Envelope
 end SMTree
 end SuccessorTree
