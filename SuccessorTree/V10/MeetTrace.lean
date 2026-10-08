@@ -74,5 +74,48 @@ theorem traceBit_equal_generation_zero
     ⟨huj, Or.inl hmpos⟩
   simpa [traceBit, hi, hj] using hneq
 
+/-- At its own generation, a lower (non-top) original has no
+relation to a preceding block, regardless of the base pair. -/
+theorem traceBit_small_at_own
+    (pairBit : Nat → Nat → Bool)
+    (k j m u : Nat) (hmk : m < k) :
+    traceBit pairBit k j m u m = false := by
+  have hfalse : ¬ (m < m ∨ (m = m ∧ m = k)) := by omega
+  simp [traceBit, hfalse]
+
+/-- If an H-trace of generation n first differs from an H-trace of smaller
+generation m at block p and level m, then p is the **first base
+neighbour** of the higher original. The first-disagreement assumption
+is deliberately explicit; proving it from the actual meet operation is
+the remaining geometric part of manuscript Lemma 6.4x. -/
+theorem positiveMismatch_firstNeighbour
+    (pairBit : Nat → Nat → Bool)
+    (k i j m n p : Nat)
+    (hmn : m < n) (hmk : m < k)
+    (hearlier : ∀ u < p,
+      traceBit pairBit k i n u m =
+        traceBit pairBit k j m u m)
+    (hdiff : traceBit pairBit k i n p m ≠
+      traceBit pairBit k j m p m) :
+    p < i ∧ pairBit p i = true ∧
+      (∀ u < p, u < i → pairBit u i = false) := by
+  have hsmall : traceBit pairBit k j m p m = false :=
+    traceBit_small_at_own pairBit k j m p hmk
+  have hhigh : traceBit pairBit k i n p m = true := by
+    cases hb : traceBit pairBit k i n p m with
+    | false => simp [hb, hsmall] at hdiff
+    | true => exact hb
+  have hpi : p < i := by
+    by_contra hno
+    simp [traceBit, hno] at hhigh
+  have hbit : pairBit p i = true := by
+    simpa [traceBit, hpi, hmn] using hhigh
+  refine ⟨hpi, hbit, ?_⟩
+  intro u hu hui
+  have hzero : traceBit pairBit k i n u m = false := by
+    rw [hearlier u hu]
+    exact traceBit_small_at_own pairBit k j m u hmk
+  simpa [traceBit, hui, hmn] using hzero
+
 end V10
 end SuccessorTree
