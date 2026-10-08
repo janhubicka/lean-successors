@@ -77,3 +77,4 @@ import SuccessorTree.ShapeFiniteCorollaries
 -- The Section 5 entry point imports its verified proof layers.
 import SuccessorTree.EnvelopeTheorem
 import SuccessorTree.V10.Counting
+import SuccessorTree.V10.MeetTrace
