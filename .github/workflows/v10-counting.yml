@@ -45,7 +45,7 @@ jobs:
       - name: Download Mathlib cache
         run: lake exe cache get
       - name: Build v10 counting module
-        run: lake build SuccessorTree.V10.Counting
+        run: lake build SuccessorTree.V10.Counting SuccessorTree.V10.MeetTrace
       - name: Check v10 theorem axioms
         run: |
           lake env lean scripts/CheckV10Counting.lean > v10-counting-axioms.log 2>&1 || {
