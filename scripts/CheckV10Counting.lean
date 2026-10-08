@@ -23,3 +23,4 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.hPosition_lt_of_gen_lt
 #print axioms SuccessorTree.V10.hPosition_before
 #print axioms SuccessorTree.V10.firstPositiveDisagreement_realPositions
+#print axioms SuccessorTree.V10.bundledPositiveMismatch_firstNeighbour
