@@ -83,6 +83,17 @@ theorem ageLevels_card_le_family
   rw [heq] at hbound
   simpa [Fintype.card_sigma, Fintype.card_fun] using hbound
 
+/-- The number of nonempty supports of a finite represented structure.
+This is the \`2^|A|-1\` combinatorial length in the reconstructed
+Abramson--Harrington encoding, *conditional on identifying interesting
+columns with exactly these nonempty supports*. -/
+theorem nonemptySupports_card
+    {α : Type*} [DecidableEq α] (vertices : Finset α) :
+    (vertices.powerset.erase ∅).card = 2 ^ vertices.card - 1 := by
+  have hempty : (∅ : Finset α) ∈ vertices.powerset := by simp
+  simpa [Finset.card_powerset] using
+    (Finset.card_erase_of_mem hempty)
+
 /-- Combining the charged meet levels with the coded age obstructions.
 No false strict-generation descent or duplicate-counting assumption is used. -/
 theorem newlySelected_card_le
