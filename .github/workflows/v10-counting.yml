@@ -5,12 +5,14 @@ on:
     paths:
       - 'SuccessorTree/V10/**'
       - 'scripts/CheckV10Counting.lean'
+      - 'scripts/check_v10_meet_blocks.py'
       - 'SuccessorTree.lean'
       - '.github/workflows/v10-counting.yml'
   pull_request:
     paths:
       - 'SuccessorTree/V10/**'
       - 'scripts/CheckV10Counting.lean'
+      - 'scripts/check_v10_meet_blocks.py'
       - 'SuccessorTree.lean'
       - '.github/workflows/v10-counting.yml'
   workflow_dispatch:
@@ -44,6 +46,8 @@ jobs:
         run: lake update
       - name: Download Mathlib cache
         run: lake exe cache get
+      - name: Exhaustive H-block meet diagnostic
+        run: python3 scripts/check_v10_meet_blocks.py
       - name: Build v10 counting module
         run: lake build SuccessorTree.V10.Counting SuccessorTree.V10.MeetTrace
       - name: Check v10 theorem axioms
