@@ -16,6 +16,25 @@ namespace SuccessorTree
 namespace SMTree
 namespace Envelope
 
+/-- Descending induction on the finite stage interval. This is only natural-number
+bookkeeping; it carries no tree or envelope hypotheses. -/
+private theorem induction_down {ell : Nat} {P : Nat → Prop}
+    (htop : P ell)
+    (hstep : ∀ i, i < ell → P (i + 1) → P i) :
+    ∀ i, i ≤ ell → P i := by
+  have main : ∀ d : Nat, ∀ i, ell - i = d → i ≤ ell → P i := by
+    intro d
+    induction d using Nat.strong_induction_on with
+    | h d ih =>
+        intro i hdi hiell
+        by_cases hieq : i = ell
+        · simpa [hieq] using htop
+        · have hilt : i < ell := lt_of_le_of_ne hiell hieq
+          apply hstep i hilt
+          apply ih (ell - (i + 1)) (by omega) (i + 1) rfl (by omega)
+  intro i hiell
+  exact main (ell - i) i rfl hiell
+
 universe u v
 
 variable {T : Type u} {Label : Type v}
@@ -55,45 +74,28 @@ theorem fullInvariant
     (hXbound : X ⊆ levelLe ell) :
     ∀ (i : Nat), i ≤ ell →
       StageFullInvariant H X ell i (R.I i) (R.F i) := by
-  have main :
-      ∀ d : Nat, ∀ i : Nat, ell - i = d → i ≤ ell →
-        StageFullInvariant H X ell i (R.I i) (R.F i) := by
-    intro d
-    induction d using Nat.strong_induction_on with
-    | h d ih =>
-        intro i hdi hiell
-        by_cases hieq : i = ell
-        · subst i
-          rw [R.topI, R.topF]
-          exact stageFullInvariant_base H X ell
-        · have hilt : i < ell := lt_of_le_of_ne hiell hieq
-          have hsmall : ell - (i + 1) < d := by
-            rw [← hdi]
-            omega
-          have hnext :
-              StageFullInvariant H X ell (i + 1)
-                (R.I (i + 1)) (R.F (i + 1)) :=
-            ih (ell - (i + 1)) hsmall (i + 1) rfl (by omega)
-          by_cases hinter :
-              IsInterestingAt H (closure S (R.I (i + 1)) X) i
-          · rcases R.interesting_step i hilt hinter with ⟨hI, hF⟩
-            rw [hI, hF]
-            exact stageFullInvariant_interesting
-              H X ell i (R.I (i + 1)) (R.F (i + 1)) hilt hnext
-          · rcases R.noninteresting_step i hilt hinter with
-              ⟨D, hDskip, hDcross, hI, hF⟩
-            have hno :
-                ∀ ⦃x : T⦄,
-                  x ∈ closure S (R.I (i + 1)) X →
-                  LevelTree.lev x ≠ i := by
-              intro x hx hxi
-              exact hinter (Or.inl ⟨x, hx, hxi⟩)
-            rw [hI, hF]
-            exact stageFullInvariant_noninteresting
-              H hE1 X ell i hXbound (R.I (i + 1))
-              (R.F (i + 1)) D hilt hnext hDskip hno hDcross
-  intro i hiell
-  exact main (ell - i) i rfl hiell
+  apply induction_down
+  · rw [R.topI, R.topF]
+    exact stageFullInvariant_base H X ell
+  · intro i hilt hnext
+    by_cases hinter :
+        IsInterestingAt H (closure S (R.I (i + 1)) X) i
+    · rcases R.interesting_step i hilt hinter with ⟨hI, hF⟩
+      rw [hI, hF]
+      exact stageFullInvariant_interesting
+        H X ell i (R.I (i + 1)) (R.F (i + 1)) hilt hnext
+    · rcases R.noninteresting_step i hilt hinter with
+        ⟨D, hDskip, hDcross, hI, hF⟩
+      have hno :
+          ∀ ⦃x : T⦄,
+            x ∈ closure S (R.I (i + 1)) X →
+            LevelTree.lev x ≠ i := by
+        intro x hx hxi
+        exact hinter (Or.inl ⟨x, hx, hxi⟩)
+      rw [hI, hF]
+      exact stageFullInvariant_noninteresting
+        H hE1 X ell i hXbound (R.I (i + 1))
+        (R.F (i + 1)) D hilt hnext hDskip hno hDcross
 
 /-- The level-set part of either algorithm branch. No E1 is needed. -/
 theorem level_step (R : AlgorithmRun H X ell) (i : Nat) (hi : i < ell) :
@@ -232,41 +234,25 @@ theorem finalLevels_subset_competitor
 theorem I_eq
     (R R' : AlgorithmRun H X ell) :
     ∀ (i : Nat), i ≤ ell → R.I i = R'.I i := by
-  have main :
-      ∀ d : Nat, ∀ i : Nat, ell - i = d → i ≤ ell →
-        R.I i = R'.I i := by
-    intro d
-    induction d using Nat.strong_induction_on with
-    | h d ih =>
-        intro i hdi hiell
-        by_cases hieq : i = ell
-        · subst i
-          rw [R.topI, R'.topI]
-        · have hilt : i < ell := lt_of_le_of_ne hiell hieq
-          have hsmall : ell - (i + 1) < d := by
-            rw [← hdi]
-            omega
-          have hnext :
-              R.I (i + 1) = R'.I (i + 1) :=
-            ih (ell - (i + 1)) hsmall (i + 1) rfl (by omega)
-          by_cases hinter :
-              IsInterestingAt H (closure S (R.I (i + 1)) X) i
-          · have hinter' :
-                IsInterestingAt H (closure S (R'.I (i + 1)) X) i := by
-              simpa [← hnext] using hinter
-            have hR := (R.interesting_step i hilt hinter).1
-            have hR' := (R'.interesting_step i hilt hinter').1
-            rw [hR, hR', hnext]
-          · have hinter' :
-                ¬ IsInterestingAt H (closure S (R'.I (i + 1)) X) i := by
-              simpa [← hnext] using hinter
-            rcases R.noninteresting_step i hilt hinter with
-              ⟨D, hDskip, hDcross, hR, hRF⟩
-            rcases R'.noninteresting_step i hilt hinter' with
-              ⟨E, hEskip, hEcross, hR', hR'F⟩
-            rw [hR, hR', hnext]
-  intro i hiell
-  exact main (ell - i) i rfl hiell
+  apply induction_down
+  · rw [R.topI, R'.topI]
+  · intro i hilt hnext
+    by_cases hinter :
+        IsInterestingAt H (closure S (R.I (i + 1)) X) i
+    · have hinter' :
+          IsInterestingAt H (closure S (R'.I (i + 1)) X) i := by
+        simpa [← hnext] using hinter
+      have hR := (R.interesting_step i hilt hinter).1
+      have hR' := (R'.interesting_step i hilt hinter').1
+      rw [hR, hR', hnext]
+    · have hinter' :
+          ¬ IsInterestingAt H (closure S (R'.I (i + 1)) X) i := by
+        simpa [← hnext] using hinter
+      rcases R.noninteresting_step i hilt hinter with
+        ⟨D, hDskip, hDcross, hR, hRF⟩
+      rcases R'.noninteresting_step i hilt hinter' with
+        ⟨E, hEskip, hEcross, hR', hR'F⟩
+      rw [hR, hR', hnext]
 
 /-- The embedding type of X is independent of every one-level choice made in
 the run. -/
@@ -276,77 +262,60 @@ theorem embeddingType_eq
     (hXbound : X ⊆ levelLe ell) :
     ∀ (i : Nat), i ≤ ell →
       (R.F i).map ⁻¹' X = (R'.F i).map ⁻¹' X := by
-  have main :
-      ∀ d : Nat, ∀ i : Nat, ell - i = d → i ≤ ell →
-        (R.F i).map ⁻¹' X = (R'.F i).map ⁻¹' X := by
-    intro d
-    induction d using Nat.strong_induction_on with
-    | h d ih =>
-        intro i hdi hiell
-        by_cases hieq : i = ell
-        · subst i
-          rw [R.topF, R'.topF]
-        · have hilt : i < ell := lt_of_le_of_ne hiell hieq
-          have hsmall : ell - (i + 1) < d := by
-            rw [← hdi]
-            omega
-          have hIeq : R.I (i + 1) = R'.I (i + 1) :=
-            R.I_eq R' (i + 1) (by omega)
-          have htypeNext :
-              (R.F (i + 1)).map ⁻¹' X =
-                (R'.F (i + 1)).map ⁻¹' X :=
-            ih (ell - (i + 1)) hsmall (i + 1) rfl (by omega)
-          have hInvR :=
-            R.fullInvariant hE1 hXbound (i + 1) (by omega)
-          have hInvR'0 :=
-            R'.fullInvariant hE1 hXbound (i + 1) (by omega)
-          have hInvR' :
-              StageInvariant H X ell (i + 1)
-                (R.I (i + 1)) (R'.F (i + 1)) := by
-            have := hInvR'0.1
-            rw [← hIeq] at this
-            exact this
-          by_cases hinter :
-              IsInterestingAt H (closure S (R.I (i + 1)) X) i
-          · have hinter' :
-                IsInterestingAt H (closure S (R'.I (i + 1)) X) i := by
-              simpa [← hIeq] using hinter
-            have hRF := (R.interesting_step i hilt hinter).2
-            have hR'F := (R'.interesting_step i hilt hinter').2
-            rw [hRF, hR'F]
-            exact htypeNext
-          · have hinter' :
-                ¬ IsInterestingAt H (closure S (R'.I (i + 1)) X) i := by
-              simpa [← hIeq] using hinter
-            rcases R.noninteresting_step i hilt hinter with
-              ⟨D, hDskip, hDcross, hRI, hRF⟩
-            rcases R'.noninteresting_step i hilt hinter' with
-              ⟨E, hEskip, hEcross0, hR'I, hR'F⟩
-            have hEcross :
-                ∀ ⦃c : T⦄, c ∈ closure S (R.I (i + 1)) X →
-                  ∀ (hic : i < LevelTree.lev c),
-                    E (LevelTree.ancestor c i (Nat.le_of_lt hic)) =
-                      LevelTree.ancestor c (i + 1)
-                        (Nat.succ_le_iff.mpr hic) := by
-              intro c hc hic
-              apply hEcross0
-              · rw [← hIeq]
-                exact hc
-              · exact hic
-            have hno :
-                ∀ ⦃x : T⦄,
-                  x ∈ closure S (R.I (i + 1)) X →
-                  LevelTree.lev x ≠ i := by
-              intro x hx hxi
-              exact hinter (Or.inl ⟨x, hx, hxi⟩)
-            rw [hRF, hR'F]
-            exact embeddingType_noninteresting_choice_independent
-              H hE1 X ell i hXbound (R.I (i + 1))
-              (R.F (i + 1)) (R'.F (i + 1)) D E
-              hInvR.1 hInvR' htypeNext hDskip hEskip hno
-              hDcross hEcross
-  intro i hiell
-  exact main (ell - i) i rfl hiell
+  apply induction_down
+  · rw [R.topF, R'.topF]
+  · intro i hilt htypeNext
+    have hIeq : R.I (i + 1) = R'.I (i + 1) :=
+      R.I_eq R' (i + 1) (by omega)
+    have hInvR :=
+      R.fullInvariant hE1 hXbound (i + 1) (by omega)
+    have hInvR'0 :=
+      R'.fullInvariant hE1 hXbound (i + 1) (by omega)
+    have hInvR' :
+        StageInvariant H X ell (i + 1)
+          (R.I (i + 1)) (R'.F (i + 1)) := by
+      have := hInvR'0.1
+      rw [← hIeq] at this
+      exact this
+    by_cases hinter :
+        IsInterestingAt H (closure S (R.I (i + 1)) X) i
+    · have hinter' :
+          IsInterestingAt H (closure S (R'.I (i + 1)) X) i := by
+        simpa [← hIeq] using hinter
+      have hRF := (R.interesting_step i hilt hinter).2
+      have hR'F := (R'.interesting_step i hilt hinter').2
+      rw [hRF, hR'F]
+      exact htypeNext
+    · have hinter' :
+          ¬ IsInterestingAt H (closure S (R'.I (i + 1)) X) i := by
+        simpa [← hIeq] using hinter
+      rcases R.noninteresting_step i hilt hinter with
+        ⟨D, hDskip, hDcross, hRI, hRF⟩
+      rcases R'.noninteresting_step i hilt hinter' with
+        ⟨E, hEskip, hEcross0, hR'I, hR'F⟩
+      have hEcross :
+          ∀ ⦃c : T⦄, c ∈ closure S (R.I (i + 1)) X →
+            ∀ (hic : i < LevelTree.lev c),
+              E (LevelTree.ancestor c i (Nat.le_of_lt hic)) =
+                LevelTree.ancestor c (i + 1)
+                  (Nat.succ_le_iff.mpr hic) := by
+        intro c hc hic
+        apply hEcross0
+        · rw [← hIeq]
+          exact hc
+        · exact hic
+      have hno :
+          ∀ ⦃x : T⦄,
+            x ∈ closure S (R.I (i + 1)) X →
+            LevelTree.lev x ≠ i := by
+        intro x hx hxi
+        exact hinter (Or.inl ⟨x, hx, hxi⟩)
+      rw [hRF, hR'F]
+      exact embeddingType_noninteresting_choice_independent
+        H hE1 X ell i hXbound (R.I (i + 1))
+        (R.F (i + 1)) (R'.F (i + 1)) D E
+        hInvR.1 hInvR' htypeNext hDskip hEskip hno
+        hDcross hEcross
 
 end AlgorithmRun
 
