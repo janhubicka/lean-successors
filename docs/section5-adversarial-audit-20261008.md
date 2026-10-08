@@ -80,6 +80,20 @@ The old manuscript wrote m in one restriction. Its mechanical correction
 is valid; the remaining factor-to-crossing calculation needs a full
 sentence or lemma.
 
+**Observation B5 (new example correction):** The E1 necessity example says
+the additional retained levels of a minimal envelope are nonunique for
+arbitrary `|w|≥7`. For `|w|=7`, the target
+`{w, w followed by 7}` reaches level 8 while minimal height is 9.
+A strictly increasing level map from nine source levels into
+`{0,...,8}` must be the identity, so the additional retained levels
+are **unique**. The lower bound 9 is valid because the successor character
+7 can occur only at source index at least 7. A corrected *nonunique*
+witness is `w=0^8`: both prepending 0 and inserting 0 at coordinate 7
+embed `{0^7, 0^7 followed by 7}` into the target, have height 9, and
+represent different level sets. A dedicated 3,600-case successor
+diagnostic runs in the focused Envelope workflow. The TeX includes
+an exact inline TODO; the author's example is not rewritten.
+
 **Observation B4 (confirmed):** Independence of the interesting levels
 does not imply independence of `F^{-1}[X]`; the missing step is the separate
 downward induction in `AlgorithmRun.embeddingType_eq`.
