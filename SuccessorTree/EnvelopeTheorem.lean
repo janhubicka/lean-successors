@@ -38,7 +38,7 @@ theorem exists_minimalEnvelope
       (∀ (E : MMap H) (m' : Nat),
         IsPrefixEnvelope E.map m' X → m ≤ m') ∧
       (∀ (m' : Nat) (a : AM H 0 m'),
-        AlgorithmRun.IsAMEnvelope H a X → m ≤ m') ∧
+        IsAMEnvelope H a X → m ≤ m') ∧
       (∀ R' : AlgorithmRun H X ell,
         R.I 0 = R'.I 0 ∧
         (R.F 0).map ⁻¹' X = (R'.F 0).map ⁻¹' X) := by
