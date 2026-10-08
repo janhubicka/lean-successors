@@ -1,4 +1,4 @@
-import SuccessorTree.EnvelopeRunExistence
+import SuccessorTree.EnvelopeTheorem
 
 #print axioms SuccessorTree.SMTree.Envelope.range_meetClosed
 #print axioms SuccessorTree.SMTree.Envelope.range_parameterClosed
