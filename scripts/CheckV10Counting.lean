@@ -75,3 +75,4 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.canonicalRule_of_decomposition
 #print axioms SuccessorTree.V10.closure_subset_pool_of_decomposition
 #print axioms SuccessorTree.V10.parameterClosed_iff_canonicalPrincipal
+#print axioms SuccessorTree.V10.parameterClosed_iff_canonicalPrincipalOn
