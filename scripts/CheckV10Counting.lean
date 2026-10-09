@@ -3,8 +3,9 @@ import SuccessorTree.V10.MeetTrace
 import SuccessorTree.V10.BlockOrder
 import SuccessorTree.V10.MeetBundle
 import SuccessorTree.V10.FirstDisagreement
+import SuccessorTree.V10.MeetProvenance
 
--- The three estimates below are conditional: they do not silently assume the
+-- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
 set_option autoImplicit false
 
@@ -28,3 +29,6 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.bundledTrace_empty_of_zero
 #print axioms SuccessorTree.V10.positiveDisagreement_commonPair
 #print axioms SuccessorTree.V10.firstPositiveDisagreement_classifies
+#print axioms SuccessorTree.V10.meet_eq_of_nontrivial_prefixes
+#print axioms SuccessorTree.V10.meet_mem_prefixesOf
+#print axioms SuccessorTree.V10.nontrivial_meet_has_originals
