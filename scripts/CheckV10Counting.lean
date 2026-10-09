@@ -55,6 +55,7 @@ import SuccessorTree.V10.ExtractSuccessorComponents
 import SuccessorTree.V10.ParameterLetterUniqueness
 import SuccessorTree.V10.ExtractedSuccessorS2
 import SuccessorTree.V10.EmptyParameterS2
+import SuccessorTree.V10.CanonicalStepGraph
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -375,3 +376,7 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.full_parameter_eq_of_canonical_option
 #print axioms SuccessorTree.V10.validNewColumn_freeCut_unique
 #print axioms SuccessorTree.V10.complete_successor_unique_of_option_parameter
+
+-- Canonical Kpt successor graph has strict S1 cover and parameter bounds.
+#print axioms SuccessorTree.V10.canonicalKptStep_covBy
+#print axioms SuccessorTree.V10.canonicalKptStep_parameter_lt
