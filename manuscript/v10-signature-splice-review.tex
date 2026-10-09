@@ -18,8 +18,14 @@ relations are determined by the complete prescribed upper types
 remains a separate proof obligation: identify the type of each upper
 age-test witness vertex through $\ell+1$ with its chosen original
 $\mathrm{type}_{C^+}(v)\restriction(\ell+1)$ and verify the common initial
-$L$-socle.  The auxiliary $E$-relation is not part of the forbidden
-$L$-copy.  Do not mark Observation~6.52, Lemma~6.53 or
+$L$-socle.  The age-test witness must contain the entire initial socle, so the
+hybrid lower vertices actually lie in its domain; this reduction is
+proved by \texttt{signatureSplice\_in\_laterDomain}.  The two required
+cross-relation equalities follow from shared complete outgoing and
+incoming original profiles, as proved by
+\texttt{signatureSplice\_cross\_of\_sharedProfiles}. Constructing those
+profiles from the actual $K^\mathcal F_{pt}$ types remains open. The
+auxiliary $E$-relation is not part of the forbidden $L$-copy.  Do not mark Observation~6.52, Lemma~6.53 or
 Proposition~6.44 fully validated until this concrete
 partial-type-to-age-test interface is supplied.}
 
@@ -33,3 +39,6 @@ partial-type-to-age-test interface is supplied.}
 % Original-v10 TeX main source is unavailable in the lean-successors repo.
 % Therefore this fragment is deliberately not a pretend cleanly-applying
 % patch against main.tex. Keep it for the next author-supplied v10 archive.
+
+%   signatureSplice_in_laterDomain
+%   signatureSplice_cross_of_sharedProfiles
