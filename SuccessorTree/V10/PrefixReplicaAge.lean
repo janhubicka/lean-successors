@@ -183,4 +183,61 @@ theorem prefixReplicaL_preserves_avoidance_nontrivial
   exact hAvoid ⟨_, replica_copy_projects_to_original
     A F v d hv hd f hCopy hNoFiller⟩
 
+
+/-- A singleton is non-neutral if at least one unary or diagonal
+binary atom holds. The one-filler replica uses the neutral singleton,
+so an explicitly forbidden non-neutral singleton cannot map there. -/
+def ForbiddenAtomicPattern.NonNeutralSingleton
+    {db du dd : Nat}
+    (F : ForbiddenAtomicPattern 1 db du dd) : Prop :=
+  (∃ t : Fin du, F.unary 0 t = true) ∨
+    (∃ t : Fin dd, F.diagonal 0 t = true)
+
+/-- A forbidden non-neutral singleton in the replica cannot be the
+neutral filler; any other singleton projects to the original. -/
+theorem nonNeutral_singleton_replica_copy_avoids_filler
+    {db du dd : Nat}
+    (A : EnumeratedPartialStructure db du dd)
+    (F : ForbiddenAtomicPattern 1 db du dd)
+    (hNonNeutral : F.NonNeutralSingleton)
+    (d v : Nat)
+    (f : Fin 1 → Nat)
+    (hCopy : (prefixReplicaL A d v).Realizes F f) :
+    ∀ a : Fin 1, f a ≠ d := by
+  intro a
+  have ha : a = 0 := Fin.eq_zero a
+  subst a
+  intro hFill
+  rcases hNonNeutral with ⟨t, hPositive⟩ | ⟨t, hPositive⟩
+  · have hPreserved := hCopy.2.2.2.1 0 t
+    have hNeutral :=
+      (prefixReplicaL_filler_neutral A d v (f 0)).2.1 t
+    rw [hFill, hNeutral, hPositive] at hPreserved
+    contradiction
+  · have hPreserved := hCopy.2.2.2.2 0 t
+    have hNeutral :=
+      (prefixReplicaL_filler_neutral A d v (f 0)).2.2 t
+    rw [hFill, hNeutral, hPositive] at hPreserved
+    contradiction
+
+/-- Forbidden non-neutral singletons stay forbidden after the
+one-neutral-filler replica, assuming they were absent in the source. -/
+theorem prefixReplicaL_preserves_avoidance_singleton
+    {db du dd : Nat}
+    (A : EnumeratedPartialStructure db du dd)
+    (F : ForbiddenAtomicPattern 1 db du dd)
+    (hNonNeutral : F.NonNeutralSingleton)
+    (v d : Nat)
+    (hv : v < A.size)
+    (hd : d ≤ A.freeLevel v)
+    (hAvoid : ¬ ∃ f : Fin 1 → Nat, A.L.Realizes F f) :
+    ¬ ∃ f : Fin 1 → Nat,
+      (prefixReplicaL A d v).Realizes F f := by
+  rintro ⟨f, hCopy⟩
+  have hNoFiller :=
+    nonNeutral_singleton_replica_copy_avoids_filler
+      A F hNonNeutral d v f hCopy
+  exact hAvoid ⟨_, replica_copy_projects_to_original
+    A F v d hv hd f hCopy hNoFiller⟩
+
 end SuccessorTree.V10
