@@ -107,3 +107,4 @@ import SuccessorTree.V10.AmbientSignature
 import SuccessorTree.V10.RelationalTypeReduct
 import SuccessorTree.V10.EFreeLevel
 import SuccessorTree.V10.PartialStructureE
+import SuccessorTree.V10.HExactE
