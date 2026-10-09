@@ -46,5 +46,8 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.generatedE_nonTop_firstMissing
 #print axioms SuccessorTree.V10.generatedE_top_firstMissing
 #print axioms SuccessorTree.V10.oddFake_not_E_isolated
+#print axioms SuccessorTree.V10.generatedE_downward
+#print axioms SuccessorTree.V10.generatedE_gap
+#print axioms SuccessorTree.V10.generatedE_of_allowedPair
 #print axioms SuccessorTree.V10.meet_of_first_record_difference
 #print axioms SuccessorTree.V10.meet_level_of_first_record_difference
