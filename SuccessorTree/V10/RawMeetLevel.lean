@@ -56,13 +56,13 @@ theorem rawPartialType_meet_level_of_first_binary_difference
     rawPartialType_prefix_of_cut A v d (by omega)
   have hCandidateW :
       RawPartialTypePrefix candidate (A.rawTypeAtFree w) := by
-    refine ⟨(by omega), ?_⟩
+    have hdw : d ≤ A.freeLevel w := by omega
+    refine ⟨hdw, ?_⟩
     calc
       A.partialTypeAt d v = A.partialTypeAt d w := hEqD
       _ = (A.partialTypeAt (A.freeLevel w) w).restrict
-            (by omega) :=
-        (A.partialTypeAt_restrict d (A.freeLevel w) w
-          (by omega)).symm
+            hdw :=
+        (A.partialTypeAt_restrict d (A.freeLevel w) w hdw).symm
   obtain ⟨hdm, _⟩ :=
     hGreatest candidate hCandidateV hCandidateW
   have hmd : m.1 ≤ d := by
@@ -87,6 +87,7 @@ theorem rawPartialType_meet_level_of_first_binary_difference
       hMTypeV.symm.trans hMTypeW
     exact hDiffNext (fullPartialType_eq_at_smaller A v w
       (d + 1) m.1 hlt hEqM)
-  exact ⟨m, by omega, hmV, hmW, hGreatest⟩
+  change d ≤ m.1 at hdm
+  exact ⟨m, Nat.le_antisymm hmd hdm, hmV, hmW, hGreatest⟩
 
 end SuccessorTree.V10
