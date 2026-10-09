@@ -133,8 +133,8 @@ theorem terminalLetterReplica_copy_projects
   · intro a
     apply (A.carrier_iff (terminalLetterProject ell v (f a))).2
     have hCase : f a = 0 ∨ f a = 2 := by
-      have h := hIn a
-      have hN := hNoFiller a
+      have h : f a < 3 := hIn a
+      have hN : f a ≠ 1 := hNoFiller a
       omega
     rcases hCase with hCase | hCase
     · simp [terminalLetterProject, hCase, hell]
@@ -225,6 +225,9 @@ theorem terminalLetter_is_admissible
     rw [hFree]
     exact congrArg (Sigma.mk 1)
       (terminalLetterReplica_type_eq A ell v hCut).symm
-  exact ⟨B,2,(by decide),hAvoidB,hRaw⟩
+  have hVertex : 2 < B.size := by
+    change 2 < 3
+    omega
+  exact ⟨B, 2, hVertex, hAvoidB, hRaw⟩
 
 end SuccessorTree.V10
