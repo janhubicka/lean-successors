@@ -37,8 +37,9 @@ theorem copiedRealPair_eq_of_admissible
     (h : admissibleRealPair k i j q m) :
     copiedRealPair B k i j q m = B i j := by
   funext r
-  simpa [copiedRealPair, admissibleRealPair] using
-    (if_pos h : (if admissibleRealPair k i j q m then B i j r else false) = B i j r)
+  have hraw : i < j ∧ q ≤ k ∧ m ≤ k ∧
+      (q < m ∨ (q = m ∧ m = k)) := h
+  simp [copiedRealPair, hraw]
 
 /-- All forbidden real pairs carry the empty binary tuple. -/
 theorem copiedRealPair_empty_of_not_admissible
@@ -47,8 +48,9 @@ theorem copiedRealPair_empty_of_not_admissible
     (h : ¬ admissibleRealPair k i j q m) :
     copiedRealPair B k i j q m = emptyBinaryPattern d := by
   funext r
-  simpa [copiedRealPair, admissibleRealPair, emptyBinaryPattern] using
-    (if_neg h : (if admissibleRealPair k i j q m then B i j r else false) = false)
+  have hraw : ¬ (i < j ∧ q ≤ k ∧ m ≤ k ∧
+      (q < m ∨ (q = m ∧ m = k))) := h
+  simp [copiedRealPair, emptyBinaryPattern, hraw]
 
 /-- A nonempty copied tuple forces the ordered pair and generation gate. -/
 theorem copiedRealPair_nonempty_implies_admissible
