@@ -106,10 +106,31 @@ this condition; such maps fix each level-zero
 node, yielding (E1). These M1 facts are formalised
 in \texttt{ConcreteKptM1.lean}, subject to the current
 exact-head Lean CI. They do \emph{not} establish
-Proposition~6.39. The level-removal lemma 6.34,
-boring-extension lemma 6.36, type-compatibility
-preservation, and concrete duplication/decomposition
-needed for (M2)--(M3) still require separate checking.}
+Proposition~6.39. Towards (M3), the proposed
+terminal one-vertex duplication in
+\texttt{EndDuplicateE.lean},
+\texttt{EndDuplicateL.lean} and
+\texttt{EndDuplicatePartial.lean} copies the
+full singleton type and all directed relations from
+the earlier original to its initial $E$-socle and
+leaves every other old--new relation empty.
+The new $E$-column is exactly the original's
+free cut; the construction preserves spacing,
+downward closure and E3. The ordered-copy
+projection in \texttt{EndDuplicateAge.lean}
+is intended to prove that no irreducible
+forbidden structure is created. These local
+lemmas are currently under Lean CI audit and
+must emph{not} be marked green yet.
+Constructing one such terminal duplicate is
+still weaker than (M3), which requires a
+single shape-preserving one-level skip map
+simultaneously realizing the prescribed
+duplications at all compatible nodes.
+The level-removal lemma 6.34,
+boring-extension lemma 6.36, compatibility
+preservation, and the global (M2)--(M3)
+arguments remain open.}
 
 % =====================================================================
 % Proposed consolidated TODO at Definition 6.45 / Observation 6.46
