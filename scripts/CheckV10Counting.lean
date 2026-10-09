@@ -64,3 +64,6 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.nonemptyCopiedPair_generatesE
 #print axioms SuccessorTree.V10.sameBlock_no_binary
 #print axioms SuccessorTree.V10.copiedRealPair_matches_trace
+#print axioms SuccessorTree.V10.prefixesOf_meetClosed
+#print axioms SuccessorTree.V10.closure_subset_original_pool
+#print axioms SuccessorTree.V10.closure_meet_has_originals
