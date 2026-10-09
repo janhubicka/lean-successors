@@ -48,7 +48,6 @@ theorem deleteAt_lt_iff_lt_deleteAtCut
       omega
   · by_cases hu : u < m
     · simp only [if_neg hm, if_pos hu]
-      omega
     · simp only [if_neg hm, if_neg hu]
       omega
 
