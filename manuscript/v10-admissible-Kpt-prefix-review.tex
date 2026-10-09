@@ -1,0 +1,34 @@
+% v10 partial-type tree prefix-closure review, 9 October 2026.
+% This is a review-only candidate replacing the older partial-type
+% membership TODO in the author's cumulative annotated v10 source.
+% Do not duplicate annotations or edit the four repaired proof passages.
+%
+\todo[inline]{\textbf{v10 validation (admissible partial-type prefixes).}
+For a finite language with unary and binary relations, a finite
+family of enumerated irreducible forbidden structures, no empty
+forbidden configuration and an allowed neutral singleton, the
+entire prefix-closure problem can be reduced to one explicit
+one-filler construction. A forbidden pattern of size at least
+two cannot use the filler because it is binary-irreducible;
+the remaining vertices project in order, preserving all
+present and absent $L$-relations, into the original structure.
+A forbidden singleton cannot use the filler because its
+singleton type is not neutral. The $E$-spacing and downward
+closure, the irreducible-pair $E$ condition, the new free
+level $d$, and equality of all $L^+$-type records are checked
+by the preceding replica modules.
+The resulting \texttt{AdmissibleKptPrefix.lean} formalises
+prefix closure of the family of all free-level types of
+forbidden-free enumerated partial structures under these
+explicit normalization hypotheses (pending exact CI).
+The remaining verification of the $K^\mathcal F_{pt}$
+LevelTree statement is to establish finiteness of its
+levels, the greatest-common-predecessor operation, and
+the link to the paper's exact definition of the successor
+operation, including the chosen nullary interpretation.
+These should not be inferred from the prefix-closure
+statement alone.}
+%
+% Endpoints pending CI:
+%   NormalizedForbidden.replica_preserves_avoidance
+%   admissibleRawType_closed_under_prefix
