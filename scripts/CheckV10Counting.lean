@@ -64,6 +64,7 @@ import SuccessorTree.V10.TerminalLetterReplica
 import SuccessorTree.V10.TerminalLetterAge
 import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.ConcreteKptM1
+import SuccessorTree.V10.LevelRemovalE
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -434,3 +435,9 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.kptM_fusion_mem
 #print axioms SuccessorTree.V10.kptM1
 #print axioms SuccessorTree.V10.kptM_fixes_roots
+
+-- M2 local one-vertex deletion: strict free-cut guard preserves E1/E2 and domain.
+#print axioms SuccessorTree.V10.deleteAt_strictMono
+#print axioms SuccessorTree.V10.deleteAtE_downward
+#print axioms SuccessorTree.V10.deleteAtE_spaced
+#print axioms SuccessorTree.V10.deleteAtE_inside
