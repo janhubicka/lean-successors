@@ -70,4 +70,69 @@ theorem generated_nontrivial_meet_has_originals
     (representedClosure_subset_prefixesOf hparam ht)
     hc hleft hright
 
+/-- Even if a parameter has no representative in V, the original pool
+continues to represent all closure nodes of positive level, provided
+such exceptional parameters have level zero. -/
+theorem representedClosure_or_root
+    {V Parameters : Set T}
+    (hparam : ∀ p ∈ Parameters,
+      p ∈ prefixesOf V ∨ LevelTree.lev p = 0) :
+    ∀ {x : T}, RepresentedClosure V Parameters x →
+      x ∈ prefixesOf V ∨ LevelTree.lev x = 0 := by
+  intro x hx
+  induction hx with
+  | original hv =>
+      exact Or.inl ⟨_, hv, le_rfl⟩
+  | parameter hp =>
+      exact hparam _ hp
+  | prefix _ hle ih =>
+      rcases ih with hrep | hroot
+      · obtain ⟨v, hv, hbelow⟩ := hrep
+        exact Or.inl ⟨v, hv, hle.trans hbelow⟩
+      · have hlev := LevelTree.level_le_of_le hle
+        exact Or.inr (by omega)
+  | meet _ _ hc ihx ihy =>
+      rcases ihx with hrep | hroot
+      · rcases ihy with hrep' | hroot'
+        · exact Or.inl (meet_mem_prefixesOf hrep hrep' hc)
+        · have hlev := LevelTree.level_le_of_le
+            (LevelTree.meet_le_right hc)
+          exact Or.inr (by omega)
+      · have hlev := LevelTree.level_le_of_le
+          (LevelTree.meet_le_left hc)
+        exact Or.inr (by omega)
+
+/-- A nontrivial *positive-level* meet in arbitrary iterated closure
+is the meet of two original types even when some inserted parameters
+are root-only nodes not represented in the original pool. -/
+theorem generated_positive_meet_has_originals
+    {V Parameters : Set T}
+    (hparam : ∀ p ∈ Parameters,
+      p ∈ prefixesOf V ∨ LevelTree.lev p = 0)
+    {s t : T}
+    (hs : RepresentedClosure V Parameters s)
+    (ht : RepresentedClosure V Parameters t)
+    (hc : ∃ c : T, c ≤ s ∧ c ≤ t)
+    (hpositive : 0 < LevelTree.lev (LevelTree.meet s t))
+    (hleft : LevelTree.meet s t ≠ s)
+    (hright : LevelTree.meet s t ≠ t) :
+    ∃ a ∈ V, ∃ b ∈ V,
+      (∃ c : T, c ≤ a ∧ c ≤ b) ∧
+      LevelTree.meet s t = LevelTree.meet a b := by
+  have hsl := representedClosure_or_root hparam hs
+  have htl := representedClosure_or_root hparam ht
+  have hsrep : s ∈ prefixesOf V := by
+    rcases hsl with hrep | hroot
+    · exact hrep
+    · have hlev := LevelTree.level_le_of_le
+        (LevelTree.meet_le_left hc)
+      omega
+  have htrep : t ∈ prefixesOf V := by
+    rcases htl with hrep | hroot
+    · exact hrep
+    · have hlev := LevelTree.level_le_of_le
+        (LevelTree.meet_le_right hc)
+      omega
+  exact nontrivial_meet_has_originals hsrep htrep hc hleft hright
+
 end SuccessorTree.V10
