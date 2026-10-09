@@ -124,16 +124,25 @@ successor using its proved unique-output property, with
 all three S-tree axioms derived from the above
 lemmas in \texttt{CanonicalRawSTree.lean}
 (the exact-head Lean audit is pending).
-Its provisional alphabet consists of \emph{all}
-raw two-vertex $L^+$-types, whereas the manuscript's
-$\Sigma$ consists of \emph{admissible} level-one
-partial types. Construct a forbidden-free witness for
-the terminal letter and restrict the verified
-successor accordingly before marking the published
-Proposition~6.32 fully validated.
-Only then mark Proposition~6.32 as verified and start the
-concrete monoid checks (M1)--(M3); the checked abstract
-\texttt{LevelTree} instance alone does not give them.}
+The provisional alphabet of \texttt{CanonicalRawSTree.lean}
+contains all raw two-vertex $L^+$-types, whereas the manuscript's
+$\Sigma$ requires admissibility. The terminal-letter replica
+constructed in \texttt{TerminalLetterReplica.lean} has just
+three ordinary vertices: a copy of the new vertex at $0$, an
+isolated filler at $1$, and the distinguished witness at $2$.
+Its unique $E$-pair is $(0,2)$, so the type at vertex $2$ has
+free level $1$ and agrees with the original terminal
+$\Sigma$-letter. The forbidden-free transfer in
+\texttt{TerminalLetterAge.lean} uses irreducibility and the
+allowed neutral singleton. The restricted operation in
+\texttt{AdmissibleSigmaSTree.lean} is intended to prove
+(S1)--(S3) for the paper's \emph{admissible} alphabet,
+without postulating those axioms. All three new modules and
+their dependent uniqueness proof remain subject to exact-head
+Lean verification; do not mark Proposition~6.32 green in
+advance. Once checked, still align the Boolean split-diagonal
+representation with the original language and begin the
+concrete monoid conditions (M1)--(M3).}
 
 % =====================================================================
 % Proposed consolidated TODO at Definition 6.45 / Observation 6.46
