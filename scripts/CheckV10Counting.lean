@@ -54,6 +54,7 @@ import SuccessorTree.V10.CompleteNextColumn
 import SuccessorTree.V10.ExtractSuccessorComponents
 import SuccessorTree.V10.ParameterLetterUniqueness
 import SuccessorTree.V10.ExtractedSuccessorS2
+import SuccessorTree.V10.EmptyParameterS2
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -366,3 +367,11 @@ set_option autoImplicit false
 -- Canonical S2 uniqueness for genuine partial structure witnesses, E3 inputs discharged.
 #print axioms SuccessorTree.V10.validNewColumn_of_extracted_partialType
 #print axioms SuccessorTree.V10.extracted_successor_unique_of_canonical_decomposition
+
+-- Exact S2 with truly empty f=0 parameter, and canonical E cut uniqueness.
+#print axioms SuccessorTree.V10.zero_parameter_eq_of_terminal_letter
+#print axioms SuccessorTree.V10.canonicalParameterRecord_zero
+#print axioms SuccessorTree.V10.canonicalParameterRecord_some_iff_pos
+#print axioms SuccessorTree.V10.full_parameter_eq_of_canonical_option
+#print axioms SuccessorTree.V10.validNewColumn_freeCut_unique
+#print axioms SuccessorTree.V10.complete_successor_unique_of_option_parameter
