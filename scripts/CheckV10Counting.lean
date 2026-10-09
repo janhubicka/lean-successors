@@ -33,3 +33,5 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.meet_eq_of_nontrivial_prefixes
 #print axioms SuccessorTree.V10.meet_mem_prefixesOf
 #print axioms SuccessorTree.V10.nontrivial_meet_has_originals
+#print axioms SuccessorTree.V10.positivePosition_below_free_iff
+#print axioms SuccessorTree.V10.positiveMeet_lowerBlock_guard
