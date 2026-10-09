@@ -27,6 +27,7 @@ import SuccessorTree.V10.SignatureTypePrefix
 import SuccessorTree.V10.SignatureCollision
 import SuccessorTree.V10.AmbientSignature
 import SuccessorTree.V10.RelationalTypeReduct
+import SuccessorTree.V10.EFreeLevel
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -149,3 +150,12 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.equal_reduct_types_imply_fullAtomic
 #print axioms SuccessorTree.V10.prescribed_crossing_implies_fullAtomic
 #print axioms SuccessorTree.V10.PartialTypeWithE.eq_implies_lReduct
+
+-- Unique first E gap follows from spacing and downward closure, not an axiom.
+#print axioms SuccessorTree.V10.e_iff_lt_freeCut
+#print axioms SuccessorTree.V10.freeCut_unique
+#print axioms SuccessorTree.V10.exists_freeCut
+#print axioms SuccessorTree.V10.existsUnique_freeCut
+#print axioms SuccessorTree.V10.canonicalFreeLevel_isFreeCut
+#print axioms SuccessorTree.V10.canonicalFreeLevel_le
+#print axioms SuccessorTree.V10.e_iff_lt_canonicalFreeLevel
