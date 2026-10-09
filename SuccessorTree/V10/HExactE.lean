@@ -175,4 +175,59 @@ theorem exactHEBool_initial_freeLevel
   · intro h
     omega
 
+
+/-- Real H positions are even, so odd target vertices are genuinely
+fake: they cannot support an incoming generated E column. -/
+theorem hPosition_even (k j m : Nat) :
+    ∃ t : Nat, hPosition k j m = 2 * t := by
+  refine ⟨(k + 1) * j + m, ?_⟩
+  unfold hPosition
+  ring
+
+/-- Every odd-numbered vertex has an empty incoming E-column in
+the exact numerical H model. This does not make it an isolated
+vertex of the full L+ structure. -/
+theorem exactHEBool_odd_target_false (k u a : Nat) :
+    exactHEBool k u (2 * a + 1) = false := by
+  by_cases ht : exactHEBool k u (2 * a + 1) = true
+  · obtain ⟨j, m, _, hv, _⟩ :=
+      (exactHEBool_true_iff k u (2 * a + 1)).1 ht
+    obtain ⟨t, heven⟩ := hPosition_even k j m
+    have hodd : 2 * a + 1 = 2 * t := hv.trans heven
+    omega
+  · cases h : exactHEBool k u (2 * a + 1) with
+    | false => rfl
+    | true => exact False.elim (ht h)
+
+/-- Fake odd vertices have free level zero, complementing the real
+first-block and generation-zero statements. -/
+theorem exactHEBool_fake_freeLevel
+    (k a : Nat) :
+    canonicalFreeLevel (exactHEBool k)
+        (exactHEBool_spaced k) (exactHEBool_downward k)
+        (2 * a + 1) = 0 := by
+  have hCut : IsFreeCut (exactHEBool k) (2 * a + 1) 0 := by
+    constructor
+    · intro u hu
+      omega
+    · exact exactHEBool_odd_target_false k 0 a
+  exact freeCut_unique (exactHEBool k) (2 * a + 1)
+    (canonicalFreeLevel (exactHEBool k)
+      (exactHEBool_spaced k) (exactHEBool_downward k)
+      (2 * a + 1))
+    0
+    (canonicalFreeLevel_isFreeCut (exactHEBool k)
+      (exactHEBool_spaced k) (exactHEBool_downward k)
+      (2 * a + 1))
+    hCut
+
+/-- The first odd vertex is nevertheless a LOWER E-coordinate in
+a later real top-generation vertex. This is the precise sense in
+which the printed phrase 'fully isolated' is false for L+. -/
+theorem exactHEBool_odd_source_not_isolated
+    (k : Nat) (hk : 0 < k) :
+    exactHEBool k 1 (hPosition k 1 k) = true :=
+  (exactHEBool_at_real_iff k 1 k 1 le_rfl).2
+    (oddFake_not_E_isolated k hk).2
+
 end SuccessorTree.V10
