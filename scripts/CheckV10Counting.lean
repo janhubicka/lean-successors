@@ -45,6 +45,8 @@ import SuccessorTree.V10.AdmissibleKptPrefix
 import SuccessorTree.V10.FiniteKptLevels
 import SuccessorTree.V10.RawPrefixMeet
 import SuccessorTree.V10.RawPartialTypeLevelTree
+import SuccessorTree.V10.AdmissibleKptMeet
+import SuccessorTree.V10.AdmissibleKptLevelTree
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -304,3 +306,14 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.rawPartialType_covBy_level
 #print axioms SuccessorTree.V10.rawLevelTree_meet_eq
 #print axioms SuccessorTree.V10.rawLevelTree_ancestor_eq_restrict
+
+-- Admissible forbidden-free Kpt ancestry, meet and complete LevelTree instance.
+#print axioms SuccessorTree.V10.admissibleRawType_of_prefix
+#print axioms SuccessorTree.V10.admissibleKptAncestor_le
+#print axioms SuccessorTree.V10.admissible_common_implies_raw_common
+#print axioms SuccessorTree.V10.admissibleKptMeet_spec
+#print axioms SuccessorTree.V10.admissibleKpt_ancestor_exists
+#print axioms SuccessorTree.V10.admissibleKpt_level_lt_of_lt
+#print axioms SuccessorTree.V10.admissibleKpt_covBy_level
+#print axioms SuccessorTree.V10.admissibleKpt_levelTree_meet_eq
+#print axioms SuccessorTree.V10.admissibleKpt_levelTree_ancestor_eq
