@@ -77,23 +77,15 @@ theorem irreducible_H_copy_projects_to_base
   refine ⟨f, ?_, ?_, ?_, ?_⟩
   · intro a b hab
     by_contra hne
-    have hfa : f a = f b := by
-      by_cases h : f a = f b
-      · exact h
-      · exact False.elim (hne h)
     have hlink : HLinked B k (.real (f a) (g a))
         (.real (f b) (g b)) := by
       rw [← hrepr a, ← hrepr b]
-      exact hLinked a b (by
-        intro heq
-        exact hab heq)
-    rcases HLinked_real B k hlink with
-      ⟨i, j, ga, gb, _, _, hij⟩
+      exact hLinked a b hne
     have hgate := HLinked_gate B k (f a) (f b)
       (g a) (g b) hlink
     rcases hgate with ⟨hlt, _, _, _⟩ | ⟨hlt, _, _, _⟩
-    · exact (ne_of_lt hlt) hfa
-    · exact (ne_of_gt hlt) hfa
+    · exact (ne_of_lt hlt) hab
+    · exact (Ne.symm (ne_of_lt hlt)) hab
   · intro a b hab t
     have hlink := hLinked a b hab
     rw [hrepr a, hrepr b] at hlink ⊢
