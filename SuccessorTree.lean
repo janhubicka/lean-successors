@@ -109,3 +109,4 @@ import SuccessorTree.V10.EFreeLevel
 import SuccessorTree.V10.PartialStructureE
 import SuccessorTree.V10.HExactE
 import SuccessorTree.V10.PartialTypeRestriction
+import SuccessorTree.V10.HELinkage
