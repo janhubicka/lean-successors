@@ -81,7 +81,7 @@ noncomputable def prefixReplicaPartialStructure
           (lt_of_lt_of_le huOld hSizeV)
           (lt_of_lt_of_le hwOld hSizeV)
           hOldLinked
-      exact (prefixReplicaE_old A d u w hwOld).symm.trans hE
+      exact (prefixReplicaE_old A d u w hwOld).trans hE
     · have hPoss : w = d ∨ w = d + 1 := by omega
       rcases hPoss with hFill | hLast
       · subst w
