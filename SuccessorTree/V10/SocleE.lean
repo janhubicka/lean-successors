@@ -110,4 +110,17 @@ theorem generatedE_top_firstMissing
     exact (Nat.lt_irrefl _) ((generatedE_top_iff
       k j (hPosition k (j - 1) k + 1) hj hk).1 ht)
 
+/-- The first odd (fake) vertex belongs to the generated E-socle of a
+later real top-generation vertex whenever k > 0. Thus an odd vertex is not
+isolated in the full L+ structure: isolation holds only in the L-reduct. -/
+theorem oddFake_not_E_isolated
+    (k : Nat) (hk : 0 < k) :
+    1 < hPosition k 1 k ∧ generatedE k 1 k 1 := by
+  constructor
+  · unfold hPosition
+    omega
+  · refine ⟨0, k, by omega, le_rfl, Or.inr ⟨rfl, rfl⟩, ?_⟩
+    unfold hPosition
+    omega
+
 end SuccessorTree.V10
