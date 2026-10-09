@@ -20,6 +20,7 @@ import SuccessorTree.V10.RelocationCopy
 import SuccessorTree.V10.RelocationIrreducible
 import SuccessorTree.V10.RelocationOrder
 import SuccessorTree.V10.FiniteMeetBudget
+import SuccessorTree.V10.HAgeProjection
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
