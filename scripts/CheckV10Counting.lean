@@ -39,3 +39,8 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.positiveMeet_lowerBlock_guard
 #print axioms SuccessorTree.V10.meet_eq_of_adjacent_ancestors
 #print axioms SuccessorTree.V10.meet_level_of_adjacent_ancestors
+#print axioms SuccessorTree.V10.generatedE_nonTop_iff
+#print axioms SuccessorTree.V10.generatedE_top_iff
+#print axioms SuccessorTree.V10.generatedE_empty_of_initial
+#print axioms SuccessorTree.V10.generatedE_nonTop_firstMissing
+#print axioms SuccessorTree.V10.generatedE_top_firstMissing
