@@ -36,3 +36,5 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.nontrivial_meet_has_originals
 #print axioms SuccessorTree.V10.positivePosition_below_free_iff
 #print axioms SuccessorTree.V10.positiveMeet_lowerBlock_guard
+#print axioms SuccessorTree.V10.meet_eq_of_adjacent_ancestors
+#print axioms SuccessorTree.V10.meet_level_of_adjacent_ancestors
