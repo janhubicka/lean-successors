@@ -121,16 +121,32 @@ projection in \texttt{EndDuplicateAge.lean}
 is intended to prove that no irreducible
 forbidden structure is created. These local
 lemmas are currently under Lean CI audit and
-must emph{not} be marked green yet.
+must \emph{not} be marked green yet.
 Constructing one such terminal duplicate is
 still weaker than (M3), which requires a
 single shape-preserving one-level skip map
 simultaneously realizing the prescribed
 duplications at all compatible nodes.
-The level-removal lemma 6.34,
-boring-extension lemma 6.36, compatibility
-preservation, and the global (M2)--(M3)
-arguments remain open.}
+Towards (M2), the local deletion map removing
+a numbered vertex $m$ and shifting all later
+vertices has been formalised in
+\texttt{LevelRemovalE.lean} and
+\texttt{LevelRemovalPartial.lean} (review
+PRs 154--155, exact-head CI still pending).
+The only new spacing obstruction occurs when
+an old $E$-pair $(m-1,m+1)$ becomes
+consecutive; the \emph{strict}
+$\mathrm{fl}(m+1)<m$ guard of Lemma~6.34
+rules this out. All induced $L$-atoms,
+downward $E$-closure, E3 and forbidden-age
+avoidance are preserved. These are local
+finite-structure calculations, not yet the
+uniform shape-preserving deletion of all
+Kpt nodes in Lemma~6.34.
+The global boring-extension lemma 6.36,
+type-compatibility preservation, and the
+full (M2)--(M3) factorization and
+duplication arguments remain open.}
 
 % =====================================================================
 % Proposed consolidated TODO at Definition 6.45 / Observation 6.46
