@@ -28,7 +28,7 @@ LABELS = {
     "prob:upperbound": 5,      # final bound
 }
 OPTIONAL_LABELS = {
-    "obs:env1": 1,             # successor parameter/pool bridge
+    "obs:env1": 0,             # admissible Kpt family/tree verification
 }
 
 def find_todos(tex: str) -> list[str]:
@@ -82,7 +82,7 @@ def skip_balanced_todo(tex: str, start: int) -> int:
 
 def remove_only_managed(tex: str) -> str:
     """Drop only markers about to be replaced, preserving every proof token."""
-    anchors=set(LABELS)|set(OPTIONAL_LABELS)
+    anchors=set(LABELS)|set(OPTIONAL_LABELS)|{"definition-6-30"}
     # The legacy 'v10 validation note LABEL' marker is only removed for
     # matching anchors, never for other notes such as custom B2/B3.
     r=re.compile(r"^[ \t]*% (?:(v10 validation note) |("
@@ -110,6 +110,22 @@ def transform(src: str, todos: list[str]) -> tuple[str,list[str]]:
         note=(f"% {PREFIX}:{label}\n"+todos[index]+"\n")
         out=out[:point]+note+out[point:]
         found.append(label)
+    # The only non-label anchor is the exact first sentence of Definition
+    # 6.30. Place the note only if the TeX phrase is unambiguous.
+    succ_pat = re.compile(
+        r"\\\\begin\\{definition\\}(?:\\[[^\\]]*\\])?"
+        r"(?:\\s*\\\\label\\{[^}]+\\})?\\s*Given a partial type",
+        re.S)
+    matches=list(succ_pat.finditer(out))
+    if len(matches)==1:
+        line_end=out.find("\\n",matches[0].start())
+        if line_end<0:
+            raise ValueError("Definition 6.30 has no line break")
+        note=f"% {PREFIX}:definition-6-30\\n"+todos[1]+"\\n"
+        out=out[:line_end+1]+note+out[line_end+1:]
+        found.append("definition-6-30")
+    else:
+        found.append(f"OPTIONAL Definition 6.30 not placed: {len(matches)} matches")
     if remove_only_managed(out)!=original_prose:
         raise ValueError("Unintended mathematical/prose changes detected")
     return out,found
