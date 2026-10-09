@@ -48,13 +48,8 @@ theorem representedClosure_subset_prefixesOf
   | prefix _ hle ih =>
       obtain ⟨v, hv, hy⟩ := ih
       exact ⟨v, hv, hle.trans hy⟩
-  | meet _ _ hc hxmem _ =>
-      exact meet_mem_prefixesOf hxmem
-        (by
-          -- The meet-closure proof only needs a first original, but the
-          -- other operand must be seen to lie in the same root component.
-          assumption)
-        hc
+  | meet _ _ hc ihx ihy =>
+      exact meet_mem_prefixesOf ihx ihy hc
 
 /-- A nontrivial meet of any two nodes obtained by arbitrarily many
 closure operations is already the meet of two members of V. -/
