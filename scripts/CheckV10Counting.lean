@@ -61,6 +61,7 @@ import SuccessorTree.V10.CanonicalCoverS3
 import SuccessorTree.V10.CanonicalStepUniqueness
 import SuccessorTree.V10.CanonicalRawSTree
 import SuccessorTree.V10.TerminalLetterReplica
+import SuccessorTree.V10.TerminalLetterAge
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -410,3 +411,12 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.terminalLetterReplicaE_inside
 #print axioms SuccessorTree.V10.terminalLetterReplica_freeLevel
 #print axioms SuccessorTree.V10.terminalLetterReplica_type_eq
+
+-- The published Sigma alphabet is admissible: every terminal letter has a forbidden-free witness.
+#print axioms SuccessorTree.V10.terminalLetterProject_address
+#print axioms SuccessorTree.V10.terminalLetterProject_strictMono_on
+#print axioms SuccessorTree.V10.irreducible_terminalLetter_copy_avoids_filler
+#print axioms SuccessorTree.V10.nonNeutral_terminalLetter_singleton_avoids_filler
+#print axioms SuccessorTree.V10.terminalLetterReplica_copy_projects
+#print axioms SuccessorTree.V10.NormalizedForbidden.terminalLetter_preserves_avoidance
+#print axioms SuccessorTree.V10.terminalLetter_is_admissible

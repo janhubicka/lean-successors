@@ -152,3 +152,5 @@ import SuccessorTree.V10.CanonicalStepUniqueness
 import SuccessorTree.V10.CanonicalRawSTree
 
 import SuccessorTree.V10.TerminalLetterReplica
+
+import SuccessorTree.V10.TerminalLetterAge
