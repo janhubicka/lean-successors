@@ -441,3 +441,9 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.deleteAtE_downward
 #print axioms SuccessorTree.V10.deleteAtE_spaced
 #print axioms SuccessorTree.V10.deleteAtE_inside
+
+-- Strict guard in Lemma 6.34 is sharp: weak fl(m+1) <= m fails.
+#print axioms SuccessorTree.V10.deletionBoundaryE_spaced
+#print axioms SuccessorTree.V10.deletionBoundaryE_downward
+#print axioms SuccessorTree.V10.deletionBoundaryE_freeCut
+#print axioms SuccessorTree.V10.deletionBoundaryE_weak_guard_fails
