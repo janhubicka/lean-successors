@@ -22,6 +22,7 @@ import SuccessorTree.V10.RelocationOrder
 import SuccessorTree.V10.FiniteMeetBudget
 import SuccessorTree.V10.HAgeProjection
 import SuccessorTree.V10.SignatureSplice
+import SuccessorTree.V10.SignatureProfiles
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -125,3 +126,6 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.signatureSplice_binary
 #print axioms SuccessorTree.V10.signatureSplice_singleton
 #print axioms SuccessorTree.V10.signatureSplice_inducedCopy
+
+#print axioms SuccessorTree.V10.signatureSplice_in_laterDomain
+#print axioms SuccessorTree.V10.signatureSplice_cross_of_sharedProfiles
