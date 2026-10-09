@@ -274,3 +274,7 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.irreducible_replica_copy_avoids_filler
 #print axioms SuccessorTree.V10.replica_copy_projects_to_original
 #print axioms SuccessorTree.V10.prefixReplicaL_preserves_avoidance_nontrivial
+
+-- Singleton case: the isolated filler has the allowed neutral type.
+#print axioms SuccessorTree.V10.nonNeutral_singleton_replica_copy_avoids_filler
+#print axioms SuccessorTree.V10.prefixReplicaL_preserves_avoidance_singleton
