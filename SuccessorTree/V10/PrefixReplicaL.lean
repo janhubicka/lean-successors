@@ -1,5 +1,6 @@
 import SuccessorTree.V10.PrefixReplicaE
 import SuccessorTree.V10.RelationalTypeReduct
+import SuccessorTree.V10.PartialTypeRestriction
 import Mathlib.Tactic
 
 /-!
