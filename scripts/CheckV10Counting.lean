@@ -36,6 +36,7 @@ import SuccessorTree.V10.CommonSocleType
 import SuccessorTree.V10.FirstFullPrefix
 import SuccessorTree.V10.RawTypeMeet
 import SuccessorTree.V10.RawMeetLevel
+import SuccessorTree.V10.RawPrefixOrder
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -226,3 +227,15 @@ set_option autoImplicit false
 
 -- A genuine first binary difference fixes the universal raw L+ meet level.
 #print axioms SuccessorTree.V10.rawPartialType_meet_level_of_first_binary_difference
+
+-- Exact raw L+ prefix-order laws, unique ancestors, and forest geometry.
+#print axioms SuccessorTree.V10.PartialTypeWithE.restrict_self
+#print axioms SuccessorTree.V10.PartialTypeWithE.restrict_trans
+#print axioms SuccessorTree.V10.rawPartialTypePrefix_refl
+#print axioms SuccessorTree.V10.rawPartialTypePrefix_trans
+#print axioms SuccessorTree.V10.rawPartialTypePrefix_antisymm
+#print axioms SuccessorTree.V10.rawPartialTypePrefix_level_le
+#print axioms SuccessorTree.V10.rawPartialTypePrefix_eq_of_same_level
+#print axioms SuccessorTree.V10.rawPartialTypeAncestor_le
+#print axioms SuccessorTree.V10.rawPartialType_lower_linear
+#print axioms SuccessorTree.V10.rawPartialType_ancestor_exists
