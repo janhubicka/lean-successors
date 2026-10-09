@@ -51,6 +51,7 @@ import SuccessorTree.V10.CanonicalBinary
 import SuccessorTree.V10.CanonicalInsertionParameter
 import SuccessorTree.V10.CanonicalCrossing
 import SuccessorTree.V10.CompleteNextColumn
+import SuccessorTree.V10.ExtractSuccessorComponents
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -348,3 +349,9 @@ set_option autoImplicit false
 
 -- Full L+ successor uniqueness from exact predecessor and new atomic column.
 #print axioms SuccessorTree.V10.completeNextColumn_determines_type
+
+-- Literal T, P, Sigma-letter extraction from a genuine one-level L+ type.
+#print axioms SuccessorTree.V10.partialTypeAt_lastOrdinaryParameter
+#print axioms SuccessorTree.V10.partialTypeAt_predecessor
+#print axioms SuccessorTree.V10.terminalLetter_has_E
+#print axioms SuccessorTree.V10.extracted_nonempty_parameter_is_canonical
