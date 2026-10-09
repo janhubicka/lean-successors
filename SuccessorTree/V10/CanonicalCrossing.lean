@@ -98,7 +98,7 @@ theorem E_eq_decide_freeLevel
 /-- Complete reconstruction of the forward directed cross-tuple:
 copy the canonical parameter below the free cut and put zero
 above it. -/
-def canonicalCrossForward
+noncomputable def canonicalCrossForward
     {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (v u : Nat) (r : Fin db) : Bool :=
@@ -108,7 +108,7 @@ def canonicalCrossForward
   else false
 
 /-- Complete reconstruction of the backward directed cross-tuple. -/
-def canonicalCrossBackward
+noncomputable def canonicalCrossBackward
     {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (v u : Nat) (r : Fin db) : Bool :=
