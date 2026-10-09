@@ -63,6 +63,7 @@ import SuccessorTree.V10.CanonicalRawSTree
 import SuccessorTree.V10.TerminalLetterReplica
 import SuccessorTree.V10.TerminalLetterAge
 import SuccessorTree.V10.AdmissibleSigmaSTree
+import SuccessorTree.V10.ConcreteShapeMonoidM1
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -426,3 +427,9 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.canonicalKptStep_letter_admissible
 #print axioms SuccessorTree.V10.admissibleKptSTree_succ_eq
 #print axioms SuccessorTree.V10.admissibleKptSTree
+
+-- Concrete normalized Kpt monoid M1: id, composition and pointwise frozen fusion.
+#print axioms SuccessorTree.V10.admissibleKptM1_identity
+#print axioms SuccessorTree.V10.admissibleKptM1_composition
+#print axioms SuccessorTree.V10.admissibleKptM1_fusion
+#print axioms SuccessorTree.V10.admissibleKptM1
