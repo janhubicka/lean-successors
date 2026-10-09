@@ -150,7 +150,10 @@ def terminalLetterReplicaPartial
       · exfalso
         simpa [h1, terminalLetterReplicaL] using hrel
 
-theorem terminalLetterReplica_freeLevel :
+theorem terminalLetterReplica_freeLevel
+    {db du dd : Nat}
+    (A : EnumeratedPartialStructure db du dd)
+    (ell v : Nat) :
     (terminalLetterReplicaPartial A ell v).freeLevel 2 = 1 := by
   have hCut : IsFreeCut terminalLetterReplicaE 2 1 := by
     constructor
