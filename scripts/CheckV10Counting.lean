@@ -64,6 +64,7 @@ import SuccessorTree.V10.TerminalLetterReplica
 import SuccessorTree.V10.TerminalLetterAge
 import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.ConcreteKptM1
+import SuccessorTree.V10.EndDuplicateE
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -434,3 +435,12 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.kptM_fusion_mem
 #print axioms SuccessorTree.V10.kptM1
 #print axioms SuccessorTree.V10.kptM_fixes_roots
+
+-- Exact end-duplication E-socle and free cut, first step toward M3.
+#print axioms SuccessorTree.V10.duplicateEndE_old
+#print axioms SuccessorTree.V10.duplicateEndE_new_iff
+#print axioms SuccessorTree.V10.duplicateEndE_spaced
+#print axioms SuccessorTree.V10.duplicateEndE_downward
+#print axioms SuccessorTree.V10.duplicateEndE_inside
+#print axioms SuccessorTree.V10.duplicateEndE_new_freeCut
+#print axioms SuccessorTree.V10.duplicateEndE_new_freeLevel
