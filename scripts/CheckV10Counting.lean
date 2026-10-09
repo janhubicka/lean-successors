@@ -40,6 +40,7 @@ import SuccessorTree.V10.RawPrefixOrder
 import SuccessorTree.V10.PrefixReplicaE
 import SuccessorTree.V10.PrefixReplicaL
 import SuccessorTree.V10.PrefixReplicaPartial
+import SuccessorTree.V10.PrefixReplicaAge
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -266,3 +267,10 @@ set_option autoImplicit false
 -- Actual one-filler partial structure satisfies E1-E3 and realizes shortened type.
 #print axioms SuccessorTree.V10.prefixReplicaPartialStructure_freeLevel
 #print axioms SuccessorTree.V10.prefixReplicaPartialStructure_type_eq
+
+-- Ordered induced forbidden-copy preservation under one-filler replica.
+#print axioms SuccessorTree.V10.prefixReplicaProject_address
+#print axioms SuccessorTree.V10.prefixReplicaProject_strictMono_on
+#print axioms SuccessorTree.V10.irreducible_replica_copy_avoids_filler
+#print axioms SuccessorTree.V10.replica_copy_projects_to_original
+#print axioms SuccessorTree.V10.prefixReplicaL_preserves_avoidance_nontrivial
