@@ -98,18 +98,76 @@ encoding (including the split off-diagonal/diagonal
 binary relations and uniform nullary interpretation)
 and the literal finite language $L$ of the paper.
 
-\textbf{v10 validation: the shape-map monoid -- M1 in progress;
-M2/M3 OPEN.} The chosen family consists of all
+\textbf{v10 validation: shape maps -- M1 GREEN; M2/M3 OPEN.} The chosen family consists of all
 shape-preserving maps satisfying $\widetilde F(0)=0$.
 Identity, composition and pointwise fusion preserve
 this condition; such maps fix each level-zero
 node, yielding (E1). These M1 facts are formalised
-in \texttt{ConcreteKptM1.lean}, subject to the current
-exact-head Lean CI. They do \emph{not} establish
-Proposition~6.39. The level-removal lemma 6.34,
-boring-extension lemma 6.36, type-compatibility
-preservation, and concrete duplication/decomposition
-needed for (M2)--(M3) still require separate checking.}
+in \texttt{ConcreteKptM1.lean}, with full and focused
+Lean CI both successful at PR~149. They do \emph{not} establish
+Proposition~6.39. Towards (M3), the proposed
+terminal one-vertex duplication in
+\texttt{EndDuplicateE.lean},
+\texttt{EndDuplicateL.lean} and
+\texttt{EndDuplicatePartial.lean} copies the
+full singleton type and all directed relations from
+the earlier original to its initial $E$-socle and
+leaves every other old--new relation empty.
+The new $E$-column is exactly the original's
+free cut; the construction preserves spacing,
+downward closure and E3. The ordered-copy
+projection in \texttt{EndDuplicateAge.lean}
+proves that no irreducible forbidden structure
+is created, including forbidden singletons.
+The full local duplication package is
+\emph{focused Lean audited} through PR~153;
+its full Lean build must still be checked.
+This is a local end-extension result, not M3.
+Constructing one such terminal duplicate is
+still weaker than (M3), which requires a
+single shape-preserving one-level skip map
+simultaneously realizing the prescribed
+duplications at all compatible nodes.
+Towards (M2), the local deletion map removing
+a numbered vertex $m$ and shifting all later
+vertices has been formalised in
+\texttt{LevelRemovalE.lean} and
+\texttt{LevelRemovalPartial.lean} (review
+PRs 154--155). The initial E-spacing lemma
+in PR~154 passed the focused Lean audit;
+the guarded deletion preserving the whole
+forbidden-free age is focused-kernel-checked
+(PR~155), while the exact change of every
+surviving vertex's E-free level in
+\texttt{LevelRemovalFreeCut.lean} is under
+exact-head CI in PR~156. The transported
+cut is
+$\mathrm{fl}_{A\setminus\{m\}}(v)
+=\mathrm{fl}_{A}(\delta_m(v))-
+\mathbf 1_{\{m<\mathrm{fl}_{A}(\delta_m(v))\}}$,
+where $\delta_m(v)=v$ below $m$ and $v+1$
+at or above $m$.
+The only new spacing obstruction occurs when
+an old $E$-pair $(m-1,m+1)$ becomes
+consecutive; the \emph{strict}
+$\mathrm{fl}(m+1)<m$ guard of Lemma~6.34
+rules this out. The strictness is not a
+stylistic convention: a downward-closed
+spaced $E$-relation with
+$\mathrm{fl}(m+1)=m$ becomes invalid
+after deletion, as demonstrated by
+\texttt{deletionBoundaryE_weak_guard_fails}
+(current axiom audit pending).
+All induced $L$-atoms,
+downward $E$-closure, E3 and forbidden-age
+avoidance are preserved. These are local
+finite-structure calculations, not yet the
+uniform shape-preserving deletion of all
+Kpt nodes in Lemma~6.34.
+The global boring-extension lemma 6.36,
+type-compatibility preservation, and the
+full (M2)--(M3) factorization and
+duplication arguments remain open.}
 
 % =====================================================================
 % Proposed consolidated TODO at Definition 6.45 / Observation 6.46
