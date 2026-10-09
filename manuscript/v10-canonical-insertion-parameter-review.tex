@@ -1,0 +1,33 @@
+% Successor v10 review-only annotation, 9 October 2026.
+% Candidate consolidated note around Definition 6.30 and
+% Proposition 6.32. Do not modify the author's four mathematical fixes.
+%
+\todo[inline]{\textbf{v10 validation (canonical crossing parameter).}
+For a partial structure satisfying the literal $E$-spacing
+and downward-closure axioms, a newly inserted ordinary
+vertex $\ell$ has a uniquely determined free level
+$f=\mathrm{fl}(\ell)$. Its canonical parameter list is
+empty exactly for $f=0$, and otherwise consists of the
+single full partial type of that vertex over its
+$E$-socle of length $f$. Whenever $f>0$, the spacing
+axiom implies the \emph{strict} inequality $f<\ell$,
+which is precisely the parameter-level requirement
+in (S1). The resulting parameter is an admissible
+partial type whenever the ambient structure avoids
+the forbidden family. See
+\texttt{CanonicalInsertionParameter.lean}
+(pending exact-head Lean verification).
+This is the canonical-decomposition \emph{input}
+to Definition~6.30, not yet a proof of the complete
+forward successor operation: its no-new-tuples
+construction, the equality and uniqueness of
+successor representations (S2), and the realization
+of every cover (S3) remain to be checked in the
+actual normalized $K^\mathcal F_{pt}$ instance.}
+%
+% Expected Lean endpoints:
+%  freeLevel_pos_lt_vertex
+%  EnumeratedPartialStructure.insertionParameter_none_iff
+%  EnumeratedPartialStructure.insertionParameter_some_iff
+%  EnumeratedPartialStructure.insertionParameter_level_lt
+%  EnumeratedPartialStructure.insertionParameter_admissible
