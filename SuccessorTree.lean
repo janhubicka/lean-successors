@@ -160,3 +160,5 @@ import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.ConcreteKptM1
 
 import SuccessorTree.V10.LevelRemovalE
+
+import SuccessorTree.V10.LevelRemovalPartial
