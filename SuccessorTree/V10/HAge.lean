@@ -37,6 +37,13 @@ def HCrossAllowed {n : Nat}
   (j < i ∧ m ≤ k ∧ q ≤ k ∧
       (m < q ∨ (m = q ∧ q = k)))
 
+/-- Explicit decidability of the arithmetic cross-generation gate. -/
+instance HCrossAllowed.decidable {n : Nat}
+    (k : Nat) (i j : Fin n) (q m : Nat) :
+    Decidable (HCrossAllowed k i j q m) := by
+  unfold HCrossAllowed
+  infer_instance
+
 theorem HCrossAllowed_swap {n : Nat}
     (k : Nat) (i j : Fin n) (q m : Nat) :
     HCrossAllowed k i j q m ↔
