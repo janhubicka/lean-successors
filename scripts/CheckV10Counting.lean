@@ -34,6 +34,7 @@ import SuccessorTree.V10.PartialTypeRestriction
 import SuccessorTree.V10.HELinkage
 import SuccessorTree.V10.CommonSocleType
 import SuccessorTree.V10.FirstFullPrefix
+import SuccessorTree.V10.RawTypeMeet
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -217,3 +218,7 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.maximal_common_fullPrefix_unique
 #print axioms SuccessorTree.V10.binary_witness_of_first_fullPrefix_difference
 #print axioms SuccessorTree.V10.exists_maximal_common_fullPrefix_with_binary_witness
+
+-- Universal property of actual complete L+ prefixes from a common ambient.
+#print axioms SuccessorTree.V10.rawPartialType_prefix_of_cut
+#print axioms SuccessorTree.V10.rawPartialTypes_have_greatest_common_prefix
