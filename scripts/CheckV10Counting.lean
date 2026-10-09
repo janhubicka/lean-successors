@@ -93,3 +93,6 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.linked_increasing_generation
 #print axioms SuccessorTree.V10.generation_rank_lower_bound
 #print axioms SuccessorTree.V10.ordered_linked_generation_rank
+#print axioms SuccessorTree.V10.relocated_lower_pairs
+#print axioms SuccessorTree.V10.relocated_lower_upper_pair
+#print axioms SuccessorTree.V10.relocated_singleton_data
