@@ -30,6 +30,7 @@ import SuccessorTree.V10.RelationalTypeReduct
 import SuccessorTree.V10.EFreeLevel
 import SuccessorTree.V10.PartialStructureE
 import SuccessorTree.V10.HExactE
+import SuccessorTree.V10.PartialTypeRestriction
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -187,3 +188,10 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.exactHEBool_odd_target_false
 #print axioms SuccessorTree.V10.exactHEBool_fake_freeLevel
 #print axioms SuccessorTree.V10.exactHEBool_odd_source_not_isolated
+
+-- Every L+ record component commutes with initial-socle restriction.
+#print axioms SuccessorTree.V10.prefixVertexIndex_lift
+#print axioms SuccessorTree.V10.RelationalPrefixType.eq_of_atoms
+#print axioms SuccessorTree.V10.RelationalPrefixType.ofAgeModel_restrict
+#print axioms SuccessorTree.V10.PartialTypeWithE.eq_of_atoms
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.partialTypeAt_restrict
