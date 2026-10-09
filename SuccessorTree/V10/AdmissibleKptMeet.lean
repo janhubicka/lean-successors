@@ -92,12 +92,14 @@ noncomputable def admissibleKptMeet
     {family : List (NormalizedForbidden db du dd)}
     (a b : AdmissibleKptNode family) :
     AdmissibleKptNode family :=
-  if h : ∃ c : AdmissibleKptNode family, c ≤ a ∧ c ≤ b then
-    ⟨rawMeet a.1 b.1,
-      admissibleRawType_of_prefix family a.2
-        (rawMeet_le_left a.1 b.1
-          (admissible_common_implies_raw_common a b h))⟩
-  else a
+  by
+    classical
+    exact if h : ∃ c : AdmissibleKptNode family, c ≤ a ∧ c ≤ b then
+      ⟨rawMeet a.1 b.1,
+        admissibleRawType_of_prefix family a.2
+          (rawMeet_le_left a.1 b.1
+            (admissible_common_implies_raw_common a b h))⟩
+    else a
 
 /-- The raw meet of two admissible nodes with a common predecessor
 is in the admissible family. Both lower-bound and greatest-bound
