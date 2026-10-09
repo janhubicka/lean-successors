@@ -29,6 +29,7 @@ import SuccessorTree.V10.AmbientSignature
 import SuccessorTree.V10.RelationalTypeReduct
 import SuccessorTree.V10.EFreeLevel
 import SuccessorTree.V10.PartialStructureE
+import SuccessorTree.V10.HExactE
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -169,3 +170,14 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.EnumeratedPartialStructure.partialTypeAt_no_reverseE
 #print axioms SuccessorTree.V10.EnumeratedPartialStructure.partialTypeAt_no_typeE_loop
 #print axioms SuccessorTree.V10.EnumeratedPartialStructure.freeLevel_firstMissing
+
+-- Exact global H-E formula: all source coordinates, fake vertices included.
+#print axioms SuccessorTree.V10.hPosition_injective_bounded
+#print axioms SuccessorTree.V10.exactHEBool_true_iff
+#print axioms SuccessorTree.V10.exactHEBool_at_real_iff
+#print axioms SuccessorTree.V10.exactHEBool_spaced
+#print axioms SuccessorTree.V10.exactHEBool_downward
+#print axioms SuccessorTree.V10.exactHEBool_freeLevel_eq_of_column
+#print axioms SuccessorTree.V10.exactHEBool_nonTop_freeLevel
+#print axioms SuccessorTree.V10.exactHEBool_top_freeLevel
+#print axioms SuccessorTree.V10.exactHEBool_initial_freeLevel
