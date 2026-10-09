@@ -89,7 +89,7 @@ theorem canonical_parameter_cut_unique
                 RawPartialTypeNode db du dd)] := by
           simpa [PartialTypeWithE.canonicalParameterRecord,
             hZeroF, hZeroG] using hList
-        exact (List.cons.injEq.mp hLists).1
+        simpa only [List.cons.injEq, and_true] using hLists
       exact congrArg Sigma.fst hEq
 
 /-- The complete canonical successor output is unique for
