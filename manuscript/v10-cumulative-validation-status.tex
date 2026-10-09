@@ -1,6 +1,6 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 9 October 2026. Source: lean-successors PRs #110--#134.
+% 9 October 2026. Source: lean-successors PRs #110--#148.
 %
 % DO NOT \input this file unchanged alongside older review fragments.
 % It is a SINGLE proposed replacement for overlapping review TODOs.
@@ -37,8 +37,10 @@
 %   PR #133: full and focused CI, binary diagonal normalization;
 %   PR #134: full and focused CI, canonical empty-or-singleton parameter.
 %   PR #135: full Lean CI, consolidated review-only source notes.
-%   CanonicalCrossing.lean (new continuation): theorem-axiom audit pending
-%   exact current head; it is NOT the complete successor operation.
+%   PRs #136--#148: all concrete S1--S3 components now green at
+%   their exact heads; latest admissible-Sigma STree PR #148 is
+%   fully green (full build 37990448142; focused 37990448207).
+%   Paper-language adapter and M1--M3 still remain open.
 %
 % =====================================================================
 % Proposed consolidated TODO after Definition 6.28 / Remark 6.29
@@ -69,80 +71,38 @@ monoid axioms in Proposition~6.32.}
 
 % =====================================================================
 % Proposed consolidated TODO at Definition 6.30 and Proposition 6.32
-\todo[inline]{\textbf{v10 review: actual successor operation -- OPEN.}
-Define the forward successor on the admissible
-$K^\mathcal F_{pt}$ family by the exact no-new-tuples
-construction, including the fresh ordinary vertex's
-binary/unary/diagonal relations, its auxiliary $E$-socle,
-and the distinguished type vertex's relations. The free
-level of the inserted ordinary vertex forces the
-parameter list to be empty for free level zero and
-otherwise to contain just its canonical partial type
-at that positive free level. The strict parameter-level
-bound follows from spacing, and is isolated in
-\texttt{CanonicalInsertionParameter.lean}
-(PR #134, full and focused CI checked).
-The no-new-tuples consequence of E3, including both directed
-orientations above the new vertex's free cut, is kernel-checked
-in \texttt{CanonicalCrossing.lean}. The exact one-level type is
-uniquely determined by its complete predecessor and the full
-new ordinary vertex column (\texttt{CompleteNextColumn.lean}).
-The predecessor, the canonical singleton parameter as an
-induced type, and the terminal level-one $\Sigma$-letter are
-extracted in \texttt{ExtractSuccessorComponents.lean}
-(subject to their exact-head CI audits). For two
-well-formed one-level records, equality of the predecessor,
-canonical free cut, shortened parameter and terminal letter
-gives equality of the full successor record once the
-E3 no-new-tuples conditions are imposed
-(\texttt{ParameterLetterUniqueness.lean}); the
-conditions for types actually extracted from partial
-structures are discharged in
-\texttt{ExtractedSuccessorS2.lean}
-(current focused Lean review, not yet a certified endpoint).
-For the actual empty-parameter branch $f=0$, the
-two-vertex terminal letter already contains the complete
-zero-level new-vertex record; it is not a second
-singleton parameter. The initial $E$ column uniquely
-determines $f$, and exact uniqueness with
-$\bar p=()$ or $\bar p=(S^+)$ of positive level
-is developed in \texttt{EmptyParameterS2.lean}
-(current exact-head CI pending).
-The precise admissible-vertex successor graph (predecessor,
-canonical parameter, terminal $\Sigma$-letter, prescribed free
-$E$-cut and no-new-$L$-tuples) is now encoded in
-\texttt{CanonicalStepGraph.lean}. Its cover and strict-parameter
-bound, a construction of canonical inputs from every forbidden-free
-ambient type and a decomposition of every admissible cover
-are under focused Lean audit in
-\texttt{CanonicalStepRealization.lean} and
-\texttt{CanonicalCoverS3.lean}. The input and output
-uniqueness of this graph are in
-\texttt{CanonicalStepUniqueness.lean}, also pending exact-head
-CI. The graph is then made into an Option-valued
-successor using its proved unique-output property, with
-all three S-tree axioms derived from the above
-lemmas in \texttt{CanonicalRawSTree.lean}
-(the exact-head Lean audit is pending).
-The provisional alphabet of \texttt{CanonicalRawSTree.lean}
-contains all raw two-vertex $L^+$-types, whereas the manuscript's
-$\Sigma$ requires admissibility. The terminal-letter replica
-constructed in \texttt{TerminalLetterReplica.lean} has just
-three ordinary vertices: a copy of the new vertex at $0$, an
-isolated filler at $1$, and the distinguished witness at $2$.
-Its unique $E$-pair is $(0,2)$, so the type at vertex $2$ has
-free level $1$ and agrees with the original terminal
-$\Sigma$-letter. The forbidden-free transfer in
-\texttt{TerminalLetterAge.lean} uses irreducibility and the
-allowed neutral singleton. The restricted operation in
-\texttt{AdmissibleSigmaSTree.lean} is intended to prove
-(S1)--(S3) for the paper's \emph{admissible} alphabet,
-without postulating those axioms. All three new modules and
-their dependent uniqueness proof remain subject to exact-head
-Lean verification; do not mark Proposition~6.32 green in
-advance. Once checked, still align the Boolean split-diagonal
-representation with the original language and begin the
-concrete monoid conditions (M1)--(M3).}
+\todo[inline]{\textbf{v10 review: normalized partial-type successor -- GREEN (S1)--(S3).}
+For the explicitly normalized finite unary/binary presentation of
+$K^\mathcal F_{pt}$, the partial successor has been constructed
+\emph{from its exact graph} in Lean, not assumed. The canonical
+parameter is empty when the new ordinary vertex has free $E$-level
+zero and otherwise is the singleton consisting of its induced
+partial type at a positive level. Its level is strictly below the
+predecessor. E3 forces both directed old--new binary relations at
+or above the free cut to be empty, while the parameter determines
+the smaller cross-relations. The predecessor, parameter and
+two-vertex terminal type determine the complete successor record,
+including $E$, unary, diagonal, binary and absent tuples.
+The exact graph is functional and uniquely decomposable, every
+admissible cover has a realization, and the Option-valued successor
+satisfies (S1)--(S3). In particular the terminal $\Sigma$-letter is
+an \emph{admissible} level-one type, by the explicit three-vertex
+letter replica and forbidden-copy preservation
+(\texttt{TerminalLetterReplica.lean},
+\texttt{TerminalLetterAge.lean}). These results are kernel-checked
+and axiom-audited at PR~\#148, commit
+\texttt{7f43c4bae06a6eea613bea8541ad50c25e2954e9}
+(\texttt{AdmissibleSigmaSTree.lean}).
+
+This certifies the \emph{S-tree portion} of Proposition~6.32
+for the normalized language. It does not yet identify the split
+off-diagonal/diagonal Boolean coordinates and uniformly fixed
+nullary symbols with the paper's literal signature. The
+concrete root-preserving shape-map monoid $M$ and its
+(M1)--(M3) requirements must be checked independently, in
+particular the level-removal, boring-extension and
+age-change lemmas. Do not extend this green mark to
+Proposition~6.39 or Theorem~6.26.}
 
 % =====================================================================
 % Proposed consolidated TODO at Definition 6.45 / Observation 6.46
