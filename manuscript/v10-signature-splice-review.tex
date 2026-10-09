@@ -1,0 +1,57 @@
+% successor-v10: review-only TeX fragment, 9 October 2026.
+% This is NOT included automatically in any manuscript file in this repository.
+% Preserve the author's four separate mathematical repairs and all existing
+% v10 TODOs. Replace (rather than duplicate) the signature-uniqueness review
+% TODO attached to Observation 6.52 when preparing the next cumulative v10.
+%
+% Suggested replacement TODO at Observation 6.52:
+\todo[inline]{\textbf{v10 validation (signature splice).}
+The finite-model splicing step is formalised in
+\texttt{SuccessorTree/V10/SignatureSplice.lean}: equal signatures determine
+the same initial segment of lower forbidden vertices; using the earlier
+witness below the cut and the later witness above the cut gives a strictly
+increasing copy avoiding the later tested level.  All directed binary
+relations (including both orientations and absent tuples), unary predicates
+and diagonal binary tuples are preserved, provided the lower--upper
+relations are determined by the complete prescribed upper types
+\emph{through the smaller tested level plus one}.  This last condition
+remains a separate proof obligation: identify the type of each upper
+age-test witness vertex through $\ell+1$ with its chosen original
+$\mathrm{type}_{C^+}(v)\restriction(\ell+1)$ and verify the common initial
+$L$-socle.  The age-test witness must contain the entire initial socle, so the
+hybrid lower vertices actually lie in its domain; this reduction is
+proved by \texttt{signatureSplice\_in\_laterDomain}.  The two required
+cross-relation equalities follow from shared complete outgoing and
+incoming original profiles, as proved by
+\texttt{signatureSplice\_cross\_of\_sharedProfiles}. Alternatively, the exact outgoing and incoming cross equalities follow from
+equality of the complete binary/unary/diagonal type records through
+$\ell+1$, by \texttt{signatureSplice\_cross\_of\_fullTypePrefixes}.
+Identifying those records with the actual $K^\mathcal F_{pt}$ types,
+including $E$-socle truncation and the common initial $L$-structure,
+remains open. The
+auxiliary $E$-relation is not part of the forbidden $L$-copy.  The complete conditional contradiction, including actual witness
+membership, the common lower $L$-socle and the no-forbidden-copy
+hypothesis, is assembled by
+\texttt{signature\_collision\_impossible\_of\_common\_full\_types}.
+Do not mark Observation~6.52, Lemma~6.53 or
+Proposition~6.44 fully validated until this concrete
+partial-type-to-age-test interface is supplied.}
+
+% Theorems audited by scripts/CheckV10Counting.lean once the corresponding
+% CI head is green:
+%   signatureSplice_order_avoids
+%   signatureSplice_binary
+%   signatureSplice_singleton
+%   signatureSplice_inducedCopy
+%
+% Original-v10 TeX main source is unavailable in the lean-successors repo.
+% Therefore this fragment is deliberately not a pretend cleanly-applying
+% patch against main.tex. Keep it for the next author-supplied v10 archive.
+
+%   signatureSplice_in_laterDomain
+%   signatureSplice_cross_of_sharedProfiles
+
+%   fullAtomicTypePrefix_cross
+%   signatureSplice_cross_of_fullTypePrefixes
+
+%   signature_collision_impossible_of_common_full_types

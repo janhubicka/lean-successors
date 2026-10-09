@@ -21,6 +21,10 @@ import SuccessorTree.V10.RelocationIrreducible
 import SuccessorTree.V10.RelocationOrder
 import SuccessorTree.V10.FiniteMeetBudget
 import SuccessorTree.V10.HAgeProjection
+import SuccessorTree.V10.SignatureSplice
+import SuccessorTree.V10.SignatureProfiles
+import SuccessorTree.V10.SignatureTypePrefix
+import SuccessorTree.V10.SignatureCollision
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -117,3 +121,18 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.every_irreducible_H_vertex_is_real
 #print axioms SuccessorTree.V10.irreducible_H_copy_projects_to_base
 #print axioms SuccessorTree.V10.ordered_irreducible_H_copy_projects_to_base
+
+-- Exact conditional ordered splicing of two matching age-change signatures.
+-- These check the complete atom-preserving construction, not the KFpt adapter.
+#print axioms SuccessorTree.V10.signatureSplice_order_avoids
+#print axioms SuccessorTree.V10.signatureSplice_binary
+#print axioms SuccessorTree.V10.signatureSplice_singleton
+#print axioms SuccessorTree.V10.signatureSplice_inducedCopy
+
+#print axioms SuccessorTree.V10.signatureSplice_in_laterDomain
+#print axioms SuccessorTree.V10.signatureSplice_cross_of_sharedProfiles
+
+#print axioms SuccessorTree.V10.fullAtomicTypePrefix_cross
+#print axioms SuccessorTree.V10.signatureSplice_cross_of_fullTypePrefixes
+
+#print axioms SuccessorTree.V10.signature_collision_impossible_of_common_full_types
