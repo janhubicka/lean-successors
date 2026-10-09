@@ -108,3 +108,8 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.relocated_lower_order
 #print axioms SuccessorTree.V10.relocated_lower_before_upper
 #print axioms SuccessorTree.V10.relocated_lower_avoids_old_last
+#print axioms SuccessorTree.V10.poolMeetLevelBudget_card_le
+#print axioms SuccessorTree.V10.original_level_mem_budget
+#print axioms SuccessorTree.V10.original_pair_meet_level_mem_budget
+#print axioms SuccessorTree.V10.closure_nontrivial_meet_level_mem_budget
+#print axioms SuccessorTree.V10.selectedLevels_card_le_quadratic
