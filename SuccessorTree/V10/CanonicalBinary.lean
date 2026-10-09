@@ -80,13 +80,13 @@ theorem AgeTestModel.realizes_canonicalBinary_iff
   · rintro ⟨hMono, hDomain, hB, hU, hD⟩
     refine ⟨hMono, hDomain, ?_, hU, hD⟩
     intro a b hab t
-    have hDistinct : f a ≠ f b := hMono.injective hab
+    have hDistinct : f a ≠ f b := fun heq => hab (hMono.injective heq)
     simpa [AgeTestModel.canonicalBinary, hDistinct]
       using hB a b hab t
   · rintro ⟨hMono, hDomain, hB, hU, hD⟩
     refine ⟨hMono, hDomain, ?_, hU, hD⟩
     intro a b hab t
-    have hDistinct : f a ≠ f b := hMono.injective hab
+    have hDistinct : f a ≠ f b := fun heq => hab (hMono.injective heq)
     simpa [AgeTestModel.canonicalBinary, hDistinct]
       using hB a b hab t
 
@@ -142,9 +142,9 @@ theorem EnumeratedPartialStructure.canonicalBinary_type_diagonal
     (x : Option (Fin cut)) (r : Fin db) :
     (A.canonicalBinary.partialTypeAt cut v).lReduct.binary x x r =
       false := by
-  simp [EnumeratedPartialStructure.partialTypeAt,
-    RelationalPrefixType.ofAgeModel,
-    AgeTestModel.canonicalBinary]
+  change (A.L.canonicalBinary).binary
+      (prefixVertexIndex v x) (prefixVertexIndex v x) r = false
+  exact AgeTestModel.canonicalBinary_self A.L (prefixVertexIndex v x) r
 
 /-- Every forbidden pattern in the normalized family is avoided
 by A iff it is avoided by the canonical off-diagonal L-reduct. -/
