@@ -127,7 +127,7 @@ theorem full_parameter_eq_of_canonical_option
       simp only [PartialTypeWithE.canonicalParameterRecord,
         if_neg h] at hh
       exact Option.some.inj hh
-    exact congrArg Sigma.snd hSome
+    simpa only [Sigma.mk.inj_iff, heq_eq_eq, true_and] using hSome
 
 /-- The free cut of a new ordinary vertex is uniquely determined
 by its complete E column. Positive and empty parameter cases
@@ -143,13 +143,13 @@ theorem validNewColumn_freeCut_unique
   have hCases : f < g ∨ g < f := by omega
   rcases hCases with hfg | hgf
   · let i : Fin ell := ⟨f, by omega⟩
-    have hh := (hF.oldToNewE i).trans (hG.oldToNewE i).symm
+    have hh := (hF.oldToNewE i).symm.trans (hG.oldToNewE i)
     have hfFalse : decide (i.val < f) = false := by simp [i]
     have hgTrue : decide (i.val < g) = true := by simp [i, hfg]
     rw [hfFalse, hgTrue] at hh
     contradiction
   · let i : Fin ell := ⟨g, by omega⟩
-    have hh := (hF.oldToNewE i).trans (hG.oldToNewE i).symm
+    have hh := (hF.oldToNewE i).symm.trans (hG.oldToNewE i)
     have hfTrue : decide (i.val < f) = true := by simp [i, hgf]
     have hgFalse : decide (i.val < g) = false := by simp [i]
     rw [hfTrue, hgFalse] at hh
