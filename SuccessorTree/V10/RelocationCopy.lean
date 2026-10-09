@@ -111,21 +111,46 @@ theorem mixedBinary_eq_after_lower_relocation
             (hUpperAfter b a) (hRank b) (hCrossLinked b a) t).2
       | inr b => rfl
 
-/-- Unary and diagonal atomic data are preserved because the lower
-vertex keeps its first index and upper vertices remain unchanged.
-This statement is independent of the number of forbidden vertices. -/
-def mixedSingleton {n d r s : Nat}
-    (base : Fin n → Fin d → Bool) (upper : Fin s → Fin d → Bool)
-    (lowerFirst : Fin r → Fin n) :
+/-- Unary data on the lower part are copied from their base first index;
+on the upper part they are those of the hypothetical forbidden witness. -/
+def mixedUnary {n d r s : Nat}
+    (U : Fin n → Fin d → Bool)
+    (upperUnary : Fin s → Fin d → Bool)
+    (lowerFirst : Fin r → Fin n)
+    (lowerGeneration : Fin r → Nat) :
     Sum (Fin r) (Fin s) → Fin d → Bool
-  | .inl a, t => base (lowerFirst a) t
-  | .inr b, t => upper b t
+  | .inl a, t => HUnary U (.real (lowerFirst a) (lowerGeneration a)) t
+  | .inr b, t => upperUnary b t
 
-theorem mixedSingleton_unchanged {n d r s : Nat}
-    (base : Fin n → Fin d → Bool) (upper : Fin s → Fin d → Bool)
-    (lowerFirst : Fin r → Fin n) (x : Sum (Fin r) (Fin s))
-    (t : Fin d) :
-    mixedSingleton base upper lowerFirst x t =
-      mixedSingleton base upper lowerFirst x t := rfl
+/-- Every unary atomic relation survives lower-vertex relocation. -/
+theorem mixedUnary_eq_after_lower_relocation {n d r s : Nat}
+    (U : Fin n → Fin d → Bool)
+    (upperUnary : Fin s → Fin d → Bool)
+    (lowerFirst : Fin r → Fin n) (lowerGeneration : Fin r → Nat)
+    (x : Sum (Fin r) (Fin s)) (t : Fin d) :
+    mixedUnary U upperUnary lowerFirst lowerGeneration x t =
+      mixedUnary U upperUnary lowerFirst (fun a => a.val) x t := by
+  cases x <;> rfl
+
+/-- Diagonal binary facts are also copied from the first index of a real
+vertex; they need not agree with any off-diagonal relation. -/
+def mixedDiagonal {n d r s : Nat}
+    (D : Fin n → Fin d → Bool)
+    (upperDiagonal : Fin s → Fin d → Bool)
+    (lowerFirst : Fin r → Fin n)
+    (lowerGeneration : Fin r → Nat) :
+    Sum (Fin r) (Fin s) → Fin d → Bool
+  | .inl a, t => HDiagonal D (.real (lowerFirst a) (lowerGeneration a)) t
+  | .inr b, t => upperDiagonal b t
+
+/-- Every diagonal binary atomic fact survives lower relocation. -/
+theorem mixedDiagonal_eq_after_lower_relocation {n d r s : Nat}
+    (D : Fin n → Fin d → Bool)
+    (upperDiagonal : Fin s → Fin d → Bool)
+    (lowerFirst : Fin r → Fin n) (lowerGeneration : Fin r → Nat)
+    (x : Sum (Fin r) (Fin s)) (t : Fin d) :
+    mixedDiagonal D upperDiagonal lowerFirst lowerGeneration x t =
+      mixedDiagonal D upperDiagonal lowerFirst (fun a => a.val) x t := by
+  cases x <;> rfl
 
 end SuccessorTree.V10
