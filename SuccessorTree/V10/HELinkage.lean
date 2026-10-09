@@ -39,8 +39,8 @@ theorem exactHEBool_of_linked_real_positions
   have hij : i < j :=
     linked_firstIndex_lt_of_position_lt B k i j q m
       hLinked hOrder
-  obtain ⟨_, hq, hm, hallowed⟩ | ⟨hji, _, _, _⟩ :=
-    HLinked_gate B k i j q m hLinked
+  rcases HLinked_gate B k i j q m hLinked with
+    ⟨_, hq, hm, hallowed⟩ | ⟨hji, _, _, _⟩
   · exact (exactHEBool_at_real_iff k j.val m
       (hPosition k i.val q) hm).2
       (generatedE_of_allowedPair k i.val j.val q m
