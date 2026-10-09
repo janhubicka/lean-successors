@@ -1,0 +1,50 @@
+% Successor-v10 E/free-level review notes, 9 October 2026.
+% These are two candidate additions to the author's existing cumulative
+% annotated v10 source. They are NOT automatically inserted in main.tex
+% and do not alter any of the four reconstructed mathematical repairs.
+% Before applying, compare with existing Def. 6.28 / Obs. 6.46 TODOs and
+% consolidate rather than creating duplicate notes.
+%
+% Candidate TODO immediately after Definition 6.28:
+\todo[inline]{\textbf{v10 validation (free-level existence).}
+The first two partial-structure axioms already determine the free level:
+spacing gives $E(v,v)$ false, and downward closure implies that each
+$E$-column is an initial segment.  The resulting first missing
+coordinate exists uniquely, is at most $v$, and satisfies
+$E(u,v)\Leftrightarrow u<\mathrm{fl}(v)$.  This is proved, not
+assumed, in \texttt{SuccessorTree/V10/EFreeLevel.lean}.
+In the explicit Boolean presentation of Definition~6.28,
+\texttt{PartialStructureE.lean} also checks that
+$\operatorname{type}_{A^+}(v)$ has $E(i,t)$ exactly for
+$i<\mathrm{fl}(v)$ and no reverse or diagonal $E$-pair, while
+its $L$-reduct is the induced type with vertex $v$ renamed to $t$.
+Do not infer from these structural facts alone that the concrete
+$K^\mathcal F_{pt}$ successor operation or the forbidden-free age
+has already been formalised.}
+%
+% Candidate TODO after the E-calculation in Observation 6.46:
+\todo[inline]{\textbf{v10 validation (H free-level interface).}
+The general first-missing-$E$ theorem is established under the literal
+partial-structure axioms.  To apply it to $H^+$, identify the actual
+$E_{H^+}$ exactly with the numerically generated predicate from
+\texttt{SocleE.lean} (including its fake-vertex incidences), and verify
+the exact directed-binary, unary and diagonal $L$-tuples.
+The formulas in Observation~6.46 then give the canonical free levels
+without assuming a separate free-level map. The equality of the
+complete partial-type records, including all $E$ data, is still
+required for the meet calculation in Lemma~6.49.}
+%
+% Endpoints audited in PR #117 (once its exact head is green):
+%   e_iff_lt_freeCut
+%   freeCut_unique
+%   exists_freeCut
+%   existsUnique_freeCut
+%   canonicalFreeLevel_isFreeCut
+%   canonicalFreeLevel_le
+%   e_iff_lt_canonicalFreeLevel
+%   EnumeratedPartialStructure.E_iff_freeLevel
+%   EnumeratedPartialStructure.partialTypeAt_lReduct
+%   EnumeratedPartialStructure.partialTypeAt_fullESocle
+%   EnumeratedPartialStructure.partialTypeAt_no_reverseE
+%   EnumeratedPartialStructure.partialTypeAt_no_typeE_loop
+%   EnumeratedPartialStructure.freeLevel_firstMissing
