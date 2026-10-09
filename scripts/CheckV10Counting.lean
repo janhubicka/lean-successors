@@ -63,6 +63,7 @@ import SuccessorTree.V10.CanonicalRawSTree
 import SuccessorTree.V10.TerminalLetterReplica
 import SuccessorTree.V10.TerminalLetterAge
 import SuccessorTree.V10.AdmissibleSigmaSTree
+import SuccessorTree.V10.RootFixingMonoidM1
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -426,3 +427,10 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.canonicalKptStep_letter_admissible
 #print axioms SuccessorTree.V10.admissibleKptSTree_succ_eq
 #print axioms SuccessorTree.V10.admissibleKptSTree
+
+-- Exact Section 6.3.2 root-fixed Kpt shape-map family: M1 without M2/M3.
+#print axioms SuccessorTree.V10.rootFixingKpt_iff_root_fixed
+#print axioms SuccessorTree.V10.rootFixingKpt_id_mem
+#print axioms SuccessorTree.V10.rootFixingKpt_comp_mem
+#print axioms SuccessorTree.V10.rootFixingKpt_fusion_mem
+#print axioms SuccessorTree.V10.rootFixingKpt_M1
