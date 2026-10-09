@@ -37,6 +37,7 @@ import SuccessorTree.V10.FirstFullPrefix
 import SuccessorTree.V10.RawTypeMeet
 import SuccessorTree.V10.RawMeetLevel
 import SuccessorTree.V10.RawPrefixOrder
+import SuccessorTree.V10.PrefixReplicaE
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -239,3 +240,13 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.rawPartialTypeAncestor_le
 #print axioms SuccessorTree.V10.rawPartialType_lower_linear
 #print axioms SuccessorTree.V10.rawPartialType_ancestor_exists
+
+-- One neutral filler suffices to realize any shorter E-socle with exact free cut.
+#print axioms SuccessorTree.V10.prefixReplicaE_old
+#print axioms SuccessorTree.V10.prefixReplicaE_last_iff
+#print axioms SuccessorTree.V10.prefixReplicaE_spaced
+#print axioms SuccessorTree.V10.prefixReplicaE_downward
+#print axioms SuccessorTree.V10.prefixReplicaE_last_freeCut
+#print axioms SuccessorTree.V10.prefixReplicaE_last_freeLevel
+#print axioms SuccessorTree.V10.prefixReplicaE_preserves_type_socle
+#print axioms SuccessorTree.V10.prefixReplicaE_preserves_old_socle
