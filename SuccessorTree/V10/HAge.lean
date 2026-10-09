@@ -184,4 +184,34 @@ theorem irreducible_pair_projects_to_base {n d : Nat}
   exact ⟨i, j, q, m, rfl, rfl, hij,
     HBinary_eq_base_of_link B k i j q m hlink⟩
 
+/-- The entire top-generation layer copies each *off-diagonal*
+directed binary relation, with no symmetry assumption on the base data. -/
+theorem HBinary_top_copy {n d : Nat}
+    (B : Fin n → Fin n → Fin d → Bool)
+    (k : Nat) (i j : Fin n) (hneq : i ≠ j) (r : Fin d) :
+    HBinary B k (.real i k) (.real j k) r = B i j r := by
+  have hgate : HCrossAllowed k i j k k := by
+    rcases lt_trichotomy i j with hij | heq | hji
+    · exact Or.inl ⟨hij, le_rfl, le_rfl, Or.inr ⟨rfl, rfl⟩⟩
+    · exact False.elim (hneq heq)
+    · exact Or.inr ⟨hji, le_rfl, le_rfl, Or.inr ⟨rfl, rfl⟩⟩
+  simp [HBinary, hgate]
+
+/-- Unary and diagonal tuples in the top-generation copy are inherited
+from the corresponding base singleton. -/
+@[simp] theorem HUnary_top_copy {n d : Nat}
+    (U : Fin n → Fin d → Bool) (i : Fin n) (k : Nat) (r : Fin d) :
+    HUnary U (.real i k) r = U i r := rfl
+
+@[simp] theorem HDiagonal_top_copy {n d : Nat}
+    (D : Fin n → Fin d → Bool) (i : Fin n) (k : Nat) (r : Fin d) :
+    HDiagonal D (.real i k) r = D i r := rfl
+
+/-- The numeric original-first-index order is preserved by the
+enumeration iota used in the manuscript. -/
+theorem hPosition_top_order
+    (k : Nat) (i j : Nat) (hij : i < j) :
+    hPosition k i k < hPosition k j k :=
+  hPosition_lt_of_block_lt k i j k k (Nat.le_refl k) hij
+
 end SuccessorTree.V10
