@@ -11,6 +11,7 @@ import SuccessorTree.V10.RecordBridge
 import SuccessorTree.V10.OriginalPool
 import SuccessorTree.V10.HRelations
 import SuccessorTree.V10.OriginalPoolEnvelope
+import SuccessorTree.V10.CanonicalParameters
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
