@@ -1,5 +1,5 @@
 import SuccessorTree.V10.SocleE
-import SuccessorTree.V10.MeetBundle
+import SuccessorTree.V10.FirstDisagreement
 import Mathlib.Tactic
 
 /-!
@@ -27,7 +27,8 @@ def admissibleRealPair (k i j q m : Nat) : Prop :=
 binary relation on any other ordered pair of real blocks. -/
 def copiedRealPair {d : Nat} (B : Nat → Nat → Fin d → Bool)
     (k i j q m : Nat) : Fin d → Bool :=
-  fun r => if admissibleRealPair k i j q m then B i j r else false
+  fun r => if i < j ∧ q ≤ k ∧ m ≤ k ∧
+      (q < m ∨ (q = m ∧ m = k)) then B i j r else false
 
 /-- Admissible pairs have exactly the corresponding base tuple. -/
 theorem copiedRealPair_eq_of_admissible
@@ -36,7 +37,8 @@ theorem copiedRealPair_eq_of_admissible
     (h : admissibleRealPair k i j q m) :
     copiedRealPair B k i j q m = B i j := by
   funext r
-  simp [copiedRealPair, h]
+  simpa [copiedRealPair, admissibleRealPair] using
+    (if_pos h : (if admissibleRealPair k i j q m then B i j r else false) = B i j r)
 
 /-- All forbidden real pairs carry the empty binary tuple. -/
 theorem copiedRealPair_empty_of_not_admissible
@@ -45,7 +47,8 @@ theorem copiedRealPair_empty_of_not_admissible
     (h : ¬ admissibleRealPair k i j q m) :
     copiedRealPair B k i j q m = emptyBinaryPattern d := by
   funext r
-  simp [copiedRealPair, emptyBinaryPattern, h]
+  simpa [copiedRealPair, admissibleRealPair, emptyBinaryPattern] using
+    (if_neg h : (if admissibleRealPair k i j q m then B i j r else false) = false)
 
 /-- A nonempty copied tuple forces the ordered pair and generation gate. -/
 theorem copiedRealPair_nonempty_implies_admissible
@@ -87,7 +90,8 @@ theorem copiedRealPair_matches_trace
     copiedRealPair B k i j q m =
       bundledTrace B k j m i q := by
   funext r
-  simp [copiedRealPair, bundledTrace, traceBit,
-    admissibleRealPair, hij, hq, hm]
+  by_cases hgate : q < m ∨ (q = m ∧ m = k)
+  · simp [copiedRealPair, bundledTrace, traceBit, hij, hq, hm, hgate]
+  · simp [copiedRealPair, bundledTrace, traceBit, hij, hq, hm, hgate]
 
 end SuccessorTree.V10
