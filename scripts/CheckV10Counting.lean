@@ -89,3 +89,6 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.HUnary_top_copy
 #print axioms SuccessorTree.V10.HDiagonal_top_copy
 #print axioms SuccessorTree.V10.hPosition_top_order
+#print axioms SuccessorTree.V10.linked_increasing_generation
+#print axioms SuccessorTree.V10.generation_rank_lower_bound
+#print axioms SuccessorTree.V10.ordered_linked_generation_rank
