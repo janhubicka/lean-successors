@@ -140,9 +140,19 @@ allowed neutral singleton. The restricted operation in
 without postulating those axioms. All three new modules and
 their dependent uniqueness proof remain subject to exact-head
 Lean verification; do not mark Proposition~6.32 green in
-advance. Once checked, still align the Boolean split-diagonal
-representation with the original language and begin the
-concrete monoid conditions (M1)--(M3).}
+advance. Once checked, align the Boolean split-diagonal
+representation with the original language. For the
+concrete family $\mathcal M$ of \emph{all} shape-preserving
+self-maps, the three general closure clauses of (M1)
+(identity, composition and pointwise frozen fusion)
+specialize directly from the abstract shape-map theory;
+see \texttt{ConcreteShapeMonoidM1.lean} (exact CI
+pending). These elementary laws do not imply
+the substantive gap-factorisation axiom (M2) or
+boring duplication (M3), whose concrete proofs require
+the age-preserving extension argument of Lemma~6.36.
+Do not mark Proposition~6.39 or its Ramsey consequence
+verified before those two axioms are established.}
 
 % =====================================================================
 % Proposed consolidated TODO at Definition 6.45 / Observation 6.46
