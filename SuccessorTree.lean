@@ -101,3 +101,4 @@ import SuccessorTree.V10.FiniteMeetBudget
 import SuccessorTree.V10.HAgeProjection
 import SuccessorTree.V10.SignatureSplice
 import SuccessorTree.V10.SignatureProfiles
+import SuccessorTree.V10.SignatureTypePrefix
