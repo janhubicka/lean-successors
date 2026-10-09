@@ -96,7 +96,7 @@ theorem duplicateLastE_inside
     (n m : Nat) (hnm : n < m)
     (u w : Nat) (he : duplicateLastE A n m u w = true) :
     u < m + 1 ∧ w < m + 1 := by
-  have hSpacing := duplicateLastE_spaced A n m u w he
+  have hSpacing := (duplicateLastE_spaced A n m hnm) u w he
   by_cases hOld : w < m
   · constructor <;> omega
   · by_cases hNew : w = m
