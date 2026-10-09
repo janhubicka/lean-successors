@@ -144,3 +144,5 @@ import SuccessorTree.V10.EmptyParameterS2
 import SuccessorTree.V10.CanonicalStepGraph
 
 import SuccessorTree.V10.CanonicalStepRealization
+
+import SuccessorTree.V10.CanonicalCoverS3
