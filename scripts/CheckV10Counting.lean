@@ -44,6 +44,7 @@ import SuccessorTree.V10.PrefixReplicaAge
 import SuccessorTree.V10.AdmissibleKptPrefix
 import SuccessorTree.V10.FiniteKptLevels
 import SuccessorTree.V10.RawPrefixMeet
+import SuccessorTree.V10.RawPartialTypeLevelTree
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -297,3 +298,9 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.rawMeet_le_left
 #print axioms SuccessorTree.V10.rawMeet_le_right
 #print axioms SuccessorTree.V10.raw_le_meet
+
+-- Actual kernel-checked LevelTree instance from finite full L+ records.
+#print axioms SuccessorTree.V10.rawPartialType_level_lt_of_lt
+#print axioms SuccessorTree.V10.rawPartialType_covBy_level
+#print axioms SuccessorTree.V10.rawLevelTree_meet_eq
+#print axioms SuccessorTree.V10.rawLevelTree_ancestor_eq_restrict
