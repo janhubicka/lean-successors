@@ -42,6 +42,9 @@ Original relocation proof.
 \begin{prop}\label{prob:upperbound}
 The four reconstructed repairs remain unchanged.
 \end{prop}
+\begin{definition}
+Given a partial type $T^+$, define its successor as prescribed.
+\end{definition}
 % v10 validation note claim:boring
 \todo[inline]{Other old review notes must NOT be deleted.}
 \end{document}
@@ -56,7 +59,8 @@ assert "% v10 repair 2: do not touch" in once
 assert "Original mixed-generation formula" in once
 assert "Other old review notes must NOT be deleted" in once
 assert "% successor-v10-proof:lem:meets" in once
-assert len(markers)==5
+assert len(markers)==6
+assert "% successor-v10-proof:definition-6-30" in once
 assert app.remove_only_managed(once)==app.remove_only_managed(old)
 with tempfile.TemporaryDirectory() as tmp:
     path=Path(tmp)
