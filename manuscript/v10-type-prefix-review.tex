@@ -1,0 +1,28 @@
+% v10 complete partial-type restriction review, 9 October 2026.
+% Review-only: this is a candidate replacement/extension of the existing
+% TODO at Lemma 6.49, not an automatic patch to the author's main.tex.
+% All four mathematical source repairs are kept separate and untouched.
+%
+% Suggested consolidated TODO at the meet lemma:
+\todo[inline]{\textbf{v10 validation (complete predecessor record).}
+Restriction of an induced $L^+$-type to a shorter initial socle has
+been formalised for all unary, diagonal, directed-binary and auxiliary
+$E$-atoms: \texttt{PartialTypeRestriction.lean} proves
+$\operatorname{type}_{A^+}^{d}(v)$ is the restriction of
+$\operatorname{type}_{A^+}^{e}(v)$ whenever $d\leq e$.
+The complete record is therefore not merely its binary trace.
+To use the generic first-record/meet lemma from
+\texttt{RecordBridge.lean}, still identify the actual
+$K^\mathcal F_{pt}$ tree order and ancestors with these
+induced restrictions, including the fake coordinates and
+the $E$-socle; prove that the first differing record at $d$
+is exactly the first disagreement of the full truncated types.
+Only then may the positive-generation binary classification
+in Lemma~6.49 be transferred to the genuine tree meet.}
+%
+% Endpoints to mark only after the exact PR #119 CI head is green:
+%   prefixVertexIndex_lift
+%   RelationalPrefixType.eq_of_atoms
+%   RelationalPrefixType.ofAgeModel_restrict
+%   PartialTypeWithE.eq_of_atoms
+%   EnumeratedPartialStructure.partialTypeAt_restrict
