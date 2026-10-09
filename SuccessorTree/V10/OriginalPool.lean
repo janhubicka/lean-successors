@@ -25,9 +25,9 @@ only from an explicitly specified set, not automatically. -/
 inductive RepresentedClosure (V Parameters : Set T) : T → Prop where
   | original {v : T} (hv : v ∈ V) : RepresentedClosure V Parameters v
   | parameter {p : T} (hp : p ∈ Parameters) : RepresentedClosure V Parameters p
-  | prefix {x y : T} (hy : RepresentedClosure V Parameters y)
+  | downstep {x y : T} (hy : RepresentedClosure V Parameters y)
       (hxy : x ≤ y) : RepresentedClosure V Parameters x
-  | meet {x y : T}
+  | meetstep {x y : T}
       (hx : RepresentedClosure V Parameters x)
       (hy : RepresentedClosure V Parameters y)
       (hc : ∃ c : T, c ≤ x ∧ c ≤ y) :
@@ -45,10 +45,10 @@ theorem representedClosure_subset_prefixesOf
       exact ⟨_, hv, le_rfl⟩
   | parameter hp =>
       exact hparam hp
-  | prefix _ hle ih =>
+  | downstep _ hle ih =>
       obtain ⟨v, hv, hy⟩ := ih
       exact ⟨v, hv, hle.trans hy⟩
-  | meet _ _ hc ihx ihy =>
+  | meetstep _ _ hc ihx ihy =>
       exact meet_mem_prefixesOf ihx ihy hc
 
 /-- A nontrivial meet of any two nodes obtained by arbitrarily many
@@ -85,13 +85,13 @@ theorem representedClosure_or_root
       exact Or.inl ⟨_, hv, le_rfl⟩
   | parameter hp =>
       exact hparam _ hp
-  | prefix _ hle ih =>
+  | downstep _ hle ih =>
       rcases ih with hrep | hroot
       · obtain ⟨v, hv, hbelow⟩ := hrep
         exact Or.inl ⟨v, hv, hle.trans hbelow⟩
       · have hlev := LevelTree.level_le_of_le hle
         exact Or.inr (by omega)
-  | meet _ _ hc ihx ihy =>
+  | meetstep _ _ hc ihx ihy =>
       rcases ihx with hrep | hroot
       · rcases ihy with hrep' | hroot'
         · exact Or.inl (meet_mem_prefixesOf hrep hrep' hc)
