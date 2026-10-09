@@ -24,22 +24,39 @@ variable [PartialOrder T] [LevelTree T]
 def CrossesPool (V : Set T) (i : Nat) : Prop :=
   ∃ a ∈ prefixesOf V, i < LevelTree.lev a
 
-/-- Observation 6.47(3) on downward prefixes, conditional only on
-the exact empty/singleton crossing decomposition. -/
-theorem parameterClosed_iff_canonicalPrincipal
-    (S : STree T Label) (I : Set Nat) (V : Set T)
+/-- The exact empty/singleton successor-decomposition obligation can be
+posed on any collection Z of partial types supported by a fixed ambient
+structure C; no prefix-closure assumption on Z is required. -/
+def CanonicalSuccessorDecompositionOn
+    (S : STree T Label) (I : Set Nat) (Z : Set T)
+    (free : Nat → Nat) (principal : Nat → T) : Prop :=
+  ∀ ⦃a : T⦄, a ∈ Z → ∀ ⦃i : Nat⦄, i ∈ I →
+    ∀ (hi : i < LevelTree.lev a)
+    ⦃p : List T⦄ ⦃c : Label⦄,
+    S.succ
+        (LevelTree.ancestor a i (Nat.le_of_lt hi)) p c =
+      some (LevelTree.ancestor a (i + 1) (Nat.succ_le_iff.mpr hi)) →
+    (free i = 0 ∧ p = []) ∨
+      (0 < free i ∧ p = [principal i])
+
+/-- The literal iff in Observation 6.47(3) for *any* supported Z:
+parameter closure requires the canonical type at each selected positive
+free level which is below at least one node of Z. This theorem is
+conditional on exact canonical decomposition, not a proof that every
+abstract STree has this property. -/
+theorem parameterClosed_iff_canonicalPrincipalOn
+    (S : STree T Label) (I : Set Nat) (Z : Set T)
     (free : Nat → Nat) (principal : Nat → T)
-    (hDecomp : CanonicalSuccessorDecomposition S I V free principal) :
-    SMTree.Envelope.ParameterClosedOver S (prefixesOf V) I ↔
-      ∀ i ∈ I, CrossesPool V i → 0 < free i →
-        principal i ∈ prefixesOf V := by
+    (hDecomp : CanonicalSuccessorDecompositionOn S I Z free principal) :
+    SMTree.Envelope.ParameterClosedOver S Z I ↔
+      ∀ i ∈ I, (∃ a ∈ Z, i < LevelTree.lev a) →
+        0 < free i → principal i ∈ Z := by
   constructor
   · intro hClosed i hi hcross hfree
     obtain ⟨a, ha, hia⟩ := hcross
     let x := LevelTree.ancestor a i (Nat.le_of_lt hia)
     let y := LevelTree.ancestor a (i + 1) (Nat.succ_le_iff.mpr hia)
-    have hxa : x ≤ a :=
-      LevelTree.ancestor_le a i (Nat.le_of_lt hia)
+    have hxa : x ≤ a := LevelTree.ancestor_le a i (Nat.le_of_lt hia)
     have hya : y ≤ a :=
       LevelTree.ancestor_le a (i + 1) (Nat.succ_le_iff.mpr hia)
     have hxy : x ≤ y := by
@@ -66,11 +83,27 @@ theorem parameterClosed_iff_canonicalPrincipal
       exact hClosed ha hi hia hstep hx
   · intro hPrincipal
     intro a ha i hi hia p c hstep x hx
-    have hRule := canonicalRule_of_decomposition
-      S I V free principal hDecomp
-    obtain ⟨hfree, hbelow⟩ := hRule ha hi hia hstep hx
-    obtain ⟨v, hv, hprincipal⟩ :=
-      hPrincipal i hi ⟨a, ha, hia⟩ hfree
-    exact ⟨v, hv, hbelow.trans hprincipal⟩
+    rcases hDecomp ha hi hia hstep with ⟨_, hp⟩ | ⟨hf, hp⟩
+    · rw [hp] at hx
+      simp at hx
+    · rw [hp] at hx
+      simp only [List.mem_singleton] at hx
+      rw [hx]
+      exact hPrincipal i hi ⟨a, ha, hia⟩ hf
+
+/-- The pool-prefix theorem is a convenient specialization of the general
+conditional iff. It is kept as a stable interface for the envelope proof. -/
+theorem parameterClosed_iff_canonicalPrincipal
+    (S : STree T Label) (I : Set Nat) (V : Set T)
+    (free : Nat → Nat) (principal : Nat → T)
+    (hDecomp : CanonicalSuccessorDecomposition S I V free principal) :
+    SMTree.Envelope.ParameterClosedOver S (prefixesOf V) I ↔
+      ∀ i ∈ I, CrossesPool V i → 0 < free i →
+        principal i ∈ prefixesOf V := by
+  change SMTree.Envelope.ParameterClosedOver S (prefixesOf V) I ↔
+    ∀ i ∈ I, (∃ a ∈ prefixesOf V, i < LevelTree.lev a) →
+      0 < free i → principal i ∈ prefixesOf V
+  exact parameterClosed_iff_canonicalPrincipalOn S I (prefixesOf V)
+    free principal hDecomp
 
 end SuccessorTree.V10
