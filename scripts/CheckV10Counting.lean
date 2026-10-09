@@ -114,3 +114,5 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.original_pair_meet_level_mem_budget
 #print axioms SuccessorTree.V10.closure_nontrivial_meet_level_mem_budget
 #print axioms SuccessorTree.V10.selectedLevels_card_le_quadratic
+#print axioms SuccessorTree.V10.every_irreducible_H_vertex_is_real
+#print axioms SuccessorTree.V10.irreducible_H_copy_projects_to_base
