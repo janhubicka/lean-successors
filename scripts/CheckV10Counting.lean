@@ -64,6 +64,7 @@ import SuccessorTree.V10.TerminalLetterReplica
 import SuccessorTree.V10.TerminalLetterAge
 import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.RootFixingMonoidM1
+import SuccessorTree.V10.NeutralKptLevels
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -434,3 +435,8 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.rootFixingKpt_comp_mem
 #print axioms SuccessorTree.V10.rootFixingKpt_fusion_mem
 #print axioms SuccessorTree.V10.rootFixingKpt_M1
+
+-- M3 prerequisite proved independently: every normalized Kpt level inhabited.
+#print axioms SuccessorTree.V10.neutralKpt_freeLevel
+#print axioms SuccessorTree.V10.neutralKpt_avoids
+#print axioms SuccessorTree.V10.admissibleKpt_level_nonempty
