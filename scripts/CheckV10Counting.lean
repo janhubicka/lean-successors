@@ -64,6 +64,7 @@ import SuccessorTree.V10.TerminalLetterReplica
 import SuccessorTree.V10.TerminalLetterAge
 import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.ConcreteShapeMonoidM1
+import SuccessorTree.V10.DuplicateLastE
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -433,3 +434,12 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.admissibleKptM1_composition
 #print axioms SuccessorTree.V10.admissibleKptM1_fusion
 #print axioms SuccessorTree.V10.admissibleKptM1
+
+-- M3 local E duplication: spacing, downward closure and cloned free E cut.
+#print axioms SuccessorTree.V10.duplicateLastE_old
+#print axioms SuccessorTree.V10.duplicateLastE_new
+#print axioms SuccessorTree.V10.duplicateLastE_spaced
+#print axioms SuccessorTree.V10.duplicateLastE_downward
+#print axioms SuccessorTree.V10.duplicateLastE_inside
+#print axioms SuccessorTree.V10.duplicateLastE_clonedColumn
+#print axioms SuccessorTree.V10.duplicateLastE_freeLevel
