@@ -1,0 +1,36 @@
+% Review-only v10 prefix closure construction, 9 October 2026.
+% Candidate TODO at the passage asserting Kpt is a finitely
+% branching tree, immediately after the definition of Kpt.
+% Consolidate with preceding first-full-prefix/RawTypeMeet notes.
+% No mathematical manuscript prose is automatically modified.
+%
+\todo[inline]{\textbf{v10 validation (prefix closure of partial types).}
+To justify that every initial-socle restriction of a node
+$\operatorname{type}_{A^+}(v)$ is itself an admissible
+partial type, the type vertex cannot simply be placed at
+the new socle end: the last required $E$-pair would be
+consecutive, contradicting Definition~6.28(1).
+Instead, retain the first $d$ ordinary vertices, add
+one neutral filler vertex at position $d$, and place
+the distinguished original vertex at position $d+1$.
+Give it precisely the $E$-socle $\{0,\ldots,d-1\}$
+and copy the original $L$-type over that socle.
+The $E$-part of this construction has a unique free
+cut at $d$, satisfies spacing and downward closure,
+and preserves every old and crossing $E$-bit,
+as checked in \texttt{PrefixReplicaE.lean}.
+Still verify the induced $L$-relations, the third
+partial-structure axiom, the filler singleton's
+allowed type and preservation of forbidden-freeness
+(the latter uses irreducibility). Only then is the
+actual $K^\mathcal F_{pt}$ family proved prefix-closed.}
+%
+% Proof endpoints to check at exact-head green CI:
+%  prefixReplicaE_old
+%  prefixReplicaE_last_iff
+%  prefixReplicaE_spaced
+%  prefixReplicaE_downward
+%  prefixReplicaE_last_freeCut
+%  prefixReplicaE_last_freeLevel
+%  prefixReplicaE_preserves_type_socle
+%  prefixReplicaE_preserves_old_socle
