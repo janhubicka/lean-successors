@@ -90,10 +90,19 @@ new ordinary vertex column (\texttt{CompleteNextColumn.lean}).
 The predecessor, the canonical singleton parameter as an
 induced type, and the terminal level-one $\Sigma$-letter are
 extracted in \texttt{ExtractSuccessorComponents.lean}
-(the latter two modules remain subject to their current
-exact-head CI audits). Prove that these data recover the
-complete successor record uniquely (S2) and that every
-cover of admissible types arises this way (S3).
+(subject to their exact-head CI audits). For two
+well-formed one-level records, equality of the predecessor,
+canonical free cut, shortened parameter and terminal letter
+gives equality of the full successor record once the
+E3 no-new-tuples conditions are imposed
+(\texttt{ParameterLetterUniqueness.lean}); the
+conditions for types actually extracted from partial
+structures are discharged in
+\texttt{ExtractedSuccessorS2.lean}
+(current focused Lean review, not yet a certified endpoint).
+Finish the \emph{forward} construction so that this
+uniqueness yields (S2) for the actual successor operation,
+then show every admissible cover is so obtained (S3).
 Only then mark Proposition~6.32 as verified and start the
 concrete monoid checks (M1)--(M3); the checked abstract
 \texttt{LevelTree} instance alone does not give them.}
