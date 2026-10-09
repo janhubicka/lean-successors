@@ -16,6 +16,7 @@ import SuccessorTree.V10.CanonicalObservation
 import SuccessorTree.V10.HAge
 import SuccessorTree.V10.HGenerationRank
 import SuccessorTree.V10.HRelocation
+import SuccessorTree.V10.RelocationCopy
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
