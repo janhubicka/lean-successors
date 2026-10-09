@@ -98,14 +98,13 @@ encoding (including the split off-diagonal/diagonal
 binary relations and uniform nullary interpretation)
 and the literal finite language $L$ of the paper.
 
-\textbf{v10 validation: the shape-map monoid -- M1 in progress;
-M2/M3 OPEN.} The chosen family consists of all
+\textbf{v10 validation: shape maps -- M1 GREEN; M2/M3 OPEN.} The chosen family consists of all
 shape-preserving maps satisfying $\widetilde F(0)=0$.
 Identity, composition and pointwise fusion preserve
 this condition; such maps fix each level-zero
 node, yielding (E1). These M1 facts are formalised
-in \texttt{ConcreteKptM1.lean}, subject to the current
-exact-head Lean CI. They do \emph{not} establish
+in \texttt{ConcreteKptM1.lean}, with full and focused
+Lean CI both successful at PR~149. They do \emph{not} establish
 Proposition~6.39. Towards (M3), the proposed
 terminal one-vertex duplication in
 \texttt{EndDuplicateE.lean},
@@ -118,10 +117,12 @@ The new $E$-column is exactly the original's
 free cut; the construction preserves spacing,
 downward closure and E3. The ordered-copy
 projection in \texttt{EndDuplicateAge.lean}
-is intended to prove that no irreducible
-forbidden structure is created. These local
-lemmas are currently under Lean CI audit and
-must \emph{not} be marked green yet.
+proves that no irreducible forbidden structure
+is created, including forbidden singletons.
+The full local duplication package is
+\emph{focused Lean audited} through PR~153;
+its full Lean build must still be checked.
+This is a local end-extension result, not M3.
 Constructing one such terminal duplicate is
 still weaker than (M3), which requires a
 single shape-preserving one-level skip map
@@ -132,12 +133,24 @@ a numbered vertex $m$ and shifting all later
 vertices has been formalised in
 \texttt{LevelRemovalE.lean} and
 \texttt{LevelRemovalPartial.lean} (review
-PRs 154--155, exact-head CI still pending).
+PRs 154--155). The initial E-spacing lemma
+in PR~154 passed the focused Lean audit;
+the full guarded deletion and subsequent
+free-cut formula in
+\texttt{LevelRemovalFreeCut.lean}
+remain under exact-head CI.
 The only new spacing obstruction occurs when
 an old $E$-pair $(m-1,m+1)$ becomes
 consecutive; the \emph{strict}
 $\mathrm{fl}(m+1)<m$ guard of Lemma~6.34
-rules this out. All induced $L$-atoms,
+rules this out. The strictness is not a
+stylistic convention: a downward-closed
+spaced $E$-relation with
+$\mathrm{fl}(m+1)=m$ becomes invalid
+after deletion, as demonstrated by
+\texttt{deletionBoundaryE_weak_guard_fails}
+(current axiom audit pending).
+All induced $L$-atoms,
 downward $E$-closure, E3 and forbidden-age
 avoidance are preserved. These are local
 finite-structure calculations, not yet the
