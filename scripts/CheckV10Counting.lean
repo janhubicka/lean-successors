@@ -7,6 +7,7 @@ import SuccessorTree.V10.MeetProvenance
 import SuccessorTree.V10.SocleBound
 import SuccessorTree.V10.AncestorMeet
 import SuccessorTree.V10.SocleE
+import SuccessorTree.V10.RecordBridge
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
