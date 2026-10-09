@@ -49,7 +49,7 @@ jobs:
       - name: Exhaustive H-block meet diagnostic
         run: python3 scripts/check_v10_meet_blocks.py
       - name: Build v10 counting module
-        run: lake build SuccessorTree.V10.Counting SuccessorTree.V10.MeetTrace SuccessorTree.V10.BlockOrder SuccessorTree.V10.MeetBundle SuccessorTree.V10.FirstDisagreement SuccessorTree.V10.MeetProvenance SuccessorTree.V10.SocleBound SuccessorTree.V10.AncestorMeet SuccessorTree.V10.SocleE SuccessorTree.V10.RecordBridge SuccessorTree.V10.OriginalPool SuccessorTree.V10.HRelations SuccessorTree.V10.OriginalPoolEnvelope SuccessorTree.V10.CanonicalParameters
+        run: lake build SuccessorTree.V10.Counting SuccessorTree.V10.MeetTrace SuccessorTree.V10.BlockOrder SuccessorTree.V10.MeetBundle SuccessorTree.V10.FirstDisagreement SuccessorTree.V10.MeetProvenance SuccessorTree.V10.SocleBound SuccessorTree.V10.AncestorMeet SuccessorTree.V10.SocleE SuccessorTree.V10.RecordBridge SuccessorTree.V10.OriginalPool SuccessorTree.V10.HRelations SuccessorTree.V10.OriginalPoolEnvelope SuccessorTree.V10.CanonicalParameters SuccessorTree.V10.CanonicalObservation
       - name: Check v10 theorem axioms
         run: |
           lake env lean scripts/CheckV10Counting.lean > v10-counting-axioms.log 2>&1 || {
