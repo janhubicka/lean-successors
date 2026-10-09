@@ -117,3 +117,4 @@ import SuccessorTree.V10.RawMeetLevel
 import SuccessorTree.V10.RawPrefixOrder
 import SuccessorTree.V10.PrefixReplicaE
 import SuccessorTree.V10.PrefixReplicaL
+import SuccessorTree.V10.PrefixReplicaPartial
