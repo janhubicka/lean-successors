@@ -84,3 +84,4 @@ import SuccessorTree.V10.FirstDisagreement
 import SuccessorTree.V10.MeetProvenance
 import SuccessorTree.V10.SocleBound
 import SuccessorTree.V10.AncestorMeet
+import SuccessorTree.V10.SocleE
