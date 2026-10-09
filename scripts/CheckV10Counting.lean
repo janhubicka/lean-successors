@@ -104,3 +104,6 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.mixedDiagonal_eq_after_lower_relocation
 #print axioms SuccessorTree.V10.linked_firstIndex_lt_of_position_lt
 #print axioms SuccessorTree.V10.irreducible_mixedBinary_eq_after_relocation
+#print axioms SuccessorTree.V10.relocated_lower_order
+#print axioms SuccessorTree.V10.relocated_lower_before_upper
+#print axioms SuccessorTree.V10.relocated_lower_avoids_old_last
