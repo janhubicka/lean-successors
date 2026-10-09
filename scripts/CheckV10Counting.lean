@@ -26,6 +26,7 @@ import SuccessorTree.V10.SignatureProfiles
 import SuccessorTree.V10.SignatureTypePrefix
 import SuccessorTree.V10.SignatureCollision
 import SuccessorTree.V10.AmbientSignature
+import SuccessorTree.V10.RelationalTypeReduct
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -142,3 +143,9 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.fullAtomicTypePrefix_restrict
 #print axioms SuccessorTree.V10.common_original_gives_equal_short_types
 #print axioms SuccessorTree.V10.signature_collision_impossible_of_ambient_types
+
+-- Extract the literal induced L-reduct of a partial type, separately from E.
+#print axioms SuccessorTree.V10.RelationalPrefixType.ofAgeModel_toAtomic
+#print axioms SuccessorTree.V10.equal_reduct_types_imply_fullAtomic
+#print axioms SuccessorTree.V10.prescribed_crossing_implies_fullAtomic
+#print axioms SuccessorTree.V10.PartialTypeWithE.eq_implies_lReduct
