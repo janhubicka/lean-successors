@@ -110,6 +110,40 @@ theorem generatedE_top_firstMissing
     exact (Nat.lt_irrefl _) ((generatedE_top_iff
       k j (hPosition k (j - 1) k + 1) hj hk).1 ht)
 
+/-- The auxiliary E-generation is downward closed in the lower coordinate:
+the partite construction's E2 condition is automatic. -/
+theorem generatedE_downward
+    (k j m t u : Nat) (hu : u ≤ t)
+    (ht : generatedE k j m t) : generatedE k j m u := by
+  rcases ht with ⟨i, q, hij, hq, hallowed, hle⟩
+  exact ⟨i, q, hij, hq, hallowed, hu.trans hle⟩
+
+/-- Every generated E pair leaves at least one intervening coordinate.
+In particular it respects the partial-structure spacing requirement. -/
+theorem generatedE_gap
+    (k j m t : Nat) (ht : generatedE k j m t) :
+    t + 1 < hPosition k j m := by
+  rcases ht with ⟨i, q, hij, hq, _hallowed, hle⟩
+  have hlast : hPosition k i q ≤ hPosition k i k :=
+    hPosition_mono k i i q k le_rfl hq
+  have hnext :
+      hPosition k i k + 2 = hPosition k (i + 1) 0 := by
+    simp only [hPosition, Nat.mul_succ]
+    ring
+  have hblock : hPosition k (i + 1) 0 ≤ hPosition k j m :=
+    hPosition_mono k (i + 1) j 0 m
+      (Nat.succ_le_of_lt hij) (Nat.zero_le _)
+  omega
+
+/-- Any allowed copied pair is present in the downward-generated E socle.
+For the manuscript H construction this is the E3/irreducibility linkage
+once exact copying of binary relation tuples is proved. -/
+theorem generatedE_of_allowedPair
+    (k i j q m : Nat) (hij : i < j) (hq : q ≤ k)
+    (hallowed : q < m ∨ (q = m ∧ m = k)) :
+    generatedE k j m (hPosition k i q) :=
+  ⟨i, q, hij, hq, hallowed, le_rfl⟩
+
 /-- The first odd (fake) vertex belongs to the generated E-socle of a
 later real top-generation vertex whenever k > 0. Thus an odd vertex is not
 isolated in the full L+ structure: isolation holds only in the L-reduct. -/
