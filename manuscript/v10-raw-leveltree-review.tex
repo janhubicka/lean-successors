@@ -1,0 +1,20 @@
+% v10 review-only TODO candidate, 9 October 2026.
+% Not applied to the author's manuscript, keep four mathematical repairs.
+\todo[inline]{\textbf{v10 validation (raw $L^+$ type forest).}
+The complete raw finite $L^+$ partial-type records, equipped
+with induced initial-socle restriction, now have a concrete
+\texttt{LevelTree} instance: strict level growth, covers on
+consecutive levels, comparable predecessors, each lower
+ancestor, finite levels, and the greatest common predecessor
+whenever one exists. This is checked in
+\texttt{RawPartialTypeLevelTree.lean} together with
+\texttt{RawPrefixMeet.lean} and
+\texttt{FiniteKptLevels.lean}, conditional on final exact-head CI.
+The raw tree contains inadmissible records, however; the
+manuscript's $K^\mathcal F_{pt}$ forest is the forbidden-free
+prefix-closed subfamily. Verify the inherited LevelTree
+structure on this subfamily and its exact successor operation
+before marking Proposition~6.32 validated.}
+% Endpoints: rawPartialType_level_lt_of_lt;
+% rawPartialType_covBy_level; rawLevelTree_meet_eq;
+% rawLevelTree_ancestor_eq_restrict.
