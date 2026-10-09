@@ -56,6 +56,7 @@ import SuccessorTree.V10.ParameterLetterUniqueness
 import SuccessorTree.V10.ExtractedSuccessorS2
 import SuccessorTree.V10.EmptyParameterS2
 import SuccessorTree.V10.CanonicalStepGraph
+import SuccessorTree.V10.CanonicalStepRealization
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -380,3 +381,6 @@ set_option autoImplicit false
 -- Canonical Kpt successor graph has strict S1 cover and parameter bounds.
 #print axioms SuccessorTree.V10.canonicalKptStep_covBy
 #print axioms SuccessorTree.V10.canonicalKptStep_parameter_lt
+
+-- Canonical one-level Kpt step is realized by every actual ambient witness.
+#print axioms SuccessorTree.V10.exists_canonical_step_from_ambient
