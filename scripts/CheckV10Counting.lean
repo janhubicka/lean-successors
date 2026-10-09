@@ -52,6 +52,7 @@ import SuccessorTree.V10.CanonicalInsertionParameter
 import SuccessorTree.V10.CanonicalCrossing
 import SuccessorTree.V10.CompleteNextColumn
 import SuccessorTree.V10.ExtractSuccessorComponents
+import SuccessorTree.V10.ParameterLetterUniqueness
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -355,3 +356,8 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.partialTypeAt_predecessor
 #print axioms SuccessorTree.V10.terminalLetter_has_E
 #print axioms SuccessorTree.V10.extracted_nonempty_parameter_is_canonical
+
+-- Exact conditional S2 uniqueness from canonical parameter, Sigma letter, E3 and predecessor.
+#print axioms SuccessorTree.V10.CompleteNextColumn.eq_of_fields
+#print axioms SuccessorTree.V10.nextColumn_eq_of_parameter_and_letter
+#print axioms SuccessorTree.V10.complete_successor_unique_of_canonical_inputs
