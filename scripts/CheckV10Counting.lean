@@ -5,6 +5,7 @@ import SuccessorTree.V10.MeetBundle
 import SuccessorTree.V10.FirstDisagreement
 import SuccessorTree.V10.MeetProvenance
 import SuccessorTree.V10.SocleBound
+import SuccessorTree.V10.AncestorMeet
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
