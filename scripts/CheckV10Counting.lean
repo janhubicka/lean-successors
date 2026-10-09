@@ -181,3 +181,9 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.exactHEBool_nonTop_freeLevel
 #print axioms SuccessorTree.V10.exactHEBool_top_freeLevel
 #print axioms SuccessorTree.V10.exactHEBool_initial_freeLevel
+
+-- Fake vertices have empty incoming E but may belong to later E-socles.
+#print axioms SuccessorTree.V10.hPosition_even
+#print axioms SuccessorTree.V10.exactHEBool_odd_target_false
+#print axioms SuccessorTree.V10.exactHEBool_fake_freeLevel
+#print axioms SuccessorTree.V10.exactHEBool_odd_source_not_isolated
