@@ -32,6 +32,7 @@ import SuccessorTree.V10.PartialStructureE
 import SuccessorTree.V10.HExactE
 import SuccessorTree.V10.PartialTypeRestriction
 import SuccessorTree.V10.HELinkage
+import SuccessorTree.V10.CommonSocleType
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -201,3 +202,10 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.exactHEBool_of_linked_real_positions
 #print axioms SuccessorTree.V10.exactHEBool_of_HLinked_increasing
 #print axioms SuccessorTree.V10.exactH_satisfies_E_axioms
+
+-- First complete L+ record mismatch equals first binary crossing mismatch
+-- under the same ambient socle, equal singleton roots and positive free cuts.
+#print axioms SuccessorTree.V10.sameAmbient_partialType_eq_of_cross
+#print axioms SuccessorTree.V10.sameAmbient_cross_of_partialType_eq
+#print axioms SuccessorTree.V10.sameAmbient_partialType_eq_iff_cross
+#print axioms SuccessorTree.V10.sameAmbient_first_fullType_difference
