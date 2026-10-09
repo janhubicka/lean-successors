@@ -58,6 +58,7 @@ import SuccessorTree.V10.EmptyParameterS2
 import SuccessorTree.V10.CanonicalStepGraph
 import SuccessorTree.V10.CanonicalStepRealization
 import SuccessorTree.V10.CanonicalCoverS3
+import SuccessorTree.V10.CanonicalStepUniqueness
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -388,3 +389,8 @@ set_option autoImplicit false
 
 -- Every admissible Kpt cover has canonical successor data (S3 for graph).
 #print axioms SuccessorTree.V10.canonicalKptStep_exists_of_covBy
+
+-- Kpt canonical successor graph has unique outputs and injective inputs (S2).
+#print axioms SuccessorTree.V10.canonical_parameter_cut_unique
+#print axioms SuccessorTree.V10.canonicalKptStep_target_unique
+#print axioms SuccessorTree.V10.canonicalKptStep_inputs_unique

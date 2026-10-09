@@ -108,9 +108,24 @@ determines $f$, and exact uniqueness with
 $\bar p=()$ or $\bar p=(S^+)$ of positive level
 is developed in \texttt{EmptyParameterS2.lean}
 (current exact-head CI pending).
-Finish the \emph{forward} construction so that this
-uniqueness yields (S2) for the actual successor operation,
-then show every admissible cover is so obtained (S3).
+The precise admissible-vertex successor graph (predecessor,
+canonical parameter, terminal $\Sigma$-letter, prescribed free
+$E$-cut and no-new-$L$-tuples) is now encoded in
+\texttt{CanonicalStepGraph.lean}. Its cover and strict-parameter
+bound, a construction of canonical inputs from every forbidden-free
+ambient type and a decomposition of every admissible cover
+are under focused Lean audit in
+\texttt{CanonicalStepRealization.lean} and
+\texttt{CanonicalCoverS3.lean}. The input and output
+uniqueness of this graph are in
+\texttt{CanonicalStepUniqueness.lean}, also pending exact-head
+CI. Even once these have passed, the resulting graph must
+still be packaged into the manuscript's
+\emph{Option-valued} successor operation (and its
+letter alphabet restricted to the actual admissible
+$\Sigma$), rather than silently identifying an
+unrestricted raw terminal $L^+$ type with a letter
+of $K^\mathcal F_{pt}$.
 Only then mark Proposition~6.32 as verified and start the
 concrete monoid checks (M1)--(M3); the checked abstract
 \texttt{LevelTree} instance alone does not give them.}
