@@ -73,7 +73,7 @@ theorem duplicateEnd_irred_copy_projects
   obtain ⟨hMono, hIn, hBinary, hUnary, hDiagonal⟩ := hCopy
   have hOldOrNew (a : Fin r) :
       f a < A.size ∨ f a = A.size := by
-    have hf := hIn a
+    have hf : f a < A.size + 1 := hIn a
     omega
   have hNeOfNe (a b : Fin r) (hab : a ≠ b) :
       f a ≠ f b := fun heq => hab (hMono.injective heq)
