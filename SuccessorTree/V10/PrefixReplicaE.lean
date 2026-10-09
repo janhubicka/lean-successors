@@ -86,6 +86,7 @@ theorem prefixReplicaE_downward
     · have hu : u < d := by
         simpa [prefixReplicaE, hw, hlast] using h
       have hz' : z < d := by omega
+      rw [hlast]
       exact (prefixReplicaE_last_iff A d z).2 hz'
     · simp [prefixReplicaE, hw, hlast] at h
 
