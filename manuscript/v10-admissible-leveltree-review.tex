@@ -1,0 +1,36 @@
+% Review-only successor-v10 annotation, 9 October 2026.
+% Candidate consolidated TODO for Proposition 6.32 and the tree of
+% partial types. Do not duplicate earlier raw-tree/free-cut TODOs.
+% The four author-controlled mathematical repairs are not changed.
+%
+\todo[inline]{\textbf{v10 validation (the admissible partial-type forest).}
+The raw complete $L^+$-type records are now equipped with their
+literal initial-socle prefix order, finite levels, all ancestors,
+and greatest common predecessors. The normalized forbidden-free
+$K^\mathcal F_{pt}$ subfamily is closed under those prefixes,
+by the one-neutral-filler construction and induced-copy
+age preservation. Consequently its own induced order admits
+an actual meet operation whenever two types share a prefix;
+the meet is an admissible node because it is a restriction
+of either operand. Its \texttt{LevelTree} structure is
+formalised in \texttt{AdmissibleKptMeet.lean} and
+\texttt{AdmissibleKptLevelTree.lean}, pending the exact-head
+Lean build and transitive-axiom checks. The remaining task
+towards Proposition~6.32 is to identify the manuscript's
+actual $K^\mathcal F_{pt}$ node coding with this finite
+unary/binary presentation, fix any nullary-symbol
+normalization and check the concrete successor
+operation (including its empty/singleton decomposition
+and the no-new-tuples rule). The monoid axioms (M1)--(M3)
+for this concrete successor remain separate and are
+not implied by a LevelTree instance.}
+%
+% Candidate axioms audited only once the PR head is green:
+%  admissibleRawType_of_prefix
+%  admissibleKptAncestor_le
+%  admissibleKptMeet_spec
+%  admissibleKpt_ancestor_exists
+%  admissibleKpt_level_lt_of_lt
+%  admissibleKpt_covBy_level
+%  admissibleKpt_levelTree_meet_eq
+%  admissibleKpt_levelTree_ancestor_eq
