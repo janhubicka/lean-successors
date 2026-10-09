@@ -1,0 +1,19 @@
+% Review-only v10 validation overlay. Do not apply automatically.
+% Consolidate at Lemma 6.49 and the Kpt forest assertion; do not
+% duplicate other notes or change the author's four mathematical repairs.
+\todo[inline]{\textbf{v10 validation (raw common-prefix meet).}
+From the complete finite $L^+$-type records and their actual
+initial-socle prefix order, the greatest common predecessor of
+any two raw nodes having a common prefix is constructed using
+the greatest level with a common induced restriction.
+Its two lower-bound laws and universal upper-bound law are
+proved in \texttt{RawPrefixMeet.lean}, without postulating
+a meet field of an abstract tree. For nodes with distinct
+roots the total operation uses an arbitrary dummy record,
+and no meet law is claimed. The still separate obligations
+are to restrict the operation to the admissible
+$K^\mathcal F_{pt}$ subforest and finish the concrete
+LevelTree instance before using it in Lemma~6.49.}
+% Endpoints: rawCommonLevel_zero_of_common;
+% rawMeetLevel_common; rawMeet_spec;
+% rawMeet_le_left; rawMeet_le_right; raw_le_meet.
