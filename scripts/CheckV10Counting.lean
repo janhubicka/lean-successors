@@ -24,6 +24,7 @@ import SuccessorTree.V10.HAgeProjection
 import SuccessorTree.V10.SignatureSplice
 import SuccessorTree.V10.SignatureProfiles
 import SuccessorTree.V10.SignatureTypePrefix
+import SuccessorTree.V10.SignatureCollision
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -133,3 +134,5 @@ set_option autoImplicit false
 
 #print axioms SuccessorTree.V10.fullAtomicTypePrefix_cross
 #print axioms SuccessorTree.V10.signatureSplice_cross_of_fullTypePrefixes
+
+#print axioms SuccessorTree.V10.signature_collision_impossible_of_common_full_types
