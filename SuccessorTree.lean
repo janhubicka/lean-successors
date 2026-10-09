@@ -132,3 +132,5 @@ import SuccessorTree.V10.CanonicalInsertionParameter
 import SuccessorTree.V10.CanonicalCrossing
 
 import SuccessorTree.V10.CompleteNextColumn
+
+import SuccessorTree.V10.ExtractSuccessorComponents
