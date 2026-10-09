@@ -83,8 +83,10 @@ theorem canonical_parameter_cut_unique
         (⟨g, R.lastOrdinaryParameter g hg⟩ :
           RawPartialTypeNode db du dd) := by
         have hLists :
-            [⟨f, Q.lastOrdinaryParameter f hf⟩] =
-              [⟨g, R.lastOrdinaryParameter g hg⟩] := by
+            [(⟨f, Q.lastOrdinaryParameter f hf⟩ :
+                RawPartialTypeNode db du dd)] =
+              [(⟨g, R.lastOrdinaryParameter g hg⟩ :
+                RawPartialTypeNode db du dd)] := by
           simpa [PartialTypeWithE.canonicalParameterRecord,
             hZeroF, hZeroG] using hList
         exact (List.cons.injEq.mp hLists).1
@@ -167,6 +169,7 @@ theorem canonicalKptStep_inputs_unique
     hTarget.symm.trans hTarget'
   have hLevel : ell = ell' := by
     have h := congrArg Sigma.fst hRaw
+    change ell + 1 = ell' + 1 at h
     omega
   subst ell'
   have hQr : Q = R := by
