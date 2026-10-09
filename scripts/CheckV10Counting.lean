@@ -67,6 +67,7 @@ import SuccessorTree.V10.ConcreteKptM1
 import SuccessorTree.V10.LevelRemovalE
 import SuccessorTree.V10.LevelRemovalPartial
 import SuccessorTree.V10.LevelRemovalFreeCut
+import SuccessorTree.V10.LevelRemovalSharpExample
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -462,3 +463,7 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.deleteAtE_isFreeCut
 #print axioms SuccessorTree.V10.deleteAtPartial_freeLevel_eq
 #print axioms SuccessorTree.V10.deleteAtPartial_freeLevel_bounds
+
+-- Genuine forbidden-free E-spacing counterexample to weak M2 deletion guard.
+#print axioms SuccessorTree.V10.deletionBoundaryPartial_freeLevel
+#print axioms SuccessorTree.V10.weak_level_removal_guard_counterexample
