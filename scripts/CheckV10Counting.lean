@@ -84,3 +84,7 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.HLinked_gate
 #print axioms SuccessorTree.V10.HBinary_eq_base_of_link
 #print axioms SuccessorTree.V10.irreducible_pair_projects_to_base
+#print axioms SuccessorTree.V10.HBinary_top_copy
+#print axioms SuccessorTree.V10.HUnary_top_copy
+#print axioms SuccessorTree.V10.HDiagonal_top_copy
+#print axioms SuccessorTree.V10.hPosition_top_order
