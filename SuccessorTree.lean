@@ -106,3 +106,4 @@ import SuccessorTree.V10.SignatureCollision
 import SuccessorTree.V10.AmbientSignature
 import SuccessorTree.V10.RelationalTypeReduct
 import SuccessorTree.V10.EFreeLevel
+import SuccessorTree.V10.PartialStructureE
