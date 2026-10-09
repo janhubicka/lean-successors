@@ -102,6 +102,7 @@ theorem canonicalKptStep_parameter_lt
     have hLevel : x.1.1 = f := congrArg Sigma.fst hRecord
     change x.1.1 < a.1.1
     rw [hBase]
+    change x.1.1 < ell
     omega
 
 end SuccessorTree.V10
