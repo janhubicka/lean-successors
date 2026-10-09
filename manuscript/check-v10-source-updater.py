@@ -45,12 +45,13 @@ The four reconstructed repairs remain unchanged.
 \begin{definition}
 Given a partial type $T^+$, define its successor as prescribed.
 \end{definition}
+\subsection{Properties of shape-preserving functions on partial types}
 % v10 validation note claim:boring
 \todo[inline]{Other old review notes must NOT be deleted.}
 \end{document}
 """
 todos=app.find_todos(app.OVERLAY.read_text(encoding="utf-8"))
-assert len(todos)==7
+assert len(todos)==8
 once,markers=app.transform(old,todos)
 twice,_=app.transform(once,todos)
 assert once==twice
@@ -59,8 +60,9 @@ assert "% v10 repair 2: do not touch" in once
 assert "Original mixed-generation formula" in once
 assert "Other old review notes must NOT be deleted" in once
 assert "% successor-v10-proof:lem:meets" in once
-assert len(markers)==6
+assert len(markers)==7
 assert "% successor-v10-proof:definition-6-30" in once
+assert "% successor-v10-proof:properties-6-3-2" in once
 assert app.remove_only_managed(once)==app.remove_only_managed(old)
 with tempfile.TemporaryDirectory() as tmp:
     path=Path(tmp)
