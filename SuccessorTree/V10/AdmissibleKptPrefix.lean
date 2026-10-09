@@ -113,8 +113,13 @@ theorem admissibleRawType_closed_under_prefix
   have hBNode :
       B.rawTypeAtFree (d + 1) =
         (⟨d, A.partialTypeAt d v⟩ : RawPartialTypeNode db du dd) := by
-    simp only [EnumeratedPartialStructure.rawTypeAtFree,
-      hFree, hType]
+    change
+      (⟨B.freeLevel (d + 1),
+         B.partialTypeAt (B.freeLevel (d + 1)) (d + 1)⟩ :
+        RawPartialTypeNode db du dd) =
+        (⟨d, A.partialTypeAt d v⟩ : RawPartialTypeNode db du dd)
+    rw [hFree]
+    exact congrArg (Sigma.mk d) hType
   refine ⟨B, d + 1, ?_, hAvoidB, ?_⟩
   · change d + 1 < d + 2
     omega
