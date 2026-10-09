@@ -128,3 +128,5 @@ import SuccessorTree.V10.AdmissibleKptMeet
 import SuccessorTree.V10.AdmissibleKptLevelTree
 import SuccessorTree.V10.CanonicalBinary
 import SuccessorTree.V10.CanonicalInsertionParameter
+
+import SuccessorTree.V10.CanonicalCrossing
