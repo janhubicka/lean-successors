@@ -33,6 +33,7 @@ import SuccessorTree.V10.HExactE
 import SuccessorTree.V10.PartialTypeRestriction
 import SuccessorTree.V10.HELinkage
 import SuccessorTree.V10.CommonSocleType
+import SuccessorTree.V10.FirstFullPrefix
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -209,3 +210,10 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.sameAmbient_cross_of_partialType_eq
 #print axioms SuccessorTree.V10.sameAmbient_partialType_eq_iff_cross
 #print axioms SuccessorTree.V10.sameAmbient_first_fullType_difference
+
+-- Actual longest common induced L+ prefixes, including E and both binary orientations.
+#print axioms SuccessorTree.V10.fullPartialType_eq_at_smaller
+#print axioms SuccessorTree.V10.exists_maximal_common_fullPrefix
+#print axioms SuccessorTree.V10.maximal_common_fullPrefix_unique
+#print axioms SuccessorTree.V10.binary_witness_of_first_fullPrefix_difference
+#print axioms SuccessorTree.V10.exists_maximal_common_fullPrefix_with_binary_witness
