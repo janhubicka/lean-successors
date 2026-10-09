@@ -77,3 +77,10 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.closure_subset_pool_of_decomposition
 #print axioms SuccessorTree.V10.parameterClosed_iff_canonicalPrincipal
 #print axioms SuccessorTree.V10.parameterClosed_iff_canonicalPrincipalOn
+#print axioms SuccessorTree.V10.HCrossAllowed_swap
+#print axioms SuccessorTree.V10.HBinary_fake_left
+#print axioms SuccessorTree.V10.HBinary_same_first
+#print axioms SuccessorTree.V10.HLinked_real
+#print axioms SuccessorTree.V10.HLinked_gate
+#print axioms SuccessorTree.V10.HBinary_eq_base_of_link
+#print axioms SuccessorTree.V10.irreducible_pair_projects_to_base
