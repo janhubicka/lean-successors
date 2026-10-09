@@ -136,3 +136,5 @@ import SuccessorTree.V10.CompleteNextColumn
 import SuccessorTree.V10.ExtractSuccessorComponents
 
 import SuccessorTree.V10.ParameterLetterUniqueness
+
+import SuccessorTree.V10.ExtractedSuccessorS2
