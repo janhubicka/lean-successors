@@ -136,4 +136,58 @@ theorem deleteAtE_inside
       omega
   exact ⟨hu,hv⟩
 
+
+/-- A sharp counterexample to replacing the strict deletion guard by
+a weak inequality. Its only nonempty E column is the initial segment
+u<m at the old vertex m+1, so its free level there equals m. -/
+def deletionBoundaryE (m u v : Nat) : Bool :=
+  decide (v = m + 1 ∧ u < m)
+
+/-- This boundary E relation is a genuine spaced relation. -/
+theorem deletionBoundaryE_spaced (m : Nat) :
+    SpacedE (deletionBoundaryE m) := by
+  intro u v he
+  have hh : v = m + 1 ∧ u < m := by
+    simpa [deletionBoundaryE] using he
+  omega
+
+/-- Its columns are downward closed. -/
+theorem deletionBoundaryE_downward (m : Nat) :
+    DownwardE (deletionBoundaryE m) := by
+  intro u v he w hw
+  have hh : v = m + 1 ∧ u < m := by
+    simpa [deletionBoundaryE] using he
+  rcases hh with ⟨hv, hu⟩
+  simp [deletionBoundaryE, hv, lt_trans hw hu]
+
+/-- Exactly the borderline weak bound fl(m+1)=m holds. -/
+theorem deletionBoundaryE_freeCut (m : Nat) :
+    IsFreeCut (deletionBoundaryE m) (m + 1) m := by
+  constructor
+  · intro u hu
+    simp [deletionBoundaryE, hu]
+  · simp [deletionBoundaryE]
+
+/-- Deleting m from this valid spaced/downward E relation produces
+the illegal consecutive E pair (m-1,m). Thus
+fl(m+1)≤m is insufficient; the manuscript's strict
+fl(m+1)<m guard is sharp. -/
+theorem deletionBoundaryE_weak_guard_fails
+    (m : Nat) (hm : 0 < m) :
+    ¬ SpacedE
+      (fun u v => deletionBoundaryE m (deleteAt m u) (deleteAt m v)) := by
+  intro hSpace
+  let u := m - 1
+  have hu : u < m := by
+    dsimp [u]
+    omega
+  have hE : deletionBoundaryE m (deleteAt m u)
+      (deleteAt m m) = true := by
+    rw [deleteAt_below m u hu, deleteAt_at m]
+    exact show deletionBoundaryE m u (m + 1) = true by
+      simp [deletionBoundaryE, hu]
+  have hBad := hSpace u m hE
+  dsimp [u] at hBad
+  omega
+
 end SuccessorTree.V10
