@@ -28,6 +28,7 @@ import SuccessorTree.V10.SignatureCollision
 import SuccessorTree.V10.AmbientSignature
 import SuccessorTree.V10.RelationalTypeReduct
 import SuccessorTree.V10.EFreeLevel
+import SuccessorTree.V10.PartialStructureE
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -159,3 +160,12 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.canonicalFreeLevel_isFreeCut
 #print axioms SuccessorTree.V10.canonicalFreeLevel_le
 #print axioms SuccessorTree.V10.e_iff_lt_canonicalFreeLevel
+
+-- Literal E-socle extraction from Definition 6.28: not an extra axiom.
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.E_iff_freeLevel
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.freeLevel_le
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.partialTypeAt_lReduct
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.partialTypeAt_fullESocle
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.partialTypeAt_no_reverseE
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.partialTypeAt_no_typeE_loop
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.freeLevel_firstMissing
