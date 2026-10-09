@@ -90,3 +90,4 @@ import SuccessorTree.V10.OriginalPool
 import SuccessorTree.V10.HRelations
 import SuccessorTree.V10.OriginalPoolEnvelope
 import SuccessorTree.V10.CanonicalParameters
+import SuccessorTree.V10.CanonicalObservation
