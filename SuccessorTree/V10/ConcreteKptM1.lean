@@ -81,9 +81,12 @@ theorem kptM1
       (hmem : ∀ i, F i ∈ KptM family)
       (hstable : ShapeMap.FusionStable F),
       ShapeMap.fusionLimit F hstable ∈ KptM family) :=
-  ⟨kptM_id_mem family,
-    fun _ _ hF hG => kptM_comp_mem family hF hG,
-    kptM_fusion_mem family⟩
+by
+  refine ⟨kptM_id_mem family, ?_, ?_⟩
+  · intro F G hF hG
+    exact kptM_comp_mem family hF hG
+  · intro F hmem hstable
+    exact kptM_fusion_mem family F hmem hstable
 
 /-- A Kpt shape map whose zeroth image level is zero literally
 fixes the level-zero node. The target root cannot change to a
