@@ -108,11 +108,11 @@ theorem selectedLevels_card_le_quadratic
     rcases hselected i hi with hzero | hmem
     · exact Finset.mem_union.mpr (Or.inl (by simpa [hzero]))
     · exact Finset.mem_union.mpr (Or.inr hmem)
-  have hbudget := poolMeetLevelBudget_card_le V
+  have hbudgetF : F.card ≤ V.card + V.card ^ 2 :=
+    poolMeetLevelBudget_card_le V
   have hunion :=
     Finset.card_union_le ({0} : Finset Nat) F
   have hcard := Finset.card_le_card hsub
-  dsimp [F] at hunion
   calc
     selected.card ≤ (({0} : Finset Nat) ∪ F).card := hcard
     _ ≤ ({0} : Finset Nat).card + F.card := hunion
