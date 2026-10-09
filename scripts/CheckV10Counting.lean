@@ -66,6 +66,7 @@ import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.ConcreteKptM1
 import SuccessorTree.V10.LevelRemovalE
 import SuccessorTree.V10.LevelRemovalPartial
+import SuccessorTree.V10.LevelRemovalFreeCut
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -454,3 +455,10 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.deletionBoundaryE_downward
 #print axioms SuccessorTree.V10.deletionBoundaryE_freeCut
 #print axioms SuccessorTree.V10.deletionBoundaryE_weak_guard_fails
+
+-- Exact E-column and canonical free-level transport across guarded deletion.
+#print axioms SuccessorTree.V10.deleteAt_lt_iff_lt_deleteAtCut
+#print axioms SuccessorTree.V10.deleteAtE_iff_cut
+#print axioms SuccessorTree.V10.deleteAtE_isFreeCut
+#print axioms SuccessorTree.V10.deleteAtPartial_freeLevel_eq
+#print axioms SuccessorTree.V10.deleteAtPartial_freeLevel_bounds
