@@ -116,3 +116,4 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.selectedLevels_card_le_quadratic
 #print axioms SuccessorTree.V10.every_irreducible_H_vertex_is_real
 #print axioms SuccessorTree.V10.irreducible_H_copy_projects_to_base
+#print axioms SuccessorTree.V10.ordered_irreducible_H_copy_projects_to_base
