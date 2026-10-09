@@ -54,3 +54,5 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.meet_level_of_first_record_difference
 #print axioms SuccessorTree.V10.representedClosure_subset_prefixesOf
 #print axioms SuccessorTree.V10.generated_nontrivial_meet_has_originals
+#print axioms SuccessorTree.V10.representedClosure_or_root
+#print axioms SuccessorTree.V10.generated_positive_meet_has_originals
