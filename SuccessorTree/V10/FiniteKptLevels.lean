@@ -109,6 +109,8 @@ theorem admissibleRawTypeLevel_finite
     exact Subtype.ext heq
   have hFinite :=
     (rawPartialTypeLevel_finite db du dd cut).preimage hinj
-  simpa only [embedding, Set.mem_preimage, Set.mem_setOf_eq] using hFinite
+  change Set.Finite (embedding ⁻¹'
+    {N : RawPartialTypeNode db du dd | N.1 = cut})
+  exact hFinite
 
 end SuccessorTree.V10
