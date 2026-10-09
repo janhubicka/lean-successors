@@ -51,7 +51,7 @@ theorem generation_rank_lower_bound
         intro hj
         have hprev : j < r := by omega
         have hab : (⟨j, hprev⟩ : Fin r) < ⟨j + 1, hj⟩ := by
-          exact Fin.lt_def.mpr (by omega)
+          exact Fin.lt_def.mpr (Nat.lt_succ_self j)
         rcases hgate ⟨j, hprev⟩ ⟨j + 1, hj⟩ hab with hlt | ⟨_, heq⟩
         · have hp := ih hprev
           omega
@@ -74,8 +74,10 @@ theorem ordered_linked_generation_rank {n d : Nat}
     ∀ a : Fin r, a.val ≤ generation a := by
   apply generation_rank_lower_bound k r hr generation
   intro a b hab
-  exact (linked_increasing_generation B k
+  rcases (linked_increasing_generation B k
     (first a) (first b) (generation a) (generation b)
-    (hfirst hab) (hlinked a b hab)).2.2
+    (hfirst hab) (hlinked a b hab)).2.2 with hlt | ⟨heq, htop⟩
+  · exact Or.inl hlt
+  · exact Or.inr ⟨heq.trans htop, htop⟩
 
 end SuccessorTree.V10
