@@ -65,6 +65,7 @@ import SuccessorTree.V10.TerminalLetterAge
 import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.ConcreteShapeMonoidM1
 import SuccessorTree.V10.DuplicateLastE
+import SuccessorTree.V10.DuplicateLastL
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -443,3 +444,10 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.duplicateLastE_inside
 #print axioms SuccessorTree.V10.duplicateLastE_clonedColumn
 #print axioms SuccessorTree.V10.duplicateLastE_freeLevel
+
+-- Exact M3 last-column L-duplication: old induced part, singleton and blocked pairs.
+#print axioms SuccessorTree.V10.duplicateLastL_old
+#print axioms SuccessorTree.V10.duplicateLastL_newSingleton
+#print axioms SuccessorTree.V10.duplicateLastL_cross_low
+#print axioms SuccessorTree.V10.duplicateLastL_cross_blocked
+#print axioms SuccessorTree.V10.duplicateLastL_original_not_linked
