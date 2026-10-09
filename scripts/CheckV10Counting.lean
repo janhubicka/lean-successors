@@ -65,6 +65,7 @@ import SuccessorTree.V10.TerminalLetterAge
 import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.ConcreteKptM1
 import SuccessorTree.V10.LevelRemovalE
+import SuccessorTree.V10.LevelRemovalPartial
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -441,3 +442,9 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.deleteAtE_downward
 #print axioms SuccessorTree.V10.deleteAtE_spaced
 #print axioms SuccessorTree.V10.deleteAtE_inside
+
+-- Local M2 guarded deletion yields a forbidden-free partial structure.
+#print axioms SuccessorTree.V10.deleteAtL_realizes_implies_original
+#print axioms SuccessorTree.V10.deleteAtL_preserves_avoidance
+#print axioms SuccessorTree.V10.NormalizedForbidden.deleteAt_preserves_avoidance
+#print axioms SuccessorTree.V10.deleteAtPartial_preserves_avoidance
