@@ -57,3 +57,9 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.generated_nontrivial_meet_has_originals
 #print axioms SuccessorTree.V10.representedClosure_or_root
 #print axioms SuccessorTree.V10.generated_positive_meet_has_originals
+#print axioms SuccessorTree.V10.copiedRealPair_eq_of_admissible
+#print axioms SuccessorTree.V10.copiedRealPair_empty_of_not_admissible
+#print axioms SuccessorTree.V10.copiedRealPair_nonempty_implies_admissible
+#print axioms SuccessorTree.V10.nonemptyCopiedPair_generatesE
+#print axioms SuccessorTree.V10.sameBlock_no_binary
+#print axioms SuccessorTree.V10.copiedRealPair_matches_trace
