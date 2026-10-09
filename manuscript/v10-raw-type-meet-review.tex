@@ -1,0 +1,28 @@
+% v10 review-only TODO fragment for Lemma 6.49, 9 October 2026.
+% Consolidate with the earlier FirstFullPrefix / CommonSocleType TODOs.
+% Do not insert multiple duplicate annotations or edit the four
+% author-reviewed mathematical replacement proofs.
+%
+\todo[inline]{\textbf{v10 validation (greatest common full-type prefix).}
+For the literal raw finite $L^+$-type records, ordered by
+initial-socle restriction, two types extracted from a common
+ambient partial structure $C^+$ with equal level-zero types
+have a greatest common predecessor. The proof identifies the
+unique largest common full record, and establishes its
+universal property against \emph{every} other common raw
+prefix (not only prefixes of the originally chosen types).
+The auxiliary relation $E$, singleton and diagonal data,
+all directed binary atoms and non-relations are retained.
+This is proved in \texttt{SuccessorTree/V10/RawTypeMeet.lean},
+building on \texttt{FirstFullPrefix.lean}. To identify this
+raw greatest common predecessor with the meet in the paper's
+$K^\mathcal F_{pt}$ forest, it remains to establish that the
+actual forbidden-free $K^\mathcal F_{pt}$ members have exactly
+the induced prefix order, and that their raw common
+predecessor is an admissible partial type. The strict
+free-cut/domain and positive-generation charging assertions
+in Lemma~6.49 are separate obligations.}
+%
+% New endpoints (green only after exact-head CI):
+%  rawPartialType_prefix_of_cut
+%  rawPartialTypes_have_greatest_common_prefix
