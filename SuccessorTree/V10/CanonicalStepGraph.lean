@@ -94,14 +94,14 @@ theorem canonicalKptStep_parameter_lt
       rcases hGate with h | h
       · exact False.elim (hz h)
       · exact h
-    have hLevel : x.1.1 = f := by
+    have hRecord : x.1 =
+        (⟨f, Q.lastOrdinaryParameter f hf⟩ :
+          RawPartialTypeNode db du dd) := by
       simpa [PartialTypeWithE.canonicalParameterRecord, hz]
-        using congrArg Sigma.fst
-          (List.mem_singleton.mp
-            (by simpa [PartialTypeWithE.canonicalParameterRecord, hz]
-              using hMem))
+        using hMem
+    have hLevel : x.1.1 = f := congrArg Sigma.fst hRecord
     change x.1.1 < a.1.1
     rw [hBase]
-    exact hLevel.trans_lt hlt
+    omega
 
 end SuccessorTree.V10
