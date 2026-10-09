@@ -22,10 +22,10 @@ PREFIX = "successor-v10-proof"
 # The exact label strings are from the latest recovered source patches.
 # Definitions without a reliable TeX label are deliberately not guessed.
 LABELS = {
-    "obs:H": 2,                 # exact H+ interpretation
-    "lem:meets": 3,             # charged meets
-    "obs:signature-unique": 4, # age-signature splicing
-    "prob:upperbound": 5,      # final bound
+    "obs:H": 3,                 # exact H+ interpretation
+    "lem:meets": 4,             # charged meets
+    "obs:signature-unique": 5, # age-signature splicing
+    "prob:upperbound": 6,      # final bound
 }
 OPTIONAL_LABELS = {
     "obs:env1": 0,             # admissible Kpt family/tree verification
@@ -50,8 +50,8 @@ def find_todos(tex: str) -> list[str]:
             pos += 1
         else:
             raise ValueError("Unterminated \\todo[inline] in overlay")
-    if len(found) != 7:
-        raise ValueError(f"Expected 7 grouped TODOs; found {len(found)}")
+    if len(found) != 8:
+        raise ValueError(f"Expected 8 grouped TODOs; found {len(found)}")
     return found
 
 def label_line_end(tex: str, label: str, optional=False) -> int | None:
@@ -82,7 +82,7 @@ def skip_balanced_todo(tex: str, start: int) -> int:
 
 def remove_only_managed(tex: str) -> str:
     """Drop only markers about to be replaced, preserving every proof token."""
-    anchors=set(LABELS)|set(OPTIONAL_LABELS)|{"definition-6-30"}
+    anchors=set(LABELS)|set(OPTIONAL_LABELS)|{"definition-6-30","properties-6-3-2"}
     # The legacy 'v10 validation note LABEL' marker is only removed for
     # matching anchors, never for other notes such as custom B2/B3.
     r=re.compile(r"^[ \t]*% (?:(v10 validation note) |("
@@ -126,6 +126,22 @@ def transform(src: str, todos: list[str]) -> tuple[str,list[str]]:
         found.append("definition-6-30")
     else:
         found.append(f"OPTIONAL Definition 6.30 not placed: {len(matches)} matches")
+    # Section 6.3.2 describes the distinguished monoid M.  Do not
+    # guess an unverified \label or modify the original proof.
+    monoid_pat = re.compile(
+        r"\\(?:sub){0,2}section\{Properties of shape-preserving "
+        r"functions on partial types\.?\}",
+        re.S)
+    monoid_matches=list(monoid_pat.finditer(out))
+    if len(monoid_matches)==1:
+        line_end=out.find("\n",monoid_matches[0].start())
+        if line_end<0:
+            raise ValueError("Section 6.3.2 heading has no line break")
+        note=f"% {PREFIX}:properties-6-3-2\n"+todos[2]+"\n"
+        out=out[:line_end+1]+note+out[line_end+1:]
+        found.append("properties-6-3-2")
+    else:
+        found.append(f"OPTIONAL Section 6.3.2 not placed: {len(monoid_matches)} matches")
     if remove_only_managed(out)!=original_prose:
         raise ValueError("Unintended mathematical/prose changes detected")
     return out,found
