@@ -95,3 +95,4 @@ import SuccessorTree.V10.HAge
 import SuccessorTree.V10.HGenerationRank
 import SuccessorTree.V10.HRelocation
 import SuccessorTree.V10.RelocationCopy
+import SuccessorTree.V10.RelocationIrreducible
