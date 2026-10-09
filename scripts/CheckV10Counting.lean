@@ -21,6 +21,7 @@ import SuccessorTree.V10.RelocationIrreducible
 import SuccessorTree.V10.RelocationOrder
 import SuccessorTree.V10.FiniteMeetBudget
 import SuccessorTree.V10.HAgeProjection
+import SuccessorTree.V10.SignatureSplice
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -117,3 +118,10 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.every_irreducible_H_vertex_is_real
 #print axioms SuccessorTree.V10.irreducible_H_copy_projects_to_base
 #print axioms SuccessorTree.V10.ordered_irreducible_H_copy_projects_to_base
+
+-- Exact conditional ordered splicing of two matching age-change signatures.
+-- These check the complete atom-preserving construction, not the KFpt adapter.
+#print axioms SuccessorTree.V10.signatureSplice_order_avoids
+#print axioms SuccessorTree.V10.signatureSplice_binary
+#print axioms SuccessorTree.V10.signatureSplice_singleton
+#print axioms SuccessorTree.V10.signatureSplice_inducedCopy
