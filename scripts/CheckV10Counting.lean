@@ -35,6 +35,7 @@ import SuccessorTree.V10.HELinkage
 import SuccessorTree.V10.CommonSocleType
 import SuccessorTree.V10.FirstFullPrefix
 import SuccessorTree.V10.RawTypeMeet
+import SuccessorTree.V10.RawMeetLevel
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -222,3 +223,6 @@ set_option autoImplicit false
 -- Universal property of actual complete L+ prefixes from a common ambient.
 #print axioms SuccessorTree.V10.rawPartialType_prefix_of_cut
 #print axioms SuccessorTree.V10.rawPartialTypes_have_greatest_common_prefix
+
+-- A genuine first binary difference fixes the universal raw L+ meet level.
+#print axioms SuccessorTree.V10.rawPartialType_meet_level_of_first_binary_difference
