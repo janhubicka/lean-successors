@@ -39,6 +39,7 @@ import SuccessorTree.V10.RawMeetLevel
 import SuccessorTree.V10.RawPrefixOrder
 import SuccessorTree.V10.PrefixReplicaE
 import SuccessorTree.V10.PrefixReplicaL
+import SuccessorTree.V10.PrefixReplicaPartial
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -261,3 +262,7 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.prefixReplicaL_cross
 #print axioms SuccessorTree.V10.prefixReplicaL_filler_neutral
 #print axioms SuccessorTree.V10.prefixReplicaL_type_eq
+
+-- Actual one-filler partial structure satisfies E1-E3 and realizes shortened type.
+#print axioms SuccessorTree.V10.prefixReplicaPartialStructure_freeLevel
+#print axioms SuccessorTree.V10.prefixReplicaPartialStructure_type_eq
