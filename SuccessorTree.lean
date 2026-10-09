@@ -124,3 +124,5 @@ import SuccessorTree.V10.AdmissibleKptPrefix
 import SuccessorTree.V10.FiniteKptLevels
 import SuccessorTree.V10.RawPrefixMeet
 import SuccessorTree.V10.RawPartialTypeLevelTree
+import SuccessorTree.V10.AdmissibleKptMeet
+import SuccessorTree.V10.AdmissibleKptLevelTree
