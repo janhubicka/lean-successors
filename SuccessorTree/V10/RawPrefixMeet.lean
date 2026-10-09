@@ -59,9 +59,11 @@ For disjoint root components the numerical value is irrelevant. -/
 noncomputable def rawMeetLevel
     {db du dd : Nat}
     (a b : RawPartialTypeNode db du dd) : Nat :=
-  if h : ∃ c, c ≤ a ∧ c ≤ b then
-    Nat.findGreatest (RawCommonLevel a b) (min a.1 b.1)
-  else 0
+  by
+    classical
+    exact if h : ∃ c, c ≤ a ∧ c ≤ b then
+      Nat.findGreatest (RawCommonLevel a b) (min a.1 b.1)
+    else 0
 
 theorem rawMeetLevel_common
     {db du dd : Nat}
@@ -81,9 +83,11 @@ noncomputable def rawMeet
     {db du dd : Nat}
     (a b : RawPartialTypeNode db du dd) :
     RawPartialTypeNode db du dd :=
-  if h : ∃ c, c ≤ a ∧ c ≤ b then
-    Classical.choose (rawMeetLevel_common a b h)
-  else rawEmptyTypeNode db du dd
+  by
+    classical
+    exact if h : ∃ c, c ≤ a ∧ c ≤ b then
+      Classical.choose (rawMeetLevel_common a b h)
+    else rawEmptyTypeNode db du dd
 
 theorem rawMeet_spec
     {db du dd : Nat}
