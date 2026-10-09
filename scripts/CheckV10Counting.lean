@@ -16,6 +16,9 @@ import SuccessorTree.V10.CanonicalObservation
 import SuccessorTree.V10.HAge
 import SuccessorTree.V10.HGenerationRank
 import SuccessorTree.V10.HRelocation
+import SuccessorTree.V10.RelocationCopy
+import SuccessorTree.V10.RelocationIrreducible
+import SuccessorTree.V10.RelocationOrder
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -96,3 +99,11 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.relocated_lower_pairs
 #print axioms SuccessorTree.V10.relocated_lower_upper_pair
 #print axioms SuccessorTree.V10.relocated_singleton_data
+#print axioms SuccessorTree.V10.mixedBinary_eq_after_lower_relocation
+#print axioms SuccessorTree.V10.mixedUnary_eq_after_lower_relocation
+#print axioms SuccessorTree.V10.mixedDiagonal_eq_after_lower_relocation
+#print axioms SuccessorTree.V10.linked_firstIndex_lt_of_position_lt
+#print axioms SuccessorTree.V10.irreducible_mixedBinary_eq_after_relocation
+#print axioms SuccessorTree.V10.relocated_lower_order
+#print axioms SuccessorTree.V10.relocated_lower_before_upper
+#print axioms SuccessorTree.V10.relocated_lower_avoids_old_last
