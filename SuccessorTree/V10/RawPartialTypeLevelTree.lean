@@ -113,8 +113,7 @@ theorem rawLevelTree_ancestor_eq_restrict
     (a : RawPartialTypeNode db du dd)
     (n : Nat) (hn : n ≤ LevelTree.lev a) :
     LevelTree.ancestor a n hn =
-      rawPartialTypeAncestor a n (by
-        simpa only [LevelTree.lev, instRawPartialTypeLevelTree] using hn) := by
+      rawPartialTypeAncestor a n (by exact hn) := by
   have hRawLevel : n ≤ a.1 := hn
   have hRawAnc : rawPartialTypeAncestor a n hRawLevel ≤ a :=
     rawPartialTypeAncestor_le a n hRawLevel
