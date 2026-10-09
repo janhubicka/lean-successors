@@ -31,6 +31,7 @@ import SuccessorTree.V10.EFreeLevel
 import SuccessorTree.V10.PartialStructureE
 import SuccessorTree.V10.HExactE
 import SuccessorTree.V10.PartialTypeRestriction
+import SuccessorTree.V10.HELinkage
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -195,3 +196,8 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.RelationalPrefixType.ofAgeModel_restrict
 #print axioms SuccessorTree.V10.PartialTypeWithE.eq_of_atoms
 #print axioms SuccessorTree.V10.EnumeratedPartialStructure.partialTypeAt_restrict
+
+-- Definition 6.28(3) for the complete exact H model, no new axioms.
+#print axioms SuccessorTree.V10.exactHEBool_of_linked_real_positions
+#print axioms SuccessorTree.V10.exactHEBool_of_HLinked_increasing
+#print axioms SuccessorTree.V10.exactH_satisfies_E_axioms
