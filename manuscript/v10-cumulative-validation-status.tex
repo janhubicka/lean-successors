@@ -34,9 +34,11 @@
 %   PR #132: full and focused CI, admissible normalized Kpt LevelTree.
 %
 % The PRs above are staged as localized drafts and remain unmerged.
-% The full and focused status of later PRs #133 (binary diagonal)
-% and #134 (canonical successor parameter) must be checked at their
-% exact final SHA before considering those entries green.
+%   PR #133: full and focused CI, binary diagonal normalization;
+%   PR #134: full and focused CI, canonical empty-or-singleton parameter.
+%   PR #135: full Lean CI, consolidated review-only source notes.
+%   CanonicalCrossing.lean (new continuation): theorem-axiom audit pending
+%   exact current head; it is NOT the complete successor operation.
 %
 % =====================================================================
 % Proposed consolidated TODO after Definition 6.28 / Remark 6.29
@@ -79,7 +81,11 @@ otherwise to contain just its canonical partial type
 at that positive free level. The strict parameter-level
 bound follows from spacing, and is isolated in
 \texttt{CanonicalInsertionParameter.lean}
-(pending exact CI). Prove that these data recover the
+(PR #134, full and focused CI checked).
+The no-new-tuples consequence of E3, including both directed
+orientations above the new vertex's free cut, is proved separately
+by \texttt{CanonicalCrossing.lean} (current review branch; precise
+CI status still to be checked). Prove that these data recover the
 complete successor record uniquely (S2) and that every
 cover of admissible types arises this way (S3).
 Only then mark Proposition~6.32 as verified and start the
@@ -182,8 +188,8 @@ for distinct vertices and singleton diagonal binary
 facts separately. Fix the otherwise unused self-pair
 entries of the off-diagonal table canonically (all false);
 this does not alter any induced $L$-embedding or the
-auxiliary $E$-relation, as checked conditionally by
-\texttt{CanonicalBinary.lean} (PR #133, exact CI pending).
+auxiliary $E$-relation, as kernel-checked by
+\texttt{CanonicalBinary.lean} (PR #133, full and focused CI green).
 Then identify the diagonal coordinate map with the
 original finite binary relation symbols and settle
 nullary symbols once for the whole age. Only after
