@@ -164,3 +164,5 @@ import SuccessorTree.V10.LevelRemovalE
 import SuccessorTree.V10.LevelRemovalPartial
 
 import SuccessorTree.V10.LevelRemovalFreeCut
+
+import SuccessorTree.V10.LevelRemovalSharpExample
