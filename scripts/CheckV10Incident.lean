@@ -1,0 +1,11 @@
+import SuccessorTree.V10.HIncidentTrace
+
+#print axioms SuccessorTree.V10.bidirectionalBits_left
+#print axioms SuccessorTree.V10.bidirectionalBits_right
+#print axioms SuccessorTree.V10.bidirectionalBits_nonempty_iff
+#print axioms SuccessorTree.V10.bidirectionalBits_all_false_iff
+#print axioms SuccessorTree.V10.firstBidirectionalNeighbour_iff
+#print axioms SuccessorTree.V10.hNumericBinary_bidirectional_matches_trace
+#print axioms SuccessorTree.V10.hNumericBinary_odd_bidirectional_empty
+#print axioms SuccessorTree.V10.generatedE_real_before_source
+#print axioms SuccessorTree.V10.hNumericBinary_first_positive_disagreement
