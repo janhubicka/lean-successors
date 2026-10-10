@@ -52,19 +52,21 @@ Given a partial type $T^+$, define its successor as prescribed.
 \end{document}
 """
 todos=app.find_todos(app.OVERLAY.read_text(encoding="utf-8"))
-assert len(todos)==8
+assert len(todos)==9
 once,markers=app.transform(old,todos)
 twice,_=app.transform(once,todos)
 assert once==twice
 assert "Former robot note" not in once
 assert "Stale iterated-meet conditional note" not in once
 assert "% successor-v10-proof:cor:meet-origins" in once
+assert "% successor-v10-proof:lem:local-age" in once
+assert "Another local age lemma." in once
 assert "% successor-v10-proof:thm:zucker" in once
 assert "% v10 repair 2: do not touch" in once
 assert "Original mixed-generation formula" in once
 assert "Other old review notes must NOT be deleted" in once
 assert "% successor-v10-proof:lem:meets" in once
-assert len(markers)==8
+assert len(markers)==9
 assert "% successor-v10-proof:definition-6-30" in once
 assert app.remove_only_managed(once)==app.remove_only_managed(old)
 with tempfile.TemporaryDirectory() as tmp:

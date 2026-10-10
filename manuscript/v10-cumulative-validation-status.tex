@@ -1,6 +1,6 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 10 October 2026. Cumulative continuation through PR 165.
+% 10 October 2026. Cumulative continuation through PR 166.
 %
 % Apply with update-v10-source.py to the author's current main.tex.
 % This file replaces overlapping machine-labelled notes; do not concatenate
@@ -27,6 +27,9 @@
 % PR 165 crossing checkpoint: b44d378e7d19d937669c90bad3e20f407ee540ff.
 % V10 focused build/axiom audit 38056182806 passed.
 % The actual Kpt crossing now supplies the full ambient L-type used by signatures.
+% PR 166 structural proof checkpoint: fc2af03f3b854ec8a14e1356ad82f6074ec91114.
+% Full Lean 38059711091, focused V10 38059711093: success.
+% Lemma 6.51 finite insertion and age-test reduction checked; global ShapeMap OPEN.
 % =====================================================================
 
 % Proposed consolidated TODO at obs:env1, retaining the type-forest checkpoint.
@@ -240,3 +243,43 @@ condition is that $Y$ consists of prefixes represented by the seed pool.
 This settles the former iterated-meet/provenance obligation in this
 model. It does not settle levels selected by the age obstruction or the
 whole upper-bound recurrence.}
+
+% Proposed standalone TODO at Lemma 6.51; all existing mathematical prose
+% and the four author repairs remain unchanged.
+\todo[inline]{\textbf{v10 validation: common-socle boring extension --
+GREEN finite structure/age reduction, global shape map OPEN.}
+The construction in \texttt{LocalAgeInsertion.lean} and
+\texttt{LocalAgePartialInsertion.lean} copies the complete old
+$L$-reduct across insertion of one coordinate $\ell>0$, including
+absent directed binary tuples and all unary and diagonal facts.
+It defines the new auxiliary $E$-relation using transported
+initial-segment cuts and proves spacing, downward closure, and
+the linked-pair axiom under the displayed local linkage conditions.
+\texttt{LocalAgeFreeCut.lean} identifies these cuts with the actual
+canonical free levels of the inserted partial structure.
+The strict positivity $\ell>0$ is used: when $\ell=0$ and the first
+old vertex has free cut zero, the naive shifted cut becomes one and
+creates the forbidden consecutive $E(0,1)$ pair. Lemma 6.51
+already imposes $\ell>0$.
+
+\texttt{LocalAgeForbiddenTest.lean} checks the age argument against
+the exact three-clause \emph{finite} $L$-age test, rather than a
+stronger condition on arbitrary infinite witnesses. Any forbidden
+ordered induced copy avoiding $\ell$ pulls back to the source.
+An irreducible copy containing $\ell$ restricts to the common
+initial socle together with its upper vertices; those upper vertices
+are linked to $\ell$ and therefore must realize the prescribed
+crossings. Deleting $\ell$ from this finite witness gives a
+forbidden-free structure, contradicting the age test. A forbidden
+singleton at the inserted coordinate is excluded by the
+forbidden-free common socle, without a separate hypothesis.
+No $E$-constraint is imposed on the upper vertices of the
+$L$-age test.
+
+\textbf{Remaining:} define the insertion uniformly on all admissible
+Kpt types, derive the local linkage and prescribed upper crossings
+from the actual $f:S\to\KFpt(\ell+1)$, prove independence from
+representing ambient structures, and verify weak successor
+preservation (including the parameter and terminal letter).
+Only then mark Lemma~\ref{lem:local-age} and the resulting
+global one-level skipping ShapeMap GREEN.}
