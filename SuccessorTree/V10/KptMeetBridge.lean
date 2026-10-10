@@ -1,6 +1,7 @@
 import SuccessorTree.V10.AdmissibleKptLevelTree
 import SuccessorTree.V10.CommonSocleType
 import SuccessorTree.V10.FirstFullPrefix
+import SuccessorTree.V10.AncestorMeet
 import Mathlib.Tactic
 
 /-!
@@ -40,9 +41,13 @@ theorem admissibleKpt_original_ancestors_eq_iff
     (hdv : d ≤ A.freeLevel v)
     (hdw : d ≤ A.freeLevel w) :
     LevelTree.ancestor
-        (⟨A.rawTypeAtFree v, hAdV⟩ : AdmissibleKptNode family) d hdv =
+        (⟨A.rawTypeAtFree v, hAdV⟩ : AdmissibleKptNode family) d (by
+          change d ≤ A.freeLevel v
+          exact hdv) =
       LevelTree.ancestor
-        (⟨A.rawTypeAtFree w, hAdW⟩ : AdmissibleKptNode family) d hdw
+        (⟨A.rawTypeAtFree w, hAdW⟩ : AdmissibleKptNode family) d (by
+          change d ≤ A.freeLevel w
+          exact hdw)
       ↔ A.partialTypeAt d v = A.partialTypeAt d w := by
   rw [admissibleKpt_levelTree_ancestor_eq,
       admissibleKpt_levelTree_ancestor_eq]
