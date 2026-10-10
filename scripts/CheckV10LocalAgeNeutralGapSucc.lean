@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LocalAgeNeutralGapSucc
+
+#print axioms SuccessorTree.V10.neutralKptSkip_self_prefix_at_gap
+#print axioms SuccessorTree.V10.neutralKptSkip_weak_succ_below_gap
