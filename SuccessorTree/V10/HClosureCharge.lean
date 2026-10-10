@@ -175,9 +175,9 @@ theorem forbiddenFreeH_closure_meet_budget
     family K hCarrier k N hk hAvoid (U : Set (Fin N)) I X hX
     s t hs ht hc hss hst p r hr hrk hMeet
   have hvV : v ∈ V := by
-    simpa [V, hStageOriginals, ambientStagePool] using hv
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ v, hv⟩
   have hwV : w ∈ V := by
-    simpa [V, hStageOriginals, ambientStagePool] using hw
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ w, hw⟩
   rw [hMeet]
   rcases numericHMeetCharge_higher_original K.binary k v.val w.val p r hCharge with h | h
   · exact hOriginalCharge_level_mem_budget K.binary k r V v hvV p h
