@@ -1,0 +1,6 @@
+import SuccessorTree.V10.LocalAgeNeutralTransport
+
+#print axioms SuccessorTree.V10.prefixVertexIndex_insertedTypeCoordinate
+#print axioms SuccessorTree.V10.prefixVertexIndex_inside
+#print axioms SuccessorTree.V10.neutralInsert_old_E_eq
+#print axioms SuccessorTree.V10.neutralInsert_partialType_old_atoms
