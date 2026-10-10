@@ -1,0 +1,13 @@
+import SuccessorTree.V10.EndDuplicateAge
+import SuccessorTree.V10.LevelRemovalFreeCut
+
+#print axioms SuccessorTree.V10.duplicateEndPartial
+#print axioms SuccessorTree.V10.duplicateEndPartial_freeLevel
+#print axioms SuccessorTree.V10.duplicateEndPartial_last_type_eq
+#print axioms SuccessorTree.V10.duplicateEndL_preserves_avoidance
+#print axioms SuccessorTree.V10.NormalizedForbidden.duplicateEnd_preserves_avoidance
+#print axioms SuccessorTree.V10.deleteAtE_spaced
+#print axioms SuccessorTree.V10.deletionBoundaryE_weak_guard_fails
+#print axioms SuccessorTree.V10.deleteAtPartial
+#print axioms SuccessorTree.V10.deleteAtPartial_preserves_avoidance
+#print axioms SuccessorTree.V10.deleteAtPartial_freeLevel_eq
