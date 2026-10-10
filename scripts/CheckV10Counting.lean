@@ -434,3 +434,11 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.kptM_fusion_mem
 #print axioms SuccessorTree.V10.kptM1
 #print axioms SuccessorTree.V10.kptM_fixes_roots
+
+import SuccessorTree.V10.HNumericBinary
+
+-- Exact numerical H L-copying and fake-vertex nonrelations, both orientations.
+#print axioms SuccessorTree.V10.hNumericBinary_true_iff
+#print axioms SuccessorTree.V10.hNumericBinary_real_forward_iff
+#print axioms SuccessorTree.V10.hNumericBinary_odd_left_false
+#print axioms SuccessorTree.V10.hNumericBinary_odd_right_false
