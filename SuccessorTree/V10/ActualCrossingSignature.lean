@@ -39,14 +39,48 @@ theorem admissibleKpt_original_ancestor_value
       (⟨cut, A.partialTypeAt cut v⟩ :
         RawPartialTypeNode db du dd) := by
   rw [admissibleKpt_levelTree_ancestor_eq]
-  change rawPartialTypeAncestor (A.rawTypeAtFree v) cut hcut =
-    (⟨cut, A.partialTypeAt cut v⟩ : RawPartialTypeNode db du dd)
-  apply Sigma.ext
-  · rfl
-  · change
-      (A.partialTypeAt (A.freeLevel v) v).restrict hcut =
-        A.partialTypeAt cut v
-    exact A.partialTypeAt_restrict cut (A.freeLevel v) v hcut
+  change
+    (⟨cut, (A.partialTypeAt (A.freeLevel v) v).restrict hcut⟩ :
+      RawPartialTypeNode db du dd) =
+    (⟨cut, A.partialTypeAt cut v⟩ :
+      RawPartialTypeNode db du dd)
+  exact congrArg (Sigma.mk cut)
+    (A.partialTypeAt_restrict cut (A.freeLevel v) v hcut)
+
+/-- The L-reduct of the genuine Kpt crossing of a named ambient original.
+The admissibility and cut witnesses are arguments so this object cannot be
+formed as an alleged Kpt crossing without the actual ancestor being defined. -/
+def actualKptCrossingReduct
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (C : EnumeratedPartialStructure db du dd)
+    (original cut : Nat)
+    (_hAd : IsAdmissibleRawType family (C.rawTypeAtFree original))
+    (_hcut : cut ≤ C.freeLevel original) :
+    RelationalPrefixType cut db du dd :=
+  (C.partialTypeAt cut original).lReduct
+
+/-- The cut-indexed crossing reduct is indeed the L-component of the raw
+record underlying the actual LevelTree ancestor. -/
+theorem actualKptCrossingReduct_spec
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (C : EnumeratedPartialStructure db du dd)
+    (original cut : Nat)
+    (hAd : IsAdmissibleRawType family (C.rawTypeAtFree original))
+    (hcut : cut ≤ C.freeLevel original) :
+    (LevelTree.ancestor
+      (⟨C.rawTypeAtFree original, hAd⟩ : AdmissibleKptNode family)
+      cut (by
+        change cut ≤ C.freeLevel original
+        exact hcut)).1 =
+      (⟨cut, {
+        lReduct := actualKptCrossingReduct family C original cut hAd hcut
+        eRelation := (C.partialTypeAt cut original).eRelation
+      }⟩ : RawPartialTypeNode db du dd) := by
+  simpa [actualKptCrossingReduct] using
+    admissibleKpt_original_ancestor_value
+      family C original cut hAd hcut
 
 /-- If an upper vertex of an age-test witness realizes the L-reduct of
 that ACTUAL Kpt crossing, then it has exactly the full directed atomic
@@ -61,24 +95,13 @@ theorem actualKpt_crossing_implies_fullAtomic
     (hcut : cut ≤ C.freeLevel original)
     (hWitness :
       RelationalPrefixType.ofAgeModel W cut upper =
-        (LevelTree.ancestor
-          (⟨C.rawTypeAtFree original, hAd⟩ :
-            AdmissibleKptNode family)
-          cut (by
-            change cut ≤ C.freeLevel original
-            exact hcut)).1.2.lReduct) :
+        actualKptCrossingReduct family C original cut hAd hcut) :
     fullAtomicTypePrefix W.binary W.unary W.diagonal cut upper =
       fullAtomicTypePrefix C.L.binary C.L.unary C.L.diagonal
         cut original := by
-  have hAncestor :=
-    admissibleKpt_original_ancestor_value
-      family C original cut hAd hcut
-  have hLR : RelationalPrefixType.ofAgeModel W cut upper =
-      (C.partialTypeAt cut original).lReduct := by
-    rw [hAncestor] at hWitness
-    exact hWitness
   exact equal_reduct_types_imply_fullAtomic W C.L
-    cut upper original hLR
+    cut upper original (by
+      simpa [actualKptCrossingReduct] using hWitness)
 
 /-- Signature collision contradiction when every non-bottom signature
 label is an actual ambient original and the witness upper vertex realizes
@@ -120,22 +143,14 @@ theorem signature_collision_impossible_of_actual_kpt_crossings
       ell0 + 1 ≤ C.freeLevel (original v))
     (hOriginalCut1 : ∀ b v, signature b = some v →
       ell1 + 1 ≤ C.freeLevel (original v))
-    (hCross0 : ∀ b v, signature b = some v →
+    (hCross0 : ∀ b v (hb : signature b = some v),
       RelationalPrefixType.ofAgeModel A0 (ell0 + 1) (e0 b) =
-        (LevelTree.ancestor
-          (⟨C.rawTypeAtFree (original v), hAd v⟩ :
-            AdmissibleKptNode family)
-          (ell0 + 1) (by
-            change ell0 + 1 ≤ C.freeLevel (original v)
-            exact hOriginalCut0 b v ‹signature b = some v›)).1.2.lReduct)
-    (hCross1 : ∀ b v, signature b = some v →
+        actualKptCrossingReduct family C (original v) (ell0 + 1)
+          (hAd v) (hOriginalCut0 b v hb))
+    (hCross1 : ∀ b v (hb : signature b = some v),
       RelationalPrefixType.ofAgeModel A1 (ell1 + 1) (e1 b) =
-        (LevelTree.ancestor
-          (⟨C.rawTypeAtFree (original v), hAd v⟩ :
-            AdmissibleKptNode family)
-          (ell1 + 1) (by
-            change ell1 + 1 ≤ C.freeLevel (original v)
-            exact hOriginalCut1 b v ‹signature b = some v›)).1.2.lReduct)
+        actualKptCrossingReduct family C (original v) (ell1 + 1)
+          (hAd v) (hOriginalCut1 b v hb))
     (hNoForbiddenAway : ∀ f : Fin r → Nat,
       A1.Realizes F f → (∀ i, f i ≠ ell1) → False) :
     False := by
