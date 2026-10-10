@@ -1,0 +1,4 @@
+import SuccessorTree.V10.PrescribedCommonSocle
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.insertedData_ordinary_L_agrees
+#print axioms SuccessorTree.V10.PrescribedBoringData.insertedData_common_initial_L
