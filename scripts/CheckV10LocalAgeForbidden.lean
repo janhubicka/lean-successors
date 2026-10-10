@@ -1,0 +1,6 @@
+import SuccessorTree.V10.LocalAgeForbiddenTest
+
+#print axioms SuccessorTree.V10.IsLInsertion.restricted_without_inserted_avoids
+#print axioms SuccessorTree.V10.SameInitialL.restrictCarrier
+#print axioms SuccessorTree.V10.localAgeTest_excludes_nontrivial_inserted_copy
+#print axioms SuccessorTree.V10.localAgeTest_preserves_avoidance
