@@ -71,7 +71,7 @@ theorem PrescribedBoringData.insertL_linked_upper_is_prescribed
   have hDataLink : ∃ t : Fin db,
       (F.insertedLData A P).outgoing u t = true ∨
       (F.insertedLData A P).incoming u t = true := by
-    simpa only [insertL, hxne, u] using hLink
+    simpa [insertL, hxne, u] using hLink
   obtain ⟨T,hT,hType⟩ :=
     F.linked_upper_has_prescribed_L_type A base u P
       hUge hUsize hSelected hDataLink
