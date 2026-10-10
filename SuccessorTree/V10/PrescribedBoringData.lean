@@ -78,7 +78,7 @@ structure PrescribedBoringData (ell db du dd : Nat) where
   source : Set (PartialTypeWithE ell db du dd)
   target : PartialTypeWithE ell db du dd →
     PartialTypeWithE (ell + 1) db du dd
-  extends : ∀ T, T ∈ source →
+  extendsSource : ∀ T, T ∈ source →
     (target T).restrict (Nat.le_succ ell) = T
   preservesCompatibility :
     ∀ T U, T ∈ source → U ∈ source →
@@ -131,8 +131,9 @@ noncomputable def PrescribedBoringData.selectedLowerColumn
     {ell db du dd : Nat}
     (F : PrescribedBoringData ell db du dd)
     (T : PartialTypeWithE ell db du dd) :
-    Option (LowerInsertedColumn ell db du dd) :=
-  if h : F.HasCompatibleSource T then
+    Option (LowerInsertedColumn ell db du dd) := by
+  classical
+  exact if h : F.HasCompatibleSource T then
     some (lowerInsertedColumn (F.target (Classical.choose h)))
   else none
 
@@ -165,6 +166,7 @@ theorem PrescribedBoringData.selectedLowerColumn_none
     (T : PartialTypeWithE ell db du dd)
     (hNone : ¬ F.HasCompatibleSource T) :
     F.selectedLowerColumn T = none := by
+  classical
   simp [PrescribedBoringData.selectedLowerColumn, hNone]
 
 end SuccessorTree.V10
