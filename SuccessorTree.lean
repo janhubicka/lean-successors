@@ -162,3 +162,5 @@ import SuccessorTree.V10.ConcreteKptM1
 import SuccessorTree.V10.HNumericBinary
 
 import SuccessorTree.V10.HDirectedTraces
+
+import SuccessorTree.V10.HBidirectionalPacket
