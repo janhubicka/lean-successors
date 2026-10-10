@@ -126,7 +126,8 @@ theorem neutralKptSkip_weak_succ_above_gap
         (A.partialTypeAt (n+1) v).terminalLetter := by
     have hh := neutralInsert_terminalLetter_eq A ell hell hellPos
       n v hn hv
-    simpa only [B, hNShift, Nat.add_assoc] using hh
+    rw [hNShift] at hh
+    simpa only [B, Nat.add_assoc, Nat.reduceAdd] using hh
   have hLetter : c' = c.1 :=
     hLetterB.trans (hLetterTransport.trans hLetterA.symm)
   have hParamA :
