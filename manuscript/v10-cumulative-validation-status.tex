@@ -1,6 +1,6 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 10 October 2026. Checkpoints through PR 162.
+% 10 October 2026. Cumulative continuation through PR 163.
 %
 % Apply with update-v10-source.py to the author's current main.tex.
 % This file is a replacement for overlapping machine-labelled notes,
@@ -18,8 +18,14 @@
 % PR 156: 2899b151, full/focused CI and manuscript updater passed;
 % PR 160: 475a955a, full/focused CI passed;
 % PR 161: a0a9163c, full/focused CI passed;
-% PR 162: a89d34f2, all nine new incident-trace theorem audits passed.
-% PRs 153, 156 and 160 are separate staged branches, not imports of PR 162.
+% PR 162: 95340aa4, full/focused CI and manuscript updater passed.
+% PR 163 integrates the Kpt meet bridge/converse from PR 160 unchanged.
+% PRs 153 and 156 remain separate staged branches.
+% PR 163 proof checkpoint: 30b397e999b51a1355563ebe9e3b1c214cc60afb.
+% Full Lean run 38020379540 and V10 audit 38020379541 passed.
+% CheckV10ActualMeet: 29 endpoints, standard Lean axioms only.
+% No H construction, age, trace-to-meet or charging assumption remains in
+% forbiddenFreeH_prefix_meet_charge beyond the stated base and geometry.
 % =====================================================================
 
 % Proposed consolidated TODO after Definition 6.28 / Remark 6.29
@@ -72,57 +78,65 @@ compatibility preservation and decomposition needed for M2/M3
 must still be constructed.}
 
 % Proposed consolidated TODO at Definition 6.45 / Observation 6.46
-\todo[inline]{\textbf{v10 validation: the exact $H^+$ model -- PARTIAL.}
-The generated auxiliary $E$-relation, its spacing/downward
-closure and its first-missing-coordinate formulas are checked in
-\texttt{HExactE.lean}. The exact numerical binary $L$-relation is
-now defined by all permitted real-pair generators in
-\texttt{HNumericBinary.lean}. Both ordered directions, including
-absent atoms and the exceptional top-generation pair, equal the
-corresponding complete traces in \texttt{HDirectedTraces.lean}.
-Odd fake vertices are isolated only in the $L$-reduct: they may
-occur as lower coordinates in real vertices' $E$-socles.
-For the manuscript, specify that every permitted ordered
-binary tuple is copied exactly from the corresponding tuple in
-$K$, that real vertices copy their unary and diagonal data,
-and that fake vertices have the chosen neutral singleton type.
-Declare every other off-diagonal $L$-tuple absent and use the
-exact generated $E$-relation. Fix nullary interpretations
-uniformly. The one-way substructure clause does not by itself
-identify the manuscript construction with this exact model.}
+\todo[inline]{\textbf{v10 validation: exact finite $H^+$ construction --
+GREEN in the normalized language; manuscript identification OPEN.}
+The numerical construction now gives one genuine finite partial structure,
+not separate binary and $E$ models. In \texttt{HFinitePartial.lean},
+\texttt{finiteNumericH} copies every permitted ordered binary tuple, copies
+unary and diagonal data at every real vertex, and gives fake vertices
+the neutral singleton. Its generated $E$-relation satisfies spacing,
+downward closure and the linked-pair axiom. Its complete records therefore
+belong to the same partial-type representation used for the actual meets.
+
+For a base $K$ enumerated on $\omega$, \texttt{HFiniteAge.lean}
+proves that every nontrivial irreducible ordered copy in this finite
+$H$ projects to an ordered induced copy in $K$: all its vertices are
+real, their first indices strictly increase, and all positive and
+negative directed tuples and singleton data are preserved. A forbidden
+non-neutral singleton cannot occur at a fake vertex. Thus avoidance of
+the normalized forbidden family follows from avoidance in $K$; it is
+not a new hypothesis about $H$.
+
+The manuscript still needs the exact-copy interpretation stated
+explicitly. Replace the one-way substructure clause by exact copying
+of permitted ordered binary tuples and real singleton data, absence of
+all other off-diagonal $L$-tuples, neutral fake singletons, and the exact
+generated $E$-relation. Odd fake vertices are $L$-isolated, not
+$L^+$-isolated. This check does not by itself establish equivalence
+with the current underdetermined prose or the full language adapter.}
 
 % Proposed consolidated TODO at Lemma 6.49 / Corollary 6.50
-\todo[inline]{\textbf{v10 validation: charged meets -- PARTIAL;
-complete numerical first-disagreement classification GREEN.}
-The binary tuple used for $p(i)$ must contain both ordered
-directions of every symbol. In \texttt{HIncidentTrace.lean},
-nonemptiness of that tuple is proved equivalent to an incident
-binary relation in either direction, and its exact numerical
-$H$ interpretation is identified with the bundled trace.
-Suppose the first differing coordinate is $\iota(p,r)$ with
-$r>0$ and lies in both exact $E$-socles. After interchanging
-originals, write them as $\iota(i,n)$ and $\iota(j,m)$ with
-$m<n$. The checked conclusion is
-$r=m$, $p=p(i)$ and $p+1<j$.
-Thus the sharp lower-original domain condition is derived,
-not replaced by $p<j$. Odd fake coordinates cannot distinguish
-the binary tuples, and equal generations, including two top
-generations, cannot first differ at positive generation.
+\todo[inline]{\textbf{v10 validation: actual positive-generation meet
+charge -- GREEN for the exact normalized $H$ construction.}
+The endpoint \texttt{forbiddenFreeH\_prefix\_meet\_charge} in
+\texttt{HFiniteAge.lean} starts with a forbidden-free base $K$ on
+$\omega$, constructs a finite initial segment of the exact $H^+$,
+and considers arbitrary represented prefixes in the genuine admissible
+$K^{\mathcal F}_{pt}$ tree. If their actual meet is distinct from
+both and has level $\iota(p,r)$ with $r>0$, then, after exchanging
+originals, they have the form $\iota(i,n)$ and $\iota(j,m)$ with
+$0<m<n\leq k$, and
+\[
+ r=m,\qquad p=p(i),\qquad p+1<j.
+\]
+Both $E$-socle memberships, the positive generations of the originals,
+and the first complete directed binary disagreement are derived from
+the actual meet. None is supplied as an extra trace or free-cut
+assumption. The shared singleton information follows from the common
+predecessor, so unary, diagonal and auxiliary $E$ data are not omitted.
+The passage from prefixes to originals uses equality of their
+nontrivial meets, not just the observation that a meet is a prefix.
+The tuple determining $p(i)$ includes both orientations of every
+binary relation, including absent atoms.
 
-The separate checked actual-tree results in
-\texttt{KptMeetBridge.lean} and \texttt{KptMeetConverse.lean}
-(PRs~158 and~160) identify complete-prefix equality with
-admissible $K^{\mathcal F}_{pt}$ ancestor equality. A genuine
-meet strictly below both represented originals yields a first
-directed binary disagreement inside both free cuts; its common
-root is obtained by restriction, not added as a new assumption.
-The remaining task is to connect these two checked results
-using the same exact admissible $H^+$ realization, including
-its full $L^+$ records. Do not mark Lemma~\ref{lem:meets}
-fully verified before this connection is checked. Then carry
-the maintained original pool through parameter closure at every
-selected envelope level; the numerical counting bound alone
-does not prove this invariant.}
+This discharges the former connection between the numerical
+classification and actual admissible meets in the exact normalized
+model. To identify it literally with Lemma~\ref{lem:meets}, retain
+the explicit-copy correction and the language-normalization TODO.
+For Corollary~\ref{cor:meet-origins} and the envelope induction,
+still prove that the maintained original pool is parameter-closed
+at every selected level. The local pairwise charge does not alone
+establish that invariant or the final recurrence.}
 
 % Proposed consolidated TODO at Observation 6.52 / Lemma 6.53
 \todo[inline]{\textbf{v10 validation: age signatures and relocation --
@@ -147,16 +161,17 @@ manuscript-facing obligations until this bridge is proved.}
 % Proposed consolidated TODO at Proposition 6.44 / Theorem 6.26
 \todo[inline]{\textbf{v10 validation: final big-Ramsey upper bound --
 OPEN.}
-The finite arithmetic and recurrence in \texttt{Counting.lean}
-and \texttt{FiniteMeetBudget.lean} are checked conditionally on
-geometric meet charging, signature uniqueness and the complete
-classification of selected levels. The numerical incident-trace
-result does not by itself discharge these assumptions.
-The exact admissible $H^+$ connection, the global M2/M3
-construction, the local age/crossing identification and the
-original-pool invariant must remain visible proof obligations.
-Neither Proposition~\ref{prob:upperbound} nor
-Theorem~\ref{thm:zucker} is currently a fully checked consequence.}
+The actual positive-generation meet charge is now proved for the
+constructed forbidden-free exact normalized $H^+$ and all represented
+prefixes. The finite arithmetic in \texttt{Counting.lean} and
+\texttt{FiniteMeetBudget.lean} still needs its remaining geometric
+inputs: the maintained original-pool invariant, signature uniqueness
+from the actual crossing/age test, and the complete classification of
+selected levels. The global M2/M3 maps and the local-age lemma also
+remain open. Keep the exact-copy and language-normalization corrections
+separate from these proof obligations. Neither
+Proposition~\ref{prob:upperbound} nor Theorem~\ref{thm:zucker}
+is yet a fully checked consequence.}
 
 % Additional language-coding TODO near the beginning of Section 6.3
 \todo[inline]{\textbf{v10 validation: diagonal/nullary language adapter --
