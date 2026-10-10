@@ -434,3 +434,10 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.kptM_fusion_mem
 #print axioms SuccessorTree.V10.kptM1
 #print axioms SuccessorTree.V10.kptM_fixes_roots
+
+import SuccessorTree.V10.KptMeetBridge
+
+-- Actual forbidden-free Kpt LevelTree: full-prefix ancestors and meet from first binary crossing.
+#print axioms SuccessorTree.V10.admissibleKpt_original_ancestors_eq_iff
+#print axioms SuccessorTree.V10.admissibleKpt_meet_level_of_first_binary_difference
+#print axioms SuccessorTree.V10.forbiddenFreeKpt_meet_level_of_first_binary_difference
