@@ -1,0 +1,7 @@
+import SuccessorTree.V10.PrescribedSocleColumn
+
+#print axioms SuccessorTree.V10.lowerInsertedColumn_eq_of_sameSocle
+#print axioms SuccessorTree.V10.lowerInsertedCut_eq_of_sameSocle
+#print axioms SuccessorTree.V10.lowerInsertedColumn_link_lt_cut
+#print axioms SuccessorTree.V10.gatedInsertedLData_below
+#print axioms SuccessorTree.V10.gatedInsertedLData_above
