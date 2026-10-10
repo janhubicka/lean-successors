@@ -1,0 +1,4 @@
+import SuccessorTree.V10.PrescribedSourceRecovery
+
+#print axioms SuccessorTree.V10.prefixVertexIndex_ordinarySourceCoordinate
+#print axioms SuccessorTree.V10.partialTypeAt_ordinary_eq_of_fullType_eq
