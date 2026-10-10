@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Apply the cumulative successor-v10 validation notes to *real* main.tex.
 
-The author's four mathematical proof repairs are never edited.  Review marks
-are keyed by existing TeX labels.  The script only replaces its own prior
+The author's four mathematical proof repairs are never edited. Review marks
+are keyed by existing TeX labels. The script only replaces its own prior
 markers, and legacy notes with the exact marker '% v10 validation note LABEL'.
 It requires unique anchors, tests git-apply in a temporary checkout, checks
 idempotence, and emits an unmodified-proof-content fingerprint.
@@ -24,11 +24,13 @@ PREFIX = "successor-v10-proof"
 LABELS = {
     "obs:H": 2,                 # exact H+ interpretation
     "lem:meets": 3,             # charged meets
-    "obs:signature-unique": 4, # age-signature splicing
-    "prob:upperbound": 5,      # final bound
+    "obs:signature-unique": 4,  # age-signature splicing
+    "prob:upperbound": 5,       # final bound
 }
 OPTIONAL_LABELS = {
-    "obs:env1": 0,             # admissible Kpt family/tree verification
+    "obs:env1": 0,             # admissible Kpt and concrete original pool
+    "thm:zucker": 6,           # retained language-normalization boundary
+    "cor:meet-origins": 7,     # checked iterated-closure generation budget
 }
 
 def find_todos(tex: str) -> list[str]:
@@ -50,18 +52,39 @@ def find_todos(tex: str) -> list[str]:
             pos += 1
         else:
             raise ValueError("Unterminated \\todo[inline] in overlay")
-    if len(found) != 7:
-        raise ValueError(f"Expected 7 grouped TODOs; found {len(found)}")
+    if len(found) != 8:
+        raise ValueError(f"Expected 8 grouped TODOs; found {len(found)}")
     return found
 
+def uncommented_line(line: str) -> str:
+    """Return the prefix before an unescaped TeX comment marker."""
+    for pos, char in enumerate(line):
+        if char != "%":
+            continue
+        slash = pos - 1
+        while slash >= 0 and line[slash] == "\\":
+            slash -= 1
+        if (pos - slash - 1) % 2 == 0:
+            return line[:pos]
+    return line
+
 def label_line_end(tex: str, label: str, optional=False) -> int | None:
-    r = re.compile(r"^[^%\n]*\\label\{" + re.escape(label) + r"\}[^\n]*\n",re.M)
-    matches = list(r.finditer(tex))
+    # Count occurrences, not just matching lines: duplicate labels on one
+    # line must fail closed too. Keep the insertion at the end of its line.
+    pattern = re.compile(r"\\label\{" + re.escape(label) + r"\}")
+    matches = []
+    offset = 0
+    for line in tex.splitlines(keepends=True):
+        for _ in pattern.finditer(uncommented_line(line)):
+            if not line.endswith("\n"):
+                raise ValueError(f"Label {label} has no terminating line break")
+            matches.append(offset + len(line))
+        offset += len(line)
     if not matches and optional:
         return None
     if len(matches) != 1:
         raise ValueError(f"Expected one uncommented label {label}, found {len(matches)}")
-    return matches[0].end()
+    return matches[0]
 
 def skip_balanced_todo(tex: str, start: int) -> int:
     m = re.match(r"[ \t]*\\todo\[inline\]\{",tex[start:])
@@ -83,8 +106,7 @@ def skip_balanced_todo(tex: str, start: int) -> int:
 def remove_only_managed(tex: str) -> str:
     """Drop only markers about to be replaced, preserving every proof token."""
     anchors=set(LABELS)|set(OPTIONAL_LABELS)|{"definition-6-30"}
-    # The legacy 'v10 validation note LABEL' marker is only removed for
-    # matching anchors, never for other notes such as custom B2/B3.
+    # Legacy notes are removed only at matching anchors, never elsewhere.
     r=re.compile(r"^[ \t]*% (?:(v10 validation note) |("
                  + re.escape(PREFIX) + r"):)([\w:.-]+)[^\n]*\n",re.M)
     offset=0
@@ -110,8 +132,7 @@ def transform(src: str, todos: list[str]) -> tuple[str,list[str]]:
         note=(f"% {PREFIX}:{label}\n"+todos[index]+"\n")
         out=out[:point]+note+out[point:]
         found.append(label)
-    # The only non-label anchor is the exact first sentence of Definition
-    # 6.30. Place the note only if the TeX phrase is unambiguous.
+    # Use the exact first sentence of Definition 6.30 only if unambiguous.
     succ_pat = re.compile(
         r"\\begin\{definition\}(?:\[[^\]]*\])?"
         r"(?:\s*\\label\{[^}]+\})?\s*Given a partial type",
@@ -169,7 +190,7 @@ def run(input_path: Path, output: Path):
         "idempotence":"passed",
         "anchors":found,
         "changed":changed!=raw,
-        "boundary":"Only verified finite Kpt/conditional application statuses. Four repairs untouched."}
+        "boundary":"Exact normalized Kpt, H and closure-budget statuses; final application open. Four repairs untouched."}
     (output/"MANIFEST.json").write_text(json.dumps(manifest,indent=2)+"\n")
     print(json.dumps(manifest,indent=2))
 

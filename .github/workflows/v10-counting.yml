@@ -59,6 +59,9 @@ jobs:
       - name: Complete L+ record and actual prefix-meet regression
         shell: bash
         run: python3 scripts/check_v10_actual_meet.py | tee v10-actual-meet-regression.json
+      - name: Complete-record original-pool closure regression
+        shell: bash
+        run: python3 scripts/check_v10_original_pool.py | tee v10-original-pool-regression.json
       - name: Build audited V10 modules
         shell: bash
         run: |
@@ -80,12 +83,16 @@ jobs:
           path: |
             v10-build.log
             v10-actual-meet-regression.json
+            v10-original-pool-regression.json
             CheckV10*-axioms.log
             scripts/CheckV10*.lean
             scripts/check_v10_actual_meet.py
+            scripts/check_v10_original_pool.py
             SuccessorTree/V10/KptMeet*.lean
             SuccessorTree/V10/HActualMeet.lean
             SuccessorTree/V10/HFinite*.lean
+            SuccessorTree/V10/ConcreteOriginalPool.lean
+            SuccessorTree/V10/HClosureCharge.lean
             manuscript/v10-cumulative-validation-status.tex
             manuscript/update-v10-source.py
             manuscript/check-v10-source-updater.py
