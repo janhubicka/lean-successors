@@ -203,7 +203,8 @@ theorem localAgeTest_excludes_nontrivial_inserted_copy
         rw [haell, hea] at hBinary0 hBinary1
         simpa only [hBinary0, hBinary1] using ht
       have hp := hUpper x hxSize hx hLinked
-      simpa [W, AgeTestModel.restrictCarrier] using hp
+      change Prescribed (RelationalPrefixType.ofAgeModel B.L (ell + 1) x)
+      exact hp
   have hDeleteAvoid :
       ∀ bad, bad ∈ family → bad.Avoids (W.withoutVertex ell) := by
     exact hInsert.restricted_without_inserted_avoids
