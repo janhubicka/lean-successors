@@ -1,6 +1,6 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 10 October 2026. Cumulative continuation through PR 166.
+% 10 October 2026. Cumulative continuation through PR 167.
 %
 % Apply with update-v10-source.py to the author's current main.tex.
 % This file replaces overlapping machine-labelled notes; do not concatenate
@@ -30,6 +30,8 @@
 % PR 166 structural proof checkpoint: fc2af03f3b854ec8a14e1356ad82f6074ec91114.
 % Full Lean 38059711091, focused V10 38059711093: success.
 % Lemma 6.51 finite insertion and age-test reduction checked; global ShapeMap OPEN.
+% PR 167 neutral insertion branch: 5a63b009b01ee9bca4d707d97ce2c2a083243a67.
+% Focused V10 audit 38060229228 PASSED at the proof checkpoint.
 % =====================================================================
 
 % Proposed consolidated TODO at obs:env1, retaining the type-forest checkpoint.
@@ -248,6 +250,14 @@ whole upper-bound recurrence.}
 % and the four author repairs remain unchanged.
 \todo[inline]{\textbf{v10 validation: common-socle boring extension --
 GREEN finite structure/age reduction, global shape map OPEN.}
+The additional \texttt{LocalAgeNeutral.lean} proves that if the
+old initial socle does not match the prescribed one, the new vertex
+can be given the allowed empty singleton with no incident $L$-tuples.
+This neutral branch is a genuine forbidden-free partial structure
+without invoking the three-clause age test. It may still carry
+auxiliary $E$-relations to later old vertices; $L$-isolation does
+not imply $L^+$-isolation.
+
 The construction in \texttt{LocalAgeInsertion.lean} and
 \texttt{LocalAgePartialInsertion.lean} copies the complete old
 $L$-reduct across insertion of one coordinate $\ell>0$, including
