@@ -1,0 +1,7 @@
+import SuccessorTree.V10.PrescribedInsertPartial
+
+#print axioms SuccessorTree.V10.prescribedInsertPartial
+#print axioms SuccessorTree.V10.prescribedInsertPartial_isLInsertion
+#print axioms SuccessorTree.V10.prescribedInsertPartial_new_freeLevel
+#print axioms SuccessorTree.V10.prescribedInsertPartial_old_freeLevel
+#print axioms SuccessorTree.V10.prescribedInsertPartial_avoids_of_ageTest
