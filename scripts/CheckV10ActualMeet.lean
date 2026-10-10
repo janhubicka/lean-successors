@@ -1,4 +1,4 @@
-import SuccessorTree.V10.HActualMeet
+import SuccessorTree.V10.HFinitePartial
 
 #print axioms SuccessorTree.V10.admissibleKpt_original_ancestors_eq_iff
 #print axioms SuccessorTree.V10.admissibleKpt_meet_level_of_first_binary_difference
@@ -11,3 +11,13 @@ import SuccessorTree.V10.HActualMeet
 #print axioms SuccessorTree.V10.generatedE_positive_source_generation
 #print axioms SuccessorTree.V10.numericHMeetCharge_of_data
 #print axioms SuccessorTree.V10.NumericHOn.prefix_meet_charge
+#print axioms SuccessorTree.V10.hNumericBinary_linked_generators
+#print axioms SuccessorTree.V10.hNumericBinary_linked_E
+#print axioms SuccessorTree.V10.hNumericSingleton_real
+#print axioms SuccessorTree.V10.hNumericSingleton_no_real
+#print axioms SuccessorTree.V10.hNumericSingleton_odd
+#print axioms SuccessorTree.V10.finiteNumericHE_true_iff
+#print axioms SuccessorTree.V10.finiteNumericH
+#print axioms SuccessorTree.V10.finiteNumericH_matches
+#print axioms SuccessorTree.V10.finiteNumericHOriginal
+#print axioms SuccessorTree.V10.finiteNumericH_prefix_meet_charge

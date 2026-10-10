@@ -39,8 +39,8 @@ theorem bidirectionalBits_eq_iff
   · rintro ⟨hForward, hReverse⟩
     funext s
     by_cases hs : s.val < db
-    · simp only [bidirectionalBits, dif_pos hs, hForward]
-    · simp only [bidirectionalBits, dif_neg hs, hReverse]
+    · simp only [bidirectionalBits, dite_eq_left hs, hForward]
+    · simp only [bidirectionalBits, dite_eq_right hs, hReverse]
 
 /-- Local equalities of actual atoms, not a new tree or Ramsey axiom.
 Singleton data remain arbitrary: the common meet handles them exactly. -/
@@ -206,7 +206,7 @@ theorem NumericHOn.prefix_meet_charge
     change LevelTree.lev (LevelTree.meet a b) = d at hLev
     rw [hOrigMeet] at hLev
     exact hLev.symm.trans hMeet
-  subst d
+  rw [hd] at hEv hEw hBefore hDiff
   exact numericHMeetCharge_of_data B k v w p r hk hr hrk hEv hEw hBefore hDiff
 
 end SuccessorTree.V10
