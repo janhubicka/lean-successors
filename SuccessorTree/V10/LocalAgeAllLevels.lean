@@ -109,15 +109,17 @@ theorem pureNeutralL_avoids
         contradiction
   | nontrivial r F hr hIrred =>
       rintro ⟨f, hCopy⟩
-      have hne : (0 : Fin r) ≠ 1 := by
+      let z : Fin r := ⟨0, by omega⟩
+      let o : Fin r := ⟨1, hr⟩
+      have hne : z ≠ o := by
         intro h
         have hv := congrArg Fin.val h
-        norm_num at hv
-      obtain ⟨t,ht⟩ := hIrred 0 1 hne
-      have hf := hCopy.2.2.1 0 1 hne t
-      have hb := hCopy.2.2.1 1 0 hne.symm t
-      change false = F.binary 0 1 t at hf
-      change false = F.binary 1 0 t at hb
+        norm_num [z, o] at hv
+      obtain ⟨t,ht⟩ := hIrred z o hne
+      have hf := hCopy.2.2.1 z o hne t
+      have hb := hCopy.2.2.1 o z hne.symm t
+      change false = F.binary z o t at hf
+      change false = F.binary o z t at hb
       rcases ht with hh | hh
       · rw [hh] at hf
         contradiction
@@ -157,9 +159,13 @@ theorem neutralKptShapeMap_skipsOnly
   constructor
   · rintro ⟨a,ha⟩
     intro heq
-    subst q
-    exact neutralKptShapeMap_skips family ell hellPos ⟨a,ha⟩
+    have hIn : ell ∈ (neutralKptShapeMap family ell hellPos).levelRange := by
+      refine ⟨a, ?_⟩
+      exact ha.trans heq
+    exact (neutralKptShapeMap_skips family ell hellPos) hIn
   · intro hq
+    have hqne : q ≠ ell := by
+      simpa only [Set.mem_setOf_eq] using hq
     by_cases hlt : q < ell
     · obtain ⟨a,ha⟩ := admissibleKptLevel_nonempty family q
       refine ⟨a, ?_⟩
