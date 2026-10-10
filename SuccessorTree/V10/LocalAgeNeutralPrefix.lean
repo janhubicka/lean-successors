@@ -97,12 +97,22 @@ theorem neutralKptImage_prefix_le
   have hAvoidR : ∀ bad, bad ∈ family → bad.Avoids R.L := by
     intro bad hbad
     exact bad.replica_preserves_avoidance A v d hv hd (hAvoidA bad hbad)
+  have hSigmaA :
+      (⟨a.1.1, a.1.2⟩ : RawPartialTypeNode db du dd) =
+      (⟨A.freeLevel v, A.partialTypeAt (A.freeLevel v) v⟩ :
+        RawPartialTypeNode db du dd) := hRawA
+  have hRawHEq :
+      HEq a.1.2 (A.partialTypeAt (A.freeLevel v) v) :=
+    (Sigma.mk.inj_iff.mp hSigmaA).2
+  have hValA : a.1.2 = A.partialTypeAt a.1.1 v := by
+    rw [← hSourceLev] at hRawHEq
+    exact eq_of_heq hRawHEq
   have hRawBType : b.1.2 = A.partialTypeAt d v := by
     calc
       b.1.2 = a.1.2.restrict hda := hRawBA.2
-      _ = A.partialTypeAt d v := by
-        rw [hRawA]
-        exact A.partialTypeAt_restrict d (A.freeLevel v) v hd
+      _ = (A.partialTypeAt a.1.1 v).restrict hda := by rw [hValA]
+      _ = A.partialTypeAt d v :=
+        A.partialTypeAt_restrict d a.1.1 v hda
   have hRawB : b.1 =
       (⟨d, A.partialTypeAt d v⟩ : RawPartialTypeNode db du dd) := by
     calc
