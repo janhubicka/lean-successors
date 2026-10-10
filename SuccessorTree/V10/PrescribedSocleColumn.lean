@@ -90,17 +90,37 @@ theorem lowerInsertedColumn_eq_of_sameSocle
     {Q R : PartialTypeWithE (ell + 1) db du dd}
     (h : SameOrdinarySocle Q R) :
     lowerInsertedColumn Q = lowerInsertedColumn R := by
-  apply LowerInsertedColumn.ext
-  · funext t
+  have hLoop : (lowerInsertedColumn Q).loop =
+      (lowerInsertedColumn R).loop := by
+    funext t
     exact h.1 (Fin.last ell) (Fin.last ell) t
-  · funext t
+  have hUnary : (lowerInsertedColumn Q).unary =
+      (lowerInsertedColumn R).unary := by
+    funext t
     exact h.2.1 (Fin.last ell) t
-  · funext t
+  have hDiag : (lowerInsertedColumn Q).diagonal =
+      (lowerInsertedColumn R).diagonal := by
+    funext t
     exact h.2.2.1 (Fin.last ell) t
-  · funext i t
+  have hIncoming : (lowerInsertedColumn Q).incoming =
+      (lowerInsertedColumn R).incoming := by
+    funext i t
     exact h.1 i.castSucc (Fin.last ell) t
-  · funext i t
+  have hOutgoing : (lowerInsertedColumn Q).outgoing =
+      (lowerInsertedColumn R).outgoing := by
+    funext i t
     exact h.1 (Fin.last ell) i.castSucc t
+  cases hQ : lowerInsertedColumn Q with
+  | mk qloop qunary qdiag qin qout =>
+    cases hR : lowerInsertedColumn R with
+    | mk rloop runary rdiag rin rout =>
+      simp only [hQ, hR] at hLoop hUnary hDiag hIncoming hOutgoing
+      cases hLoop
+      cases hUnary
+      cases hDiag
+      cases hIncoming
+      cases hOutgoing
+      simpa [hQ, hR]
 
 /-- Same ordinary socle plus genuine valid E-columns identifies the UNIQUE
 first missing E-coordinate of the new ordinary vertex. No numerical cut
