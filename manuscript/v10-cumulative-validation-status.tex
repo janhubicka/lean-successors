@@ -1,6 +1,6 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 10 October 2026. Cumulative continuation through PR 167.
+% 10 October 2026. Cumulative continuation through staged PR 183.
 %
 % Apply with update-v10-source.py to the author's current main.tex.
 % This file replaces overlapping machine-labelled notes; do not concatenate
@@ -32,6 +32,14 @@
 % Lemma 6.51 finite insertion and age-test reduction checked; global ShapeMap OPEN.
 % PR 167 neutral insertion branch: 5a63b009b01ee9bca4d707d97ce2c2a083243a67.
 % Focused V10 audit 38060229228 PASSED at the proof checkpoint.
+% GREEN focused+full: neutral type record/level/prefix/injectivity through PR 176.
+% GREEN focused: terminal letter PR 177, mapped parameters PR 178,
+% canonical inputs PR 179, and crossing weak successor PR 180.
+% Exact-head focused V10 audit GREEN: PR 181 and PR 182.
+% PR 183 all-level witnesses / SkipsOnly proof: 25668dab4644e885b84a7ec3cccdc5e6cfa18f3d.
+% V10 focused build + axiom audit 38075729225: SUCCESS.
+% The global neutral one-gap ShapeMap uses only standard Lean axioms.
+% The prescribed non-neutral f:S->Kpt(ell+1) boring map remains OPEN.
 % =====================================================================
 
 % Proposed consolidated TODO at obs:env1, retaining the type-forest checkpoint.
@@ -286,10 +294,45 @@ forbidden-free common socle, without a separate hypothesis.
 No $E$-constraint is imposed on the upper vertices of the
 $L$-age test.
 
-\textbf{Remaining:} define the insertion uniformly on all admissible
-Kpt types, derive the local linkage and prescribed upper crossings
-from the actual $f:S\to\KFpt(\ell+1)$, prove independence from
-representing ambient structures, and verify weak successor
-preservation (including the parameter and terminal letter).
-Only then mark Lemma~\ref{lem:local-age} and the resulting
-global one-level skipping ShapeMap GREEN.}
+\textbf{Neutral one-level shape map -- GREEN in the normalized Kpt model;
+non-neutral prescribed map OPEN.}
+The complete neutral insertion is now independent of the chosen
+representing finite structure and is defined on the actual
+admissible $\KFpt$ nodes; see
+\texttt{LocalAgeNeutralTransport.lean},
+\texttt{LocalAgeNeutralIndependence.lean} and
+\texttt{LocalAgeNeutralImageUnique.lean}.
+The exact level shift, all predecessor cases and injectivity are
+formalised in \texttt{LocalAgeNeutralFullPrefix.lean},
+\texttt{LocalAgeNeutralSkip.lean} and
+\texttt{LocalAgeNeutralInjective.lean}.
+The actual terminal letter and empty-or-singleton parameter list
+are preserved by the checked proofs in
+\texttt{LocalAgeNeutralLetter.lean} and
+\texttt{LocalAgeNeutralParameter.lean}.
+For the unique edge crossing $\ell-1$ to $\ell$, the weaker
+successor statement holds with the old target lying below its
+shifted image; see \texttt{LocalAgeNeutralGapSucc.lean}.
+The above-gap exact successor and the complete neutral
+\texttt{ShapeMap} are now GREEN for the normalized model; see
+\texttt{LocalAgeNeutralUpperSucc.lean} and
+\texttt{LocalAgeNeutralShapeMap.lean}. The precise
+\texttt{SkipsOnly} range statement is also GREEN:
+\texttt{LocalAgeAllLevels.lean} constructs, for every $n$, an all-neutral
+$L^+$ partial structure on $n+2$ vertices with the only $E$-column
+$E(u,n+1)$ for $u<n$. Its final vertex has free cut $n$,
+the E-spacing, downward-closure and linked-pair axioms hold,
+and the normalized forbidden family is avoided. Thus every
+admissible Kpt level is inhabited and the actual neutral
+\texttt{ShapeMap} has level range exactly $\omega\setminus\{\ell\}$.
+
+\textbf{Remaining for Lemma~\ref{lem:local-age}:}
+The neutral map does not realize the prescribed non-neutral crossing
+$f:S\to\KFpt(\ell+1)$. Construct that matching-socle branch
+uniformly on all admissible types, obtain its linkage and prescribed
+upper columns from $f$, prove independence from ambient
+representations and preservation of the exact successor
+parameters and terminal letters, and verify its one-level shape
+map. The finite three-clause age test was validated above, but its
+global Kpt realization has not been proved. No claim about M2/M3
+follows from the all-neutral map alone.}
