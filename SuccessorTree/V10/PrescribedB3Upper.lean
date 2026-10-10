@@ -68,10 +68,24 @@ theorem PrescribedBoringData.insertL_linked_upper_is_prescribed
     have hn : ¬ x < ell := Nat.not_lt.mpr (Nat.le_of_lt hxell)
     simp [hn]
     omega
+  have hForward : ∀ t : Fin db,
+      (insertL A ell (F.insertedLData A P)).binary ell x t =
+        (F.insertedLData A P).outgoing u t := by
+    intro t
+    simp [insertL, hxne, u]
+  have hBackward : ∀ t : Fin db,
+      (insertL A ell (F.insertedLData A P)).binary x ell t =
+        (F.insertedLData A P).incoming u t := by
+    intro t
+    simp [insertL, hxne, u]
   have hDataLink : ∃ t : Fin db,
       (F.insertedLData A P).outgoing u t = true ∨
       (F.insertedLData A P).incoming u t = true := by
-    simpa [insertL, hxne, u] using hLink
+    obtain ⟨t, ht⟩ := hLink
+    refine ⟨t, ?_⟩
+    rcases ht with ht | ht
+    · exact Or.inl ((hForward t).symm.trans ht)
+    · exact Or.inr ((hBackward t).symm.trans ht)
   obtain ⟨T,hT,hType⟩ :=
     F.linked_upper_has_prescribed_L_type A base u P
       hUge hUsize hSelected hDataLink
