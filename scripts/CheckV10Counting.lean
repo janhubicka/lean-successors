@@ -64,6 +64,7 @@ import SuccessorTree.V10.TerminalLetterReplica
 import SuccessorTree.V10.TerminalLetterAge
 import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.ConcreteKptM1
+import SuccessorTree.V10.KptMeetBridge
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -435,7 +436,6 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.kptM1
 #print axioms SuccessorTree.V10.kptM_fixes_roots
 
-import SuccessorTree.V10.KptMeetBridge
 
 -- Actual forbidden-free Kpt LevelTree: full-prefix ancestors and meet from first binary crossing.
 #print axioms SuccessorTree.V10.admissibleKpt_original_ancestors_eq_iff
