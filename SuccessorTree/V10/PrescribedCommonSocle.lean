@@ -91,7 +91,7 @@ theorem PrescribedBoringData.insertedData_ordinary_L_agrees
             have hjne : j.val ≠ ell := Nat.ne_of_lt hjlt
             simp [insertL, PrescribedBoringData.insertedLData,
               gatedInsertedLData, lowerInsertedColumn, removeInserted,
-              hjlt, hjne, Q]
+              hjlt, hjne, Q] <;> congr 2
     | cast i =>
         induction j using Fin.lastCases with
         | last =>
@@ -99,7 +99,7 @@ theorem PrescribedBoringData.insertedData_ordinary_L_agrees
             have hi : i.val ≠ ell := Nat.ne_of_lt hilt
             simp [insertL, PrescribedBoringData.insertedLData,
               gatedInsertedLData, lowerInsertedColumn, removeInserted,
-              hilt, hi, Q]
+              hilt, hi, Q] <;> congr 2
         | cast j =>
             have hi : i.val ≠ ell := by omega
             have hj : j.val ≠ ell := by omega
