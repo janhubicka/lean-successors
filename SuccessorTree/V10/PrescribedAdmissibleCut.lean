@@ -25,6 +25,36 @@ matching-socle branch.
 
 namespace SuccessorTree.V10
 
+/-- Cast the complete dependent Kpt record to the explicitly certified
+level ell+1. This is the sole place where the Sigma index is transported. -/
+def admissiblePrescribedRecord
+    {db du dd : Nat}
+    {family : List (NormalizedForbidden db du dd)}
+    (ell : Nat) (b : AdmissibleKptNode family)
+    (hb : b.1.1 = ell + 1) :
+    PartialTypeWithE (ell + 1) db du dd :=
+  hb ▸ b.1.2
+
+/-- The cast preserves the underlying admissible raw Kpt node. -/
+theorem admissiblePrescribedRecord_admissible
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (ell : Nat) (b : AdmissibleKptNode family)
+    (hb : b.1.1 = ell + 1) :
+    IsAdmissibleRawType family
+      (⟨ell+1, admissiblePrescribedRecord ell b hb⟩ :
+        RawPartialTypeNode db du dd) := by
+  have hRaw :
+      (⟨ell+1, admissiblePrescribedRecord ell b hb⟩ :
+        RawPartialTypeNode db du dd) = b.1 := by
+    rcases b with ⟨⟨n,Q⟩,hAd⟩
+    dsimp at hb
+    subst n
+    rfl
+  rw [hRaw]
+  exact b.2
+
+
 /-- EVERY genuinely admissible prescribed target at level ell+1 supplies
 a valid canonical new-ordinary E cut. Both the no-new-tuples condition and
 the strict 0-or-below-ell gate are DERIVED, not postulated. -/
@@ -37,7 +67,7 @@ theorem admissiblePrescribedCut_exists
     ∃ d : Nat,
       d ≤ ell ∧ (d = 0 ∨ d < ell) ∧
       ValidNewOrdinaryColumn
-        (b.1.2) d := by
+        (admissiblePrescribedRecord ell b hbLevel) d := by
   rcases b with ⟨⟨n,Q⟩,hAd⟩
   dsimp at hbLevel
   subst n
@@ -109,7 +139,7 @@ theorem admissiblePrescribedCut_spec
     (admissiblePrescribedCut family ell b hbLevel = 0 ∨
       admissiblePrescribedCut family ell b hbLevel < ell) ∧
     ValidNewOrdinaryColumn
-      (b.1.2) (admissiblePrescribedCut family ell b hbLevel) :=
+      (admissiblePrescribedRecord ell b hbLevel) (admissiblePrescribedCut family ell b hbLevel) :=
   Classical.choose_spec (admissiblePrescribedCut_exists family ell b hbLevel)
 
 /-- B2 ordinary-socle compatibility of two admissible targets forces their
@@ -121,11 +151,11 @@ theorem admissiblePrescribed_lower_data_unique
     (ell : Nat)
     (b c : AdmissibleKptNode family)
     (hb : b.1.1 = ell + 1) (hc : c.1.1 = ell + 1)
-    (hSocle : SameOrdinarySocle (b.1.2) (c.1.2)) :
+    (hSocle : SameOrdinarySocle (admissiblePrescribedRecord ell b hb) (admissiblePrescribedRecord ell c hc)) :
     admissiblePrescribedCut family ell b hb =
       admissiblePrescribedCut family ell c hc ∧
-    lowerInsertedColumn (b.1.2) =
-      lowerInsertedColumn (c.1.2) := by
+    lowerInsertedColumn (admissiblePrescribedRecord ell b hb) =
+      lowerInsertedColumn (admissiblePrescribedRecord ell c hc) := by
   have hB := admissiblePrescribedCut_spec family ell b hb
   have hC := admissiblePrescribedCut_spec family ell c hc
   refine ⟨?_,lowerInsertedColumn_eq_of_sameSocle hSocle⟩
