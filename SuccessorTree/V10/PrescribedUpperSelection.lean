@@ -48,8 +48,9 @@ noncomputable def PrescribedBoringData.upperIncoming
     {ell db du dd : Nat}
     (F : PrescribedBoringData ell db du dd)
     (A : EnumeratedPartialStructure db du dd)
-    (u : Nat) (t : Fin db) : Bool :=
-  if h : A.partialTypeAt ell u ∈ F.source then
+    (u : Nat) (t : Fin db) : Bool := by
+  classical
+  exact if h : A.partialTypeAt ell u ∈ F.source then
     (F.target (A.partialTypeAt ell u)).lReduct.binary
       none (some (Fin.last ell)) t
   else false
@@ -60,8 +61,9 @@ noncomputable def PrescribedBoringData.upperOutgoing
     {ell db du dd : Nat}
     (F : PrescribedBoringData ell db du dd)
     (A : EnumeratedPartialStructure db du dd)
-    (u : Nat) (t : Fin db) : Bool :=
-  if h : A.partialTypeAt ell u ∈ F.source then
+    (u : Nat) (t : Fin db) : Bool := by
+  classical
+  exact if h : A.partialTypeAt ell u ∈ F.source then
     (F.target (A.partialTypeAt ell u)).lReduct.binary
       (some (Fin.last ell)) none t
   else false
@@ -95,10 +97,13 @@ theorem PrescribedBoringData.linked_upper_in_source
       (F.insertedLData A P).outgoing u t = false ∧
       (F.insertedLData A P).incoming u t = false := by
     intro t
-    simp [PrescribedBoringData.insertedLData,
-      gatedInsertedLData, hnot,
-      PrescribedBoringData.upperOutgoing,
-      PrescribedBoringData.upperIncoming, hn]
+    by_cases hGate : ell ≤ A.freeLevel u
+    · simp [PrescribedBoringData.insertedLData,
+        gatedInsertedLData, hnot, hGate,
+        PrescribedBoringData.upperOutgoing,
+        PrescribedBoringData.upperIncoming, hn]
+    · simp [PrescribedBoringData.insertedLData,
+        gatedInsertedLData, hnot, hGate]
   obtain ⟨t, hb⟩ := hLink
   rcases hb with hb | hb
   · exact Bool.false_ne_true ((hZero t).1.symm.trans hb)
@@ -153,18 +158,22 @@ theorem PrescribedBoringData.insertedLData_matches_upper
     simpa [PrescribedBoringData.insertedLData,
       gatedInsertedLData, hP, lowerInsertedColumn]
   · intro i t
-    simpa [PrescribedBoringData.insertedLData,
+    simp [PrescribedBoringData.insertedLData,
       gatedInsertedLData, i.isLt, hP, lowerInsertedColumn]
+    congr 2
+    exact Fin.ext rfl
   · intro i t
-    simpa [PrescribedBoringData.insertedLData,
+    simp [PrescribedBoringData.insertedLData,
       gatedInsertedLData, i.isLt, hP, lowerInsertedColumn]
+    congr 2
+    exact Fin.ext rfl
   · intro t
     have hn : ¬ u < ell := Nat.not_lt.mpr hu
-    simpa [PrescribedBoringData.insertedLData, gatedInsertedLData,
+    simp [PrescribedBoringData.insertedLData, gatedInsertedLData,
       hn, hFree, PrescribedBoringData.upperIncoming, hU]
   · intro t
     have hn : ¬ u < ell := Nat.not_lt.mpr hu
-    simpa [PrescribedBoringData.insertedLData, gatedInsertedLData,
+    simp [PrescribedBoringData.insertedLData, gatedInsertedLData,
       hn, hFree, PrescribedBoringData.upperOutgoing, hU]
 
 /-- B1 and B2 together establish actual complete L-type realization of
@@ -189,7 +198,7 @@ theorem PrescribedBoringData.upper_realizes_target_L
         (A.partialTypeAt ell u).lReduct := by
     have h := congrArg PartialTypeWithE.lReduct
       (F.extendsSource T hU)
-    simpa [PartialTypeWithE.restrict] using h
+    simpa [T, PartialTypeWithE.restrict] using h
   exact insertL_realizes_prescribed_upper_L_type A
     (F.insertedLData A P) u hu (F.target T) hOld
     (F.insertedLData_matches_upper A base u P hu hFree hSelected hU)
