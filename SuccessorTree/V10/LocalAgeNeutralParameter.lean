@@ -123,14 +123,30 @@ theorem neutralInsert_canonicalParameterList_map
     (if B.freeLevel (insertAddress ell n) = 0 then [] else [dst]) =
       (if A.freeLevel n = 0 then [] else [src]).map
         (neutralKptSkip family ell hellPos) := by
-  dsimp
   let src : AdmissibleKptNode family :=
     ⟨A.rawTypeAtFree n, ⟨A,n,hn,hAvoid,rfl⟩⟩
   let B := neutralInsert A ell hell hellPos
+  have hBn : insertAddress ell n < B.size := by
+    change insertAddress ell n < A.size + 1
+    by_cases hlt : n < ell
+    · rw [insertAddress_below ell n hlt]
+      omega
+    · rw [insertAddress_above ell n (by omega)]
+      omega
+  have hBAvoid : ∀ bad, bad ∈ family → bad.Avoids B.L :=
+    neutralInsert_preserves_avoidance family A ell hell hellPos hAvoid
+  let dst : AdmissibleKptNode family :=
+    ⟨B.rawTypeAtFree (insertAddress ell n),
+      ⟨B, insertAddress ell n, hBn, hBAvoid, rfl⟩⟩
+  change (if B.freeLevel (insertAddress ell n) = 0 then
+      ([] : List (AdmissibleKptNode family)) else [dst]) =
+    (if A.freeLevel n = 0 then [] else [src]).map
+      (neutralKptSkip family ell hellPos)
   have hZero := neutralInsert_freeCut_zero_iff A ell hell hellPos n hn
-  have hRaw : (neutralKptSkip family ell hellPos src).1 =
-      B.rawTypeAtFree (insertAddress ell n) :=
+  have hRaw : (neutralKptSkip family ell hellPos src).1 = dst.1 :=
     neutralKptSkip_original_type_eq family A ell hell hellPos n hn hAvoid
+  have hNode : neutralKptSkip family ell hellPos src = dst :=
+    Subtype.ext hRaw
   by_cases hz : A.freeLevel n = 0
   · have hzB : B.freeLevel (insertAddress ell n) = 0 :=
       hZero.mpr hz
@@ -138,8 +154,6 @@ theorem neutralInsert_canonicalParameterList_map
   · have hzB : B.freeLevel (insertAddress ell n) ≠ 0 := by
       intro h
       exact hz (hZero.mp h)
-    simp only [if_neg hz, if_neg hzB, List.map_cons, List.map_nil]
-    congr 1
-    exact Subtype.ext hRaw
+    simp [hz, hzB, hNode]
 
 end SuccessorTree.V10
