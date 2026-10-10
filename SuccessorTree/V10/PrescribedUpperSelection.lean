@@ -161,12 +161,10 @@ theorem PrescribedBoringData.insertedLData_matches_upper
     simp [PrescribedBoringData.insertedLData,
       gatedInsertedLData, i.isLt, hP, lowerInsertedColumn]
     congr 2
-    exact Fin.ext rfl
   · intro i t
     simp [PrescribedBoringData.insertedLData,
       gatedInsertedLData, i.isLt, hP, lowerInsertedColumn]
     congr 2
-    exact Fin.ext rfl
   · intro t
     have hn : ¬ u < ell := Nat.not_lt.mpr hu
     simp [PrescribedBoringData.insertedLData, gatedInsertedLData,
