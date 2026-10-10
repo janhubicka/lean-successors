@@ -53,10 +53,14 @@ theorem hNumericBinary_real_linked_copies
   subst q'
   subst m'
   refine ⟨hij, ?_, ?_⟩
-  · have h := hNumericBinary_forward_matches_bundledTrace B k i j q m hij hq hm
-    simpa [bundledTrace, traceBit, hij, hgate] using h
-  · have h := hNumericBinary_reverse_matches_bundledTrace B k i j q m hij hq hm
-    simpa [bundledTrace, traceBit, hij, hgate] using h
+  · funext a
+    have h := hNumericBinary_real_forward_iff B k i j q m a hij hq hm
+    cases hx : hNumericBinary B k (hPosition k i q) (hPosition k j m) a <;>
+      cases hy : B i j a <;> simp_all
+  · funext a
+    have h := hNumericBinary_real_reverse_iff B k i j q m a hij hq hm
+    cases hx : hNumericBinary B k (hPosition k j m) (hPosition k i q) a <;>
+      cases hy : B j i a <;> simp_all
 
 /-- Every nontrivial irreducible ordered copy in the CONSTRUCTED numerical
 H L-reduct projects to an ordered induced copy in the Nat-enumerated base. -/

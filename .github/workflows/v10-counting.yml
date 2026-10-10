@@ -56,12 +56,15 @@ jobs:
         run: python3 scripts/check_v10_terminal_sigma.py
       - name: Generator-based complete directed H regression
         run: python3 scripts/check_v10_incident_trace.py
+      - name: Complete L+ record and actual prefix-meet regression
+        shell: bash
+        run: python3 scripts/check_v10_actual_meet.py | tee v10-actual-meet-regression.json
       - name: Build audited V10 modules
         shell: bash
         run: |
           mapfile -t targets < <(sed -nE 's/^import (SuccessorTree\.[A-Za-z0-9_.]+)$/\1/p' scripts/CheckV10*.lean | sort -u)
           test "${#targets[@]}" -gt 0
-          lake build "${targets[@]}"
+          lake build "${targets[@]}" 2>&1 | tee v10-build.log
       - name: Check v10 theorem axioms
         run: |
           for check in scripts/CheckV10*.lean; do
@@ -69,3 +72,21 @@ jobs:
             lake env lean "$check" > "$log" 2>&1 || { cat "$log"; exit 1; }
             python3 scripts/check-axiom-log.py "$log" "$check" || { cat "$log"; exit 1; }
           done
+      - name: Retain V10 proof evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v10-actual-meet-audit
+          path: |
+            v10-build.log
+            v10-actual-meet-regression.json
+            CheckV10*-axioms.log
+            scripts/CheckV10*.lean
+            scripts/check_v10_actual_meet.py
+            SuccessorTree/V10/KptMeet*.lean
+            SuccessorTree/V10/HActualMeet.lean
+            SuccessorTree/V10/HFinite*.lean
+            manuscript/v10-cumulative-validation-status.tex
+            manuscript/update-v10-source.py
+            manuscript/check-v10-source-updater.py
+          retention-days: 14
