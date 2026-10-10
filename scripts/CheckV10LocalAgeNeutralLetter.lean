@@ -1,0 +1,3 @@
+import SuccessorTree.V10.LocalAgeNeutralLetter
+
+#print axioms SuccessorTree.V10.neutralInsert_terminalLetter_eq
