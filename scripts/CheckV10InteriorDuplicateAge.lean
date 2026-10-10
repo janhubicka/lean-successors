@@ -1,0 +1,6 @@
+import SuccessorTree.V10.InteriorDuplicateAge
+
+#print axioms SuccessorTree.V10.interiorDuplicate_irred_lower_below_original
+#print axioms SuccessorTree.V10.interiorDuplicate_irred_copy_projects
+#print axioms SuccessorTree.V10.interiorDuplicate_forbidden_copy_projects
+#print axioms SuccessorTree.V10.interiorDuplicate_avoids_of_delete
