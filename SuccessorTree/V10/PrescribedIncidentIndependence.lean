@@ -121,9 +121,12 @@ theorem PrescribedBoringData.upper_bits_eq_of_partialType_eq
     (r : Fin db) :
     F.upperIncoming A u r = F.upperIncoming C v r ∧
       F.upperOutgoing A u r = F.upperOutgoing C v r := by
+  have hMem : (A.partialTypeAt ell u ∈ F.source) =
+      (C.partialTypeAt ell v ∈ F.source) :=
+    congrArg (fun T : PartialTypeWithE ell db du dd => T ∈ F.source) hType
   constructor <;>
     simp only [PrescribedBoringData.upperIncoming,
-      PrescribedBoringData.upperOutgoing, hType]
+      PrescribedBoringData.upperOutgoing, hType, hMem]
 
 /-- The ENTIRE gated incident column at every source coordinate is
 independent of the ambient witness. The common lower column is explicit;
@@ -149,21 +152,19 @@ theorem PrescribedBoringData.insertedLData_coordinate_eq
     change A.partialTypeAt ell v = C.partialTypeAt ell w at hSource
     have hGate := freeLevel_gate_iff_of_partialType_eq
       A C ell v w hSource
+    have hBits := F.upper_bits_eq_of_partialType_eq A C v w hSource r
     have hnv : ¬ v < ell := by omega
     have hnw : ¬ w < ell := by omega
     constructor <;>
       simp [prefixVertexIndex, PrescribedBoringData.insertedLData,
-        gatedInsertedLData, hnv, hnw, hGate,
-        PrescribedBoringData.upperIncoming,
-        PrescribedBoringData.upperOutgoing, hSource]
+        gatedInsertedLData, hnv, hnw, hGate, hBits.1, hBits.2]
   | some a =>
     change A.partialTypeAt ell a.val = C.partialTypeAt ell a.val at hSource
     have hGate := freeLevel_gate_iff_of_partialType_eq
       A C ell a.val a.val hSource
+    have hBits := F.upper_bits_eq_of_partialType_eq A C a.val a.val hSource r
     constructor <;>
       simp [prefixVertexIndex, PrescribedBoringData.insertedLData,
-        gatedInsertedLData, hGate,
-        PrescribedBoringData.upperIncoming,
-        PrescribedBoringData.upperOutgoing, hSource]
+        gatedInsertedLData, hGate, hBits.1, hBits.2]
 
 end SuccessorTree.V10
