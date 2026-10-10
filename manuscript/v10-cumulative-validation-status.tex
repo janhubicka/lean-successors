@@ -1,19 +1,18 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 10 October 2026. Cumulative continuation through PR 163.
+% 10 October 2026. Cumulative continuation through PR 164.
 %
 % Apply with update-v10-source.py to the author's current main.tex.
-% This file is a replacement for overlapping machine-labelled notes,
-% not an instruction to concatenate every earlier review fragment.
-% The four mathematical repairs remain separate and unchanged.
-% No current author source archive was materializable in this session;
-% the source updater is tested on its fixture, not on that archive.
+% This file replaces overlapping machine-labelled notes; do not concatenate
+% all earlier review fragments. The four mathematical repairs are unchanged.
+% Current author-edited main.tex is not present in this continuation.
+% The source updater is tested on its fixture, not on that archive.
 %
-% GREEN means a named finite/model theorem passed Lean and its axiom audit;
-% PARTIAL means that a manuscript-facing bridge is still missing;
-% OPEN means the stated manuscript consequence is not yet certified.
+% GREEN: a named finite/model theorem passed Lean and its axiom audit.
+% PARTIAL: a manuscript-facing bridge is still missing.
+% OPEN: the stated manuscript consequence is not yet certified.
 %
-% Confirmed exact-head checks in this continuation:
+% Recorded checked checkpoints:
 % PR 153: 3c269231, full/focused CI and manuscript updater passed;
 % PR 156: 2899b151, full/focused CI and manuscript updater passed;
 % PR 160: 475a955a, full/focused CI passed;
@@ -21,14 +20,13 @@
 % PR 162: 95340aa4, full/focused CI and manuscript updater passed.
 % PR 163 integrates the Kpt meet bridge/converse from PR 160 unchanged.
 % PRs 153 and 156 remain separate staged branches.
-% PR 163 proof checkpoint: 30b397e999b51a1355563ebe9e3b1c214cc60afb.
-% Full Lean run 38020379540 and V10 audit 38020379541 passed.
-% CheckV10ActualMeet: 29 endpoints, standard Lean axioms only.
-% No H construction, age, trace-to-meet or charging assumption remains in
-% forbiddenFreeH_prefix_meet_charge beyond the stated base and geometry.
+% PR 163: 3f8c5eb6, full/focused CI and manuscript updater passed.
+% PR 164 proof checkpoint: d2fad6fcafe9f40f278fc2cff22986af6b3ef2dd.
+% V10 audit 38051214553 passed; all 16 new endpoints have standard axioms only.
+% Detailed scope and downloaded-evidence checks are in v10-original-pool-review.md.
 % =====================================================================
 
-% Proposed consolidated TODO after Definition 6.28 / Remark 6.29
+% Proposed consolidated TODO at obs:env1, retaining the type-forest checkpoint.
 \todo[inline]{\textbf{v10 validation: admissible type forest -- GREEN
 in the normalized finite unary/binary representation.}
 The first missing $E$-coordinate exists uniquely. Restricting an
@@ -44,7 +42,27 @@ operations are checked in \texttt{FiniteKptLevels.lean},
 \texttt{AdmissibleKptMeet.lean} and
 \texttt{AdmissibleKptLevelTree.lean}.
 These type-forest results alone do not establish the successor
-operation or the shape-map monoid axioms.}
+operation or the shape-map monoid axioms.
+
+\textbf{Concrete stage-pool invariant -- GREEN.}
+For a fixed forbidden-free ambient partial structure $\pstr C$, let $U$
+be a set of original vertex addresses representing the initial types and put
+$V_I=U\cup\{i\in C:i\in I,\ \freef C(i)>0\}$.
+In \texttt{ConcreteOriginalPool.lean}, the actual admissible successor
+crossing at $i$ has no parameter if $\freef C(i)=0$; otherwise its only
+parameter is exactly $\typev_\pstr C(i)$, with all $L^+$ data retained.
+This is derived from the successor graph and uniqueness of the actual
+$E$-cut, rather than assumed as a canonical-decomposition interface.
+The prefixes represented by $V_I$ are therefore parameter-closed over $I$
+and meet-closed within each root component. Closure minimality gives
+$\Cl_I(Y)\subseteq\{\type T:\type T\subseteq\typev_\pstr C(v)
+\text{ for some }v\in V_I\}$ whenever $Y$ is represented by $U$.
+The endpoint \texttt{admissibleKpt\_stage\_closure\_subset\_pool}
+holds for every $I$ and does not assume parameter closure. For the
+manuscript's stage pool take $U=\{c\}$ and identify the initial $Y$
+with prefixes of that original. Keep vertex addresses even when their
+types coincide. This checks the stage invariant, not every clause of
+the general arbitrary-$Z$ characterization in the observation.}
 
 % Proposed consolidated TODO at Definition 6.30 / Proposition 6.32
 \todo[inline]{\textbf{v10 validation: the S-tree operation and M1 --
@@ -133,10 +151,15 @@ This discharges the former connection between the numerical
 classification and actual admissible meets in the exact normalized
 model. To identify it literally with Lemma~\ref{lem:meets}, retain
 the explicit-copy correction and the language-normalization TODO.
-For Corollary~\ref{cor:meet-origins} and the envelope induction,
-still prove that the maintained original pool is parameter-closed
-at every selected level. The local pairwise charge does not alone
-establish that invariant or the final recurrence.}
+The concrete stage-pool invariant is now checked separately in
+\texttt{ConcreteOriginalPool.lean}. The endpoint
+\texttt{forbiddenFreeH\_closure\_meet\_charge} combines it with this
+pairwise theorem: both originals can be chosen inside $V_I$ for every
+nontrivial positive-generation meet in the actual $\Cl_I(Y)$.
+No abstract parameter-closure or charging assumption remains in that
+composition. The generation budget is recorded at
+Corollary~\ref{cor:meet-origins}; the full recurrence still requires
+the selected-level and age-signature arguments.}
 
 % Proposed consolidated TODO at Observation 6.52 / Lemma 6.53
 \todo[inline]{\textbf{v10 validation: age signatures and relocation --
@@ -163,12 +186,14 @@ manuscript-facing obligations until this bridge is proved.}
 OPEN.}
 The actual positive-generation meet charge is now proved for the
 constructed forbidden-free exact normalized $H^+$ and all represented
-prefixes. The finite arithmetic in \texttt{Counting.lean} and
-\texttt{FiniteMeetBudget.lean} still needs its remaining geometric
-inputs: the maintained original-pool invariant, signature uniqueness
-from the actual crossing/age test, and the complete classification of
-selected levels. The global M2/M3 maps and the local-age lemma also
-remain open. Keep the exact-copy and language-normalization corrections
+prefixes. The maintained original-pool invariant and the linear budget for
+positive-generation meet levels throughout the actual closure are now
+checked in \texttt{ConcreteOriginalPool.lean} and
+\texttt{HClosureCharge.lean}. The remaining inputs to the recurrence
+are the identification of the algorithm's seed types and selected sets,
+signature uniqueness from the actual crossing/age test, and the complete
+classification of selected levels. The global M2/M3 maps and the
+local-age lemma also remain open. Keep the exact-copy and language-normalization corrections
 separate from these proof obligations. Neither
 Proposition~\ref{prob:upperbound} nor Theorem~\ref{thm:zucker}
 is yet a fully checked consequence.}
@@ -185,3 +210,23 @@ Identify the diagonal coordinates with the original binary
 symbols, preserve all unary information, and fix nullary
 interpretations for the whole age before claiming literal
 identity with the manuscript's $K^{\mathcal F}_{pt}$ class.}
+
+% Targeted replacement of the former unresolved iterated-meet TODO.
+% Place at cor:meet-origins, without changing its mathematical statement.
+\todo[inline]{\textbf{v10 validation: iterated-closure meet budget --
+GREEN for the exact normalized $H^+$ model.}
+The endpoint \texttt{forbiddenFreeH\_closure\_meet\_budget} in
+\texttt{HClosureCharge.lean} supplies, for each $0<r\leq k$, a finite
+set containing every nontrivial generation-$r$ meet level of types in the
+actual $\Cl_I(Y)$. Its cardinality is at most the number of eligible
+higher-generation originals in $V_I$: an original $\iota(i,n)$ with
+$n>r$ contributes only $\iota(p(i),r)$, when $p(i)$ exists.
+The uniqueness of $p(i)$ and of the bounded-generation representation
+is checked, so the proof uses a finite image of original addresses,
+not a quadratic enumeration of pairs. The stage-pool parameter closure
+and the actual-meet classification are proved for the same constructed
+$H^+$; neither is supplied as an extra hypothesis. The initial support
+condition is that $Y$ consists of prefixes represented by the seed pool.
+This settles the former iterated-meet/provenance obligation in this
+model. It does not settle levels selected by the age obstruction or the
+whole upper-bound recurrence.}
