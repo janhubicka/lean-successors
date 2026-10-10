@@ -121,12 +121,16 @@ theorem PrescribedBoringData.upper_bits_eq_of_partialType_eq
     (r : Fin db) :
     F.upperIncoming A u r = F.upperIncoming C v r ∧
       F.upperOutgoing A u r = F.upperOutgoing C v r := by
-  have hMem : (A.partialTypeAt ell u ∈ F.source) =
-      (C.partialTypeAt ell v ∈ F.source) :=
-    congrArg (fun T : PartialTypeWithE ell db du dd => T ∈ F.source) hType
-  constructor <;>
-    simp only [PrescribedBoringData.upperIncoming,
-      PrescribedBoringData.upperOutgoing, hType, hMem]
+  classical
+  constructor
+  · exact congrArg (fun T : PartialTypeWithE ell db du dd =>
+      if _h : T ∈ F.source then
+        (F.target T).lReduct.binary none (some (Fin.last ell)) r
+      else false) hType
+  · exact congrArg (fun T : PartialTypeWithE ell db du dd =>
+      if _h : T ∈ F.source then
+        (F.target T).lReduct.binary (some (Fin.last ell)) none r
+      else false) hType
 
 /-- The ENTIRE gated incident column at every source coordinate is
 independent of the ambient witness. The common lower column is explicit;
