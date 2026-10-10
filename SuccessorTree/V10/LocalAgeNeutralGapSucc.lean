@@ -106,17 +106,26 @@ theorem neutralKptSkip_weak_succ_below_gap
     have hlt := (admissibleKptSTree family).parameter_level_lt hSucc hx
     change x.1.1 < a.1.1 at hlt
     exact neutralKptSkip_fixed_below family ell hellPos x (by omega)
-  have hMap : p.map (neutralKptSkip family ell hellPos) = p := by
-    induction p with
-    | nil => rfl
+  have hMapAux : ∀ xs : List (AdmissibleKptNode family),
+      (∀ x ∈ xs, neutralKptSkip family ell hellPos x = x) →
+      xs.map (neutralKptSkip family ell hellPos) = xs := by
+    intro xs
+    induction xs with
+    | nil =>
+        intro _
+        rfl
     | cons x xs ih =>
+        intro hFix
         have hx : neutralKptSkip family ell hellPos x = x :=
-          hParam x (by simp)
-        have hxs : ∀ y ∈ xs, neutralKptSkip family ell hellPos y = y := by
+          hFix x (by simp)
+        have hxs : ∀ y ∈ xs,
+            neutralKptSkip family ell hellPos y = y := by
           intro y hy
-          exact hParam y (by simp [hy])
+          exact hFix y (by simp [hy])
         simp only [List.map_cons, hx]
         rw [ih hxs]
+  have hMap : p.map (neutralKptSkip family ell hellPos) = p :=
+    hMapAux p hParam
   have hA : neutralKptSkip family ell hellPos a = a :=
     neutralKptSkip_fixed_below family ell hellPos a hBaseLow
   have hBOld : b ≤ neutralKptSkip family ell hellPos b := by
