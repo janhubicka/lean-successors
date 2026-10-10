@@ -1,0 +1,7 @@
+import SuccessorTree.V10.LocalAgeNeutralEColumn
+
+#print axioms SuccessorTree.V10.neutralInsert_new_E_row
+#print axioms SuccessorTree.V10.neutralInsert_old_E_to_new_false
+#print axioms SuccessorTree.V10.neutralInsert_new_E_loop_false
+#print axioms SuccessorTree.V10.neutralInsert_new_E_to_type
+#print axioms SuccessorTree.V10.neutralInsert_inserted_type_E
