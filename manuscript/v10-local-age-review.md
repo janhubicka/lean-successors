@@ -42,3 +42,23 @@ independent of the chosen representing partial structure, commutes with
 the actual successor parameter/letter and skips only ell has not yet
 been built. The manuscript's mathematical text and four repairs remain
 unchanged; source changes are annotations only.
+
+## Separate neutral-socle branch (PR 167)
+
+At proof SHA `5a63b009b01ee9bca4d707d97ce2c2a083243a67`, the focused
+V10 build/axiom audit `38060229228` passed. `LocalAgeNeutral.lean`
+constructs the new vertex with the allowed empty singleton and no incident
+L-relations, keeping the exact transported E-cuts. It derives avoidance of
+all normalized forbidden patterns directly: non-neutral forbidden singleton
+and binary-irreducible forbidden copies cannot involve the new vertex;
+other forbidden copies project back to the source. The three-clause age test
+is unnecessary for this neutral branch. This remains a LOCAL finite
+transformation; uniform Kpt insertion and the global skipping ShapeMap
+are still pending.
+
+When reconciling with the author's statement, remember the chosen finite
+L-age witness is represented as a bounded subset of Nat with inherited order;
+if the manuscript requires initial-ordinal enumerations, an increasing
+renumbering of its upper tail while fixing the first ell+1 positions is a
+minor separate coding lemma. No equivalence claim about nullary symbols
+is made here.
