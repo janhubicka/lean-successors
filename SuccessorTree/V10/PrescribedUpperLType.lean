@@ -77,20 +77,20 @@ theorem insertL_upper_predecessor_eq
       | some j =>
         change (insertL A ell D).binary (insertAddress ell u) j.val t =
           A.L.binary u j.val t
-        rw [←hBelow j]
-        exact insertL_old_binary A ell D u j.val t
+        simpa only [hBelow j] using
+          (insertL_old_binary A ell D u j.val t)
     | some i =>
       cases b with
       | none =>
         change (insertL A ell D).binary i.val (insertAddress ell u) t =
           A.L.binary i.val u t
-        rw [←hBelow i]
-        exact insertL_old_binary A ell D i.val u t
+        simpa only [hBelow i] using
+          (insertL_old_binary A ell D i.val u t)
       | some j =>
         change (insertL A ell D).binary i.val j.val t =
           A.L.binary i.val j.val t
-        rw [←hBelow i, ←hBelow j]
-        exact insertL_old_binary A ell D i.val j.val t
+        simpa only [hBelow i, hBelow j] using
+          (insertL_old_binary A ell D i.val j.val t)
   · intro a t
     cases a with
     | none =>
@@ -100,8 +100,8 @@ theorem insertL_upper_predecessor_eq
     | some i =>
       change (insertL A ell D).unary i.val t =
         A.L.unary i.val t
-      rw [←hBelow i]
-      exact insertL_old_unary A ell D i.val t
+      simpa only [hBelow i] using
+        (insertL_old_unary A ell D i.val t)
   · intro a t
     cases a with
     | none =>
@@ -111,8 +111,8 @@ theorem insertL_upper_predecessor_eq
     | some i =>
       change (insertL A ell D).diagonal i.val t =
         A.L.diagonal i.val t
-      rw [←hBelow i]
-      exact insertL_old_diagonal A ell D i.val t
+      simpa only [hBelow i] using
+        (insertL_old_diagonal A ell D i.val t)
 
 /-- All prescribed one-level L-types are realized exactly when their
 complete predecessor and last ordinary column are copied. -/
