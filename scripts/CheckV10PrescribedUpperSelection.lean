@@ -1,0 +1,8 @@
+import SuccessorTree.V10.PrescribedUpperSelection
+
+#print axioms SuccessorTree.V10.sameOrdinaryAtCut_sameAmbient
+#print axioms SuccessorTree.V10.PrescribedBoringData.linked_upper_in_source
+#print axioms SuccessorTree.V10.PrescribedBoringData.lowerColumn_of_matchedAmbient
+#print axioms SuccessorTree.V10.PrescribedBoringData.insertedLData_matches_upper
+#print axioms SuccessorTree.V10.PrescribedBoringData.upper_realizes_target_L
+#print axioms SuccessorTree.V10.PrescribedBoringData.linked_upper_has_prescribed_L_type
