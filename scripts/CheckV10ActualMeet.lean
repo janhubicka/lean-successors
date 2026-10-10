@@ -1,4 +1,4 @@
-import SuccessorTree.V10.HFinitePartial
+import SuccessorTree.V10.HFiniteAge
 
 #print axioms SuccessorTree.V10.admissibleKpt_original_ancestors_eq_iff
 #print axioms SuccessorTree.V10.admissibleKpt_meet_level_of_first_binary_difference
@@ -21,3 +21,11 @@ import SuccessorTree.V10.HFinitePartial
 #print axioms SuccessorTree.V10.finiteNumericH_matches
 #print axioms SuccessorTree.V10.finiteNumericHOriginal
 #print axioms SuccessorTree.V10.finiteNumericH_prefix_meet_charge
+#print axioms SuccessorTree.V10.hNumericBinary_incident_real
+#print axioms SuccessorTree.V10.hNumericBinary_real_linked_copies
+#print axioms SuccessorTree.V10.finiteNumericHL_irreducible_copy_projects
+#print axioms SuccessorTree.V10.finiteNumericHL_singleton_copy_projects
+#print axioms SuccessorTree.V10.NormalizedForbidden.finiteNumericH_preserves_avoidance
+#print axioms SuccessorTree.V10.finiteNumericH_avoids_family
+#print axioms SuccessorTree.V10.forbiddenFreeHOriginal
+#print axioms SuccessorTree.V10.forbiddenFreeH_prefix_meet_charge
