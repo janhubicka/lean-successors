@@ -1,0 +1,3 @@
+import SuccessorTree.V10.PrescribedTypeReconstruction
+
+#print axioms SuccessorTree.V10.relationalPrefix_eq_of_predecessor_last
