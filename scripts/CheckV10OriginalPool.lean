@@ -1,0 +1,10 @@
+import SuccessorTree.V10.ConcreteOriginalPool
+
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.kptOriginal
+#print axioms SuccessorTree.V10.kpt_prefix_raw_eq_ambient
+#print axioms SuccessorTree.V10.canonicalKptStep_ambient_parameter
+#print axioms SuccessorTree.V10.admissibleKpt_crossing_parameter
+#print axioms SuccessorTree.V10.ambientPrefixPool_mono
+#print axioms SuccessorTree.V10.ambientPrefixPool_parameterClosed
+#print axioms SuccessorTree.V10.admissibleKpt_closure_subset_ambientPool
+#print axioms SuccessorTree.V10.admissibleKpt_stage_closure_subset_pool
