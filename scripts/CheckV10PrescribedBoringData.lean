@@ -1,0 +1,7 @@
+import SuccessorTree.V10.PrescribedBoringData
+
+#print axioms SuccessorTree.V10.sameOrdinaryAtCut_trans
+#print axioms SuccessorTree.V10.PrescribedBoringData.outputs_compatible
+#print axioms SuccessorTree.V10.PrescribedBoringData.lower_column_unique
+#print axioms SuccessorTree.V10.PrescribedBoringData.selectedLowerColumn_eq
+#print axioms SuccessorTree.V10.PrescribedBoringData.selectedLowerColumn_none
