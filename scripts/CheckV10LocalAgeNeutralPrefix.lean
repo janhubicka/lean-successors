@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LocalAgeNeutralPrefix
+
+#print axioms SuccessorTree.V10.neutralInsert_prefixReplica_type_eq
+#print axioms SuccessorTree.V10.neutralKptImage_prefix_le
