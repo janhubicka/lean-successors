@@ -66,6 +66,7 @@ import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.ConcreteKptM1
 import SuccessorTree.V10.HNumericBinary
 import SuccessorTree.V10.HDirectedTraces
+import SuccessorTree.V10.HBidirectionalPacket
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -448,3 +449,7 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.hNumericBinary_real_reverse_iff
 #print axioms SuccessorTree.V10.hNumericBinary_forward_matches_bundledTrace
 #print axioms SuccessorTree.V10.hNumericBinary_reverse_matches_bundledTrace
+
+-- All directed binary atoms in the exact numeric H relation are one finite packet.
+#print axioms SuccessorTree.V10.hNumericBoth_matches_bundledTrace
+#print axioms SuccessorTree.V10.bothDirectedAtoms_nonempty_iff
