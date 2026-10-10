@@ -4,3 +4,5 @@ import SuccessorTree.V10.LocalAgeForbiddenTest
 #print axioms SuccessorTree.V10.SameInitialL.restrictCarrier
 #print axioms SuccessorTree.V10.localAgeTest_excludes_nontrivial_inserted_copy
 #print axioms SuccessorTree.V10.localAgeTest_preserves_avoidance
+#print axioms SuccessorTree.V10.commonSocle_excludes_forbidden_singleton
+#print axioms SuccessorTree.V10.localAgeTest_preserves_avoidance_of_common_socle

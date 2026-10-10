@@ -132,14 +132,22 @@ def UpperTypesPrescribed
   ∀ x, x ∈ A.carrier → ell < x →
     Prescribed (RelationalPrefixType.ofAgeModel A (ell + 1) x)
 
-/-- The exact three-clause age-test assumption from Lemma 6.51, phrased
-with a predicate for the finite set of prescribed upper crossing types. -/
+/-- Finiteness of an enumerated L-structure: the carrier is bounded in Nat.
+This is equivalent to Set.Finite, but keeps finite-witness verification
+elementary and makes the manuscript's FINITE age-test condition explicit. -/
+def AgeTestModel.BoundedCarrier
+    {db du dd : Nat} (W : AgeTestModel db du dd) : Prop :=
+  ∃ N : Nat, ∀ x, x ∈ W.carrier → x < N
+
+/-- The exact three-clause FINITE age-test assumption from Lemma 6.51,
+phrased with a predicate for the prescribed upper crossing types. -/
 def CommonSocleAgeTest
     {db du dd : Nat}
     (family : List (NormalizedForbidden db du dd))
     (D : AgeTestModel db du dd) (ell : Nat)
     (Prescribed : RelationalPrefixType (ell + 1) db du dd → Prop) : Prop :=
   ∀ W : AgeTestModel db du dd,
+    W.BoundedCarrier →
     SameInitialL W D ell →
     UpperTypesPrescribed W ell Prescribed →
     (∀ bad, bad ∈ family → bad.Avoids (W.withoutVertex ell)) →
@@ -209,9 +217,13 @@ theorem localAgeTest_excludes_nontrivial_inserted_copy
       ∀ bad, bad ∈ family → bad.Avoids (W.withoutVertex ell) := by
     exact hInsert.restricted_without_inserted_avoids
       family hAvoid P
+  have hWFinite : W.BoundedCarrier := by
+    refine ⟨B.size, ?_⟩
+    intro x hx
+    exact (B.carrier_iff x).1 hx.1
   have hWAvoid :
       ∀ bad, bad ∈ family → bad.Avoids W :=
-    hAgeTest W hSocleW hUpperW hDeleteAvoid
+    hAgeTest W hWFinite hSocleW hUpperW hDeleteAvoid
   have hCopyW : W.Realizes F e := by
     apply AgeTestModel.realizes_restrictCarrier B.L P F e hCopy
     intro a
@@ -268,5 +280,60 @@ theorem localAgeTest_preserves_avoidance
           exact hContains ⟨a, ha⟩
         exact (hAvoid (.nontrivial r F hr hIrred) hbad)
           ⟨_, hInsert.realizes_away_projects F e he hAway⟩
+
+/-- The allowed initial socle already excludes a forbidden singleton
+at the newly inserted coordinate. No separate singleton hypothesis is needed
+in the common-socle case of the manuscript's age argument. -/
+theorem commonSocle_excludes_forbidden_singleton
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (B : EnumeratedPartialStructure db du dd)
+    (D : AgeTestModel db du dd) (ell : Nat)
+    (hSocle : SameInitialL B.L D ell)
+    (hAvoidD : ∀ bad, bad ∈ family → bad.Avoids D)
+    (F : ForbiddenAtomicPattern 1 db du dd)
+    (hNeutral : F.NonNeutralSingleton)
+    (hMem : NormalizedForbidden.singleton F hNeutral ∈ family) :
+    ¬ B.L.Realizes F (fun _ => ell) := by
+  intro hCopy
+  obtain ⟨hMono, hIn, hBinary, hUnary, hDiagonal⟩ := hCopy
+  have hInD : ∀ a : Fin 1, ell ∈ D.carrier := by
+    intro a
+    exact (hSocle.1 ell le_rfl).mp (hIn a)
+  have hCopyD : D.Realizes F (fun _ : Fin 1 => ell) := by
+    refine ⟨hMono, hInD, ?_, ?_, ?_⟩
+    · intro a b hab t
+      exact False.elim (hab (Subsingleton.elim a b))
+    · intro a t
+      exact (hSocle.2.2.1 ell le_rfl t).symm.trans (hUnary a t)
+    · intro a t
+      exact (hSocle.2.2.2 ell le_rfl t).symm.trans (hDiagonal a t)
+  exact (hAvoidD (.singleton F hNeutral) hMem) ⟨_, hCopyD⟩
+
+/-- The common-socle age-test conclusion, now using only forbidden-free
+source AND forbidden-free common initial socle. It does not postulate
+singleton avoidance at the inserted level. -/
+theorem localAgeTest_preserves_avoidance_of_common_socle
+    {db du dd : Nat}
+    {A B : EnumeratedPartialStructure db du dd}
+    (family : List (NormalizedForbidden db du dd))
+    (D : AgeTestModel db du dd) (ell : Nat)
+    (Prescribed : RelationalPrefixType (ell + 1) db du dd → Prop)
+    (hInsert : IsLInsertion A B ell)
+    (hAvoid : ∀ bad, bad ∈ family → bad.Avoids A.L)
+    (hSocle : SameInitialL B.L D ell)
+    (hAvoidD : ∀ bad, bad ∈ family → bad.Avoids D)
+    (hUpper : ∀ x, x < B.size → ell < x →
+      (∃ t : Fin db,
+        B.L.binary ell x t = true ∨ B.L.binary x ell t = true) →
+      Prescribed (RelationalPrefixType.ofAgeModel B.L (ell + 1) x))
+    (hAgeTest : CommonSocleAgeTest family D ell Prescribed) :
+    ∀ bad, bad ∈ family → bad.Avoids B.L := by
+  exact localAgeTest_preserves_avoidance family D ell Prescribed
+    hInsert hAvoid hSocle hUpper
+    (fun F hNeutral hMem =>
+      commonSocle_excludes_forbidden_singleton
+        family B D ell hSocle hAvoidD F hNeutral hMem)
+    hAgeTest
 
 end SuccessorTree.V10
