@@ -31,6 +31,7 @@ OPTIONAL_LABELS = {
     "obs:env1": 0,             # admissible Kpt and concrete original pool
     "thm:zucker": 6,           # retained language-normalization boundary
     "cor:meet-origins": 7,     # checked iterated-closure generation budget
+    "lem:local-age": 8,        # finite insertion and age test; global ShapeMap still open
 }
 
 def find_todos(tex: str) -> list[str]:
@@ -52,8 +53,8 @@ def find_todos(tex: str) -> list[str]:
             pos += 1
         else:
             raise ValueError("Unterminated \\todo[inline] in overlay")
-    if len(found) != 8:
-        raise ValueError(f"Expected 8 grouped TODOs; found {len(found)}")
+    if len(found) != 9:
+        raise ValueError(f"Expected 9 grouped TODOs; found {len(found)}")
     return found
 
 def uncommented_line(line: str) -> str:
@@ -190,7 +191,7 @@ def run(input_path: Path, output: Path):
         "idempotence":"passed",
         "anchors":found,
         "changed":changed!=raw,
-        "boundary":"Exact normalized Kpt, H and closure-budget statuses; final application open. Four repairs untouched."}
+        "boundary":"Exact normalized Kpt/H, closure budget and finite local-age ingredients; global maps and final application open. Four repairs untouched."}
     (output/"MANIFEST.json").write_text(json.dumps(manifest,indent=2)+"\n")
     print(json.dumps(manifest,indent=2))
 
