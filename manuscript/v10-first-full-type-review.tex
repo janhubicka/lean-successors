@@ -1,0 +1,33 @@
+% Successor v10: first full-prefix difference, 10 October 2026.
+% Review-only TODO fragment. Replace the older Lemma 6.49 TODO with this
+% information when the four mathematical patches are assembled. This
+% is not a patch verified against the unavailable v10 main.tex archive.
+%
+% Candidate addition at Lemma 6.49:
+\todo[inline]{\textbf{v10 verification (converse record step).}
+For two original types from the same enumerated partial structure,
+whose first $d$-level $L^+$ prefixes agree and whose types exist
+through level $d+1$, a discrepancy of their complete prefixes at
+$d+1$ is equivalent to a discrepancy in one of the two directed
+binary relation vectors connecting their type vertices to the
+new socle coordinate $d$.
+The predecessor agreement itself implies the common singleton root;
+one need not add the root equality as an independent hypothesis.
+All $E$-pairs are determined because $d+1$ is bounded by both
+free levels. This equivalence is formalised in
+\texttt{V10/FirstFullTypeDifference.lean}, using
+\texttt{PartialTypeRestriction.lean} and
+\texttt{CommonSocleType.lean}.
+To finish the meet lemma, still identify the actual $K^\mathcal F_{pt}$
+ancestor of a node at level $d$ with the complete extracted prefix,
+and show that the numerical $H$ traces faithfully encode \emph{both}
+binary orientations, including odd fake socle vertices.
+In particular, do not replace the sharp non-top condition
+$p+1<j$ by $p<j$: the candidate positive mismatch
+$\iota(p,m)$ must lie strictly below
+$\mathrm{fl}_{H^+}(\iota(j,m))$ to occur inside its partial type.}
+%
+% Endpoints, mark as proved only after exact SHA's green CI:
+%   sameAmbient_root_of_prefix_eq
+%   sameAmbient_first_type_difference_has_binary_witness
+%   sameAmbient_first_type_difference_iff_binary
