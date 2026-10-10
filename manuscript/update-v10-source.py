@@ -31,8 +31,18 @@ OPTIONAL_LABELS = {
     "obs:env1": 0,             # admissible Kpt and concrete original pool
     "thm:zucker": 6,           # retained language-normalization boundary
     "cor:meet-origins": 7,     # checked iterated-closure generation budget
-    "lem:local-age": 8,        # finite insertion and age test; global ShapeMap still open
 }
+
+# The supplied V10 archive uses lem:boring; older review fragments use
+# lem:local-age. They are aliases for ONE note, never two independent anchors.
+BORING_LABELS = ("lem:boring", "lem:local-age")
+
+def boring_anchor(tex: str) -> tuple[str, int] | None:
+    matches = [(label, point) for label in BORING_LABELS
+               if (point := label_line_end(tex, label, optional=True)) is not None]
+    if len(matches) > 1:
+        raise ValueError("Ambiguous boring-lemma anchor: both supported labels occur")
+    return matches[0] if matches else None
 
 def find_todos(tex: str) -> list[str]:
     """Extract inline TODOS in source order, respecting balanced TeX braces."""
@@ -106,7 +116,7 @@ def skip_balanced_todo(tex: str, start: int) -> int:
 
 def remove_only_managed(tex: str) -> str:
     """Drop only markers about to be replaced, preserving every proof token."""
-    anchors=set(LABELS)|set(OPTIONAL_LABELS)|{"definition-6-30"}
+    anchors=set(LABELS)|set(OPTIONAL_LABELS)|set(BORING_LABELS)|{"definition-6-30"}
     # Legacy notes are removed only at matching anchors, never elsewhere.
     r=re.compile(r"^[ \t]*% (?:(v10 validation note) |("
                  + re.escape(PREFIX) + r"):)([\w:.-]+)[^\n]*\n",re.M)
@@ -131,6 +141,14 @@ def transform(src: str, todos: list[str]) -> tuple[str,list[str]]:
             found.append(f"OPTIONAL NOT FOUND: {label}")
             continue
         note=(f"% {PREFIX}:{label}\n"+todos[index]+"\n")
+        out=out[:point]+note+out[point:]
+        found.append(label)
+    anchor=boring_anchor(out)
+    if anchor is None:
+        found.append("OPTIONAL NOT FOUND: lem:boring or lem:local-age")
+    else:
+        label,point=anchor
+        note=f"% {PREFIX}:{label}\n"+todos[8]+"\n"
         out=out[:point]+note+out[point:]
         found.append(label)
     # Use the exact first sentence of Definition 6.30 only if unambiguous.
