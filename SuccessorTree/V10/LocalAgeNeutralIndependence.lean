@@ -42,10 +42,8 @@ theorem insertedTypeCoordinate_cases
         let j : Fin cut := ⟨removeInserted ell i.val, by
           unfold removeInserted
           by_cases hlt : i.val < ell
-          · simp [hlt]
-            omega
-          · simp [hlt]
-            omega⟩
+          · simp [hlt] <;> omega
+          · simp [hlt] <;> omega⟩
         refine ⟨some j, ?_⟩
         change (some (⟨insertAddress ell j.val, by
           unfold insertAddress
@@ -103,7 +101,8 @@ theorem neutralInsert_partialType_independent
             (prefixVertexIndex (insertAddress ell w) b) t
         exact (neutralInsert_binary_from_inserted A ell hellA hellPos _ t).trans
           (neutralInsert_binary_from_inserted C ell hellC hellPos _ t).symm
-      · rcases insertedTypeCoordinate_cases cut ell hCutLevel b with
+      · subst a
+        rcases insertedTypeCoordinate_cases cut ell hCutLevel b with
           hb | ⟨b0, hb⟩
         · subst b
           change B.L.binary
@@ -114,8 +113,7 @@ theorem neutralInsert_partialType_independent
                 (insertedTypeCoordinate ell a0)) ell t
           exact (neutralInsert_binary_to_inserted A ell hellA hellPos _ t).trans
             (neutralInsert_binary_to_inserted C ell hellC hellPos _ t).symm
-        · subst a
-          subst b
+        · subst b
           calc
             (B.partialTypeAt (cut+1) (insertAddress ell v)).lReduct.binary
                 (insertedTypeCoordinate ell a0) (insertedTypeCoordinate ell b0) t
@@ -184,7 +182,8 @@ theorem neutralInsert_partialType_independent
               (congrFun hEA (some (⟨ell-1, by omega⟩ : Fin cut))) b0
           _ = D.E ell (insertAddress ell (prefixVertexIndex w b0)) :=
             (neutralInsert_new_E_row C ell hellC hellPos _ (hInC b0)).symm
-    · rcases insertedTypeCoordinate_cases cut ell hCutLevel b with
+    · subst a
+      rcases insertedTypeCoordinate_cases cut ell hCutLevel b with
         hb | ⟨b0, hb⟩
       · subst b
         change B.E
@@ -197,8 +196,7 @@ theorem neutralInsert_partialType_independent
           prefixVertexIndex_insertedTypeCoordinate]
         exact (neutralInsert_old_E_to_new_false A ell hellA hellPos _).trans
           (neutralInsert_old_E_to_new_false C ell hellC hellPos _).symm
-      · subst a
-        subst b
+      · subst b
         calc
           (B.partialTypeAt (cut+1) (insertAddress ell v)).eRelation
               (insertedTypeCoordinate ell a0) (insertedTypeCoordinate ell b0)
