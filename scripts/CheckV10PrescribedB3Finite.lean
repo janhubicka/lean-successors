@@ -1,0 +1,3 @@
+import SuccessorTree.V10.PrescribedB3Finite
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedInsertion_avoids_of_witness
