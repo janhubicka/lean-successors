@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LocalAgeNeutralFullPrefix
+
+#print axioms SuccessorTree.V10.neutralInsert_type_below_gap
+#print axioms SuccessorTree.V10.neutralKptSkip_prefix_crossing
+#print axioms SuccessorTree.V10.neutralKptSkip_prefix
