@@ -36,7 +36,7 @@ theorem insertPartial_freeLevel_eq
     {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (ell d : Nat) (D : InsertedLData db du dd)
-    (hell : ell ≤ A.size) (hd : d ≤ ell)
+    (hell : ell ≤ A.size) (hellPos : 0 < ell) (hd : d ≤ ell)
     (hdGate : d = 0 ∨ d < ell)
     (hBelow : ∀ x, x < ell →
       (∃ r : Fin db, D.incoming x r = true ∨ D.outgoing x r = true) →
@@ -45,9 +45,9 @@ theorem insertPartial_freeLevel_eq
       (∃ r : Fin db, D.outgoing y r = true ∨ D.incoming y r = true) →
       ell ≤ A.freeLevel y)
     (v : Nat) (hv : v < A.size + 1) :
-    (insertPartial A ell d D hell hd hdGate hBelow hAbove).freeLevel v =
+    (insertPartial A ell d D hell hellPos hd hdGate hBelow hAbove).freeLevel v =
       insertedCut A ell d v := by
-  let B := insertPartial A ell d D hell hd hdGate hBelow hAbove
+  let B := insertPartial A ell d D hell hellPos hd hdGate hBelow hAbove
   have hCut : IsFreeCut B.E v (insertedCut A ell d v) := by
     change IsFreeCut (insertE A ell d) v (insertedCut A ell d v)
     exact insertE_isFreeCut A ell d v hv
@@ -59,7 +59,7 @@ theorem insertPartial_freeLevel_at_inserted
     {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (ell d : Nat) (D : InsertedLData db du dd)
-    (hell : ell ≤ A.size) (hd : d ≤ ell)
+    (hell : ell ≤ A.size) (hellPos : 0 < ell) (hd : d ≤ ell)
     (hdGate : d = 0 ∨ d < ell)
     (hBelow : ∀ x, x < ell →
       (∃ r : Fin db, D.incoming x r = true ∨ D.outgoing x r = true) →
@@ -67,8 +67,8 @@ theorem insertPartial_freeLevel_at_inserted
     (hAbove : ∀ y, ell ≤ y → y < A.size →
       (∃ r : Fin db, D.outgoing y r = true ∨ D.incoming y r = true) →
       ell ≤ A.freeLevel y) :
-    (insertPartial A ell d D hell hd hdGate hBelow hAbove).freeLevel ell = d := by
-  rw [insertPartial_freeLevel_eq A ell d D hell hd hdGate hBelow hAbove ell (by omega)]
+    (insertPartial A ell d D hell hellPos hd hdGate hBelow hAbove).freeLevel ell = d := by
+  rw [insertPartial_freeLevel_eq A ell d D hell hellPos hd hdGate hBelow hAbove ell (by omega)]
   exact insertedCut_at A ell d
 
 /-- Every old vertex has precisely its old cut transported across the new
@@ -77,7 +77,7 @@ theorem insertPartial_freeLevel_old
     {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (ell d : Nat) (D : InsertedLData db du dd)
-    (hell : ell ≤ A.size) (hd : d ≤ ell)
+    (hell : ell ≤ A.size) (hellPos : 0 < ell) (hd : d ≤ ell)
     (hdGate : d = 0 ∨ d < ell)
     (hBelow : ∀ x, x < ell →
       (∃ r : Fin db, D.incoming x r = true ∨ D.outgoing x r = true) →
@@ -86,10 +86,10 @@ theorem insertPartial_freeLevel_old
       (∃ r : Fin db, D.outgoing y r = true ∨ D.incoming y r = true) →
       ell ≤ A.freeLevel y)
     (x : Nat) (hx : x < A.size) :
-    (insertPartial A ell d D hell hd hdGate hBelow hAbove).freeLevel
+    (insertPartial A ell d D hell hellPos hd hdGate hBelow hAbove).freeLevel
         (insertAddress ell x) =
       if A.freeLevel x < ell then A.freeLevel x else A.freeLevel x + 1 := by
-  rw [insertPartial_freeLevel_eq A ell d D hell hd hdGate hBelow hAbove
+  rw [insertPartial_freeLevel_eq A ell d D hell hellPos hd hdGate hBelow hAbove
     (insertAddress ell x)]
   · exact insertedCut_insertAddress A ell d x
   · by_cases hxl : x < ell

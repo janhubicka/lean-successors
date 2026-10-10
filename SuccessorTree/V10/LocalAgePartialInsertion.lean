@@ -168,7 +168,7 @@ theorem insertedCut_pos_lt
     {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (ell d v : Nat)
-    (hell : ell ≤ A.size) (hd : d ≤ ell)
+    (hell : ell ≤ A.size) (hellPos : 0 < ell) (hd : d ≤ ell)
     (hdGate : d = 0 ∨ d < ell)
     (hv : v < A.size + 1)
     (hpos : 0 < insertedCut A ell d v) :
@@ -196,7 +196,8 @@ theorem insertedCut_pos_lt
       rw [hEq] at hpos ⊢
       by_cases hfl : f < ell
       · simp [hfl] at hpos ⊢
-        exact hfold hpos
+        have ht := hfold hpos
+        omega
       · simp [hfl]
         have hfpos : 0 < f := by omega
         have := hfold hfpos
@@ -250,7 +251,7 @@ noncomputable def insertPartial
     {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (ell d : Nat) (D : InsertedLData db du dd)
-    (hell : ell ≤ A.size) (hd : d ≤ ell)
+    (hell : ell ≤ A.size) (hellPos : 0 < ell) (hd : d ≤ ell)
     (hdGate : d = 0 ∨ d < ell)
     (hBelow : ∀ x, x < ell →
       (∃ r : Fin db, D.incoming x r = true ∨ D.outgoing x r = true) →
@@ -277,7 +278,7 @@ noncomputable def insertPartial
   · intro u v hE
     obtain ⟨hv, hu⟩ := (insertE_true_iff A ell d u v).1 hE
     have hpos : 0 < insertedCut A ell d v := lt_of_le_of_lt (Nat.zero_le u) hu
-    have hcut := insertedCut_pos_lt A ell d v hell hd hdGate hv hpos
+    have hcut := insertedCut_pos_lt A ell d v hell hellPos hd hdGate hv hpos
     omega
   · intro u v hE w hw
     obtain ⟨hv, hu⟩ := (insertE_true_iff A ell d u v).1 hE
@@ -361,7 +362,7 @@ theorem insertPartial_isLInsertion
     {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (ell d : Nat) (D : InsertedLData db du dd)
-    (hell : ell ≤ A.size) (hd : d ≤ ell)
+    (hell : ell ≤ A.size) (hellPos : 0 < ell) (hd : d ≤ ell)
     (hdGate : d = 0 ∨ d < ell)
     (hBelow : ∀ x, x < ell →
       (∃ r : Fin db, D.incoming x r = true ∨ D.outgoing x r = true) →
@@ -370,7 +371,7 @@ theorem insertPartial_isLInsertion
       (∃ r : Fin db, D.outgoing y r = true ∨ D.incoming y r = true) →
       ell ≤ A.freeLevel y) :
     IsLInsertion A
-      (insertPartial A ell d D hell hd hdGate hBelow hAbove) ell := by
+      (insertPartial A ell d D hell hellPos hd hdGate hBelow hAbove) ell := by
   constructor
   · exact hell
   · rfl
