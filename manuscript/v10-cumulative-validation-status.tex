@@ -41,6 +41,8 @@
 % The global neutral one-gap ShapeMap uses only standard Lean axioms.
 % The prescribed non-neutral f:S->Kpt(ell+1) boring map remains OPEN.
 % PRs 186--196 stage prescribed-column/finite-age proofs; final checks pending.
+% PR 200 stages author-authorized mathematical B3/proof correction and source-safe patcher.
+% PR 201 formalizes direct corrected-B3-to-finite-insertion implication (CI pending).
 % PR 197: 064bf6201c7d323a0c01090058cfcbd41733fddc.
 % Focused V10 build and transitive axiom audit 38081204866 SUCCESS.
 % Printed B3 repair remains OPEN (not a consequence of the spacing theorem).
@@ -357,7 +359,25 @@ has no upper vertices. Therefore the printed B3, taken
 literally without an initial-socle condition, cannot be the
 condition verified by the intended prescribed extensions.
 
-\textbf{Suggested localized repair, for author review only:}
+\textbf{Mathematical B3 repair now supplied in PR~200,
+source application and full lemma certification still OPEN.}
+The exact replacement in
+\texttt{v10-boring-b3-replacement.tex} quantifies over finite
+ordered $L$-age structures with the correct initial ordinary socle
+and complete upper $L$-types prescribed by $f[S]$.
+The source-targeted \texttt{repair-v10-boring-lemma.py} also
+repairs the age paragraph, the erroneous $\ell$/$\ell+1$
+upper-type index, and the boundary weak-successor argument;
+it preserves the four earlier author repairs and fails closed
+when the latest source differs from its tested anchors.
+The strengthened B3 is \emph{not} implied by the former
+third statement of Lemma~\ref{lem:comp}; the duplication and
+decomposition applications have explicit remaining TODOs.
+The current author-edited \texttt{main.tex} is not present for
+direct source application in this checkout.
+
+\textbf{Suggested localized repair (now implemented as
+source-targeted replacement):}
 quantify instead over finite ordered $L$-structures
 whose first $\ell+1$ vertices induce the ordinary $L$-socle
 of some $f(S)$ and whose other vertices have complete

@@ -1,0 +1,32 @@
+To verify that $\type{Q}\in\KFpt$, it remains to check that
+		its $L$-reduct avoids $\mathcal F$; the partial-structure axioms
+		for $E$ follow from the transported free levels and the requirement
+		that every $L$-linked pair belongs to $E$.
+		Deleting the inserted ordinary vertex $\ell$ and renumbering gives
+		$\type{T}$, so every forbidden copy in $\str{Q}$ must contain $\ell$.
+		If no element of $S$ is compatible with $\type{T}|_\ell$, the inserted
+		vertex has the allowed neutral singleton type and is $L$-isolated.
+		An irreducible forbidden structure cannot contain it, and neither
+		can a forbidden non-neutral singleton.
+
+		Otherwise fix $\type{S}_0\in S$ compatible with
+		$\type{T}|_\ell$. Let $g$ be a forbidden ordered copy in $\str{Q}$
+		containing $\ell$. Take the $L$-structure $\str{A}$ induced on
+		the first $\ell+1$ ordinary vertices together with the vertices
+		of $g[F]$ above $\ell$ (regarding $t$, if present, as the largest
+		ordinary vertex). The domain is a finite ordered subset of $\omega$;
+		order-preserving renumbering of the upper vertices does not change
+		any induced types.
+		By~\ref{item:boringB1} and~\ref{item:boringB2}, its initial
+		$L$-socle is
+		$\str{f(\type{S}_0)}\restriction_{\ell+1}$.
+		Every selected vertex $x>\ell$ belongs to the forbidden copy and,
+		by irreducibility, is $L$-linked to $\ell$.
+		The construction therefore supplies its complete $L$-type
+		through $\ell+1$ from some element of $f[S]$,
+		including unary, diagonal, and both directed binary relations
+		and their complements.
+		Finally, $\str{A}\restriction_{A\setminus\{\ell\}}$ is
+		$\mathcal F$-free, since all its atoms occur in the source
+		$\str{T}$. Condition~\ref{item:boringage} implies that
+		$\str{A}$ is $\mathcal F$-free, contradicting $g$.
