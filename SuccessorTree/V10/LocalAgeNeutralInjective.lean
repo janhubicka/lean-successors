@@ -173,7 +173,8 @@ theorem neutralKptSkip_injective
         B.partialTypeAt (cut+1) (insertAddress ell v) =
           D.partialTypeAt (cut+1) (insertAddress ell w) := by
       have h := (rawTypeAtFree_eq_data B D _ _ hRawImage).2
-      simpa only [hFreeA] using h
+      rw [hFreeA] at h
+      exact h
     have hBefore : A.partialTypeAt cut v = C.partialTypeAt cut w :=
       neutralInsert_partialType_reflects A C ell cut v w
         hellA hellC hellPos hCutA hCutC hv hw hAfter
