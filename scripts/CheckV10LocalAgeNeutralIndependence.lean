@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LocalAgeNeutralIndependence
+
+#print axioms SuccessorTree.V10.insertedTypeCoordinate_cases
+#print axioms SuccessorTree.V10.neutralInsert_partialType_independent
