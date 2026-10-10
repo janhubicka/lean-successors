@@ -1,8 +1,10 @@
 # Independent B3 spacing and age-test statement audit
 
-Proof candidate: `PrescribedB3Spacing.lean`, independent PR #197.
-This note is review-only until its exact-head Lean build and axiom audit
-pass; no mathematical manuscript proof prose is changed.
+Checked result: `PrescribedB3Spacing.lean` in independent PR #197,
+proof SHA `064bf6201c7d323a0c01090058cfcbd41733fddc`.
+Focused Lean build and transitive axiom audit run `38081204866` PASSED.
+This note remains an editorial proposal, and no mathematical manuscript
+proof prose is changed.
 
 ## First-upper spacing obstruction
 

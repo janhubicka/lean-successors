@@ -41,7 +41,9 @@
 % The global neutral one-gap ShapeMap uses only standard Lean axioms.
 % The prescribed non-neutral f:S->Kpt(ell+1) boring map remains OPEN.
 % PRs 186--196 stage prescribed-column/finite-age proofs; final checks pending.
-% PR 197 identifies a distinct B3 E-spacing/initial-socle issue; proof pending.
+% PR 197: 064bf6201c7d323a0c01090058cfcbd41733fddc.
+% Focused V10 build and transitive axiom audit 38081204866 SUCCESS.
+% Printed B3 repair remains OPEN (not a consequence of the spacing theorem).
 % =====================================================================
 
 % Proposed consolidated TODO at obs:env1, retaining the type-forest checkpoint.
@@ -328,8 +330,8 @@ and the normalized forbidden family is avoided. Thus every
 admissible Kpt level is inhabited and the actual neutral
 \texttt{ShapeMap} has level range exactly $\omega\setminus\{\ell\}$.
 
-\textbf{B3 statement-level spacing obstruction -- ADVERSARIAL AUDIT,
-pending exact-head Lean check.}
+\textbf{B3 statement-level spacing obstruction -- GREEN theorem
+in the normalized initial-ordinal Kpt model; printed B3 repair OPEN.}
 The printed B3 condition quantifies over an initially enumerated
 partial structure $\pstr A$ in which every upper vertex
 $i\geq\ell+1$ has a complete partial type
@@ -338,9 +340,11 @@ The spacing axiom rules out $E(\ell,\ell+1)$, while every
 admissible type in $\KFpt(\ell+1)$ has $E(\ell,t)$.
 Hence no nonempty upper tail can satisfy that hypothesis when
 the vertices of $\pstr A$ form an initial ordinal.
-This is formalised in the independent
-\texttt{PrescribedB3Spacing.lean} audit; do not promote it to
-GREEN until the exact-head check succeeds.
+This obstruction is formally checked in the independent
+\texttt{PrescribedB3Spacing.lean} audit (PR~197, focused V10
+run~38081204866 successful). This checks the spacing implication,
+not the missing implication from printed B3 to the stronger finite
+age test.
 
 Moreover, unless the initial ordinary socle of $\pstr A$
 is itself required to come from some prescribed $f(S)$, the
