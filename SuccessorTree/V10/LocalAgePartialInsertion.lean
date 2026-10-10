@@ -55,7 +55,7 @@ def insertL
       else A.L.diagonal (removeInserted ell x) r }
 
 /-- The transported free cut of a target coordinate. -/
-def insertedCut
+noncomputable def insertedCut
     {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (ell d v : Nat) : Nat :=
@@ -190,9 +190,10 @@ theorem insertedCut_pos_lt
       have hfle : f ≤ v - 1 := A.freeLevel_le (v - 1)
       have hfold : 0 < f → f < v - 1 :=
         fun hf => freeLevel_pos_lt_vertex A (v - 1) hf
-      change
-        0 < (if f < ell then f else f + 1) at hpos
-      change (if f < ell then f else f + 1) < v
+      have hEq : insertedCut A ell d v =
+          (if f < ell then f else f + 1) := by
+        simp [insertedCut, hvl, heq, f]
+      rw [hEq] at hpos ⊢
       by_cases hfl : f < ell
       · simp [hfl] at hpos ⊢
         exact hfold hpos
@@ -317,7 +318,7 @@ noncomputable def insertPartial
           simp [x, removeInserted, huBelow]
         have hLinkData :
             ∃ r : Fin db, D.incoming u r = true ∨ D.outgoing u r = true := by
-          simpa [L, insertL, huell, hxEq] using hlink
+          simpa [L, insertL, huell, removeInserted, huBelow] using hlink
         have huCut := hBelow u huBelow hLinkData
         exact (insertE_true_iff A ell d u ell).2
           ⟨by omega, by simpa [insertedCut] using huCut⟩
@@ -328,13 +329,19 @@ noncomputable def insertPartial
         have hyAddr : insertAddress ell y = v :=
           insertAddress_removeInserted ell v hvell
         have hxOld : x < A.size := by
-          rw [← hxAddr] at hu
-          unfold insertAddress at hu
-          split <;> omega
+          by_cases hxlt : x < ell
+          · omega
+          · have hsh : insertAddress ell x = x + 1 :=
+              insertAddress_above ell x (by omega)
+            rw [← hxAddr, hsh] at hu
+            omega
         have hyOld : y < A.size := by
-          rw [← hyAddr] at hv
-          unfold insertAddress at hv
-          split <;> omega
+          by_cases hylt : y < ell
+          · omega
+          · have hsh : insertAddress ell y = y + 1 :=
+              insertAddress_above ell y (by omega)
+            rw [← hyAddr, hsh] at hv
+            omega
         have hxy : x < y :=
           removeInserted_lt ell u v huv huell hvell
         have hOldLink :
