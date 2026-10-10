@@ -36,7 +36,8 @@
 % GREEN focused: terminal letter PR 177, mapped parameters PR 178,
 % canonical inputs PR 179, and crossing weak successor PR 180.
 % Exact-head focused V10 audit GREEN: PR 181 and PR 182.
-% PR 183 all-level witnesses / SkipsOnly remains pending.
+% PR 183 all-level witnesses / SkipsOnly proof: 25668dab4644e885b84a7ec3cccdc5e6cfa18f3d.
+% V10 focused build + axiom audit 38075729225: SUCCESS.
 % The global neutral one-gap ShapeMap uses only standard Lean axioms.
 % The prescribed non-neutral f:S->Kpt(ell+1) boring map remains OPEN.
 % =====================================================================
@@ -293,8 +294,8 @@ forbidden-free common socle, without a separate hypothesis.
 No $E$-constraint is imposed on the upper vertices of the
 $L$-age test.
 
-\textbf{Neutral global insertion -- partial validation at this
-checkpoint.}
+\textbf{Neutral one-level shape map -- GREEN in the normalized Kpt model;
+non-neutral prescribed map OPEN.}
 The complete neutral insertion is now independent of the chosen
 representing finite structure and is defined on the actual
 admissible $\KFpt$ nodes; see
@@ -316,9 +317,14 @@ The above-gap exact successor and the complete neutral
 \texttt{ShapeMap} are now GREEN for the normalized model; see
 \texttt{LocalAgeNeutralUpperSucc.lean} and
 \texttt{LocalAgeNeutralShapeMap.lean}. The precise
-\texttt{SkipsOnly} range statement is separately staged in
-\texttt{LocalAgeAllLevels.lean} and requires its exact-head
-audit before a GREEN mark.
+\texttt{SkipsOnly} range statement is also GREEN:
+\texttt{LocalAgeAllLevels.lean} constructs, for every $n$, an all-neutral
+$L^+$ partial structure on $n+2$ vertices with the only $E$-column
+$E(u,n+1)$ for $u<n$. Its final vertex has free cut $n$,
+the E-spacing, downward-closure and linked-pair axioms hold,
+and the normalized forbidden family is avoided. Thus every
+admissible Kpt level is inhabited and the actual neutral
+\texttt{ShapeMap} has level range exactly $\omega\setminus\{\ell\}$.
 
 \textbf{Remaining for Lemma~\ref{lem:local-age}:}
 The neutral map does not realize the prescribed non-neutral crossing

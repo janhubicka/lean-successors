@@ -1,10 +1,12 @@
 # Successor v10: neutral one-gap Kpt map and its precise scope
 
 Reviewed proof chain: draft PRs 168--183, stacked in order.
-PRs 168--182 now have passing focused Lean and transitive axiom
-audits; PR 183's explicit all-neutral witnesses and SkipsOnly
-range theorem remain under exact-head validation. This is a review checkpoint, NOT a certificate
-for pending branches.
+PRs 168--183 now have passing focused Lean builds and transitive
+axiom audits. In particular the exact-head PR 183 checkpoint
+\`25668dab4644e885b84a7ec3cccdc5e6cfa18f3d\` passed focused
+V10 run \`38075729225\`. The full repository rerun is recorded
+separately in CI; the focused proof endpoints use only standard
+Lean axioms.
 
 ## What the neutral branch proves
 
@@ -61,3 +63,18 @@ The existing four author repairs and all unmarked manuscript prose
 are preserved; current author-edited main.tex was not available
 as verified raw bytes for this checkpoint. No independent referee
 agents were invoked.
+
+## Exact one-gap range theorem (PR 183)
+
+The all-neutral finite partial structure on n+2 vertices has no
+non-neutral singleton or irreducible binary configuration, and its
+only E column consists of (u,n+1) for u<n. Hence the last vertex
+has canonical free level n. Every level n of the actual normalized
+Kpt tree is therefore nonempty, without assuming M3.
+The neutral ShapeMap consequently satisfies SkipsOnly ell for
+every positive ell. This is strictly stronger than simply omitting
+ell from its level range.
+
+This does not realize arbitrary prescribed non-neutral f crossings.
+The application of the three-clause age test to a globally selected
+insertion map, M2/M3 and the final big-Ramsey bound are still open.
