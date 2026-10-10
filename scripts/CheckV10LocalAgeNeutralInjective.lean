@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LocalAgeNeutralInjective
+
+#print axioms SuccessorTree.V10.neutralInsert_partialType_reflects
+#print axioms SuccessorTree.V10.neutralKptSkip_injective
