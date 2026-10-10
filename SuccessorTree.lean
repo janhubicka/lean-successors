@@ -168,3 +168,5 @@ import SuccessorTree.V10.HIncidentTrace
 import SuccessorTree.V10.HFiniteAge
 
 import SuccessorTree.V10.HClosureCharge
+
+import SuccessorTree.V10.ActualCrossingSignature
