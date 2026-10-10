@@ -3,8 +3,8 @@
 Reviewed proof chain: draft PRs 168--183, stacked in order.
 PRs 168--183 now have passing focused Lean builds and transitive
 axiom audits. In particular the exact-head PR 183 checkpoint
-\`25668dab4644e885b84a7ec3cccdc5e6cfa18f3d\` passed focused
-V10 run \`38075729225\`. The full repository rerun is recorded
+`25668dab4644e885b84a7ec3cccdc5e6cfa18f3d` passed focused
+V10 run `38075729225`. The full repository rerun is recorded
 separately in CI; the focused proof endpoints use only standard
 Lean axioms.
 
