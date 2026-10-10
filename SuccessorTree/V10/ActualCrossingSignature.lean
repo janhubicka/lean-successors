@@ -60,28 +60,6 @@ def actualKptCrossingReduct
     RelationalPrefixType cut db du dd :=
   (C.partialTypeAt cut original).lReduct
 
-/-- The cut-indexed crossing reduct is indeed the L-component of the raw
-record underlying the actual LevelTree ancestor. -/
-theorem actualKptCrossingReduct_spec
-    {db du dd : Nat}
-    (family : List (NormalizedForbidden db du dd))
-    (C : EnumeratedPartialStructure db du dd)
-    (original cut : Nat)
-    (hAd : IsAdmissibleRawType family (C.rawTypeAtFree original))
-    (hcut : cut ≤ C.freeLevel original) :
-    (LevelTree.ancestor
-      (⟨C.rawTypeAtFree original, hAd⟩ : AdmissibleKptNode family)
-      cut (by
-        change cut ≤ C.freeLevel original
-        exact hcut)).1 =
-      (⟨cut, {
-        lReduct := actualKptCrossingReduct family C original cut hAd hcut
-        eRelation := (C.partialTypeAt cut original).eRelation
-      }⟩ : RawPartialTypeNode db du dd) := by
-  simpa [actualKptCrossingReduct] using
-    admissibleKpt_original_ancestor_value
-      family C original cut hAd hcut
-
 /-- If an upper vertex of an age-test witness realizes the L-reduct of
 that ACTUAL Kpt crossing, then it has exactly the full directed atomic
 type of the named ambient original through the cut. -/
