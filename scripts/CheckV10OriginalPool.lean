@@ -1,4 +1,4 @@
-import SuccessorTree.V10.ConcreteOriginalPool
+import SuccessorTree.V10.HClosureCharge
 
 #print axioms SuccessorTree.V10.EnumeratedPartialStructure.kptOriginal
 #print axioms SuccessorTree.V10.kpt_prefix_raw_eq_ambient
@@ -8,3 +8,11 @@ import SuccessorTree.V10.ConcreteOriginalPool
 #print axioms SuccessorTree.V10.ambientPrefixPool_parameterClosed
 #print axioms SuccessorTree.V10.admissibleKpt_closure_subset_ambientPool
 #print axioms SuccessorTree.V10.admissibleKpt_stage_closure_subset_pool
+#print axioms SuccessorTree.V10.forbiddenFreeH_closure_meet_charge
+#print axioms SuccessorTree.V10.firstBinaryNeighbour_unique
+#print axioms SuccessorTree.V10.hOriginalCharge_unique
+#print axioms SuccessorTree.V10.numericHMeetCharge_higher_original
+#print axioms SuccessorTree.V10.hOriginalChargeIndex_eq
+#print axioms SuccessorTree.V10.hPoolChargeLevels_card_le
+#print axioms SuccessorTree.V10.hOriginalCharge_level_mem_budget
+#print axioms SuccessorTree.V10.forbiddenFreeH_closure_meet_budget
