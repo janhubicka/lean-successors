@@ -184,3 +184,6 @@ import SuccessorTree.V10.PrescribedB3Spacing
 import SuccessorTree.V10.PrescribedMatchingFinite
 
 import SuccessorTree.V10.PrescribedCorrectedB3
+
+-- Public endpoint of the checked prescribed one-gap boring extension.
+import SuccessorTree.V10.PrescribedBoringCompletion
