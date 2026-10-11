@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M3ActualDuplicateStep
+
+#print axioms SuccessorTree.V10.m3TotalBoringData_uses_old_canonical_step
