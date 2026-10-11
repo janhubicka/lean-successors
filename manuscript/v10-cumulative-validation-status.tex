@@ -3,7 +3,9 @@
 % 10 October 2026 UTC. Cumulative continuation through staged PRs 205/206.
 % Green predecessor: PR203 fe1d91e39a954eadf5676dd1863ad424d1aa6106.
 % Full Lean 38087498944 and focused V10 38087498938 passed.
-% New independence modules: exact-head checks pending; do not mark GREEN yet.
+% PR205 538490affc77c23e3704cc4235d78972bda37757: full and focused GREEN.
+% PR206 4fc409b368a50caf084ef5696203927f2cd59968: focused proof/axiom steps GREEN.
+% Focused runs: 38096247806 and 38096396531; downloaded axiom evidence checked.
 %
 % Apply with update-v10-source.py to the author's current main.tex.
 % This file replaces overlapping machine-labelled notes; do not concatenate
@@ -298,8 +300,8 @@ At the unique edge from $\ell-1$ to $\ell$, use the weak successor
 statement, not equality with the shifted target. The assumption $\ell>0$
 remains essential for the finite $E$ insertion.
 
-\textbf{Prescribed representation independence -- staged, kernel
-checks PENDING.}
+\textbf{Prescribed representation independence -- GREEN
+for the finite constructor.}
 \texttt{PrescribedIncidentIndependence.lean} derives the gate
 $\ell\leq\freef A(u)$ from the source atom $E(\ell-1,u)$, and recovers
 shorter source types at ordinary and distinguished coordinates.
@@ -311,13 +313,15 @@ including every positive and absent binary atom, singleton fact and
 $E$ pair. Its final endpoint compares the actual finite prescribed
 constructors for two ambient realizations and two compatible prescribed
 outputs. Equality of the inserted cuts is derived from their common
-ordinary socle, not added as a hypothesis. PRs~205 and~206 include
-explicit axiom-audit scripts; these new endpoints are not yet marked
-GREEN in this overlay.
+ordinary socle, not added as a hypothesis. The focused builds and
+transitive axiom audits for PRs~205 and~206 passed. All nine new
+endpoints use only standard Lean axioms; the downloaded evidence
+was checked. This is not a global shape-map theorem.
 
 \textbf{Remaining manuscript obligations.}
-Assemble the matching and neutral branches into a total map on the
-admissible $\KFpt$ nodes; prove all predecessor and injectivity cases,
+Retain the literal prescribed constructor, or its inserted type record,
+in the finite witness-existence conclusion. Then assemble the matching
+and neutral branches into a total map on the admissible $\KFpt$ nodes; prove all predecessor and injectivity cases,
 and transport the exact successor parameters and terminal letters.
 Finite record independence by itself is not this global theorem.
 For M2, the former third statement of Lemma~\ref{lem:comp} does not
