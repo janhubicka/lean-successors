@@ -116,7 +116,7 @@ theorem MiddleCloneLData.irred_copy_projects
       · change (if e a = ell then n else e a) <
           (if e b = ell then n else e b)
         rw [if_pos ha, if_neg hb]
-        omega
+        exact lt_trans h.n_before (by omega : ell < e b)
       · simpa [projectMiddleClone, ha, hb] using hlt
   · intro a
     change projectMiddleClone ell n (e a) ∈ W.carrier ∧
@@ -126,6 +126,8 @@ theorem MiddleCloneLData.irred_copy_projects
         Nat.ne_of_lt h.n_before]
     · simp [projectMiddleClone, ha, hIn a]
   · intro a b hab t
+    change W.binary (projectMiddleClone ell n (e a))
+      (projectMiddleClone ell n (e b)) t = P.binary a b t
     by_cases ha : e a = ell
     · have hb : e b ≠ ell := by
         intro he
@@ -159,6 +161,7 @@ theorem MiddleCloneLData.irred_copy_projects
           _ = P.binary a b t := by simpa [hb] using hBinary a b hab t
       · simpa [projectMiddleClone, ha, hb] using hBinary a b hab t
   · intro a t
+    change W.unary (projectMiddleClone ell n (e a)) t = P.unary a t
     by_cases ha : e a = ell
     · calc
         W.unary (projectMiddleClone ell n (e a)) t =
@@ -167,6 +170,7 @@ theorem MiddleCloneLData.irred_copy_projects
         _ = P.unary a t := by simpa [ha] using hUnary a t
     · simpa [projectMiddleClone,ha] using hUnary a t
   · intro a t
+    change W.diagonal (projectMiddleClone ell n (e a)) t = P.diagonal a t
     by_cases ha : e a = ell
     · calc
         W.diagonal (projectMiddleClone ell n (e a)) t =
