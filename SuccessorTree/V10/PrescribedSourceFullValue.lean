@@ -73,7 +73,8 @@ theorem PrescribedBoringData.prescribedKptSkip_agrees_on_source
   have hMatch : F.HasCompatibleSource (a.1.2.restrict hlev) := by
     rw [hRestr]
     exact ⟨S,hSrc,sameOrdinaryAtCut_refl S⟩
-  obtain ⟨A,v,hv,hAvoidA,hRawS⟩ := hAdS
+  have hAdSCopy := hAdS
+  obtain ⟨A,v,hv,hAvoidA,hRawS⟩ := hAdSCopy
   have hRawA : a.1 = A.rawTypeAtFree v := hRawS
   have hFree : A.freeLevel v = ell := by
     have hh := congrArg Sigma.fst hRawS
