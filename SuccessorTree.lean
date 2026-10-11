@@ -112,3 +112,5 @@ import SuccessorTree.V10.PartialTypeRestriction
 import SuccessorTree.V10.HELinkage
 import SuccessorTree.V10.CommonSocleType
 import SuccessorTree.V10.FirstFullPrefix
+import SuccessorTree.V10.RawTypeMeet
+import SuccessorTree.V10.RawMeetLevel
