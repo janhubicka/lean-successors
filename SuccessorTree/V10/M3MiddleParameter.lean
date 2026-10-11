@@ -185,17 +185,6 @@ theorem middleCloneInsertPartial_parameterList_eq
       _ = A.partialTypeAt d n := hClone
       _ = (A.partialTypeAt (n+1) v).lastOrdinaryParameter d hd :=
         hOld.symm
-  change (if d = 0 then
-      ([] : List (RawPartialTypeNode db du dd))
-    else
-      [⟨d,(B.partialTypeAt (ell+1) (insertAddress ell v)).lastOrdinaryParameter
-        d hdEll⟩]) =
-    (if d = 0 then
-      ([] : List (RawPartialTypeNode db du dd))
-    else
-      [⟨d,(A.partialTypeAt (n+1) v).lastOrdinaryParameter d hd⟩])
-  by_cases hz : d = 0
-  · simp [hz]
-  · simp [hz, hParam]
+  simp only [PartialTypeWithE.canonicalParameterRecord, hParam]
 
 end SuccessorTree.V10
