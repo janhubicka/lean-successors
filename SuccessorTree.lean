@@ -103,3 +103,5 @@ import SuccessorTree.V10.SignatureSplice
 import SuccessorTree.V10.SignatureProfiles
 import SuccessorTree.V10.SignatureTypePrefix
 import SuccessorTree.V10.SignatureCollision
+import SuccessorTree.V10.AmbientSignature
+import SuccessorTree.V10.RelationalTypeReduct

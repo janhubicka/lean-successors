@@ -1,57 +1,58 @@
-% successor-v10: review-only TeX fragment, 9 October 2026.
-% This is NOT included automatically in any manuscript file in this repository.
-% Preserve the author's four separate mathematical repairs and all existing
-% v10 TODOs. Replace (rather than duplicate) the signature-uniqueness review
-% TODO attached to Observation 6.52 when preparing the next cumulative v10.
+% Successor-v10 review overlay, 9 October 2026.
+% This file is a candidate single TODO replacement at Observation 6.52,
+% not an input of the Lean build or a patch automatically applied to main.tex.
+% Preserve the author's four reconstructed mathematical repairs; retain all
+% other cumulative v10 notes. Do not duplicate the older Obs. 6.52 TODO.
 %
 % Suggested replacement TODO at Observation 6.52:
-\todo[inline]{\textbf{v10 validation (signature splice).}
-The finite-model splicing step is formalised in
-\texttt{SuccessorTree/V10/SignatureSplice.lean}: equal signatures determine
-the same initial segment of lower forbidden vertices; using the earlier
-witness below the cut and the later witness above the cut gives a strictly
-increasing copy avoiding the later tested level.  All directed binary
-relations (including both orientations and absent tuples), unary predicates
-and diagonal binary tuples are preserved, provided the lower--upper
-relations are determined by the complete prescribed upper types
-\emph{through the smaller tested level plus one}.  This last condition
-remains a separate proof obligation: identify the type of each upper
-age-test witness vertex through $\ell+1$ with its chosen original
-$\mathrm{type}_{C^+}(v)\restriction(\ell+1)$ and verify the common initial
-$L$-socle.  The age-test witness must contain the entire initial socle, so the
-hybrid lower vertices actually lie in its domain; this reduction is
-proved by \texttt{signatureSplice\_in\_laterDomain}.  The two required
-cross-relation equalities follow from shared complete outgoing and
-incoming original profiles, as proved by
-\texttt{signatureSplice\_cross\_of\_sharedProfiles}. Alternatively, the exact outgoing and incoming cross equalities follow from
-equality of the complete binary/unary/diagonal type records through
-$\ell+1$, by \texttt{signatureSplice\_cross\_of\_fullTypePrefixes}.
-Identifying those records with the actual $K^\mathcal F_{pt}$ types,
-including $E$-socle truncation and the common initial $L$-structure,
-remains open. The
-auxiliary $E$-relation is not part of the forbidden $L$-copy.  The complete conditional contradiction, including actual witness
-membership, the common lower $L$-socle and the no-forbidden-copy
-hypothesis, is assembled by
-\texttt{signature\_collision\_impossible\_of\_common\_full\_types}.
-Do not mark Observation~6.52, Lemma~6.53 or
-Proposition~6.44 fully validated until this concrete
-partial-type-to-age-test interface is supplied.}
-
-% Theorems audited by scripts/CheckV10Counting.lean once the corresponding
-% CI head is green:
+\todo[inline]{\textbf{v10 validation (age-signature uniqueness).}
+The ordered splice of two equal-signature witnesses at $\ell<\ell'$
+is formalised in Lean (SignatureSplice, SignatureCollision): the resulting
+copy uses the earlier lower vertices and the later upper vertices, lies in
+the later age-test structure, is induced for every unary and directed
+binary relation (including nonedges and diagonal facts), and avoids
+$\ell'$.  The reduction through a common ambient structure $C^+$
+(AmbientSignature) is also proved conditionally: both age-test
+witnesses must have the corresponding initial $L$-socles of $C^+$,
+and for every upper witness vertex $x$ labelled by original $v$ its
+$L$-type through the tested level plus one must agree with the
+corresponding restriction of $\operatorname{type}_{C^+}(v)$.
+RelationalTypeReduct proves that equality of the actual induced
+$L$-reducts on the socle together with the distinguished type vertex
+implies the required exact atomic equality; restriction from
+$\ell'+1$ to $\ell+1$ is checked.  It remains to obtain these two
+type-prescription and common-socle premises from the concrete
+one-level crossing $f_\ell$ in $K^\mathcal F_{pt}$ and its
+chosen original, including the relevant $E$-socle conditions.
+The auxiliary relation $E$ is not part of the forbidden
+$L$-copy and must not be required to agree between different
+age-test witnesses. Keep Observation~6.52 and the final bound
+in Proposition~6.44 marked partial until the $K^\mathcal F_{pt}$
+adapter is proved.}
+%
+% Paper-style source anchors: Observation 6.52; Lemma 6.51 (the age
+% witness), Lemma 6.53 (generation), Proposition 6.44 (bound).
+%
+% New kernel-checked endpoints from PR #115:
 %   signatureSplice_order_avoids
 %   signatureSplice_binary
 %   signatureSplice_singleton
 %   signatureSplice_inducedCopy
-%
-% Original-v10 TeX main source is unavailable in the lean-successors repo.
-% Therefore this fragment is deliberately not a pretend cleanly-applying
-% patch against main.tex. Keep it for the next author-supplied v10 archive.
-
 %   signatureSplice_in_laterDomain
 %   signatureSplice_cross_of_sharedProfiles
-
 %   fullAtomicTypePrefix_cross
 %   signatureSplice_cross_of_fullTypePrefixes
-
 %   signature_collision_impossible_of_common_full_types
+%
+% PR #116 extends this with:
+%   fullAtomicTypePrefix_restrict
+%   common_original_gives_equal_short_types
+%   signature_collision_impossible_of_ambient_types
+%   RelationalPrefixType.ofAgeModel_toAtomic
+%   equal_reduct_types_imply_fullAtomic
+%   prescribed_crossing_implies_fullAtomic
+% The status of #116 must be checked at its exact final SHA before adding
+% green manuscript markers. This excerpt is review-only, not a proof.
+%
+% Exact original-v10 main.tex has not been mounted into this GitHub checkout.
+% Do not assert that this annotation applies cleanly to an unseen TeX file.
