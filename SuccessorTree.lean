@@ -130,3 +130,5 @@ import SuccessorTree.V10.CanonicalBinary
 import SuccessorTree.V10.CanonicalInsertionParameter
 
 import SuccessorTree.V10.CanonicalCrossing
+
+import SuccessorTree.V10.CompleteNextColumn

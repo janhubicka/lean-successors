@@ -50,6 +50,7 @@ import SuccessorTree.V10.AdmissibleKptLevelTree
 import SuccessorTree.V10.CanonicalBinary
 import SuccessorTree.V10.CanonicalInsertionParameter
 import SuccessorTree.V10.CanonicalCrossing
+import SuccessorTree.V10.CompleteNextColumn
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -344,3 +345,6 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.binary_at_freeSocle_eq_parameter
 #print axioms SuccessorTree.V10.E_eq_decide_freeLevel
 #print axioms SuccessorTree.V10.canonicalCross_eq_actual
+
+-- Full L+ successor uniqueness from exact predecessor and new atomic column.
+#print axioms SuccessorTree.V10.completeNextColumn_determines_type
