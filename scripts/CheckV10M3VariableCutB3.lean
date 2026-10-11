@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M3VariableCutB3
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.correctedB3_of_middle_clone_varying_cut
