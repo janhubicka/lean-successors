@@ -74,6 +74,7 @@ theorem middleCloneInsertPartial_type_independent
         C.partialTypeAt_restrict (n+1) ell w
           (Nat.succ_le_of_lt hn)
   have hvB : insertAddress ell v < B.size := by
+    have hvOld := hv
     have hh := middleCloneInsertPartial_isLInsertion A ell n hellA hn
     rw [hh.size_eq]
     by_cases hlt : v < ell
@@ -82,6 +83,7 @@ theorem middleCloneInsertPartial_type_independent
     · rw [insertAddress_above ell v (by omega)]
       omega
   have hwH : insertAddress ell w < H.size := by
+    have hwOld := hw
     have hh := middleCloneInsertPartial_isLInsertion C ell n hellC hn
     rw [hh.size_eq]
     by_cases hlt : w < ell
@@ -125,36 +127,36 @@ theorem middleCloneInsertPartial_type_independent
         (middleCloneInsertPartial_target_restrict
           C ell n hellC hn w hw).symm
   have hParamA :
-      ((B.partialTypeAt (ell+1) (insertAddress ell v))
-        .canonicalParameterRecord d hdEll).toList =
-      ((A.partialTypeAt (n+1) v)
-        .canonicalParameterRecord d hd).toList :=
+      ((B.partialTypeAt (ell+1) (insertAddress ell v)).canonicalParameterRecord
+        d hdEll).toList =
+      ((A.partialTypeAt (n+1) v).canonicalParameterRecord
+        d hd).toList :=
     middleCloneInsertPartial_parameterList_eq A ell n hellA hn v
   have hParamC :
-      ((H.partialTypeAt (ell+1) (insertAddress ell w))
-        .canonicalParameterRecord d hdEll).toList =
-      ((C.partialTypeAt (n+1) w)
-        .canonicalParameterRecord d hd).toList := by
+      ((H.partialTypeAt (ell+1) (insertAddress ell w)).canonicalParameterRecord
+        d hdEll).toList =
+      ((C.partialTypeAt (n+1) w).canonicalParameterRecord
+        d hd).toList := by
     have hh := middleCloneInsertPartial_parameterList_eq
       C ell n hellC hn w
     rw [←hCut] at hh
     exact hh
   have hLists :
-      ((B.partialTypeAt (ell+1) (insertAddress ell v))
-        .canonicalParameterRecord d hdEll).toList =
-      ((H.partialTypeAt (ell+1) (insertAddress ell w))
-        .canonicalParameterRecord d hdEll).toList := by
+      ((B.partialTypeAt (ell+1) (insertAddress ell v)).canonicalParameterRecord
+        d hdEll).toList =
+      ((H.partialTypeAt (ell+1) (insertAddress ell w)).canonicalParameterRecord
+        d hdEll).toList := by
     calc
-      _ = ((A.partialTypeAt (n+1) v)
-        .canonicalParameterRecord d hd).toList := hParamA
-      _ = ((C.partialTypeAt (n+1) w)
-        .canonicalParameterRecord d hd).toList := by rw [hQOld]
+      _ = ((A.partialTypeAt (n+1) v).canonicalParameterRecord
+        d hd).toList := hParamA
+      _ = ((C.partialTypeAt (n+1) w).canonicalParameterRecord
+        d hd).toList := by rw [hQOld]
       _ = _ := hParamC.symm
   have hOptions :
-      (B.partialTypeAt (ell+1) (insertAddress ell v))
-        .canonicalParameterRecord d hdEll =
-      (H.partialTypeAt (ell+1) (insertAddress ell w))
-        .canonicalParameterRecord d hdEll :=
+      (B.partialTypeAt (ell+1) (insertAddress ell v)).canonicalParameterRecord
+        d hdEll =
+      (H.partialTypeAt (ell+1) (insertAddress ell w)).canonicalParameterRecord
+        d hdEll :=
     m3_option_toList_injective hLists
   have hLetter :
       (B.partialTypeAt (ell+1) (insertAddress ell v)).terminalLetter =
@@ -211,8 +213,8 @@ theorem m3FiniteTarget_eq_of_representation
   have hSources :
       W.A.partialTypeAt ell W.v = A.partialTypeAt ell v :=
     hFromW.symm.trans hFromA
-  change (middleCloneInsertPartial W.A ell n W.ell_le_size hn)
-      .partialTypeAt (ell+1) (insertAddress ell W.v) =
+  change (middleCloneInsertPartial W.A ell n W.ell_le_size hn).partialTypeAt
+      (ell+1) (insertAddress ell W.v) =
     (middleCloneInsertPartial A ell n hell hn).partialTypeAt
       (ell+1) (insertAddress ell v)
   exact middleCloneInsertPartial_type_independent W.A A ell n
