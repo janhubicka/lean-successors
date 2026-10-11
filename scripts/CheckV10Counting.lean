@@ -43,6 +43,7 @@ import SuccessorTree.V10.PrefixReplicaPartial
 import SuccessorTree.V10.PrefixReplicaAge
 import SuccessorTree.V10.AdmissibleKptPrefix
 import SuccessorTree.V10.FiniteKptLevels
+import SuccessorTree.V10.RawPrefixMeet
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -288,3 +289,11 @@ set_option autoImplicit false
 -- Finite levels of raw and normalized admissible Kpt types, no new axioms.
 #print axioms SuccessorTree.V10.rawPartialTypeLevel_finite
 #print axioms SuccessorTree.V10.admissibleRawTypeLevel_finite
+
+-- Maximal common full L+ raw prefix, not an assumed tree operation.
+#print axioms SuccessorTree.V10.rawCommonLevel_zero_of_common
+#print axioms SuccessorTree.V10.rawMeetLevel_common
+#print axioms SuccessorTree.V10.rawMeet_spec
+#print axioms SuccessorTree.V10.rawMeet_le_left
+#print axioms SuccessorTree.V10.rawMeet_le_right
+#print axioms SuccessorTree.V10.raw_le_meet
