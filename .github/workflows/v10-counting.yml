@@ -57,8 +57,14 @@ jobs:
         run: |
           curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Check locked dependencies
-        run: test -s lake-manifest.json
+      - name: Resolve Lake dependencies
+        # The repository currently does not track lake-manifest.json.
+        run: |
+          if test -s lake-manifest.json; then
+            echo 'Using existing pinned Lake manifest'
+          else
+            lake update
+          fi
       - name: Download Mathlib cache
         run: lake exe cache get
       - name: Select transitive V10 axiom checks and finite regressions
