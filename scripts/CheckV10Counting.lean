@@ -62,6 +62,7 @@ import SuccessorTree.V10.CanonicalStepUniqueness
 import SuccessorTree.V10.CanonicalRawSTree
 import SuccessorTree.V10.TerminalLetterReplica
 import SuccessorTree.V10.TerminalLetterAge
+import SuccessorTree.V10.AdmissibleSigmaSTree
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -420,3 +421,8 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.terminalLetterReplica_copy_projects
 #print axioms SuccessorTree.V10.NormalizedForbidden.terminalLetter_preserves_avoidance
 #print axioms SuccessorTree.V10.terminalLetter_is_admissible
+
+-- The actual normalized forbidden-free Kpt and admissible Sigma satisfy S1-S3.
+#print axioms SuccessorTree.V10.canonicalKptStep_letter_admissible
+#print axioms SuccessorTree.V10.admissibleKptSTree_succ_eq
+#print axioms SuccessorTree.V10.admissibleKptSTree
