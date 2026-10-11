@@ -41,6 +41,7 @@ import SuccessorTree.V10.PrefixReplicaE
 import SuccessorTree.V10.PrefixReplicaL
 import SuccessorTree.V10.PrefixReplicaPartial
 import SuccessorTree.V10.PrefixReplicaAge
+import SuccessorTree.V10.AdmissibleKptPrefix
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -278,3 +279,7 @@ set_option autoImplicit false
 -- Singleton case: the isolated filler has the allowed neutral type.
 #print axioms SuccessorTree.V10.nonNeutral_singleton_replica_copy_avoids_filler
 #print axioms SuccessorTree.V10.prefixReplicaL_preserves_avoidance_singleton
+
+-- Prefix closure of the actual normalized forbidden-free Kpt family.
+#print axioms SuccessorTree.V10.NormalizedForbidden.replica_preserves_avoidance
+#print axioms SuccessorTree.V10.admissibleRawType_closed_under_prefix
