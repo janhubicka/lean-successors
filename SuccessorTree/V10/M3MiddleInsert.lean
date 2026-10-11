@@ -53,9 +53,9 @@ theorem middleCloneInsertedLData_lower
     (ell n x : Nat) (hx : x < ell)
     (t : Fin db) :
     (middleCloneInsertedLData A ell n).incoming x t =
-      if x < A.freeLevel n then A.L.binary x n t else false ∧
+      (if x < A.freeLevel n then A.L.binary x n t else false) ∧
     (middleCloneInsertedLData A ell n).outgoing x t =
-      if x < A.freeLevel n then A.L.binary n x t else false := by
+      (if x < A.freeLevel n then A.L.binary n x t else false) := by
   constructor <;> simp [middleCloneInsertedLData, hx]
 
 /-- All pairs to an upper vertex u are copied iff its original
@@ -66,9 +66,9 @@ theorem middleCloneInsertedLData_upper
     (ell n x : Nat) (hx : ell ≤ x)
     (t : Fin db) :
     (middleCloneInsertedLData A ell n).incoming x t =
-      if ell ≤ A.freeLevel x then A.L.binary x n t else false ∧
+      (if ell ≤ A.freeLevel x then A.L.binary x n t else false) ∧
     (middleCloneInsertedLData A ell n).outgoing x t =
-      if ell ≤ A.freeLevel x then A.L.binary n x t else false := by
+      (if ell ≤ A.freeLevel x then A.L.binary n x t else false) := by
   have hNot : ¬ x < ell := Nat.not_lt.mpr hx
   constructor <;> simp [middleCloneInsertedLData, hNot]
 
