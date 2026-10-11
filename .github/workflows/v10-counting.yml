@@ -100,6 +100,9 @@ jobs:
         if: ${{ steps.scope.outputs.pool == 'true' }}
         shell: bash
         run: python3 scripts/check_v10_original_pool.py | tee v10-original-pool-regression.json
+      - name: Independent guarded level-removal finite regression
+        if: ${{ steps.scope.outputs.removal == 'true' }}
+        run: python3 scripts/check_v10_level_removal.py
       - name: Build affected V10 proof modules
         shell: bash
         run: |

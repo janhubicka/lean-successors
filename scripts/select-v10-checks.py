@@ -69,7 +69,7 @@ def select(changed: set[str], full: bool) -> list[Path]:
     return selected
 
 def regression_scope(changed: set[str], full: bool) -> dict[str, bool]:
-    flags = dict(h=False, sigma=False, m3=False, meet=False, pool=False)
+    flags = dict(h=False, sigma=False, m3=False, meet=False, pool=False, removal=False)
     if full or changed & ALWAYS_RECHECK:
         return dict.fromkeys(flags, True)
     # Foundational changes can affect all finite models, so be conservative.
@@ -90,6 +90,8 @@ def regression_scope(changed: set[str], full: bool) -> dict[str, bool]:
             flags["m3"] = True
         if path.startswith(("SuccessorTree/V10/KptMeet", "scripts/check_v10_actual_meet")):
             flags["meet"] = True
+        if path.startswith(("SuccessorTree/V10/LevelRemoval", "scripts/check_v10_level_removal")):
+            flags["removal"] = True
         if path.startswith(("SuccessorTree/V10/OriginalPool", "SuccessorTree/V10/ConcreteOriginalPool",
                             "scripts/check_v10_original_pool")):
             flags["pool"] = True

@@ -187,3 +187,8 @@ import SuccessorTree.V10.PrescribedCorrectedB3
 
 -- Public endpoint of the checked prescribed one-gap boring extension.
 import SuccessorTree.V10.PrescribedBoringCompletion
+
+-- M3: concrete normalized earlier-successor duplication and witness independence.
+import SuccessorTree.V10.M3RepresentativeIndependence
+import SuccessorTree.V10.M3CombinedEndpoint
+import SuccessorTree.V10.M3LiteralDuplication
