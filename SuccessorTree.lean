@@ -187,6 +187,8 @@ import SuccessorTree.V10.LevelRemovalPrefixCut
 import SuccessorTree.V10.LevelRemovalGapColumn
 import SuccessorTree.V10.LevelRemovalGapSeparation
 import SuccessorTree.V10.LevelRemovalUniformImageGuard
+import SuccessorTree.V10.LevelRemovalIntrinsicAdmissible
+import SuccessorTree.V10.LevelRemovalBoundaryAdmissible
 
 import SuccessorTree.V10.PrescribedB3Spacing
 
