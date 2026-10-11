@@ -124,12 +124,24 @@ partial structure under the strict guard $\mathrm{fl}(m+1)<m$
 and computes the transported free cut
 (\texttt{LevelRemovalPartial.lean},
 \texttt{LevelRemovalFreeCut.lean}).
-The new \texttt{LevelRemovalType.lean} proves that the complete
+The checked \texttt{LevelRemovalType.lean} proves that the complete
 $L^+$ type of a retained vertex is precisely the old type
 with coordinate $m$ deleted, including absent directed tuples,
 singleton/diagonal information and every $E$ pair (PR~267).
-These remain local ingredients: the uniform level-removal
-shape map and M2 decomposition have not been proved.
+The additional \texttt{LevelRemovalAdmissibleType.lean} derives
+the new canonical free level and constructs an actual
+$\mathcal F$-free witness of this coordinate-deleted complete
+Kpt type (PR~269, full Lean 38174237646 and focused named-axiom
+audit 38174237715 both GREEN). These remain \emph{local}
+ingredients: the uniform level-removal shape map and M2
+decomposition have not been proved. In particular, at the
+source boundary level $n$ of the intended global deletion,
+the image has no ordinary coordinate
+$m+1=\widetilde F(n)$ in its socle yet. The strict guard
+must be derived using an actual image of a source successor,
+not asserted for arbitrary finite representatives of that
+boundary type; independence of the chosen successor must
+then be proved.
 
 For M3, the actual gated finite middle-clone insertion satisfies
 the corrected $L$-only age test and yields one ShapeMap in $K_{pt}M$
@@ -533,8 +545,20 @@ Kpt version of M3, not the unperformed original-language adapter.
 
 The finite guarded type-deletion transport
 \texttt{LevelRemovalType.lean} passed full/focused CI at PR~267,
-exact head \texttt{9b62b29e}; it strengthens the local M2
-construction but does not supply M2 or repaired-B3 necessity.
+exact head \texttt{9b62b29e}. Its successor
+\texttt{LevelRemovalAdmissibleType.lean} proves that deletion
+of coordinate $m$ from the complete type of a genuine
+forbidden-free witness $v$ with $m<\mathrm{fl}_A(v)$ is itself
+an admissible Kpt type, represented by $v-1$ with free level
+$\mathrm{fl}_A(v)-1$ (PR~269, head \texttt{9cfbd5f1},
+full Lean 38174237646, focused audit 38174237715 GREEN).
+At the boundary of a uniform deletion map, however, the
+ordinary coordinate $m+1$ is absent from the level-$n$
+image type. The guard on that coordinate must first be
+obtained in the image of a genuine source successor, and
+its choice independence must be verified. These checked
+finite lemmas do not supply global M2 or corrected-B3
+necessity on arbitrary finite $L$-only witnesses.
 Finally, reconcile the I3 signature witnesses with finite
 $L$-structures rather than $E$-partial structures before claiming
 the upper bound.}
