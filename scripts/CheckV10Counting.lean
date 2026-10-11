@@ -38,6 +38,7 @@ import SuccessorTree.V10.RawTypeMeet
 import SuccessorTree.V10.RawMeetLevel
 import SuccessorTree.V10.RawPrefixOrder
 import SuccessorTree.V10.PrefixReplicaE
+import SuccessorTree.V10.PrefixReplicaL
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -250,3 +251,13 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.prefixReplicaE_last_freeLevel
 #print axioms SuccessorTree.V10.prefixReplicaE_preserves_type_socle
 #print axioms SuccessorTree.V10.prefixReplicaE_preserves_old_socle
+
+-- Full induced directed L-reduct of the one-filler prefix replica.
+#print axioms SuccessorTree.V10.prefixReplicaAddress_old
+#print axioms SuccessorTree.V10.prefixReplicaAddress_last
+#print axioms SuccessorTree.V10.prefixReplicaAddress_filler
+#print axioms SuccessorTree.V10.prefixReplicaL_old
+#print axioms SuccessorTree.V10.prefixReplicaL_last_singleton
+#print axioms SuccessorTree.V10.prefixReplicaL_cross
+#print axioms SuccessorTree.V10.prefixReplicaL_filler_neutral
+#print axioms SuccessorTree.V10.prefixReplicaL_type_eq
