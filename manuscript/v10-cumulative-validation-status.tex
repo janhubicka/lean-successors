@@ -441,13 +441,30 @@ the required predecessor. In the unmatched case use the neutral
 construction. Below the gap only retained old atoms occur. This proves
 all predecessor cases, including crossing the gap.
 
-\textbf{Remaining manuscript obligations.}
-For this specific total map, prove agreement with $f$ on its domain and
-transport of the exact successor parameters and terminal letters for
-bases at or above $\ell$. The separate weak successor argument below
-and across the gap does not imply those upper identities.
-An order embedding with the correct level law and exact predecessor
-transport is still not by itself a \texttt{ShapeMap}.
+\textbf{Prescribed source values and finite successor inputs -- GREEN.}
+\texttt{PrescribedSourceFullValue.lean} proves that the selected total
+node map agrees with $f$ on every admissible source in its domain,
+as equality of the COMPLETE $L^+$ type, not merely the $L$-reduct.
+\texttt{PrescribedTerminalLetter.lean} transports every positive and
+absent directed $L$ atom, all singleton data and the $E$ atoms of the
+terminal letter through the actual prescribed insertion.
+\texttt{PrescribedOldParameter.lean} computes the chosen total
+map at each retained old vertex of the prescribed finite model and
+therefore transports the canonical empty-or-singleton parameter list.
+The full Lean and focused named-axiom audits of PRs~218, 223 and 224
+passed independently with unchanged corrected-B3 assumptions.
+
+\textbf{Global successor assembly -- OPEN pending the new CI audit.}
+\texttt{PrescribedUpperSuccMatching.lean} uses the actual finite
+constructor and the checked parameter/letter transport to derive
+exact successor equality above the gap in the matching case.
+\texttt{PrescribedUpperSuccUnmatched.lean} proposes to identify
+the source, target and canonical parameter with the neutral map
+when the common ordinary socle has no compatible prescribed input.
+\texttt{PrescribedKptShapeMap.lean} assembles these exact upper cases
+with the already checked weak crossing law and node injectivity.
+Do not mark this ShapeMap GREEN before the full and focused Lean audits
+of the combined source succeed.
 For M2, the former third statement of Lemma~\ref{lem:comp} does not
 imply the strengthened B3; a new necessity or decomposition argument
 is required. For M3, verify the repaired age test for the actual
