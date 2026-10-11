@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M3StepInputB3
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.correctedB3_of_repeated_canonical_inputs
