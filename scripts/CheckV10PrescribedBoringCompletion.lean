@@ -1,0 +1,5 @@
+import SuccessorTree.V10.PrescribedBoringCompletion
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptShapeMap_skipsOnly
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptShapeMap_agrees_on_source
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKpt_boring_extension_exists
