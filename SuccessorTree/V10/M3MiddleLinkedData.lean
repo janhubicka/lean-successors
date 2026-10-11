@@ -124,13 +124,15 @@ theorem middleCloneInsertPartial_linkedLData
           (if ell ≤ A.freeLevel u then A.L.binary n u t else false) := by
       rw [hL]
       simp [insertL, D, middleCloneInsertedLData, removeInserted,
-        Nat.ne_of_gt hxe, Nat.not_lt.mpr (Nat.le_of_lt hxe), u]
+        Nat.ne_of_gt hxe, Nat.not_lt.mpr (Nat.le_of_lt hxe), u] <;>
+        (intro hBelow; omega)
     have hUpperIn (t : Fin db) :
         B.L.binary x ell t =
           (if ell ≤ A.freeLevel u then A.L.binary u n t else false) := by
       rw [hL]
       simp [insertL, D, middleCloneInsertedLData, removeInserted,
-        Nat.ne_of_gt hxe, Nat.not_lt.mpr (Nat.le_of_lt hxe), u]
+        Nat.ne_of_gt hxe, Nat.not_lt.mpr (Nat.le_of_lt hxe), u] <;>
+        (intro hBelow; omega)
     have hGate : ell ≤ A.freeLevel u := by
       by_contra hnot
       have hOutFalse (t : Fin db) : B.L.binary ell x t = false := by
