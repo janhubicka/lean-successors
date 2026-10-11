@@ -95,7 +95,8 @@ theorem PrescribedBoringData.matchingKptImage_prefix_le
     exact congrArg (Sigma.mk cut) hReplicaFull
   have hRepB : b.1 = R.rawTypeAtFree (cut+1) :=
     hRawB.trans hReplicaRaw.symm
-  obtain ⟨S0,hS0,hComp⟩ := hMatchA
+  have hMatchACopy := hMatchA
+  obtain ⟨S0,hS0,hComp⟩ := hMatchACopy
   have hSourceA : a.1.2.restrict hlevA = A.partialTypeAt ell v := by
     rw [hRecordA]
     exact A.partialTypeAt_restrict ell a.1.1 v hlevA
