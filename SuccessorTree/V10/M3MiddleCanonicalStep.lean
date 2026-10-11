@@ -99,7 +99,8 @@ theorem middleCloneInsertPartial_canonicalStep
       (middleCloneInsertPartial_target_restrict A ell n
         hell hn v hv).symm⟩
   have hCover : a ⋖ b := by
-    apply LevelTree.covBy_of_le_level_succ hRawPrefix
+    have hPrefix : a ≤ b := hRawPrefix
+    apply LevelTree.covBy_of_le_level_succ hPrefix
     change b.1.1 = a.1.1 + 1
     rw [haRaw,hbRaw]
   obtain ⟨p,c,hStep⟩ :=
@@ -119,8 +120,7 @@ theorem middleCloneInsertPartial_canonicalStep
   have hParFull := partialTypeAt_lastOrdinaryParameter
     B (insertAddress ell v) ell d hdEll
   have hParRaw : B.rawTypeAtFree ell =
-      (⟨d,(B.partialTypeAt (ell+1) (insertAddress ell v))
-        .lastOrdinaryParameter d hdEll⟩ :
+      (⟨d,(B.partialTypeAt (ell+1) (insertAddress ell v)).lastOrdinaryParameter d hdEll⟩ :
         RawPartialTypeNode db du dd) := by
     change (⟨B.freeLevel ell,B.partialTypeAt (B.freeLevel ell) ell⟩ :
       RawPartialTypeNode db du dd) = _
@@ -128,8 +128,7 @@ theorem middleCloneInsertPartial_canonicalStep
     exact congrArg (Sigma.mk d) hParFull.symm
   have hParMap :
       p.map Subtype.val =
-        ((B.partialTypeAt (ell+1) (insertAddress ell v))
-          .canonicalParameterRecord d hdEll).toList := by
+        ((B.partialTypeAt (ell+1) (insertAddress ell v)).canonicalParameterRecord d hdEll).toList := by
     rw [hInputs.2]
     by_cases hz : d = 0
     · simp [hFreeClone, hz, PartialTypeWithE.canonicalParameterRecord]
