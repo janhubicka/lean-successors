@@ -80,6 +80,10 @@ def main():
                     assert h.pair(h.pos(p, 0), small) == h.pair(
                         h.pos(p, 0), large) != 0
                     assert d == h.pos(p, m)
+                    # The meet is a coordinate of the shorter *truncated*
+                    # type, giving the sharp guard p+1<j, not merely p<j.
+                    assert 0 < m < k and d < h.free(small)
+                    assert p + 1 < j
                     counts['checked_charges'] += 1
     assert counts == dict(models=4396, nontrivial_meets=161820,
                           positive_meets=49060, checked_charges=49060), counts
