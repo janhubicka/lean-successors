@@ -1,8 +1,32 @@
 name: Lean
 
 on:
+  # Feature branches are checked once via pull_request, not again via push.
   push:
+    branches: [main]
+    paths:
+      - 'SuccessorTree/**'
+      - 'SuccessorTree.lean'
+      - 'scripts/*.lean'
+      - 'scripts/check-axiom-log.py'
+      - 'scripts/audit-envelope.sh'
+      - 'tests/test_axiom_audit.py'
+      - 'lean-toolchain'
+      - 'lakefile.toml'
+      - 'lake-manifest.json'
+      - '.github/workflows/lean.yml'
   pull_request:
+    paths:
+      - 'SuccessorTree/**'
+      - 'SuccessorTree.lean'
+      - 'scripts/*.lean'
+      - 'scripts/check-axiom-log.py'
+      - 'scripts/audit-envelope.sh'
+      - 'tests/test_axiom_audit.py'
+      - 'lean-toolchain'
+      - 'lakefile.toml'
+      - 'lake-manifest.json'
+      - '.github/workflows/lean.yml'
   workflow_dispatch:
 
 concurrency:
@@ -21,19 +45,22 @@ jobs:
         with:
           path: ~/.elan/toolchains
           key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
-      - name: Cache Lake workspace
-        uses: actions/cache@v5
+      - name: Restore shared pinned Lake workspace
+        id: lake-cache
+        uses: actions/cache/restore@v5
         with:
           path: .lake
-          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          # One reusable cache per toolchain and locked dependency set, not
+          # one large cache upload for every branch/commit.
+          key: lake-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
           restore-keys: |
-            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+            lake-v2-${{ runner.os }}-${{ runner.arch }}-
       - name: Install elan
         run: |
           curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Resolve dependencies
-        run: lake update
+      - name: Verify pinned Lake manifest
+        run: test -s lake-manifest.json
       - name: Download Mathlib cache
         run: lake exe cache get
       - name: Build
@@ -158,6 +185,14 @@ jobs:
           set -o pipefail
           python3 manuscript/make-validation-patches.py --reference \
             --output proof-audit/manuscript-patches | tee proof-audit/manuscript-patches.log
+      - name: Seed shared Lake cache on main only
+        # PR builds reuse the default-branch cache but never upload
+        # hundreds of large per-commit caches.
+        if: ${{ github.ref == 'refs/heads/main' && steps.lake-cache.outputs.cache-hit != 'true' && !cancelled() }}
+        uses: actions/cache/save@v5
+        with:
+          path: .lake
+          key: lake-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
       - name: Record reproducible proof snapshot
         run: |
           git rev-parse HEAD > proof-audit/COMMIT
