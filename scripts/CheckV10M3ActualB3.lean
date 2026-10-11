@@ -1,0 +1,9 @@
+import SuccessorTree.V10.M3ActualB3
+
+#print axioms SuccessorTree.V10.prescribedSocle_extracted_unary
+#print axioms SuccessorTree.V10.prescribedSocle_extracted_diagonal
+#print axioms SuccessorTree.V10.prescribedSocle_extracted_binary
+#print axioms SuccessorTree.V10.m3FiniteTarget_lower_clone
+#print axioms SuccessorTree.V10.m3FiniteTarget_terminalLetter
+#print axioms SuccessorTree.V10.m3TotalBoringData_target_eq
+#print axioms SuccessorTree.V10.m3TotalBoringData_correctedB3
