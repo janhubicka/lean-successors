@@ -94,7 +94,8 @@ theorem PrescribedBoringData.matchingKptImage_prefix_le
         R.partialTypeAt_restrict ell cut (cut+1) hlevB
   have hASource : a.1.2.restrict hlevA = A.partialTypeAt ell v := by
     rw [hAType, A.partialTypeAt_restrict ell a.1.1 v hlevA]
-  obtain ⟨S0,hS0,hComp0⟩ := hMatchA
+  have hMatchACopy := hMatchA
+  obtain ⟨S0,hS0,hComp0⟩ := hMatchACopy
   have hCompA : SameOrdinaryAtCut S0 (A.partialTypeAt ell v) := by
     rw [← hASource]
     exact hComp0
