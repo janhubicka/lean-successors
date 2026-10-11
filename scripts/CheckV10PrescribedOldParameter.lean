@@ -1,0 +1,6 @@
+import SuccessorTree.V10.PrescribedOldParameter
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.compatible_same_ambient_base
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedInsertPartial_old_type_eq
+#print axioms SuccessorTree.V10.prescribedInsertPartial_freeCut_zero_iff
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedInsertPartial_parameterList_map
