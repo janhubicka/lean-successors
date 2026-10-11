@@ -28,6 +28,8 @@ Old parameter closure discussion.
 Original mixed-generation formula.
 \end{lemma}
 \begin{corollary}\label{cor:meet-origins}
+% v10 validation note cor:meet-origins
+\todo[inline]{Stale iterated-meet conditional note.}
 The meet bound follows conditionally.
 \end{corollary}
 \begin{lemma}\label{lem:local-age}
@@ -50,16 +52,19 @@ Given a partial type $T^+$, define its successor as prescribed.
 \end{document}
 """
 todos=app.find_todos(app.OVERLAY.read_text(encoding="utf-8"))
-assert len(todos)==7
+assert len(todos)==8
 once,markers=app.transform(old,todos)
 twice,_=app.transform(once,todos)
 assert once==twice
 assert "Former robot note" not in once
+assert "Stale iterated-meet conditional note" not in once
+assert "% successor-v10-proof:cor:meet-origins" in once
+assert "% successor-v10-proof:thm:zucker" in once
 assert "% v10 repair 2: do not touch" in once
 assert "Original mixed-generation formula" in once
 assert "Other old review notes must NOT be deleted" in once
 assert "% successor-v10-proof:lem:meets" in once
-assert len(markers)==6
+assert len(markers)==8
 assert "% successor-v10-proof:definition-6-30" in once
 assert app.remove_only_managed(once)==app.remove_only_managed(old)
 with tempfile.TemporaryDirectory() as tmp:
@@ -73,3 +78,24 @@ with tempfile.TemporaryDirectory() as tmp:
     app.run(path/"review"/"main.reviewed.tex",path/"twice")
     assert (path/"twice"/"v10-validated-notes.patch").read_text()==""
 print("PASS: anchored v10 proof notes preserve all unmarked prose; idempotent; git apply")
+
+# Fail closed on ambiguous or absent required anchors and malformed notes.
+for bad in [
+    old.replace(r"\label{lem:meets}", r"\label{lem:meets}\label{lem:meets}"),
+    old.replace(r"\label{lem:meets}", ""),
+    old.replace(r"\label{lem:meets}", "\\label{lem:meets}\n\\label{lem:meets}"),
+    old.replace(r"\todo[inline]{Former robot note with nested \texttt{command}.}", r"\todo[inline]{unfinished"),
+]:
+    try:
+        app.transform(bad, todos)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Invalid input was accepted")
+print("PASS: required-anchor and malformed-note negative tests")
+
+# Labels after real comments do not count; escaped percent is ordinary text.
+assert app.transform("% ignored \\label{lem:meets}\n"+old, todos)[0].endswith(once)
+assert app.label_line_end("escaped \\% \\label{only}\n", "only") is not None
+assert app.label_line_end("comment % \\label{only}\n", "only", optional=True) is None
+print("PASS: duplicate labels on one line and TeX-comment anchor handling")

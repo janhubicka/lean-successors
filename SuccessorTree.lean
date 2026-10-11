@@ -166,3 +166,5 @@ import SuccessorTree.V10.HDirectedTraces
 import SuccessorTree.V10.HIncidentTrace
 
 import SuccessorTree.V10.HFiniteAge
+
+import SuccessorTree.V10.HClosureCharge
