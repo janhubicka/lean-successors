@@ -119,18 +119,21 @@ theorem middleCloneInsertPartial_linkedLData
       rw [insertAddress_above ell u huLower]
       dsimp [u]
       omega
+    have huNot : ¬ u < ell := Nat.not_lt.mpr huLower
     have hUpperOut (t : Fin db) :
         B.L.binary ell x t =
           (if ell ≤ A.freeLevel u then A.L.binary n u t else false) := by
       rw [hL]
       simp [insertL, D, middleCloneInsertedLData, removeInserted,
-        Nat.ne_of_gt hxe, Nat.not_lt.mpr (Nat.le_of_lt hxe), u]
+        Nat.ne_of_gt hxe, Nat.not_lt.mpr (Nat.le_of_lt hxe),
+        huNot, u]
     have hUpperIn (t : Fin db) :
         B.L.binary x ell t =
           (if ell ≤ A.freeLevel u then A.L.binary u n t else false) := by
       rw [hL]
       simp [insertL, D, middleCloneInsertedLData, removeInserted,
-        Nat.ne_of_gt hxe, Nat.not_lt.mpr (Nat.le_of_lt hxe), u]
+        Nat.ne_of_gt hxe, Nat.not_lt.mpr (Nat.le_of_lt hxe),
+        huNot, u]
     have hGate : ell ≤ A.freeLevel u := by
       by_contra hnot
       have hOutFalse (t : Fin db) : B.L.binary ell x t = false := by
