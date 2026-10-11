@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LocalAgeNeutralParameter
+
+#print axioms SuccessorTree.V10.neutralInsert_freeCut_zero_iff
+#print axioms SuccessorTree.V10.neutralKptSkip_original_type_eq
+#print axioms SuccessorTree.V10.neutralInsert_canonicalParameterList_map
