@@ -77,7 +77,7 @@ theorem PrescribedBoringData.IsMatchingKptImage.recover
   obtain ⟨A,v,S0,d,hell,hValid,hd,hGate,hv,hAvoidA,hRawA,
     hS0,hComp,hImg⟩ := hImage
   have hFree : ell ≤ A.freeLevel v := by
-    have h := congrArg Sigma.fst hRawA
+    have h : a.1.1 = A.freeLevel v := congrArg Sigma.fst hRawA
     omega
   rw [hImg]
   exact (F.prescribedInsertPartial_raw_recovery A (F.target S0) d hValid
@@ -103,7 +103,7 @@ theorem PrescribedBoringData.prescribedKptSkip_recover
       obtain ⟨A,v,hell,hv,hAvoidA,hRawA,hImg⟩ :=
         neutralKptImage_isImage family ell hPos a hlev
       have hFree : ell ≤ A.freeLevel v := by
-        have h := congrArg Sigma.fst hRawA
+        have h : a.1.1 = A.freeLevel v := congrArg Sigma.fst hRawA
         omega
       rw [hImg]
       exact (neutralInsert_raw_recovery A ell hell hPos v hv hFree).trans hRawA.symm
