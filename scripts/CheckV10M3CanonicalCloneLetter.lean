@@ -1,3 +1,5 @@
 import SuccessorTree.V10.M3CanonicalCloneLetter
 #print axioms SuccessorTree.V10.m3_terminalLetter_copies_upper_pairs
 #print axioms SuccessorTree.V10.m3_terminalLetter_copies_singleton
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.middleCloneUpperL_of_terminalLetter
