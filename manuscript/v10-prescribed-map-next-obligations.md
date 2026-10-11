@@ -44,39 +44,49 @@ L-reduct equality alone is insufficient. The target's admissibility
 provides its last-E atom and its valid ordinary E cut. Do not assume the
 output equality in the image relation.
 
-## All predecessors -- OPEN
+## All predecessors and order embedding -- GREEN
 
-For b <= a with both levels at least ell, use the actual one-filler
-`prefixReplicaPartialStructure` already used in
-`LocalAgeNeutralPrefix.lean`. First derive that restricting a and b to
-ell gives the same complete record. Consequently they make the same
-compatibility decision; this is not a premise to add.
+The common implementation is `PrescribedKptPrefixCases.lean`,
+`PrescribedKptPrefixMatching.lean`, and `PrescribedKptFullPrefix.lean`.
+It derives the common compatibility decision on upper source chains;
+computes matching images with the same source and inserted cut using the
+actual one-filler prefix replica; reuses the neutral upper-prefix theorem;
+and checks all crossing-gap atoms directly. The full endpoint is
+`PrescribedBoringData.prescribedKptSkip_prefix`. No extra age, same-branch,
+representation, or abstract monotonicity premise is added.
 
-In the matching case, represent a by A,v and put d = level(b). The replica
-R = prefixReplicaPartialStructure A v d realizes b at distinguished
-address d+1. Derive the same compatible prescribed source S0 for both.
-Choose its valid inserted cut once. The new
-`matchingKptImage_raw_eq_of_representation` computes b's selected image
-in R with that same cut. `matching_constructor_avoids_of_valid_cut`
-derives the needed avoidance from corrected B3, not from a new hypothesis
-about the replica insertion. Use the full prescribed record-independence
-theorem at cut d to compare this inserted replica with the restriction
-of the insertion of A; it permits their different distinguished indices.
-Finish with `rawPartialType_prefix_of_cut` and the exact free-level laws.
+`PrescribedKptOrderEmbedding.lean` derives the exact admissible ancestor
+identity at every n <= level(a), with image cut n below ell and n+1 at or
+above ell. It also derives order reflection and packages the actual map
+as `prescribedKptOrderEmbedding`. Order reflection takes an admissible
+prefix of the longer source at the shorter source's level, compares the
+equal-level image prefixes, and applies the established injectivity.
+There is no assumption that arbitrary coordinate deletion is admissible.
 
-In the unmatched case, reuse the neutral prefix theorem. For prefixes
-below the gap, extract only retained old coordinates. Use
-`record_eq_of_rawTypeAtFree` to avoid repeating dependent Sigma casts.
-The arbitrary-representation adapter is not itself the prefix theorem.
+The overlapping implementation in PR216 is archived as an alternative,
+not imported alongside the common implementation. The active checkpoint
+records exact tested heads and audit evidence; it is not a ShapeMap claim.
 
-## Successors -- OPEN
+## Weak successors below and across the gap -- GREEN
 
-Above the gap, transport the canonical empty-or-singleton parameter
-list and the exact terminal Sigma letter, using the same concrete node
-map. At the edge ell-1 -> ell the parent and parameters below ell are
-fixed. The ordinary successor at level ell need only be a prefix of the
-mapped child at level ell+1. Prove that weak statement separately; exact
-equality with the mapped child is not the required boundary law.
+`PrescribedKptGapSucc.lean` first combines matching and neutral self-prefix
+facts at level ell. For a successor base below ell, the actual S-tree
+parameter-level axiom puts every parameter still lower; both base and
+parameter list are fixed. The old successor is then the required witness
+below the mapped child. It is fixed strictly below ell and is a genuine
+prefix of its image at level ell. No equality with the mapped child is
+asserted at the crossing edge ell-1 -> ell.
+
+## Successors based at or above the gap -- OPEN
+
+Transport the canonical empty-or-singleton parameter list and the exact
+terminal Sigma letter using this same concrete node map. Use the exact
+finite-constructor representation for all old ordinary coordinates,
+including vertices whose free level lies below ell and therefore do not
+choose the upper branch. Then invoke canonical decomposition uniqueness.
+The lower/crossing weak law and the order embedding do not supply these
+identities. Parallel PR220 stages a finite terminal-letter result, but it
+is not imported into this active stack yet.
 
 ## Obligations outside this map construction
 
@@ -87,4 +97,4 @@ M3 still needs the repaired B3 age test for its actual duplication
 prescription. I3/signature witnesses must be finite L-structures, not
 subject to the rejected E-partial-structure premises. Neither the full
 boring extension lemma nor the final big-Ramsey bound is certified by
-totality and injectivity of the present candidate map.
+the order embedding and predecessor identities of the present map.
