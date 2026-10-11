@@ -1,0 +1,6 @@
+import SuccessorTree.V10.M3MiddleInsert
+
+#print axioms SuccessorTree.V10.middleCloneInsertedLData_lower
+#print axioms SuccessorTree.V10.middleCloneInsertedLData_upper
+#print axioms SuccessorTree.V10.middleCloneInsertPartial
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_isLInsertion
