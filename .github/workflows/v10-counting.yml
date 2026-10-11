@@ -57,12 +57,6 @@ jobs:
         run: |
           set -euo pipefail
           python3 scripts/select-v10-checks.py --output-file "$GITHUB_OUTPUT"
-      - name: Seed shared Lake cache on main only
-        if: ${{ github.ref == 'refs/heads/main' && steps.lake-cache.outputs.cache-hit != 'true' && !cancelled() }}
-        uses: actions/cache/save@v5
-        with:
-          path: .lake
-          key: lake-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
       - name: Exhaustive H-block meet diagnostic
         if: ${{ steps.scope.outputs.h == 'true' }}
         run: python3 scripts/check_v10_meet_blocks.py
@@ -112,6 +106,12 @@ jobs:
             lake env lean "$check" > "$log" 2>&1 || { cat "$log"; exit 1; }
             python3 scripts/check-axiom-log.py "$log" "$check" || { cat "$log"; exit 1; }
           done < v10-selected-checks.txt
+      - name: Seed shared Lake cache on main only
+        if: ${{ github.ref == 'refs/heads/main' && steps.lake-cache.outputs.cache-hit != 'true' && !cancelled() }}
+        uses: actions/cache/save@v5
+        with:
+          path: .lake
+          key: lake-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
       - name: Retain V10 proof evidence
         if: always()
         uses: actions/upload-artifact@v4
