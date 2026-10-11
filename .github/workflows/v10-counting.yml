@@ -7,6 +7,11 @@ on:
       - 'SuccessorTree/V10/**'
       - 'scripts/CheckV10*.lean'
       - 'scripts/check_v10_*.py'
+      - 'scripts/select-v10-checks.py'
+      - 'scripts/check-axiom-log.py'
+      - 'lean-toolchain'
+      - 'lakefile.toml'
+      - 'lake-manifest.json'
       - 'SuccessorTree.lean'
       - '.github/workflows/v10-counting.yml'
   pull_request:
@@ -14,6 +19,11 @@ on:
       - 'SuccessorTree/V10/**'
       - 'scripts/CheckV10*.lean'
       - 'scripts/check_v10_*.py'
+      - 'scripts/select-v10-checks.py'
+      - 'scripts/check-axiom-log.py'
+      - 'lean-toolchain'
+      - 'lakefile.toml'
+      - 'lake-manifest.json'
       - 'SuccessorTree.lean'
       - '.github/workflows/v10-counting.yml'
   workflow_dispatch:
@@ -107,7 +117,7 @@ jobs:
             python3 scripts/check-axiom-log.py "$log" "$check" || { cat "$log"; exit 1; }
           done < v10-selected-checks.txt
       - name: Seed shared Lake cache on main only
-        if: ${{ github.ref == 'refs/heads/main' && steps.lake-cache.outputs.cache-hit != 'true' && !cancelled() }}
+        if: ${{ github.ref == 'refs/heads/main' && steps.lake-cache.outputs.cache-hit != 'true' && success() }}
         uses: actions/cache/save@v5
         with:
           path: .lake
