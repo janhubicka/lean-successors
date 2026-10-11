@@ -1,0 +1,8 @@
+import SuccessorTree.V10.PrescribedKptFullPrefix
+
+#print axioms SuccessorTree.V10.prescribedInsertPartial_type_below_gap
+#print axioms SuccessorTree.V10.PrescribedBoringData.IsMatchingKptImage.lower_prefix
+#print axioms SuccessorTree.V10.PrescribedBoringData.matchingKptImage_self_prefix_at_gap
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_prefix_crossing
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_prefix_above
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_prefix
