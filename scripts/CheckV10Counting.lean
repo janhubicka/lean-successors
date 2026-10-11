@@ -60,6 +60,7 @@ import SuccessorTree.V10.CanonicalStepRealization
 import SuccessorTree.V10.CanonicalCoverS3
 import SuccessorTree.V10.CanonicalStepUniqueness
 import SuccessorTree.V10.CanonicalRawSTree
+import SuccessorTree.V10.TerminalLetterReplica
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -401,3 +402,11 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.canonicalKptSucc_eq_some_of_step
 #print axioms SuccessorTree.V10.canonicalKptRawSTree_succ_eq
 #print axioms SuccessorTree.V10.canonicalKptRawSTree
+
+-- Exact three-vertex witness with admissible E structure for terminal Sigma letter.
+#print axioms SuccessorTree.V10.terminalLetterReplicaL_filler
+#print axioms SuccessorTree.V10.terminalLetterReplicaE_spaced
+#print axioms SuccessorTree.V10.terminalLetterReplicaE_downward
+#print axioms SuccessorTree.V10.terminalLetterReplicaE_inside
+#print axioms SuccessorTree.V10.terminalLetterReplica_freeLevel
+#print axioms SuccessorTree.V10.terminalLetterReplica_type_eq
