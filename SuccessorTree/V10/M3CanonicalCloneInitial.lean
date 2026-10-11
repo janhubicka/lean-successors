@@ -36,6 +36,9 @@ theorem m3_initial_clone_of_canonical_records
   have hSingle :=
     m3_terminalLetter_copies_singleton T Q n hn hOld hLetter
   have hnLe : n ≤ ell := Nat.le_of_lt hn
+  have hLast : (Fin.last ell : Fin (ell+1)) =
+      (⟨ell, Nat.lt_succ_self ell⟩ : Fin (ell+1)) :=
+    Fin.ext rfl
   refine {
     n_before := hn
     cut_le_source := hd
@@ -47,9 +50,9 @@ theorem m3_initial_clone_of_canonical_records
   · change n ≤ ell
     exact hnLe
   · intro t
-    simpa [prescribedOrdinarySocle, hnLe] using hSingle.1 t
+    simpa [prescribedOrdinarySocle, hnLe, hLast] using hSingle.1 t
   · intro t
-    simpa [prescribedOrdinarySocle, hnLe] using hSingle.2 t
+    simpa [prescribedOrdinarySocle, hnLe, hLast] using hSingle.2 t
   · intro x hdx hxe t
     let xi : Fin ell := ⟨x, hxe⟩
     have hnolink :=
@@ -59,12 +62,12 @@ theorem m3_initial_clone_of_canonical_records
     · have h : (prescribedOrdinarySocle Q).binary ell x t =
           Q.lReduct.binary (some (Fin.last ell))
             (some xi.castSucc) t := by
-        simp [prescribedOrdinarySocle, hxl, xi]
+        simp [prescribedOrdinarySocle, hxl, xi, hLast]
       exact h.trans hnolink.1
     · have h : (prescribedOrdinarySocle Q).binary x ell t =
           Q.lReduct.binary (some xi.castSucc)
             (some (Fin.last ell)) t := by
-        simp [prescribedOrdinarySocle, hxl, xi]
+        simp [prescribedOrdinarySocle, hxl, xi, hLast]
       exact h.trans hnolink.2
   · intro x hx t
     let i : Fin d := ⟨x, hx⟩
@@ -76,7 +79,7 @@ theorem m3_initial_clone_of_canonical_records
     have hA : (prescribedOrdinarySocle Q).binary ell x t =
       Q.lReduct.binary (some (Fin.last ell))
         (some (⟨x, by omega⟩ : Fin (ell+1))) t := by
-      simp [prescribedOrdinarySocle, hxl]
+      simp [prescribedOrdinarySocle, hxl, hLast]
     have hB : (prescribedOrdinarySocle Q).binary n x t =
       Q.lReduct.binary (some (⟨n, by omega⟩ : Fin (ell+1)))
         (some (⟨x, by omega⟩ : Fin (ell+1))) t := by
@@ -84,7 +87,7 @@ theorem m3_initial_clone_of_canonical_records
     have hC : (prescribedOrdinarySocle Q).binary x ell t =
       Q.lReduct.binary (some (⟨x, by omega⟩ : Fin (ell+1)))
         (some (Fin.last ell)) t := by
-      simp [prescribedOrdinarySocle, hxl]
+      simp [prescribedOrdinarySocle, hxl, hLast]
     have hD : (prescribedOrdinarySocle Q).binary x n t =
       Q.lReduct.binary (some (⟨x, by omega⟩ : Fin (ell+1)))
         (some (⟨n, by omega⟩ : Fin (ell+1))) t := by
