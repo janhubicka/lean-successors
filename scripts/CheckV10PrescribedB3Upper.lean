@@ -1,0 +1,3 @@
+import SuccessorTree.V10.PrescribedB3Upper
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.insertL_linked_upper_is_prescribed
