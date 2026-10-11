@@ -68,9 +68,12 @@ theorem middleCloneInsertPartial_old_freeLevel
   have hCut : IsFreeCut B.E (insertAddress ell v)
       (insertedCut A ell (A.freeLevel n) (insertAddress ell v)) := by
     rw [middleCloneInsertPartial_E_eq A ell n hell hn]
-    have hh := insertE_isFreeCut A ell (A.freeLevel n)
-      (insertAddress ell v) (by simpa only [B] using hV)
-    exact hh
+    have hSize : B.size = A.size + 1 :=
+      (middleCloneInsertPartial_isLInsertion A ell n hell hn).size_eq
+    have hAddress : insertAddress ell v < A.size + 1 := by
+      simpa only [hSize] using hV
+    exact insertE_isFreeCut A ell (A.freeLevel n)
+      (insertAddress ell v) hAddress
   have hCanonical :=
     freeCut_unique B.E (insertAddress ell v)
       (B.freeLevel (insertAddress ell v))
