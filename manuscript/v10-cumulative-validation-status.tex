@@ -1,11 +1,14 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 11 October 2026 UTC. Cumulative continuation through staged PRs 208/209.
+% 11 October 2026 UTC. Cumulative continuation through staged PRs 211/212.
 % Green predecessor: PR203 fe1d91e39a954eadf5676dd1863ad424d1aa6106.
 % Full Lean 38087498944 and focused V10 38087498938 passed.
 % PR205 538490affc77c23e3704cc4235d78972bda37757: full and focused GREEN.
 % PR206 4fc409b368a50caf084ef5696203927f2cd59968: focused proof/axiom steps GREEN.
 % Focused runs: 38096247806 and 38096396531; downloaded axiom evidence checked.
+% PR211 55276dc4dc5cb6f0df20d551bcea2d2a97078e67: focused 38100205700 GREEN.
+% PR212 203422b47a71b91c60f9fb1daafe21719e8d6ee8: focused 38100408422 GREEN.
+% All twelve new recovery/representation endpoints have standard axioms only.
 %
 % Apply with update-v10-source.py to the author's current main.tex.
 % This file replaces overlapping machine-labelled notes; do not concatenate
@@ -343,6 +346,35 @@ for PRs~208 and~209 passed. The fifteen new endpoints and the retained
 existential API were checked in downloaded audit artifacts; all use only
 standard Lean axioms. This does not certify the prescribed shape map.
 
+\textbf{Prescribed old-record recovery and injectivity -- GREEN.}
+\texttt{InsertedTypeRecovery.lean} defines deletion of the inserted ordinary
+coordinate on complete raw $L^+$ records. All retained coordinates,
+including the distinguished vertex, keep their positive and absent
+binary atoms, unary and diagonal facts, and every $E$ pair.
+\texttt{PrescribedKptInjective.lean} uses the same deletion for prescribed
+and neutral images and fixes raw nodes below $\ell$. Its left-inverse
+identity recovers the original raw node from the actual total candidate.
+This proves injectivity also for comparisons between prescribed and
+neutral images, without assuming predecessor preservation or equal
+branch choices. No new hypothesis on the total map is added.
+Deletion is defined on raw records; admissibility of its value on an
+arbitrary admissible input is not asserted. On the candidate's image,
+its value is the original admissible node.
+
+\textbf{Computation in any finite representative -- GREEN.}
+\texttt{PrescribedImageRepresentation.lean} identifies any supplied valid
+inserted cut with the cut obtained from finite existence, using the
+uniqueness of the ordinary $E$-column. Thus the literal constructor at
+that cut is forbidden-free; its avoidance is derived rather than added
+as a premise. The selected matching image can consequently be computed
+in any forbidden-free finite representative of its source, using any
+compatible prescribed source and valid inserted cut. This supplies the
+representation adapter for the prefix-replica argument; it is not itself
+a proof of predecessor preservation. The exact-head focused builds and
+transitive axiom audits for PRs~211 and~212 passed. All twelve new
+endpoints use only standard Lean axioms; the downloaded evidence was
+hash-checked and the named-endpoint checker was rerun.
+
 \textbf{Suggested clarification of the construction.}
 Choose a finite $\mathcal F$-free partial structure representing the
 source type. Use the prescribed finite construction when its ordinary
@@ -351,15 +383,17 @@ construction otherwise. Take the complete type of the retained
 distinguished vertex at its transported free level. The full
 $L^+$-record independence, rather than just equality of the lower
 column or of the $L$-reduct, makes this definition independent of
-both choices.
+both choices. To see injectivity, delete the inserted ordinary coordinate
+and shift the retained ordinary coordinates back. This recovers the
+complete source type in both branches, while nodes below $\ell$ are fixed.
 
 \textbf{Remaining manuscript obligations.}
 For this specific total map, prove agreement with $f$ on its domain,
-all predecessor and node-injectivity cases, and transport of the exact
+all predecessor cases and transport of the exact
 successor parameters and terminal letters. At the edge from $\ell-1$
 to $\ell$, keep the weak successor statement separate from exact
-successor equality above the gap. Neither totality nor strict increase
-of numerical levels proves that this map is a \texttt{ShapeMap}.
+successor equality above the gap. Totality, injectivity and the numerical level law do not by themselves
+make this map a \texttt{ShapeMap}.
 For M2, the former third statement of Lemma~\ref{lem:comp} does not
 imply the strengthened B3; a new necessity or decomposition argument
 is required. For M3, verify the repaired age test for the actual
