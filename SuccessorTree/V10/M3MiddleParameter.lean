@@ -176,21 +176,26 @@ theorem middleCloneInsertPartial_parameterList_eq
   have hClone := middleCloneInsertPartial_new_parameter_type
     A ell n hell hn
   have hParam :
-      (B.partialTypeAt (ell+1) (insertAddress ell v))
-          .lastOrdinaryParameter d hdEll =
+      (B.partialTypeAt (ell+1) (insertAddress ell v)).lastOrdinaryParameter
+        d hdEll =
       (A.partialTypeAt (n+1) v).lastOrdinaryParameter d hd := by
     calc
-      _ = B.partialTypeAt d ell := hNew
+      (B.partialTypeAt (ell+1) (insertAddress ell v)).lastOrdinaryParameter
+          d hdEll = B.partialTypeAt d ell := hNew
       _ = A.partialTypeAt d n := hClone
-      _ = _ := hOld.symm
-  by_cases hz : d = 0
-  · simp [PartialTypeWithE.canonicalParameterRecord, hz]
-  · change (if d = 0 then
-      ([] : List (RawPartialTypeNode db du dd)) else
-      [⟨d,(B.partialTypeAt (ell+1) (insertAddress ell v))
-         .lastOrdinaryParameter d hdEll⟩]) =
-      (if d = 0 then [] else
+      _ = (A.partialTypeAt (n+1) v).lastOrdinaryParameter d hd :=
+        hOld.symm
+  change (if d = 0 then
+      ([] : List (RawPartialTypeNode db du dd))
+    else
+      [⟨d,(B.partialTypeAt (ell+1) (insertAddress ell v)).lastOrdinaryParameter
+        d hdEll⟩]) =
+    (if d = 0 then
+      ([] : List (RawPartialTypeNode db du dd))
+    else
       [⟨d,(A.partialTypeAt (n+1) v).lastOrdinaryParameter d hd⟩])
-    simp [hz,hParam]
+  by_cases hz : d = 0
+  · simp [hz]
+  · simp [hz, hParam]
 
 end SuccessorTree.V10
