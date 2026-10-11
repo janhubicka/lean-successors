@@ -121,16 +121,17 @@ theorem PrescribedBoringData.prescribedInsertPartial_source_E
       omega
   have hBToNew (i : Fin ell) :
       B.E i.val ell = decide (i.val < k) := by
-    change insertE A ell k (insertAddress ell i.val) ell =
-      decide (i.val < k)
-    exact insertE_new_column_eq A ell k hell hk i.val
+    have hCol := insertE_new_column_eq A ell k hell hk i.val
+    rw [insertAddress_below ell i.val i.isLt] at hCol
+    exact hCol
   have hBOld (i j : Fin ell) :
       B.E i.val j.val = A.E i.val j.val := by
-    change insertE A ell k (insertAddress ell i.val)
-      (insertAddress ell j.val) = A.E i.val j.val
-    exact insertE_old_pair_eq A ell k hell hPos i.val j.val
+    have hOld := insertE_old_pair_eq A ell k hell hPos i.val j.val
       (lt_of_lt_of_le i.isLt hell)
       (lt_of_lt_of_le j.isLt hell)
+    rw [insertAddress_below ell i.val i.isLt,
+      insertAddress_below ell j.val j.isLt] at hOld
+    exact hOld
   intro x y
   change (B.partialTypeAt (ell+1) (insertAddress ell v)).eRelation x y =
     Q.eRelation x y
