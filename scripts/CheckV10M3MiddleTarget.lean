@@ -1,0 +1,5 @@
+import SuccessorTree.V10.M3MiddleTarget
+
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_type_below_gap
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_target_admissible
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_target_restrict
