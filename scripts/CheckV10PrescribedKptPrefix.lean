@@ -1,0 +1,6 @@
+import SuccessorTree.V10.PrescribedKptPrefix
+
+#print axioms SuccessorTree.V10.rawPartialTypePrefix_restrict_eq
+#print axioms SuccessorTree.V10.PrescribedBoringData.hasCompatibleSource_prefix_iff
+#print axioms SuccessorTree.V10.PrescribedBoringData.matchingKptImage_prefix_le
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_prefix_above
