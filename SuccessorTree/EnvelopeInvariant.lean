@@ -1,12 +1,13 @@
 import SuccessorTree.EnvelopeStage
-import SuccessorTree.ShapeAction
+import SuccessorTree.Canonical
 import Mathlib.Tactic
 
 /-!
 # The envelope-algorithm invariant, one stage at a time
 
-This file isolates the two induction steps in Lemma 5.8.  The recursive driver
+This file isolates the two induction steps in Lemma 5.8. The recursive driver
 of Algorithm 5.4 can then be kept separate from the mathematical invariant.
+Only the canonical-map infrastructure is needed here, not the Ramsey engine.
 -/
 
 namespace SuccessorTree
@@ -60,6 +61,14 @@ theorem levelRange_comp_skipsOnly
     (hD : D.map.SkipsOnly m) :
     (MMap.comp H G D).map.levelRange =
       G.map.levelRange \ {m} := by
+  have hGm : H.levelMap G.map m = m := by
+    obtain ⟨x, hx⟩ := H.level_nonempty m
+    calc
+      H.levelMap G.map m = LevelTree.lev (G x) := by
+        simpa [hx] using H.levelMap_eq G.map (a := x)
+      _ = LevelTree.lev x := by
+        rw [hG (by simpa [hx])]
+      _ = m := hx
   rw [← H.range_levelMap (MMap.comp H G D).map]
   rw [← H.range_levelMap G.map]
   ext q
@@ -68,14 +77,6 @@ theorem levelRange_comp_skipsOnly
     rw [MMap.levelMap_comp] at hn
     refine ⟨⟨H.levelMap D.map n, hn⟩, ?_⟩
     intro hqm
-    have hGm : H.levelMap G.map m = m := by
-      obtain ⟨x, hx⟩ := H.level_nonempty m
-      calc
-        H.levelMap G.map m = LevelTree.lev (G x) := by
-          simpa [hx] using H.levelMap_eq G.map (a := x)
-        _ = LevelTree.lev x := by
-          rw [hG (by simpa [hx])]
-        _ = m := hx
     have hDm : H.levelMap D.map n = m := by
       apply (H.levelMap_strictMono G.map).injective
       rw [hn, hGm]
@@ -86,14 +87,6 @@ theorem levelRange_comp_skipsOnly
     rw [hD] at hmRange
     exact hmRange rfl
   · rintro ⟨⟨k, hk⟩, hkne⟩
-    have hGm : H.levelMap G.map m = m := by
-      obtain ⟨x, hx⟩ := H.level_nonempty m
-      calc
-        H.levelMap G.map m = LevelTree.lev (G x) := by
-          simpa [hx] using H.levelMap_eq G.map (a := x)
-        _ = LevelTree.lev x := by
-          rw [hG (by simpa [hx])]
-        _ = m := hx
     have hkm : k ≠ m := by
       intro h
       subst k
