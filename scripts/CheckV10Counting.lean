@@ -19,6 +19,8 @@ import SuccessorTree.V10.HRelocation
 import SuccessorTree.V10.RelocationCopy
 import SuccessorTree.V10.RelocationIrreducible
 import SuccessorTree.V10.RelocationOrder
+import SuccessorTree.V10.FiniteMeetBudget
+import SuccessorTree.V10.HAgeProjection
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -107,3 +109,11 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.relocated_lower_order
 #print axioms SuccessorTree.V10.relocated_lower_before_upper
 #print axioms SuccessorTree.V10.relocated_lower_avoids_old_last
+#print axioms SuccessorTree.V10.poolMeetLevelBudget_card_le
+#print axioms SuccessorTree.V10.original_level_mem_budget
+#print axioms SuccessorTree.V10.original_pair_meet_level_mem_budget
+#print axioms SuccessorTree.V10.closure_nontrivial_meet_level_mem_budget
+#print axioms SuccessorTree.V10.selectedLevels_card_le_quadratic
+#print axioms SuccessorTree.V10.every_irreducible_H_vertex_is_real
+#print axioms SuccessorTree.V10.irreducible_H_copy_projects_to_base
+#print axioms SuccessorTree.V10.ordered_irreducible_H_copy_projects_to_base
