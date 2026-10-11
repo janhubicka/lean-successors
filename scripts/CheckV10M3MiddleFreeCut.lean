@@ -1,0 +1,5 @@
+import SuccessorTree.V10.M3MiddleFreeCut
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_E_eq
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_new_freeLevel
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_old_freeLevel
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_prescribed_vertex_freeLevel
