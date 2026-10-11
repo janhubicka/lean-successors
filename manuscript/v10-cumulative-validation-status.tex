@@ -1,6 +1,6 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 10 October 2026 UTC. Cumulative continuation through staged PRs 205/206.
+% 11 October 2026 UTC. Cumulative continuation through staged PRs 208/209.
 % Green predecessor: PR203 fe1d91e39a954eadf5676dd1863ad424d1aa6106.
 % Full Lean 38087498944 and focused V10 38087498938 passed.
 % PR205 538490affc77c23e3704cc4235d78972bda37757: full and focused GREEN.
@@ -268,7 +268,7 @@ whole upper-bound recurrence.}
 % Consolidated TODO at Lemma 6.51. Both known TeX labels are supported;
 % the updater rejects ambiguous aliases and changes only managed notes.
 \todo[inline]{\textbf{v10 validation: boring extension -- finite
-construction and neutral shape map GREEN; prescribed global map OPEN.}
+construction and neutral shape map GREEN; prescribed ShapeMap OPEN.}
 The repaired B3 quantifies over finite ordered $L$-structures with the
 ordinary socle of a prescribed $f(S)$ and complete upper $L$-types
 through $\ell+1$ from the reducts of $f[S]$. If deleting $\ell$ leaves an $\mathcal F$-free structure, the whole
@@ -318,12 +318,48 @@ transitive axiom audits for PRs~205 and~206 passed. All nine new
 endpoints use only standard Lean axioms; the downloaded evidence
 was checked. This is not a global shape-map theorem.
 
+\textbf{Admissible prescribed images and total node map --
+GREEN in the normalized model.}
+\texttt{PrescribedMatchingFinite.lean} now retains the actual
+\texttt{prescribedInsertPartial} constructor and its inserted cut in
+its witness-existence conclusion. The earlier existential theorem is
+only a corollary; its hypotheses are unchanged and the construction
+is not duplicated. \texttt{PrescribedAdmissibleImage.lean} obtains a
+forbidden-free admissible image at level $n+1$ from corrected B3 and
+admissibility of the prescribed targets. Its image relation is proved
+functional for different ambient structures and different compatible
+source representatives. Equality of the cuts and lower columns still
+comes from B2, not an extra compatibility assumption.
+\texttt{PrescribedKptSkip.lean} combines this unique matching image
+with the already checked neutral image, fixing all nodes below $\ell$.
+The compatibility test is made on the node's own complete prefix.
+The resulting candidate is total on the actual admissible node set;
+its level is $n$ for $n<\ell$ and $n+1$ for $n\geq\ell$.
+The branch specifications, omission of level $\ell$, preservation of
+equal levels and strict increase of numerical levels are explicit
+endpoints. These numerical facts are not node injectivity or tree-order
+preservation. The exact-head focused builds and transitive axiom audits
+for PRs~208 and~209 passed. The fifteen new endpoints and the retained
+existential API were checked in downloaded audit artifacts; all use only
+standard Lean axioms. This does not certify the prescribed shape map.
+
+\textbf{Suggested clarification of the construction.}
+Choose a finite $\mathcal F$-free partial structure representing the
+source type. Use the prescribed finite construction when its ordinary
+socle is compatible with a prescribed source, and the neutral
+construction otherwise. Take the complete type of the retained
+distinguished vertex at its transported free level. The full
+$L^+$-record independence, rather than just equality of the lower
+column or of the $L$-reduct, makes this definition independent of
+both choices.
+
 \textbf{Remaining manuscript obligations.}
-Retain the literal prescribed constructor, or its inserted type record,
-in the finite witness-existence conclusion. Then assemble the matching
-and neutral branches into a total map on the admissible $\KFpt$ nodes; prove all predecessor and injectivity cases,
-and transport the exact successor parameters and terminal letters.
-Finite record independence by itself is not this global theorem.
+For this specific total map, prove agreement with $f$ on its domain,
+all predecessor and node-injectivity cases, and transport of the exact
+successor parameters and terminal letters. At the edge from $\ell-1$
+to $\ell$, keep the weak successor statement separate from exact
+successor equality above the gap. Neither totality nor strict increase
+of numerical levels proves that this map is a \texttt{ShapeMap}.
 For M2, the former third statement of Lemma~\ref{lem:comp} does not
 imply the strengthened B3; a new necessity or decomposition argument
 is required. For M3, verify the repaired age test for the actual
