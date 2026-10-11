@@ -1,0 +1,6 @@
+import SuccessorTree.V10.PrescribedKptPrefix
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.matchingKptImage_prefix_crossing
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_prefix_above
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_prefix_crossing
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_prefix
