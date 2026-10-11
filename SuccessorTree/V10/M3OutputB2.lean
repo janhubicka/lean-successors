@@ -164,11 +164,15 @@ theorem middleCloneInsertPartial_sameOrdinarySocle
   have hLoopEB : B.E ell ell = false := by
     cases hh : B.E ell ell with
     | false => rfl
-    | true => exact False.elim (Nat.lt_irrefl _ (B.spaced ell ell hh))
+    | true =>
+      have hs := B.spaced ell ell hh
+      omega
   have hLoopEH : H.E ell ell = false := by
     cases hh : H.E ell ell with
     | false => rfl
-    | true => exact False.elim (Nat.lt_irrefl _ (H.spaced ell ell hh))
+    | true =>
+      have hs := H.spaced ell ell hh
+      omega
   refine ⟨?_, ?_, ?_, ?_⟩
   · intro i j r
     induction i using Fin.lastCases with
