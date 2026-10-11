@@ -47,7 +47,7 @@ structure MiddleCloneLData {db du dd : Nat}
   copy_lower : ∀ x, x < d → ∀ t : Fin db,
     W.binary ell x t = W.binary n x t ∧
     W.binary x ell t = W.binary x n t
-  copy_upper : ∀ x, ell < x → ∀ t : Fin db,
+  copy_upper : ∀ x, x ∈ W.carrier → ell < x → ∀ t : Fin db,
     W.binary ell x t = W.binary n x t ∧
     W.binary x ell t = W.binary x n t
 
@@ -135,7 +135,7 @@ theorem MiddleCloneLData.irred_copy_projects
         · have hCut := hEarlier b a hab.symm hlow ha
           exact (h.copy_lower (e b) hCut t).1.symm
         · have hUpper : ell < e b := by omega
-          exact (h.copy_upper (e b) hUpper t).1.symm
+          exact (h.copy_upper (e b) (hIn b) hUpper t).1.symm
       calc
         W.binary (projectMiddleClone ell n (e a))
             (projectMiddleClone ell n (e b)) t =
@@ -150,7 +150,7 @@ theorem MiddleCloneLData.irred_copy_projects
           · have hCut := hEarlier a b hab hlow hb
             exact (h.copy_lower (e a) hCut t).2.symm
           · have hUpper : ell < e a := by omega
-            exact (h.copy_upper (e a) hUpper t).2.symm
+            exact (h.copy_upper (e a) (hIn a) hUpper t).2.symm
         calc
           W.binary (projectMiddleClone ell n (e a))
               (projectMiddleClone ell n (e b)) t =
