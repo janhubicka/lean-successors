@@ -1,0 +1,32 @@
+import SuccessorTree.EnvelopeRunExistence
+
+#print axioms SuccessorTree.SMTree.Envelope.range_meetClosed
+#print axioms SuccessorTree.SMTree.Envelope.range_parameterClosed
+#print axioms SuccessorTree.SMTree.Envelope.closure_subset_range
+#print axioms SuccessorTree.SMTree.Envelope.closure_finite_of_bounded
+#print axioms SuccessorTree.SMTree.Envelope.nextPrefix_eq_of_no_meet
+#print axioms SuccessorTree.SMTree.Envelope.subset_range_of_oneLevel
+#print axioms SuccessorTree.SMTree.Envelope.preimage_subset_range_of_bounded_indexed
+#print axioms SuccessorTree.SMTree.Envelope.stageInvariant_interesting
+#print axioms SuccessorTree.SMTree.Envelope.stageInvariant_noninteresting
+#print axioms SuccessorTree.SMTree.Envelope.stageFullInvariant_base
+#print axioms SuccessorTree.SMTree.Envelope.stageFullInvariant_noninteresting
+#print axioms SuccessorTree.SMTree.Envelope.stageFullInvariant_skips_iff
+#print axioms SuccessorTree.SMTree.Envelope.prefixEnvelope_closure
+#print axioms SuccessorTree.SMTree.Envelope.exists_oneLevel_skip_extension_of_gap
+#print axioms SuccessorTree.SMTree.Envelope.representedBefore_of_interesting
+#print axioms SuccessorTree.SMTree.Envelope.oneLevel_preimage_unique_below
+#print axioms SuccessorTree.SMTree.Envelope.preimage_eq_of_oneLevel
+#print axioms SuccessorTree.SMTree.Envelope.embeddingType_noninteresting_choice_independent
+#print axioms SuccessorTree.SMTree.Envelope.algorithmLevels_subset_competitor
+#print axioms SuccessorTree.SMTree.Envelope.card_prefixLevels
+#print axioms SuccessorTree.SMTree.Envelope.card_le_competing_height
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.fullInvariant
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.finalLevel_interesting
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.finalLevels_subset_competitor
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.I_eq
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.embeddingType_eq
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.minimal_output_height
+#print axioms SuccessorTree.SMTree.Envelope.AlgorithmRun.minimal_output_height_AM
+#print axioms SuccessorTree.SMTree.Envelope.canonicalAlgorithmRun
+#print axioms SuccessorTree.SMTree.Envelope.algorithmRun_nonempty
