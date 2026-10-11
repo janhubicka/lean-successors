@@ -1,0 +1,33 @@
+% Successor-v10 M2 intrinsic deletion admission, review-only draft.
+% The author's mathematical TeX and four controlled repairs stay frozen.
+% This Lean proof is PENDING exact-head full and transitive axiom CI.
+%
+\todo[inline]{\textbf{v10 M2: intrinsic deleted lower type --
+PENDING exact-head Lean.}
+For complete admissible Kpt nodes $x\subseteq y$ and
+an ordinary coordinate $m<\ell(x)$, suppose a genuinely
+forbidden-free finite witness $A,v$ of $y$ satisfies
+the strict guard $\mathrm{fl}_A(m+1)<m$.
+Then the candidate raw type
+\[
+  \langle\ell(x)-1,\,
+    \mathrm{record}(x)\ominus m\rangle
+\]
+is admissible. The new
+\texttt{admissible\_deleted\_lower\_of\_guarded\_upper}
+in \texttt{LevelRemovalIntrinsicAdmissible.lean}
+proves this using the complete $L^+$ prefix equality
+$x\subseteq y$ and the checked admissibility of every
+guardedly shortened prefix. The definition of the deleted
+raw value depends \emph{only} on $x$ and $m$, not on the
+upper type or which finite witness was chosen. This
+removes a spurious value-level choice-dependence at the
+source boundary of the intended M2 deletion map.
+
+A later proof must provide the guarded upper witness
+from the actual source/image successors, ensure the
+deleted map is uniformly admissible and injective,
+and verify weak successor preservation across the gap.
+It also needs corrected finite $L$-only B3 necessity
+before claiming the M2 factorization. No such
+global consequence is asserted here.}
