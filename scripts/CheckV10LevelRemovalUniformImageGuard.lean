@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LevelRemovalUniformImageGuard
+
+#print axioms SuccessorTree.V10.gap_guard_in_every_upper_image_witness
+#print axioms SuccessorTree.V10.boundary_gap_guarded_successor_witness_exists
