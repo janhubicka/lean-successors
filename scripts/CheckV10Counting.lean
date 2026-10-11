@@ -47,6 +47,7 @@ import SuccessorTree.V10.RawPrefixMeet
 import SuccessorTree.V10.RawPartialTypeLevelTree
 import SuccessorTree.V10.AdmissibleKptMeet
 import SuccessorTree.V10.AdmissibleKptLevelTree
+import SuccessorTree.V10.CanonicalBinary
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -317,3 +318,13 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.admissibleKpt_covBy_level
 #print axioms SuccessorTree.V10.admissibleKpt_levelTree_meet_eq
 #print axioms SuccessorTree.V10.admissibleKpt_levelTree_ancestor_eq
+
+-- Canonical off-diagonal binary encoding; induced age and E unchanged.
+#print axioms SuccessorTree.V10.AgeTestModel.canonicalBinary_self
+#print axioms SuccessorTree.V10.AgeTestModel.canonicalBinary_offdiagonal
+#print axioms SuccessorTree.V10.AgeTestModel.canonicalBinary_idempotent
+#print axioms SuccessorTree.V10.AgeTestModel.realizes_canonicalBinary_iff
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.canonicalBinary_E
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.canonicalBinary_freeLevel
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.canonicalBinary_type_diagonal
+#print axioms SuccessorTree.V10.NormalizedForbidden.avoids_canonicalBinary_iff

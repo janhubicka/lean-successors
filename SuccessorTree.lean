@@ -126,3 +126,4 @@ import SuccessorTree.V10.RawPrefixMeet
 import SuccessorTree.V10.RawPartialTypeLevelTree
 import SuccessorTree.V10.AdmissibleKptMeet
 import SuccessorTree.V10.AdmissibleKptLevelTree
+import SuccessorTree.V10.CanonicalBinary

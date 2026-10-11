@@ -1,0 +1,38 @@
+% Successor-v10 review-only language-coding note, 9 October 2026.
+% Suggested explicit TODO around the binary/unary Kpt representation
+% in Section 6.3; do not insert duplicate notes or rewrite the paper.
+%
+\todo[inline]{\textbf{v10 validation (diagonal binary normalization).}
+The Boolean-vector Lean model uses one finite table for
+off-diagonal ordered binary relations and a separate
+singleton table for diagonal binary facts. To identify this
+with the paper's literal finite relational language, the
+unused entries $B(x,x)$ of the off-diagonal table must
+be fixed canonically (e.g. all false), while the actual
+loops are read from the diagonal table. Otherwise different
+raw Lean type records can encode the same ordinary
+$L$-structure. The canonicalization
+\texttt{CanonicalBinary.lean} sets precisely those unused
+entries to false and proves that every directed
+off-diagonal atom, all unary/diagonal atoms, the
+auxiliary $E$-relation and all induced ordered
+forbidden-copy tests remain unchanged. The free
+$E$ cut is unchanged, and type records extracted
+from canonicalized structures contain no spurious
+self-pair bits. This identifies the correct sublanguage
+representation, but the fixed coordinate map from
+diagonal bits to the original binary relation symbols
+and the uniform nullary-symbol convention still
+require an explicit final adapter. Do not mark
+the published $K^\mathcal F_{pt}$ identification
+fully verified until that adapter is supplied.}
+%
+% Expected kernel-checked endpoints at green CI:
+%  AgeTestModel.canonicalBinary_self
+%  AgeTestModel.canonicalBinary_offdiagonal
+%  AgeTestModel.canonicalBinary_idempotent
+%  AgeTestModel.realizes_canonicalBinary_iff
+%  EnumeratedPartialStructure.canonicalBinary_E
+%  EnumeratedPartialStructure.canonicalBinary_freeLevel
+%  EnumeratedPartialStructure.canonicalBinary_type_diagonal
+%  NormalizedForbidden.avoids_canonicalBinary_iff
