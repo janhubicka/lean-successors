@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LevelRemovalCrossGapPrefix
+
+#print axioms SuccessorTree.V10.deleteTypeCoordinate_lift_below
+#print axioms SuccessorTree.V10.PartialTypeWithE.deleteOrdinary_restrict_below
+#print axioms SuccessorTree.V10.rawPartialTypePrefix_delete_above_cut
