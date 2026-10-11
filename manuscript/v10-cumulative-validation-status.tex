@@ -375,6 +375,27 @@ transitive axiom audits for PRs~211 and~212 passed. All twelve new
 endpoints use only standard Lean axioms; the downloaded evidence was
 hash-checked and the named-endpoint checker was rerun.
 
+\textbf{Prescribed predecessor and terminal-letter transport -- UNDER LEAN AUDIT.}
+\texttt{PrescribedPrefixCore.lean} isolates equality of complete
+$\ell$-prefixes for comparable upper nodes, choice of the same
+prescribed/neutral branch, and complete $L^+$ transport through a
+one-filler prefix replica of an actual finite prescribed constructor.
+\texttt{PrescribedPrefixUpper.lean} applies the previously checked
+arbitrary-representation adapter to the selected matching images.
+\texttt{PrescribedKptPrefix.lean} assembles the matching and neutral
+upper cases with the crossing-gap calculation and identity below
+$\ell$ into the proposed full predecessor endpoint
+\texttt{prescribedKptSkip\_prefix}. These lemmas use the existing
+B1/B2, corrected B3, target admissibility and $\ell>0$ hypotheses.
+Separately, \texttt{PrescribedLetterTransport.lean} compares complete
+terminal $\Sigma$ letters of retained old pairs in the actual
+non-neutral insertion, including every $E$-bit.
+The code and named-endpoint audits are in draft PRs 215 and 220,
+respectively. They are not marked GREEN until the exact Lean builds
+and transitive axiom audits pass. Even a verified predecessor theorem
+and finite old-letter transport would not certify agreement with $f$,
+canonical parameter transport or the weak successor law.
+
 \textbf{Suggested clarification of the construction.}
 Choose a finite $\mathcal F$-free partial structure representing the
 source type. Use the prescribed finite construction when its ordinary
