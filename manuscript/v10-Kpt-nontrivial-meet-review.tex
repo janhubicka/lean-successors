@@ -1,0 +1,33 @@
+% v10 review-only: charged meets, 10 October 2026.
+% This note supplements the cumulative Section 6.49 TODO without changing
+% any of the four author mathematical repairs or unseen v10 main.tex.
+%
+% Candidate localized TODO at Lemma 6.49:
+\todo[inline]{\textbf{v10 validation (genuine meet gives binary witness).}
+The converse of the type-to-meet bridge is now formalised for the
+normalized forbidden-free $K_{pt}^{\mathcal F}$ forest.
+Starting with two original partial types in a common enumerated
+partial structure whose \emph{actual} meet is strictly below each,
+the full-level ancestors agree at the meet level $d$ and differ at
+$d+1$, with $d+1$ automatically below both free levels. Thus
+at coordinate $d$ some directed binary atom between the type
+vertex and its socle differs, and all earlier such atoms agree.
+No separate common-root assumption is needed: the equal complete
+predecessors imply it. This is
+\texttt{admissibleKpt\_nontrivial\_meet\_recovers\_binary}
+in \texttt{V10/KptMeetConverse.lean}.
+Moreover, if the lower original is at a non-top H position
+$\iota(j,m)$ and the meet is at $\iota(p,m)$, strictness implies
+$\iota(p,m)<\operatorname{fl}(\iota(j,m))$, hence the
+sharp inequality $p+1<j$; see
+\texttt{admissibleKpt\_nontrivial\_meet\_sharp\_nonTop\_guard}.
+It remains to instantiate the theorem on the explicit
+$H^+$ model, identifying \emph{both} directed binary patterns
+with the existing bundled trace classifier, and then derive
+the $p(i)$ generation charge for every nontrivial meet.
+The finite Boolean encoding still presupposes the uniform
+diagonal/nullary dictionary.}
+%
+% Green marks must refer to the exact GitHub head that passes both
+% the focused and full Lean workflows. No claim about Lemma 6.49 in
+% its entirety is justified by this fragment.

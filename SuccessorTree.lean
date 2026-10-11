@@ -159,3 +159,5 @@ import SuccessorTree.V10.AdmissibleSigmaSTree
 
 import SuccessorTree.V10.ConcreteKptM1
 import SuccessorTree.V10.KptMeetBridge
+
+import SuccessorTree.V10.KptMeetConverse
