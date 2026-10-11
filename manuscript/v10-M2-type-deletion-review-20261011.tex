@@ -1,17 +1,18 @@
 % Successor v10, review-only M2 verification note, 11 October 2026.
 % This file is not automatically inserted into main.tex.
 % The four author-controlled repairs and all mathematical prose are frozen.
-% PENDING exact-head Lean and axiom audit; do not mark GREEN yet.
+% Exact-head PR 267 (9b62b29e) full Lean 38173035063 and focused axiom
+% audit 38173035018 passed; only the stated local endpoint is GREEN.
 %
 % Candidate insertion at Lemma 6.34. Locate the existing TeX label in
 % the actual author's v10 source before applying any patch:
 \todo[inline]{\textbf{v10 validation: level removal, complete type transport
--- PENDING.}
+-- GREEN for this local normalized endpoint.}
 The existing finite \texttt{LevelRemovalPartial.lean} and
 \texttt{LevelRemovalFreeCut.lean} establish the strict spacing guard
 $\mathrm{fl}_A(m+1)<m$, preservation of the forbidden $L$-age, and
 the exact new free cut after deleting ordinary coordinate $m$.
-The proposed
+The Lean-checked
 \texttt{deleteAtPartial\_partialTypeAt\_eq\_deleteOrdinary}
 in \texttt{LevelRemovalType.lean} additionally identifies the
 \emph{complete} $L^+$ type of each retained vertex with deletion
