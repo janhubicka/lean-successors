@@ -185,8 +185,13 @@ theorem PrescribedBoringData.prescribedKptSkip_succ_unmatched_above
     rw [hParam]
     by_cases hz : A.freeLevel n = 0
     · simp [hz]
-    · simp [hz, F.prescribedKptSkip_neutral_on_ambient
-        family hB3 hTargets hPos A hAvoid v hAmbientNone n hn]
+    · have hParEq :
+          F.prescribedKptSkip family hB3 hTargets hPos par =
+            neutralKptSkip family ell hPos par :=
+        F.prescribedKptSkip_neutral_on_ambient family hB3 hTargets
+          hPos A hAvoid v hAmbientNone n hn
+      simp only [if_neg hz, List.map_cons, List.map_nil]
+      rw [hParEq]
   have hNeutralSucc :=
     neutralKptSkip_weak_succ_above_gap family ell hPos
       hSucc hBaseHigh
