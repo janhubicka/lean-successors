@@ -1,0 +1,26 @@
+% Successor v10, review-only M2 prefix-naturalness checkpoint.
+% New Lean theorem PENDING its own exact-head CI.
+% No main manuscript theorem/proof token is altered by this file.
+%
+\todo[inline]{\textbf{v10 validation: deletion and predecessor prefixes
+-- PENDING exact-head Lean.}
+The proposed \texttt{LevelRemovalPrefixCommute.lean} derives the
+literal identity, for $m<c\leq d$ and any complete $L^+$ record
+$T$ at cut $d$,
+\[
+  (T\ominus m)\upharpoonright(c-1)
+    = (T\upharpoonright c)\ominus m.
+\]
+The equality includes every ordinary and distinguished-type
+$L$-atom, both binary directions, absent tuples, unary/diagonal
+bits, and the entire auxiliary $E$ relation. The proof is direct:
+the two maps embedding the shortened initial socle into the old
+one have the same addresses, and the type vertex is never deleted.
+
+For the future global M2 level-removal map, this calculation
+should establish predecessor preservation for comparable
+source types at and above the deleted level, once the image
+of each source is known to be admissible. It says nothing about
+injectivity, weak successor preservation across the first gap,
+or corrected finite $L$-only B3 age necessity. The author's
+mathematical proof prose is frozen.}
