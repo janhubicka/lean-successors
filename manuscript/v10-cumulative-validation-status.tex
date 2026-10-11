@@ -1,0 +1,192 @@
+% =====================================================================
+% SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
+% 9 October 2026. Source: lean-successors PRs #110--#134.
+%
+% DO NOT \input this file unchanged alongside older review fragments.
+% It is a SINGLE proposed replacement for overlapping review TODOs.
+% No original v10 main.tex is mounted in the Lean repository, hence
+% these insertions have NOT been git-apply-checked against the author's
+% source.  Keep all four reconstructed mathematical corrections separate.
+%
+% Status conventions:
+%   GREEN: precise named theorem kernel-checked + transitive axiom audit.
+%   PARTIAL: Lean checks a well-stated conditional theorem/model only.
+%   OPEN: paper-specific statement or representation bridge unproved.
+%
+% Exact stable green checkpoints:
+%   PR #115: full and focused CI, signature-splice conditional package;
+%   PR #116: full and focused CI, ambient signatures / L-reduct;
+%   PR #117: full and focused CI, unique free E cut;
+%   PR #118: full and focused CI, exact generated H-E model;
+%   PR #119: full and focused CI, complete L+ type restriction;
+%   PR #120: full and focused CI, H E3 relation linkage;
+%   PR #121: full and focused CI, common socle full-prefix comparison;
+%   PR #122: full and focused CI, longest common full prefix;
+%   PR #123: full and focused CI, raw greatest prefix and exact meet level;
+%   PR #124: full and focused CI, raw prefix partial order;
+%   PR #125: full and focused CI, one-filler E replica;
+%   PR #126: full and focused CI, one-filler L replica;
+%   PR #127: full and focused CI, genuine partial structure replica;
+%   PR #128: full and focused CI, admissible Kpt prefix closure;
+%   PR #129: full and focused CI, finite levels of Kpt;
+%   PR #130: full and focused CI, actual raw meet;
+%   PR #131: full and focused CI, raw LevelTree;
+%   PR #132: full and focused CI, admissible normalized Kpt LevelTree.
+%
+% The PRs above are staged as localized drafts and remain unmerged.
+% The full and focused status of later PRs #133 (binary diagonal)
+% and #134 (canonical successor parameter) must be checked at their
+% exact final SHA before considering those entries green.
+%
+% =====================================================================
+% Proposed consolidated TODO after Definition 6.28 / Remark 6.29
+\todo[inline]{\textbf{v10 review: admissible type forest -- GREEN in
+the normalized finite unary/binary representation.}
+The first missing $E$-coordinate exists uniquely and equals
+$\mathrm{fl}(v)$; the exact $E$-cut satisfies the partial-structure
+spacing/downward conditions. An admissible partial type of free
+level $d$ can be realised after restriction to any earlier cut:
+insert one allowed neutral filler vertex at $d$, move the type
+vertex to $d+1$, copy the entire induced $L$-reduct on the old
+socle plus distinguished vertex, and prescribe exactly the
+initial $E$-socle of length $d$. The resulting structure satisfies
+all three partial-structure axioms and avoids the forbidden family:
+nontrivial irreducible forbidden copies cannot contain the
+isolated filler, and non-neutral forbidden singletons are
+excluded there. See
+\texttt{PrefixReplicaPartial.lean},
+\texttt{PrefixReplicaAge.lean}, and
+\texttt{AdmissibleKptPrefix.lean}. Finiteness of every level and
+the genuine meet and predecessor operations of the admissible
+prefix subforest are proved by
+\texttt{FiniteKptLevels.lean},
+\texttt{AdmissibleKptMeet.lean}, and
+\texttt{AdmissibleKptLevelTree.lean}.
+This is \emph{not} a proof of the concrete $S$-operation or
+monoid axioms in Proposition~6.32.}
+
+% =====================================================================
+% Proposed consolidated TODO at Definition 6.30 and Proposition 6.32
+\todo[inline]{\textbf{v10 review: actual successor operation -- OPEN.}
+Define the forward successor on the admissible
+$K^\mathcal F_{pt}$ family by the exact no-new-tuples
+construction, including the fresh ordinary vertex's
+binary/unary/diagonal relations, its auxiliary $E$-socle,
+and the distinguished type vertex's relations. The free
+level of the inserted ordinary vertex forces the
+parameter list to be empty for free level zero and
+otherwise to contain just its canonical partial type
+at that positive free level. The strict parameter-level
+bound follows from spacing, and is isolated in
+\texttt{CanonicalInsertionParameter.lean}
+(pending exact CI). Prove that these data recover the
+complete successor record uniquely (S2) and that every
+cover of admissible types arises this way (S3).
+Only then mark Proposition~6.32 as verified and start the
+concrete monoid checks (M1)--(M3); the checked abstract
+\texttt{LevelTree} instance alone does not give them.}
+
+% =====================================================================
+% Proposed consolidated TODO at Definition 6.45 / Observation 6.46
+\todo[inline]{\textbf{v10 review: the exact $H^+$ structure -- PARTIAL.}
+The global generated auxiliary $E$-relation of the explicit
+$H$ model, its spacing/downward closure, E3 linkage and
+all claimed first-missing-coordinate/free-level formulas
+are checked in \texttt{HExactE.lean} and
+\texttt{HELinkage.lean}. Fake odd vertices have no
+incoming $E$-socle, but can be lower coordinates in
+later real vertices' $E$-socles. Hence they are isolated
+only in the $L$-reduct, not in the full $L^+$-structure.
+For the manuscript, replace the one-way statement that
+allowed real-pair restrictions are \emph{substructures}
+of the corresponding pair in $K$ by an exact copying
+rule for all permitted ordered directed binary tuples,
+the unary predicates and diagonal binary facts;
+all other relations between different blocks vanish.
+Fix the nullary-symbol interpretation uniformly.
+The explicit-copy model is checked, but the paper's
+original underdetermined clause is not yet shown to
+be equivalent to that model.}
+
+% =====================================================================
+% Proposed consolidated TODO at Lemma 6.49 / Corollary 6.50
+\todo[inline]{\textbf{v10 review: charged meets -- PARTIAL.}
+The first different directed binary trace of two positive
+generation $H$ originals is classified, and the comparison
+of two complete $L^+$-type prefixes from a common ambient
+structure below both free cuts reduces to their directed
+binary cross-traces. The raw and admissible partial-type
+forests now have genuine greatest common predecessors,
+not axiomatic surrogate meets. See
+\texttt{FirstDisagreement.lean},
+\texttt{CommonSocleType.lean},
+\texttt{RawMeetLevel.lean} and
+\texttt{AdmissibleKptLevelTree.lean}.
+To finish the manuscript's positive-generation charge,
+identify the ambient $H^+$ type records with the
+specific nodes in the actual $K^\mathcal F_{pt}$ tree
+through their free socles and check the exact
+coordinate lies below both type levels. In the
+non-top mixed-generation case the sharp guard is
+$p+1<j$, not merely $p<j$.
+Then prove that the maintained original pool is
+parameter-closed at every selected envelope level,
+so iterated meet closure introduces no uncharged
+originals. The cardinality estimate is already checked
+conditionally but not the geometric charge itself.}
+
+% =====================================================================
+% Proposed consolidated TODO at Observation 6.52 / Lemma 6.53
+\todo[inline]{\textbf{v10 review: age signatures and relocation -- PARTIAL.}
+For matching forbidden-copy signatures, the checked Lean
+splice uses the earlier lower witness and later upper witness,
+preserves order and all unary, diagonal and directed binary
+tuples (including negative facts), and avoids the later
+tested vertex. Equality of complete upper type records
+through the earlier cut plus one suffices for the cross
+relations; see \texttt{SignatureCollision.lean} and
+\texttt{AmbientSignature.lean}. The lower-generation
+relocation in the exact $H$ model is checked, including
+the special top-generation tie and both orientations;
+see \texttt{RelocationIrreducible.lean}.
+The outstanding common obligation is to derive the full
+type-through-$\ell+1$ identification of each prescribed
+upper age-test vertex with its named ambient original
+from the actual one-level $K^\mathcal F_{pt}$
+crossing map. Do not use the auxiliary $E$ relation
+as a forbidden $L$-atom. Only after this bridge is
+proved may signature injectivity and the generation
+bounds be marked fully validated.}
+
+% =====================================================================
+% Proposed consolidated TODO at Proposition 6.44 / Theorem 6.26
+\todo[inline]{\textbf{v10 review: final big-Ramsey upper bound -- OPEN.}
+Lean checks the finite arithmetic/recursion once geometric
+meet-charging, signature uniqueness and the classification
+of all (I1)--(I3) selected levels are assumed. The
+corresponding conditional endpoints are in
+\texttt{Counting.lean} and
+\texttt{FiniteMeetBudget.lean}.
+The main upper-bound proof is not a kernel-checked
+consequence until the paper-specific assumptions in
+Lemma~6.49, Corollary~6.50, Lemma~6.51,
+Observation~6.52 and Lemma~6.53 have been discharged.
+Retain those proof obligations visibly and avoid marking
+Proposition~6.44 or Theorem~6.26 fully validated.}
+
+% =====================================================================
+% Proposed additional language-coding TODO near the beginning of 6.3
+\todo[inline]{\textbf{v10 review: diagonal/nullary language adapter -- OPEN.}
+The explicit Boolean model stores ordered binary atoms
+for distinct vertices and singleton diagonal binary
+facts separately. Fix the otherwise unused self-pair
+entries of the off-diagonal table canonically (all false);
+this does not alter any induced $L$-embedding or the
+auxiliary $E$-relation, as checked conditionally by
+\texttt{CanonicalBinary.lean} (PR #133, exact CI pending).
+Then identify the diagonal coordinate map with the
+original finite binary relation symbols and settle
+nullary symbols once for the whole age. Only after
+this finite language adapter should the normalized
+Boolean representation be described as literally
+identical to the paper's $K^\mathcal F_{pt}$ class.}
