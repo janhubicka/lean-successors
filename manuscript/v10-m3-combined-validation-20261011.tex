@@ -24,8 +24,14 @@ terminal letter of the earlier $n$th crossing. The candidate
 \texttt{m3OneGapShapeMap\_repeats\_old\_step}
 in \texttt{M3CombinedEndpoint.lean} identifies $\Phi(T)$ with
 the genuine successor at those old inputs, not just an extension
-with the same $L$-reduct. The proof uses the same selected target
-in both constructions and introduces no M3/successor axiom.
+with the same $L$-reduct. The follow-up
+\texttt{m3OneGapShapeMap\_literalM3} in
+\texttt{M3LiteralDuplication.lean} quantifies universally over
+\emph{every} $S(a,\bar p,c)\preceq T$ with $a$ at level $n$,
+as in the printed M3 axiom. It derives equality of the earlier
+inputs from uniqueness of the level-$(n+1)$ predecessor and
+the actual S2 axiom. Neither proof assumes M3 or an abstract
+successor law, and both are still PENDING their focused audits.
 
 \textbf{Scope still open:} obtain exact-head Lean and axiom-audit
 confirmation before marking this result GREEN, compare this
