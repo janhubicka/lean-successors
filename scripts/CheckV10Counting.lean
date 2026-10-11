@@ -42,6 +42,7 @@ import SuccessorTree.V10.PrefixReplicaL
 import SuccessorTree.V10.PrefixReplicaPartial
 import SuccessorTree.V10.PrefixReplicaAge
 import SuccessorTree.V10.AdmissibleKptPrefix
+import SuccessorTree.V10.FiniteKptLevels
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -283,3 +284,7 @@ set_option autoImplicit false
 -- Prefix closure of the actual normalized forbidden-free Kpt family.
 #print axioms SuccessorTree.V10.NormalizedForbidden.replica_preserves_avoidance
 #print axioms SuccessorTree.V10.admissibleRawType_closed_under_prefix
+
+-- Finite levels of raw and normalized admissible Kpt types, no new axioms.
+#print axioms SuccessorTree.V10.rawPartialTypeLevel_finite
+#print axioms SuccessorTree.V10.admissibleRawTypeLevel_finite
