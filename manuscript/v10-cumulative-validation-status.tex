@@ -69,80 +69,47 @@ monoid axioms in Proposition~6.32.}
 
 % =====================================================================
 % Proposed consolidated TODO at Definition 6.30 and Proposition 6.32
-\todo[inline]{\textbf{v10 review: actual successor operation -- OPEN.}
-Define the forward successor on the admissible
-$K^\mathcal F_{pt}$ family by the exact no-new-tuples
-construction, including the fresh ordinary vertex's
-binary/unary/diagonal relations, its auxiliary $E$-socle,
-and the distinguished type vertex's relations. The free
-level of the inserted ordinary vertex forces the
-parameter list to be empty for free level zero and
-otherwise to contain just its canonical partial type
-at that positive free level. The strict parameter-level
-bound follows from spacing, and is isolated in
-\texttt{CanonicalInsertionParameter.lean}
-(PR #134, full and focused CI checked).
-The no-new-tuples consequence of E3, including both directed
-orientations above the new vertex's free cut, is kernel-checked
-in \texttt{CanonicalCrossing.lean}. The exact one-level type is
-uniquely determined by its complete predecessor and the full
-new ordinary vertex column (\texttt{CompleteNextColumn.lean}).
-The predecessor, the canonical singleton parameter as an
-induced type, and the terminal level-one $\Sigma$-letter are
-extracted in \texttt{ExtractSuccessorComponents.lean}
-(subject to their exact-head CI audits). For two
-well-formed one-level records, equality of the predecessor,
-canonical free cut, shortened parameter and terminal letter
-gives equality of the full successor record once the
-E3 no-new-tuples conditions are imposed
-(\texttt{ParameterLetterUniqueness.lean}); the
-conditions for types actually extracted from partial
-structures are discharged in
-\texttt{ExtractedSuccessorS2.lean}
-(current focused Lean review, not yet a certified endpoint).
-For the actual empty-parameter branch $f=0$, the
-two-vertex terminal letter already contains the complete
-zero-level new-vertex record; it is not a second
-singleton parameter. The initial $E$ column uniquely
-determines $f$, and exact uniqueness with
-$\bar p=()$ or $\bar p=(S^+)$ of positive level
-is developed in \texttt{EmptyParameterS2.lean}
-(current exact-head CI pending).
-The precise admissible-vertex successor graph (predecessor,
-canonical parameter, terminal $\Sigma$-letter, prescribed free
-$E$-cut and no-new-$L$-tuples) is now encoded in
-\texttt{CanonicalStepGraph.lean}. Its cover and strict-parameter
-bound, a construction of canonical inputs from every forbidden-free
-ambient type and a decomposition of every admissible cover
-are under focused Lean audit in
-\texttt{CanonicalStepRealization.lean} and
-\texttt{CanonicalCoverS3.lean}. The input and output
-uniqueness of this graph are in
-\texttt{CanonicalStepUniqueness.lean}, also pending exact-head
-CI. The graph is then made into an Option-valued
-successor using its proved unique-output property, with
-all three S-tree axioms derived from the above
-lemmas in \texttt{CanonicalRawSTree.lean}
-(the exact-head Lean audit is pending).
-The provisional alphabet of \texttt{CanonicalRawSTree.lean}
-contains all raw two-vertex $L^+$-types, whereas the manuscript's
-$\Sigma$ requires admissibility. The terminal-letter replica
-constructed in \texttt{TerminalLetterReplica.lean} has just
-three ordinary vertices: a copy of the new vertex at $0$, an
-isolated filler at $1$, and the distinguished witness at $2$.
-Its unique $E$-pair is $(0,2)$, so the type at vertex $2$ has
-free level $1$ and agrees with the original terminal
-$\Sigma$-letter. The forbidden-free transfer in
-\texttt{TerminalLetterAge.lean} uses irreducibility and the
-allowed neutral singleton. The restricted operation in
-\texttt{AdmissibleSigmaSTree.lean} is intended to prove
-(S1)--(S3) for the paper's \emph{admissible} alphabet,
-without postulating those axioms. All three new modules and
-their dependent uniqueness proof remain subject to exact-head
-Lean verification; do not mark Proposition~6.32 green in
-advance. Once checked, still align the Boolean split-diagonal
-representation with the original language and begin the
-concrete monoid conditions (M1)--(M3).}
+\todo[inline]{\textbf{v10 validation: the S-tree operation -- GREEN for
+the normalized finite unary/binary model; language adapter OPEN.}
+The exact Kpt successor is defined as an Option-valued
+operation from its complete induced predecessor, the
+canonical empty-or-positive-singleton parameter (including
+the strict lower-level bound), and the terminal level-one
+$L^+$-letter. No L-tuples are introduced beyond those
+specified by the parameter, the predecessor and the
+letter. The $E$-free cut is unique; every one-level
+extension has a canonical decomposition and this
+decomposition is injective. Conversely every admissible
+cover admits such a decomposition. The auxiliary three-
+vertex terminal-letter replica, with one allowed neutral
+filler, proves that the letter belongs to the admissible
+$\Sigma$ rather than the unrestricted alphabet of raw
+types. All three S-tree axioms (S1)--(S3) are proved
+for the normalized forbidden-free Kpt model in
+\texttt{CanonicalStepGraph.lean},
+\texttt{CanonicalCoverS3.lean},
+\texttt{CanonicalStepUniqueness.lean},
+\texttt{TerminalLetterAge.lean} and
+\texttt{AdmissibleSigmaSTree.lean}
+(PRs 142--148; focused and full Lean CI passed).
+The remaining manuscript-facing verification is an
+explicit dictionary between the normalized Boolean
+encoding (including the split off-diagonal/diagonal
+binary relations and uniform nullary interpretation)
+and the literal finite language $L$ of the paper.
+
+\textbf{v10 validation: the shape-map monoid -- M1 in progress;
+M2/M3 OPEN.} The chosen family consists of all
+shape-preserving maps satisfying $\widetilde F(0)=0$.
+Identity, composition and pointwise fusion preserve
+this condition; such maps fix each level-zero
+node, yielding (E1). These M1 facts are formalised
+in \texttt{ConcreteKptM1.lean}, subject to the current
+exact-head Lean CI. They do \emph{not} establish
+Proposition~6.39. The level-removal lemma 6.34,
+boring-extension lemma 6.36, type-compatibility
+preservation, and concrete duplication/decomposition
+needed for (M2)--(M3) still require separate checking.}
 
 % =====================================================================
 % Proposed consolidated TODO at Definition 6.45 / Observation 6.46
