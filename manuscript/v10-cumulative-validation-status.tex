@@ -272,8 +272,8 @@ whole upper-bound recurrence.}
 
 % Consolidated TODO at Lemma 6.51. Both known TeX labels are supported;
 % the updater rejects ambiguous aliases and changes only managed notes.
-\todo[inline]{\textbf{v10 validation: boring extension -- finite
-construction and neutral shape map GREEN; prescribed ShapeMap OPEN.}
+\todo[inline]{\textbf{v10 validation: boring extension -- GREEN in the
+normalized finite unary/binary model; M2/M3 and language adapter OPEN.}
 The repaired B3 quantifies over finite ordered $L$-structures with the
 ordinary socle of a prescribed $f(S)$ and complete upper $L$-types
 through $\ell+1$ from the reducts of $f[S]$. If deleting $\ell$ leaves an $\mathcal F$-free structure, the whole
@@ -454,17 +454,31 @@ therefore transports the canonical empty-or-singleton parameter list.
 The full Lean and focused named-axiom audits of PRs~218, 223 and 224
 passed independently with unchanged corrected-B3 assumptions.
 
-\textbf{Global successor assembly -- OPEN pending the new CI audit.}
-\texttt{PrescribedUpperSuccMatching.lean} uses the actual finite
-constructor and the checked parameter/letter transport to derive
-exact successor equality above the gap in the matching case.
-\texttt{PrescribedUpperSuccUnmatched.lean} proposes to identify
-the source, target and canonical parameter with the neutral map
-when the common ordinary socle has no compatible prescribed input.
-\texttt{PrescribedKptShapeMap.lean} assembles these exact upper cases
-with the already checked weak crossing law and node injectivity.
-Do not mark this ShapeMap GREEN before the full and focused Lean audits
-of the combined source succeed.
+\textbf{Complete prescribed one-gap ShapeMap -- GREEN
+for the normalized model.}
+\texttt{PrescribedUpperSuccMatching.lean} uses one genuine finite
+prescribed insertion and the checked exact parameter/terminal-letter
+transport to prove successor equality above the gap.
+\texttt{PrescribedUpperSuccUnmatched.lean} identifies the source, target
+and canonical parameter with their neutral images when the common
+ordinary level-$\ell$ socle has no compatible prescribed source.
+\texttt{PrescribedKptShapeMap.lean} combines both upper cases with the
+weak below/crossing successor law, full predecessor and injectivity
+theorems, and root fixing. It constructs the actual
+\texttt{ShapeMap} in $K_{pt}M$, omitting level $\ell$.
+\texttt{PrescribedBoringCompletion.lean} uses the independently verified
+nonempty Kpt levels and the explicit level map to obtain the stronger
+\texttt{SkipsOnly} conclusion. It packages membership in $K_{pt}M$,
+exact omission of $\ell$, and complete $L^+$ agreement with $f$ into
+\texttt{prescribedKpt\_boring\_extension\_exists}.
+The exact-head focused builds and named transitive axiom audits of
+PRs~226 and~227 passed with standard Lean axioms only. The new
+public-root import of this endpoint is staged separately in PR~228
+so ordinary \texttt{lake build} cannot silently omit it.
+No new mathematical hypothesis or abstract successor-preservation
+axiom was introduced. This certifies the normalized-model version of
+Lemma~\ref{lem:boring}, conditional on corrected B3; it does not
+certify the original-language identification or its applications.
 For M2, the former third statement of Lemma~\ref{lem:comp} does not
 imply the strengthened B3; a new necessity or decomposition argument
 is required. For M3, verify the repaired age test for the actual
