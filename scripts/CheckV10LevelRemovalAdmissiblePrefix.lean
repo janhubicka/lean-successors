@@ -1,0 +1,3 @@
+import SuccessorTree.V10.LevelRemovalAdmissiblePrefix
+
+#print axioms SuccessorTree.V10.admissible_deleted_type_at_shorter_cut
