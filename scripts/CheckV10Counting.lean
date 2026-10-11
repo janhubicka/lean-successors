@@ -65,6 +65,7 @@ import SuccessorTree.V10.TerminalLetterAge
 import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.ConcreteKptM1
 import SuccessorTree.V10.HNumericBinary
+import SuccessorTree.V10.HDirectedTraces
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -442,3 +443,8 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.hNumericBinary_real_forward_iff
 #print axioms SuccessorTree.V10.hNumericBinary_odd_left_false
 #print axioms SuccessorTree.V10.hNumericBinary_odd_right_false
+
+-- Full exact L copying matches first-disagreement traces in BOTH orientations.
+#print axioms SuccessorTree.V10.hNumericBinary_real_reverse_iff
+#print axioms SuccessorTree.V10.hNumericBinary_forward_matches_bundledTrace
+#print axioms SuccessorTree.V10.hNumericBinary_reverse_matches_bundledTrace
