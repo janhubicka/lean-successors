@@ -1,0 +1,12 @@
+import SuccessorTree.V10.PrescribedKptSkip
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.matchingKptImage_isImage
+#print axioms SuccessorTree.V10.PrescribedBoringData.matchingKptImage_level
+#print axioms SuccessorTree.V10.PrescribedBoringData.matchingKptImage_eq_of_isImage
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_fixed_below
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_matching
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_neutral
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_level
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_omits_level
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_preserves_equal_level
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_strict_level
