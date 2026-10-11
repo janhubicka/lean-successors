@@ -1,0 +1,3 @@
+import SuccessorTree.V10.PrescribedTerminalLetter
+
+#print axioms SuccessorTree.V10.prescribedInsertPartial_terminalLetter_eq

@@ -1,0 +1,3 @@
+import SuccessorTree.V10.PrescribedSourceE
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedInsertPartial_source_E

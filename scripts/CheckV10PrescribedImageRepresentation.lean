@@ -1,0 +1,4 @@
+import SuccessorTree.V10.PrescribedImageRepresentation
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.matching_constructor_avoids_of_valid_cut
+#print axioms SuccessorTree.V10.PrescribedBoringData.matchingKptImage_raw_eq_of_representation

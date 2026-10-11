@@ -1,0 +1,5 @@
+import SuccessorTree.V10.PrescribedKptPrefixCases
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.compatibleSource_iff_of_Kpt_prefix
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_prefix_below
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_prefix_unmatched
