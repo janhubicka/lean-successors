@@ -209,7 +209,7 @@ def run(input_path: Path, output: Path):
         "idempotence":"passed",
         "anchors":found,
         "changed":changed!=raw,
-        "boundary":"Normalized Kpt/H, closure budget and corrected-B3 prescribed boring extension verified; concrete global M3 pending CI and language adapter; M2 and final application open. Four author repairs untouched."}
+        "boundary":"Normalized Kpt/H, universal M3 duplication and local guarded M2 type transport/admissibility checked; global M2, original-language adapter, I3 and final upper bound open. Four author repairs untouched."}
     (output/"MANIFEST.json").write_text(json.dumps(manifest,indent=2)+"\n")
     print(json.dumps(manifest,indent=2))
 
