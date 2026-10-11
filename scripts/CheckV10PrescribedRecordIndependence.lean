@@ -1,0 +1,5 @@
+import SuccessorTree.V10.PrescribedRecordIndependence
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.insertedTypeRecord_independent
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedInsertPartial_record_eq
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedInsertPartial_independent
