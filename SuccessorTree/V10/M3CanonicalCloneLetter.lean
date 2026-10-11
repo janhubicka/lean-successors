@@ -117,4 +117,20 @@ theorem m3_terminalLetter_copies_singleton
       T.lReduct.diagonal (some i) t at hOrig
     exact hNew.trans hOrig.symm
 
+/-- The M3 upper-pair condition in the finite B3 reduction follows
+from the *actual chosen terminal letter* of every prescribed output.
+Source extension is already the B1 field of PrescribedBoringData;
+only the terminal-letter identity remains to be obtained from the
+canonical successor construction. -/
+theorem PrescribedBoringData.middleCloneUpperL_of_terminalLetter
+    {ell db du dd : Nat}
+    (F : PrescribedBoringData ell db du dd)
+    (n : Nat) (hn : n < ell)
+    (hLetter : ∀ T, T ∈ F.source →
+      (F.target T).terminalLetter = earlierTerminalLetter T n hn) :
+    F.MiddleCloneUpperL n hn := by
+  intro T hT t
+  exact m3_terminalLetter_copies_upper_pairs T (F.target T)
+    n hn (F.extendsSource T hT) (hLetter T hT) t
+
 end SuccessorTree.V10
