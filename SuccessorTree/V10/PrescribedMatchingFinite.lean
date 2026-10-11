@@ -16,10 +16,12 @@ strict d=0 or d<ell gate. The f-target's L+ record supplies its
 identification with the witness. The finite B3 no-age-change assumption
 for that common socle then makes the matching insertion forbidden-free.
 
-We retain the exact original L-atom embedding and transported E-cuts in
-the conclusion, so this lemma is suitable for subsequent uniform type
-insertion. It is still a FINITE construction for one A and one matching
-S0, not yet the global Kpt ShapeMap.
+The stronger constructor theorem retains the actual insertion cut and
+the literal prescribedInsertPartial model, together with the original
+L-atom embedding and transported E-cuts. The earlier existential API
+is retained as a corollary, without duplicating the construction.
+This is still a finite construction for one A and one matching S0,
+not yet the global Kpt ShapeMap.
 -/
 
 namespace SuccessorTree.V10
@@ -27,8 +29,10 @@ namespace SuccessorTree.V10
 /-- Every genuine prescribed admissible Kpt output and the B3 local
 no-age-change assumption provide a real forbidden-free finite insertion,
 with full old L embedding and canonical transport of each old free cut.
-Both the structural E validity and forbidden age are derived. -/
-theorem PrescribedBoringData.matching_prescribed_insertion_exists
+Both the structural E validity and forbidden age are derived. The
+conclusion names the actual constructor, so record-independence theorems
+can be applied without choosing an unrelated insertion witness. -/
+theorem PrescribedBoringData.matching_prescribed_constructor_exists
     {ell db du dd : Nat}
     (family : List (NormalizedForbidden db du dd))
     (F : PrescribedBoringData ell db du dd)
@@ -45,7 +49,10 @@ theorem PrescribedBoringData.matching_prescribed_insertion_exists
       F.target S0 = W.partialTypeAt (ell+1) w →
       (∀ bad, bad ∈ family → bad.Avoids W.L) →
       CommonSocleAgeTest family W.L ell F.PrescribedUpperLType) :
-    ∃ B : EnumeratedPartialStructure db du dd,
+    ∃ (d : Nat) (hd : d ≤ ell) (hGate : d = 0 ∨ d < ell)
+      (hValid : ValidNewOrdinaryColumn (F.target S0) d),
+      let B := prescribedInsertPartial A (F.target S0) d hValid
+        hell hellPos hd hGate (F.upperIncoming A) (F.upperOutgoing A)
       (∀ bad, bad ∈ family → bad.Avoids B.L) ∧
       IsLInsertion A B ell ∧
       (∀ u, u < A.size →
@@ -96,7 +103,7 @@ theorem PrescribedBoringData.matching_prescribed_insertion_exists
     F.prescribedInsertion_avoids_of_witness family A W base w S0 hS0
       hComp hell hellPos hAvoidA hAvoidW hWsize hWtype d hValidQ
       hd hGate hAge
-  refine ⟨B,hAvoidB,?_,?_⟩
+  refine ⟨d,hd,hGate,hValidQ,hAvoidB,?_,?_⟩
   · exact prescribedInsertPartial_isLInsertion A (F.target S0)
       d hValidQ hell hellPos hd hGate
       (F.upperIncoming A) (F.upperOutgoing A)
@@ -104,5 +111,37 @@ theorem PrescribedBoringData.matching_prescribed_insertion_exists
     exact prescribedInsertPartial_old_freeLevel A (F.target S0)
       d hValidQ hell hellPos hd hGate
       (F.upperIncoming A) (F.upperOutgoing A) u hu
+
+/-- Backwards-compatible existential form of the constructor theorem. -/
+theorem PrescribedBoringData.matching_prescribed_insertion_exists
+    {ell db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : PrescribedBoringData ell db du dd)
+    (A : EnumeratedPartialStructure db du dd)
+    (base : Nat)
+    (S0 : PartialTypeWithE ell db du dd)
+    (hS0 : S0 ∈ F.source)
+    (hComp : SameOrdinaryAtCut S0 (A.partialTypeAt ell base))
+    (hell : ell ≤ A.size) (hellPos : 0 < ell)
+    (hAvoidA : ∀ bad, bad ∈ family → bad.Avoids A.L)
+    (hTargetAd : IsAdmissibleRawType family
+      (⟨ell+1, F.target S0⟩ : RawPartialTypeNode db du dd))
+    (hB3 : ∀ (W : EnumeratedPartialStructure db du dd) (w : Nat),
+      F.target S0 = W.partialTypeAt (ell+1) w →
+      (∀ bad, bad ∈ family → bad.Avoids W.L) →
+      CommonSocleAgeTest family W.L ell F.PrescribedUpperLType) :
+    ∃ B : EnumeratedPartialStructure db du dd,
+      (∀ bad, bad ∈ family → bad.Avoids B.L) ∧
+      IsLInsertion A B ell ∧
+      (∀ u, u < A.size →
+        B.freeLevel (insertAddress ell u) =
+          if A.freeLevel u < ell then A.freeLevel u
+          else A.freeLevel u + 1) := by
+  obtain ⟨d, hd, hGate, hValid, hAvoidB, hInsertion, hFree⟩ :=
+    F.matching_prescribed_constructor_exists family A base S0 hS0
+      hComp hell hellPos hAvoidA hTargetAd hB3
+  exact ⟨prescribedInsertPartial A (F.target S0) d hValid
+    hell hellPos hd hGate (F.upperIncoming A) (F.upperOutgoing A),
+    hAvoidB, hInsertion, hFree⟩
 
 end SuccessorTree.V10
