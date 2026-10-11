@@ -106,7 +106,9 @@ theorem PrescribedBoringData.middleCloneLData_of_age_witness
           hSocle.2.1 x ell hXLe (le_refl ell) t
         _ = false := h2
   · intro x hx t
-    have hXLe : x ≤ ell := by omega
+    have hXLe : x ≤ ell := by
+      have hd := hLower.cut_le_source
+      omega
     obtain ⟨h1,h2⟩ := hLower.copy_lower x hx t
     constructor
     · calc
