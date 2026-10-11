@@ -1,0 +1,5 @@
+import SuccessorTree.V10.PrescribedPrefixCore
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.compatibleSource_iff_of_prefix
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedInsert_prefixReplica_type_eq
+#print axioms SuccessorTree.V10.prescribedInsertPartial_type_below_gap

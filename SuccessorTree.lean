@@ -184,3 +184,9 @@ import SuccessorTree.V10.PrescribedB3Spacing
 import SuccessorTree.V10.PrescribedMatchingFinite
 
 import SuccessorTree.V10.PrescribedCorrectedB3
+
+import SuccessorTree.V10.PrescribedPrefixCore
+
+import SuccessorTree.V10.PrescribedPrefixUpper
+
+import SuccessorTree.V10.PrescribedKptPrefix
