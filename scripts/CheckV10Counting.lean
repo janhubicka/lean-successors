@@ -66,6 +66,8 @@ import SuccessorTree.V10.AdmissibleSigmaSTree
 import SuccessorTree.V10.ConcreteKptM1
 import SuccessorTree.V10.EndDuplicateE
 import SuccessorTree.V10.EndDuplicateL
+import SuccessorTree.V10.EndDuplicatePartial
+import SuccessorTree.V10.EndDuplicateAge
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -452,3 +454,15 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.duplicateEndL_cross_below
 #print axioms SuccessorTree.V10.duplicateEndL_cross_above
 #print axioms SuccessorTree.V10.duplicateEndL_newType
+
+-- The M3 terminal clone satisfies E1-E3 and copies the entire free-socle L+ type.
+#print axioms SuccessorTree.V10.duplicateEndPartial_freeLevel
+#print axioms SuccessorTree.V10.duplicateEndPartial_old_E
+#print axioms SuccessorTree.V10.duplicateEndPartial_last_type_eq
+
+-- M3 local duplication preserves the irreducible forbidden age, including singleton cases.
+#print axioms SuccessorTree.V10.duplicateEnd_irred_before_new_belowCut
+#print axioms SuccessorTree.V10.duplicateEnd_irred_copy_projects
+#print axioms SuccessorTree.V10.duplicateEndL_preserves_avoidance
+#print axioms SuccessorTree.V10.forbidden_singleton_irreducible
+#print axioms SuccessorTree.V10.NormalizedForbidden.duplicateEnd_preserves_avoidance
