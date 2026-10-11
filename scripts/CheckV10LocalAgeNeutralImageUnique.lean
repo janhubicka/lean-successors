@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LocalAgeNeutralImageUnique
+
+#print axioms SuccessorTree.V10.rawTypeAtFree_eq_data
+#print axioms SuccessorTree.V10.neutralKptImage_graph_unique
+#print axioms SuccessorTree.V10.neutralKptImage_eq_of_representation
