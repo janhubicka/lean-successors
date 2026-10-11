@@ -174,3 +174,7 @@ import SuccessorTree.V10.ActualCrossingSignature
 import SuccessorTree.V10.LocalAgeNeutral
 
 import SuccessorTree.V10.LocalAgeAllLevels
+
+import SuccessorTree.V10.EndDuplicateAge
+
+import SuccessorTree.V10.LevelRemovalFreeCut
