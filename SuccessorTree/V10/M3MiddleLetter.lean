@@ -49,16 +49,21 @@ theorem middleCloneInsertPartial_terminalLetter_eq
   have hAboveB : ell+1 ≤ B.freeLevel (insertAddress ell v) := by
     rw [hFreeB]
   have hAboveA : n+1 ≤ A.freeLevel v := by omega
+  have hShiftNe : v+1 ≠ ell := by omega
+  have hShiftGe : ¬ v+1 < ell := by omega
+  have hRemoveShift : removeInserted ell (v+1) = v := by
+    simp [removeInserted, hShiftGe]
+  have hVnot : ¬ v < ell := Nat.not_lt.mpr hvGE
   have hNewTo (r : Fin db) :
       B.L.binary ell (insertAddress ell v) r = A.L.binary n v r := by
-    rw [hL]
+    rw [hL, hAddr]
     simp [insertL, D, middleCloneInsertedLData,
-      hAddrNE, removeInserted_insertAddress, hvGE, hOld]
+      hShiftNe, hRemoveShift, hVnot, hOld]
   have hNewFrom (r : Fin db) :
       B.L.binary (insertAddress ell v) ell r = A.L.binary v n r := by
-    rw [hL]
+    rw [hL, hAddr]
     simp [insertL, D, middleCloneInsertedLData,
-      hAddrNE, removeInserted_insertAddress, hvGE, hOld]
+      hShiftNe, hRemoveShift, hVnot, hOld]
   have hNewLoop (r : Fin db) :
       B.L.binary ell ell r = A.L.binary n n r := by
     rw [hL]
