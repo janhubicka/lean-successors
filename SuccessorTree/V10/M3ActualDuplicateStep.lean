@@ -145,6 +145,7 @@ theorem m3TotalBoringData_uses_old_canonical_step
       (⟨ell+1,F.target T⟩ : RawPartialTypeNode db du dd)
     rw [hBFree,hOutput]
   refine ⟨aOld,bOld,b1,p,c,hOldStep,hOldRaw,?_,hNewRaw⟩
+  change canonicalKptSucc family aNew p c = some b1
   rw [haNew]
   exact canonicalKptSucc_eq_some_of_step family hNewStep'
 
