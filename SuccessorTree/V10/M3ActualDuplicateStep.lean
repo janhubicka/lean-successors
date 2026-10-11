@@ -47,6 +47,7 @@ theorem m3TotalBoringData_uses_old_canonical_step
       canonicalKptSucc family aNew p c = some bNew ∧
       bNew.1 =
         (⟨ell+1,F.target T⟩ : RawPartialTypeNode db du dd) := by
+  classical
   let F := m3TotalBoringData family ell n hn
   let aNew : AdmissibleKptNode family := ⟨⟨ell,T⟩,hAd⟩
   let W := chooseM3Witness family T hAd
@@ -55,6 +56,7 @@ theorem m3TotalBoringData_uses_old_canonical_step
     middleCloneInsertPartial_isLInsertion
       W.A ell n W.ell_le_size hn
   have hBV : insertAddress ell W.v < B.size := by
+    have hv := W.hv
     rw [hIns.size_eq]
     by_cases hlt : W.v < ell
     · rw [insertAddress_below ell W.v hlt]
@@ -80,9 +82,16 @@ theorem m3TotalBoringData_uses_old_canonical_step
   have hQOld : T.restrict (Nat.succ_le_of_lt hn) = oldQ := by
     have hT : T = W.A.partialTypeAt ell W.v :=
       record_eq_of_rawTypeAtFree T W.A W.v W.raw_eq
-    rw [hT]
-    exact W.A.partialTypeAt_restrict (n+1) ell W.v
-      (Nat.succ_le_of_lt hn)
+    calc
+      T.restrict (Nat.succ_le_of_lt hn) =
+          (W.A.partialTypeAt ell W.v).restrict
+            (Nat.succ_le_of_lt hn) :=
+        congrArg
+          (fun Q : PartialTypeWithE ell db du dd =>
+            Q.restrict (Nat.succ_le_of_lt hn)) hT
+      _ = oldQ :=
+        W.A.partialTypeAt_restrict (n+1) ell W.v
+          (Nat.succ_le_of_lt hn)
   have hOldAd : IsAdmissibleRawType family
       (⟨n+1,oldQ⟩ : RawPartialTypeNode db du dd) := by
     have hPrefix := admissibleRawType_closed_under_prefix
