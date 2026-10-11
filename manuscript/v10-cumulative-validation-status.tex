@@ -1,6 +1,8 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 11 October 2026 UTC. Cumulative continuation through staged PRs 211/212.
+% Cumulative continuation: common full-prefix implementation and PR219 order transport.
+% Proof-check status is recorded in v10-prescribed-order-transport-checkpoint-20261011.md.
+% No independent/simultaneous prefix implementation is imported into this stack.
 % Green predecessor: PR203 fe1d91e39a954eadf5676dd1863ad424d1aa6106.
 % Full Lean 38087498944 and focused V10 38087498938 passed.
 % PR205 538490affc77c23e3704cc4235d78972bda37757: full and focused GREEN.
@@ -375,6 +377,52 @@ transitive axiom audits for PRs~211 and~212 passed. All twelve new
 endpoints use only standard Lean axioms; the downloaded evidence was
 hash-checked and the named-endpoint checker was rerun.
 
+\textbf{All prescribed predecessors -- GREEN.}
+\texttt{PrescribedKptPrefixCases.lean} derives equality of the complete
+level-$\ell$ restrictions along every upper chain, and therefore equality
+of the compatibility decisions. No extra same-branch hypothesis is used.
+\texttt{PrescribedKptPrefixMatching.lean} represents the shorter source
+by the existing one-filler prefix replica. Both selected images can then
+be computed with the same compatible prescribed source and inserted cut;
+full-record independence identifies the shorter image with the appropriate
+prefix of the longer one. The unmatched case uses the neutral theorem.
+\texttt{PrescribedKptFullPrefix.lean} handles crossing the gap using only
+retained old atoms. Its lower-prefix statement also covers the source
+itself at level $\ell$; this is a predecessor statement, not agreement
+with $f$. All source predecessor relations are consequently preserved.
+
+\textbf{Exact predecessor transport and order embedding -- GREEN.}
+\texttt{PrescribedKptOrderEmbedding.lean} identifies the image of the
+actual admissible predecessor at level $n$ with the predecessor of the
+image at level $n$ if $n<\ell$, and at level $n+1$ otherwise.
+This follows from the full predecessor theorem, the level formula and
+uniqueness of a predecessor at a fixed level. Conversely, if two images
+are comparable, take the predecessor of the longer source at the shorter
+source's level. Its image and the shorter image have the same level and
+lie below a common image, hence coincide. Injectivity identifies their
+sources. Thus the concrete map preserves and reflects the prefix order,
+and is packaged as an order embedding. This argument uses admissible
+prefix closure, not admissibility of arbitrary coordinate deletion.
+The four new endpoints and ten inherited prefix endpoints passed the
+focused build and named axiom audit at PR~219. The downloaded artifact,
+exact new source and check-script bytes were verified; all reports use
+only standard Lean axioms. The source tree of the tested synthetic merge
+agrees with the committed proof head.
+
+\textbf{Weak successors below and across the gap -- GREEN.}
+\texttt{PrescribedKptGapSucc.lean} first proves that every source at
+level $\ell$ is a complete predecessor of its prescribed-or-neutral
+image. If a successor base lies below $\ell$, the actual S-tree axiom
+puts all its parameters below the base, so both the base and its
+parameter list are fixed. The old successor then witnesses the weak
+mapped-successor condition: it is fixed if its level is below $\ell$,
+and is a predecessor of its image if its level is exactly $\ell$.
+This includes the boundary from $\ell-1$ to $\ell$ without asserting
+equality with the shifted image. No above-gap parameter or terminal-letter
+identity is assumed in this argument. Both new endpoints passed the
+focused build and named axiom audit at PR~222; the downloaded source,
+check-script bytes and standard-only axiom reports were verified.
+
 \textbf{Suggested clarification of the construction.}
 Choose a finite $\mathcal F$-free partial structure representing the
 source type. Use the prescribed finite construction when its ordinary
@@ -386,14 +434,20 @@ column or of the $L$-reduct, makes this definition independent of
 both choices. To see injectivity, delete the inserted ordinary coordinate
 and shift the retained ordinary coordinates back. This recovers the
 complete source type in both branches, while nodes below $\ell$ are fixed.
+For comparable upper sources, their level-$\ell$ restrictions agree.
+In the matching case, compute the shorter image using the one-filler
+prefix replica of the longer representation; record independence gives
+the required predecessor. In the unmatched case use the neutral
+construction. Below the gap only retained old atoms occur. This proves
+all predecessor cases, including crossing the gap.
 
 \textbf{Remaining manuscript obligations.}
-For this specific total map, prove agreement with $f$ on its domain,
-all predecessor cases and transport of the exact
-successor parameters and terminal letters. At the edge from $\ell-1$
-to $\ell$, keep the weak successor statement separate from exact
-successor equality above the gap. Totality, injectivity and the numerical level law do not by themselves
-make this map a \texttt{ShapeMap}.
+For this specific total map, prove agreement with $f$ on its domain and
+transport of the exact successor parameters and terminal letters for
+bases at or above $\ell$. The separate weak successor argument below
+and across the gap does not imply those upper identities.
+An order embedding with the correct level law and exact predecessor
+transport is still not by itself a \texttt{ShapeMap}.
 For M2, the former third statement of Lemma~\ref{lem:comp} does not
 imply the strengthened B3; a new necessity or decomposition argument
 is required. For M3, verify the repaired age test for the actual
