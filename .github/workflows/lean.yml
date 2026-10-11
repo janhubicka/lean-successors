@@ -59,8 +59,15 @@ jobs:
         run: |
           curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Verify pinned Lake manifest
-        run: test -s lake-manifest.json
+      - name: Resolve Lake dependencies
+        # lake-manifest.json is intentionally NOT committed in this repo.
+        # Generate it only when absent; retain a checked-in lock if added.
+        run: |
+          if test -s lake-manifest.json; then
+            echo 'Using existing pinned Lake manifest'
+          else
+            lake update
+          fi
       - name: Download Mathlib cache
         run: lake exe cache get
       - name: Build
