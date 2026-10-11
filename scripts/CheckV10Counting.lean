@@ -48,6 +48,7 @@ import SuccessorTree.V10.RawPartialTypeLevelTree
 import SuccessorTree.V10.AdmissibleKptMeet
 import SuccessorTree.V10.AdmissibleKptLevelTree
 import SuccessorTree.V10.CanonicalBinary
+import SuccessorTree.V10.CanonicalInsertionParameter
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -328,3 +329,10 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.EnumeratedPartialStructure.canonicalBinary_freeLevel
 #print axioms SuccessorTree.V10.EnumeratedPartialStructure.canonicalBinary_type_diagonal
 #print axioms SuccessorTree.V10.NormalizedForbidden.avoids_canonicalBinary_iff
+
+-- Literal empty/singleton crossing-parameter rule and strict free E-level bound.
+#print axioms SuccessorTree.V10.freeLevel_pos_lt_vertex
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.insertionParameter_none_iff
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.insertionParameter_some_iff
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.insertionParameter_level_lt
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.insertionParameter_admissible
