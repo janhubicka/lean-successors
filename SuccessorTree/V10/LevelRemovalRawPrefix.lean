@@ -50,20 +50,18 @@ theorem rawPartialTypeDeleteAt_prefix
         (lt_of_lt_of_le hm hab.1) := by
   let hmb : m < b.1 := lt_of_lt_of_le hm hab.1
   have hRecord : a.2 = b.2.restrict hab.1 := hab.2
-  change a.1 - 1 ≤ b.1 - 1 ∧
+  refine ⟨Nat.sub_le_sub_right hab.1 1, ?_⟩
+  change a.2.deleteOrdinary m hm =
+    (b.2.deleteOrdinary m hmb).restrict
+      (Nat.sub_le_sub_right hab.1 1)
+  calc
     a.2.deleteOrdinary m hm =
-      (b.2.deleteOrdinary m hmb).restrict
-        (Nat.sub_le_sub_right hab.1 1)
-  constructor
-  · exact Nat.sub_le_sub_right hab.1 1
-  · calc
-      a.2.deleteOrdinary m hm =
-          (b.2.restrict hab.1).deleteOrdinary m hm :=
-        congrArg
-          (fun Q : PartialTypeWithE a.1 db du dd =>
-            Q.deleteOrdinary m hm) hRecord
-      _ = (b.2.deleteOrdinary m hmb).restrict
-          (Nat.sub_le_sub_right hab.1 1) :=
-        (PartialTypeWithE.deleteOrdinary_restrict b.2 hab.1 m hm).symm
+        (b.2.restrict hab.1).deleteOrdinary m hm :=
+      congrArg
+        (fun Q : PartialTypeWithE a.1 db du dd =>
+          Q.deleteOrdinary m hm) hRecord
+    _ = (b.2.deleteOrdinary m hmb).restrict
+        (Nat.sub_le_sub_right hab.1 1) :=
+      (PartialTypeWithE.deleteOrdinary_restrict b.2 hab.1 m hm).symm
 
 end SuccessorTree.V10
