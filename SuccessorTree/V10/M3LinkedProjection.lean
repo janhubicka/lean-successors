@@ -101,7 +101,9 @@ theorem MiddleCloneLinkedLData.irred_copy_projects
         have hIn : x ∈ W.carrier := hx.1
         have hSel : Select x := hx.2
         rcases hSel with hEq | ⟨a, ha⟩
-        · omega
+        · have hn := h.n_before
+          rw [hEq] at hAbove
+          omega
         · have hne : a0 ≠ a := by
             intro hEq
             subst a
