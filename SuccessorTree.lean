@@ -1,6 +1,7 @@
 import SuccessorTree.Replay
 import SuccessorTree.Approximation
 import SuccessorTree.ShapePreserving
+import SuccessorTree.WeakSuccessorInjectivity
 import SuccessorTree.Monoid
 import SuccessorTree.Tree
 import SuccessorTree.Successor
