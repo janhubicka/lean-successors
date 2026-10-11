@@ -2,6 +2,7 @@ name: V10 counting audit
 
 on:
   push:
+    branches: [main]
     paths:
       - 'SuccessorTree/V10/**'
       - 'scripts/CheckV10*.lean'
@@ -26,58 +27,91 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # For PR synthetic merge commits, retain the base parent for diff.
+          fetch-depth: 2
       - name: Cache Lean toolchain
         uses: actions/cache@v5
         with:
           path: ~/.elan/toolchains
           key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
-      - name: Cache Lake workspace
-        uses: actions/cache@v5
+      - name: Restore pinned-dependency Lake cache
+        id: lake-cache
+        uses: actions/cache/restore@v5
         with:
           path: .lake
-          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          key: lake-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
           restore-keys: |
-            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+            lake-v2-${{ runner.os }}-${{ runner.arch }}-
       - name: Install elan
         run: |
           curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Resolve dependencies
-        run: lake update
+      - name: Check locked dependencies
+        run: test -s lake-manifest.json
       - name: Download Mathlib cache
         run: lake exe cache get
+      - name: Select transitive V10 axiom checks and finite regressions
+        id: scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/select-v10-checks.py --output-file "$GITHUB_OUTPUT"
+      - name: Seed shared Lake cache on main only
+        if: ${{ github.ref == 'refs/heads/main' && steps.lake-cache.outputs.cache-hit != 'true' && !cancelled() }}
+        uses: actions/cache/save@v5
+        with:
+          path: .lake
+          key: lake-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
       - name: Exhaustive H-block meet diagnostic
+        if: ${{ steps.scope.outputs.h == 'true' }}
         run: python3 scripts/check_v10_meet_blocks.py
       - name: Independent H binary age regression
+        if: ${{ steps.scope.outputs.h == 'true' }}
         run: python3 scripts/check_v10_h_age.py
       - name: Independent exact H E and free-level regression
+        if: ${{ steps.scope.outputs.h == 'true' }}
         run: python3 scripts/check_v10_h_exact_e.py
       - name: Independent terminal Sigma letter age regression
+        if: ${{ steps.scope.outputs.sigma == 'true' }}
         run: python3 scripts/check_v10_terminal_sigma.py
       - name: Generator-based complete directed H regression
+        if: ${{ steps.scope.outputs.h == 'true' }}
         run: python3 scripts/check_v10_incident_trace.py
       - name: Independent M3 gated-clone E3 and induced-copy projection
+        if: ${{ steps.scope.outputs.m3 == 'true' }}
         shell: bash
         run: python3 scripts/check_v10_m3_middle.py | tee v10-m3-middle-regression.json
       - name: Complete L+ record and actual prefix-meet regression
+        if: ${{ steps.scope.outputs.meet == 'true' }}
         shell: bash
         run: python3 scripts/check_v10_actual_meet.py | tee v10-actual-meet-regression.json
       - name: Complete-record original-pool closure regression
+        if: ${{ steps.scope.outputs.pool == 'true' }}
         shell: bash
         run: python3 scripts/check_v10_original_pool.py | tee v10-original-pool-regression.json
-      - name: Build audited V10 modules
+      - name: Build affected V10 proof modules
         shell: bash
         run: |
-          mapfile -t targets < <(sed -nE 's/^import (SuccessorTree\.[A-Za-z0-9_.]+)$/\1/p' scripts/CheckV10*.lean | sort -u)
+          set -euo pipefail
+          mapfile -t checks < v10-selected-checks.txt
+          if test "${#checks[@]}" -eq 0; then
+            echo 'No affected V10 axiom scripts' | tee v10-build.log
+            exit 0
+          fi
+          mapfile -t targets < <(sed -nE 's/^import (SuccessorTree\.[A-Za-z0-9_.]+)$/\1/p' "${checks[@]}" | sort -u)
           test "${#targets[@]}" -gt 0
           lake build "${targets[@]}" 2>&1 | tee v10-build.log
-      - name: Check v10 theorem axioms
+      - name: Check affected v10 theorem axioms
+        shell: bash
         run: |
-          for check in scripts/CheckV10*.lean; do
+          set -euo pipefail
+          while IFS= read -r check; do
+            test -n "$check" || continue
             log="$(basename "$check" .lean)-axioms.log"
             lake env lean "$check" > "$log" 2>&1 || { cat "$log"; exit 1; }
             python3 scripts/check-axiom-log.py "$log" "$check" || { cat "$log"; exit 1; }
-          done
+          done < v10-selected-checks.txt
       - name: Retain V10 proof evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -85,6 +119,8 @@ jobs:
           name: v10-actual-meet-audit
           path: |
             v10-build.log
+            v10-selected-checks.txt
+            scripts/select-v10-checks.py
             v10-actual-meet-regression.json
             v10-original-pool-regression.json
             v10-m3-middle-regression.json
