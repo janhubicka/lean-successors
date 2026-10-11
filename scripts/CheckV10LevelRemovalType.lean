@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LevelRemovalType
+
+#print axioms SuccessorTree.V10.deletedSocleCoordinate
+#print axioms SuccessorTree.V10.prefixVertexIndex_deleteTypeCoordinate
+#print axioms SuccessorTree.V10.deleteAtPartial_partialTypeAt_eq_deleteOrdinary
