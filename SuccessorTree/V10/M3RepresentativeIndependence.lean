@@ -139,8 +139,7 @@ theorem middleCloneInsertPartial_type_independent
         d hd).toList := by
     have hh := middleCloneInsertPartial_parameterList_eq
       C ell n hellC hn w
-    rw [←hCut] at hh
-    exact hh
+    simpa only [←hCut] using hh
   have hLists :
       ((B.partialTypeAt (ell+1) (insertAddress ell v)).canonicalParameterRecord
         d hdEll).toList =
