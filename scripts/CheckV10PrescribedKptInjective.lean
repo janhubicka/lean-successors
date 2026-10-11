@@ -1,0 +1,12 @@
+import SuccessorTree.V10.PrescribedKptInjective
+
+#print axioms SuccessorTree.V10.recoverInsertedRaw_succ
+#print axioms SuccessorTree.V10.recoverInsertedRaw_fixed_below
+#print axioms SuccessorTree.V10.PrescribedBoringData.insertedTypeRecord_erase
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedInsertPartial_erase
+#print axioms SuccessorTree.V10.neutralInsert_partialType_erase
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedInsertPartial_raw_recovery
+#print axioms SuccessorTree.V10.neutralInsert_raw_recovery
+#print axioms SuccessorTree.V10.PrescribedBoringData.IsMatchingKptImage.recover
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_recover
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_injective
