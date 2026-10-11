@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M3DuplicationEndpoint
+
+#print axioms SuccessorTree.V10.m3FiniteTarget_canonicalDuplication
+#print axioms SuccessorTree.V10.m3OneGapShapeMap_duplicates
