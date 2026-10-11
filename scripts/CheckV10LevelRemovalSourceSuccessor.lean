@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LevelRemovalSourceSuccessor
+
+#print axioms SuccessorTree.V10.admissibleKpt_exists_immediateSuccessor_of_level_pos
+#print axioms SuccessorTree.V10.admissibleKpt_exists_successor_step_of_level_pos
