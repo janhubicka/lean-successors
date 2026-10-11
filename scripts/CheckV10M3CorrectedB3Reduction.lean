@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M3CorrectedB3Reduction
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.middleCloneLData_of_age_witness
+#print axioms SuccessorTree.V10.PrescribedBoringData.correctedB3_of_middle_clone
