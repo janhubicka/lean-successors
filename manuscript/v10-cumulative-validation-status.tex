@@ -1,6 +1,11 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 10 October 2026. Cumulative continuation through staged PR 183.
+% 10 October 2026 UTC. Cumulative continuation through staged PRs 205/206.
+% Green predecessor: PR203 fe1d91e39a954eadf5676dd1863ad424d1aa6106.
+% Full Lean 38087498944 and focused V10 38087498938 passed.
+% PR205 538490affc77c23e3704cc4235d78972bda37757: full and focused GREEN.
+% PR206 4fc409b368a50caf084ef5696203927f2cd59968: focused proof/axiom steps GREEN.
+% Focused runs: 38096247806 and 38096396531; downloaded axiom evidence checked.
 %
 % Apply with update-v10-source.py to the author's current main.tex.
 % This file replaces overlapping machine-labelled notes; do not concatenate
@@ -40,12 +45,12 @@
 % V10 focused build + axiom audit 38075729225: SUCCESS.
 % The global neutral one-gap ShapeMap uses only standard Lean axioms.
 % The prescribed non-neutral f:S->Kpt(ell+1) boring map remains OPEN.
-% PRs 186--196 stage prescribed-column/finite-age proofs; final checks pending.
+% PRs 186--196 prescribed-column/finite-age proofs are included in checked PR203.
 % PR 200 stages author-authorized mathematical B3/proof correction and source-safe patcher.
-% PR 201 formalizes direct corrected-B3-to-finite-insertion implication (CI pending).
+% PR 201 corrected-B3-to-finite-insertion implication is included in checked PR203.
 % PR 197: 064bf6201c7d323a0c01090058cfcbd41733fddc.
 % Focused V10 build and transitive axiom audit 38081204866 SUCCESS.
-% Printed B3 repair remains OPEN (not a consequence of the spacing theorem).
+% B3 source repair supplied separately; it is not a consequence of the spacing theorem.
 % =====================================================================
 
 % Proposed consolidated TODO at obs:env1, retaining the type-forest checkpoint.
@@ -201,7 +206,7 @@ order and every unary, diagonal and directed binary atom, including absent
 atoms. The auxiliary relation $E$ is not used as a forbidden $L$-atom.
 
 The remaining manuscript-facing input to Observation~\ref{obs:signature-unique}
-is now precise: formalize Lemma~\ref{lem:local-age} strongly enough to
+is now precise: formalize the boring extension lemma strongly enough to
 construct the one-level insertion/shape map and prove that the upper
 vertices of its age-test witness realize those prescribed crossings.
 The lower-generation relocation calculations are separately checked,
@@ -260,143 +265,69 @@ This settles the former iterated-meet/provenance obligation in this
 model. It does not settle levels selected by the age obstruction or the
 whole upper-bound recurrence.}
 
-% Proposed standalone TODO at Lemma 6.51; all existing mathematical prose
-% and the four author repairs remain unchanged.
-\todo[inline]{\textbf{v10 validation: common-socle boring extension --
-GREEN finite structure/age reduction, global shape map OPEN.}
-The additional \texttt{LocalAgeNeutral.lean} proves that if the
-old initial socle does not match the prescribed one, the new vertex
-can be given the allowed empty singleton with no incident $L$-tuples.
-This neutral branch is a genuine forbidden-free partial structure
-without invoking the three-clause age test. It may still carry
-auxiliary $E$-relations to later old vertices; $L$-isolation does
-not imply $L^+$-isolation.
+% Consolidated TODO at Lemma 6.51. Both known TeX labels are supported;
+% the updater rejects ambiguous aliases and changes only managed notes.
+\todo[inline]{\textbf{v10 validation: boring extension -- finite
+construction and neutral shape map GREEN; prescribed global map OPEN.}
+The repaired B3 quantifies over finite ordered $L$-structures with the
+ordinary socle of a prescribed $f(S)$ and complete upper $L$-types
+through $\ell+1$ from the reducts of $f[S]$. If deleting $\ell$ leaves an $\mathcal F$-free structure, the whole
+structure must be $\mathcal F$-free. No auxiliary $E$ requirement belongs on these
+age-test witnesses. The former $E$-expanded upper-tail condition cannot
+serve this purpose: spacing excludes the first required upper vertex;
+without a prescribed initial socle the empty upper tail is also invalid.
+The localized mathematical repair was applied to the previously supplied
+V10 source; its provenance is recorded in
+\texttt{v10-b3-author-source-check-20261010.md}.
+This annotation updater does not reapply or alter that repair.
 
-The construction in \texttt{LocalAgeInsertion.lean} and
-\texttt{LocalAgePartialInsertion.lean} copies the complete old
-$L$-reduct across insertion of one coordinate $\ell>0$, including
-absent directed binary tuples and all unary and diagonal facts.
-It defines the new auxiliary $E$-relation using transported
-initial-segment cuts and proves spacing, downward closure, and
-the linked-pair axiom under the displayed local linkage conditions.
-\texttt{LocalAgeFreeCut.lean} identifies these cuts with the actual
-canonical free levels of the inserted partial structure.
-The strict positivity $\ell>0$ is used: when $\ell=0$ and the first
-old vertex has free cut zero, the naive shifted cut becomes one and
-creates the forbidden consecutive $E(0,1)$ pair. Lemma 6.51
-already imposes $\ell>0$.
+\textbf{Finite prescribed construction -- GREEN in the normalized model.}
+\texttt{PrescribedCorrectedB3.lean} derives the finite common-socle
+age test from the corrected manuscript condition and supplies a genuine
+forbidden-free prescribed insertion. The upper columns and their linkage
+conditions are derived from $f$, not assumed independently.
+All old $L^+$ atoms, including absent directed tuples, are preserved.
+\texttt{PrescribedETransport.lean} checks the new $E$ row, new column,
+old pairs and loop for an arbitrary valid inserted cut; this is not
+restricted to the neutral branch.
+\texttt{PrescribedSourceRecovery.lean} recovers each shorter ordinary
+source type from the complete longer record.
+These statements were checked at the PR~203 checkpoint, including the
+transitive axiom audit. The allowed neutral branch and its full
+\texttt{ShapeMap}, exact skipped level, predecessors, injectivity,
+terminal letters and empty-or-singleton parameters are also checked.
+At the unique edge from $\ell-1$ to $\ell$, use the weak successor
+statement, not equality with the shifted target. The assumption $\ell>0$
+remains essential for the finite $E$ insertion.
 
-\texttt{LocalAgeForbiddenTest.lean} checks the age argument against
-the exact three-clause \emph{finite} $L$-age test, rather than a
-stronger condition on arbitrary infinite witnesses. Any forbidden
-ordered induced copy avoiding $\ell$ pulls back to the source.
-An irreducible copy containing $\ell$ restricts to the common
-initial socle together with its upper vertices; those upper vertices
-are linked to $\ell$ and therefore must realize the prescribed
-crossings. Deleting $\ell$ from this finite witness gives a
-forbidden-free structure, contradicting the age test. A forbidden
-singleton at the inserted coordinate is excluded by the
-forbidden-free common socle, without a separate hypothesis.
-No $E$-constraint is imposed on the upper vertices of the
-$L$-age test.
+\textbf{Prescribed representation independence -- GREEN
+for the finite constructor.}
+\texttt{PrescribedIncidentIndependence.lean} derives the gate
+$\ell\leq\freef A(u)$ from the source atom $E(\ell-1,u)$, and recovers
+shorter source types at ordinary and distinguished coordinates.
+It proves that source compatibility, the selected lower column and
+both gated incident directions are independent of the ambient witness.
+\texttt{PrescribedRecordIndependence.lean} combines these identities
+with exact transport to compare the entire inserted $L^+$ record,
+including every positive and absent binary atom, singleton fact and
+$E$ pair. Its final endpoint compares the actual finite prescribed
+constructors for two ambient realizations and two compatible prescribed
+outputs. Equality of the inserted cuts is derived from their common
+ordinary socle, not added as a hypothesis. The focused builds and
+transitive axiom audits for PRs~205 and~206 passed. All nine new
+endpoints use only standard Lean axioms; the downloaded evidence
+was checked. This is not a global shape-map theorem.
 
-\textbf{Neutral one-level shape map -- GREEN in the normalized Kpt model;
-non-neutral prescribed map OPEN.}
-The complete neutral insertion is now independent of the chosen
-representing finite structure and is defined on the actual
-admissible $\KFpt$ nodes; see
-\texttt{LocalAgeNeutralTransport.lean},
-\texttt{LocalAgeNeutralIndependence.lean} and
-\texttt{LocalAgeNeutralImageUnique.lean}.
-The exact level shift, all predecessor cases and injectivity are
-formalised in \texttt{LocalAgeNeutralFullPrefix.lean},
-\texttt{LocalAgeNeutralSkip.lean} and
-\texttt{LocalAgeNeutralInjective.lean}.
-The actual terminal letter and empty-or-singleton parameter list
-are preserved by the checked proofs in
-\texttt{LocalAgeNeutralLetter.lean} and
-\texttt{LocalAgeNeutralParameter.lean}.
-For the unique edge crossing $\ell-1$ to $\ell$, the weaker
-successor statement holds with the old target lying below its
-shifted image; see \texttt{LocalAgeNeutralGapSucc.lean}.
-The above-gap exact successor and the complete neutral
-\texttt{ShapeMap} are now GREEN for the normalized model; see
-\texttt{LocalAgeNeutralUpperSucc.lean} and
-\texttt{LocalAgeNeutralShapeMap.lean}. The precise
-\texttt{SkipsOnly} range statement is also GREEN:
-\texttt{LocalAgeAllLevels.lean} constructs, for every $n$, an all-neutral
-$L^+$ partial structure on $n+2$ vertices with the only $E$-column
-$E(u,n+1)$ for $u<n$. Its final vertex has free cut $n$,
-the E-spacing, downward-closure and linked-pair axioms hold,
-and the normalized forbidden family is avoided. Thus every
-admissible Kpt level is inhabited and the actual neutral
-\texttt{ShapeMap} has level range exactly $\omega\setminus\{\ell\}$.
-
-\textbf{B3 statement-level spacing obstruction -- GREEN theorem
-in the normalized initial-ordinal Kpt model; printed B3 repair OPEN.}
-The printed B3 condition quantifies over an initially enumerated
-partial structure $\pstr A$ in which every upper vertex
-$i\geq\ell+1$ has a complete partial type
-$\typev^{\ell+1}_\pstr A(i)\in f[S]$.
-The spacing axiom rules out $E(\ell,\ell+1)$, while every
-admissible type in $\KFpt(\ell+1)$ has $E(\ell,t)$.
-Hence no nonempty upper tail can satisfy that hypothesis when
-the vertices of $\pstr A$ form an initial ordinal.
-This obstruction is formally checked in the independent
-\texttt{PrescribedB3Spacing.lean} audit (PR~197, focused V10
-run~38081204866 successful). This checks the spacing implication,
-not the missing implication from printed B3 to the stronger finite
-age test.
-
-Moreover, unless the initial ordinary socle of $\pstr A$
-is itself required to come from some prescribed $f(S)$, the
-case with no upper vertices makes the displayed hypothesis
-vacuous. For example, at $\ell=2$, a three-vertex partial
-structure with a single forbidden directed edge from $0$ to
-$2$ and $E(0,2)$ has a forbidden copy containing $\ell$ but
-none avoiding it. This example satisfies all $E$ axioms and
-has no upper vertices. Therefore the printed B3, taken
-literally without an initial-socle condition, cannot be the
-condition verified by the intended prescribed extensions.
-
-\textbf{Mathematical B3 repair now supplied in PR~200,
-source application and full lemma certification still OPEN.}
-The exact replacement in
-\texttt{v10-boring-b3-replacement.tex} quantifies over finite
-ordered $L$-age structures with the correct initial ordinary socle
-and complete upper $L$-types prescribed by $f[S]$.
-The source-targeted \texttt{repair-v10-boring-lemma.py} also
-repairs the age paragraph, the erroneous $\ell$/$\ell+1$
-upper-type index, and the boundary weak-successor argument;
-it preserves the four earlier author repairs and fails closed
-when the latest source differs from its tested anchors.
-The strengthened B3 is \emph{not} implied by the former
-third statement of Lemma~\ref{lem:comp}; the duplication and
-decomposition applications have explicit remaining TODOs.
-The current author-edited \texttt{main.tex} is not present for
-direct source application in this checkout.
-
-\textbf{Suggested localized repair (now implemented as
-source-targeted replacement):}
-quantify instead over finite ordered $L$-structures
-whose first $\ell+1$ vertices induce the ordinary $L$-socle
-of some $f(S)$ and whose other vertices have complete
-$L$-types through $\ell+1$ belonging to the reducts of $f[S]$.
-Require that whenever deleting vertex $\ell$ leaves an
-$\mathcal F$-free $L$-structure, the entire structure is
-$\mathcal F$-free. Do not impose an auxiliary $E$ condition
-on this age-test witness. This is the explicit
-\texttt{CommonSocleAgeTest} used in the finite Lean proof,
-but the implication from the PRINTED B3 to that stronger
-condition is not proved and should not be asserted.
-
-\textbf{Remaining for Lemma~\ref{lem:local-age}:}
-The neutral map does not realize the prescribed non-neutral crossing
-$f:S\to\KFpt(\ell+1)$. Construct that matching-socle branch
-uniformly on all admissible types, obtain its linkage and prescribed
-upper columns from $f$, prove independence from ambient
-representations and preservation of the exact successor
-parameters and terminal letters, and verify its one-level shape
-map. The finite three-clause age test was validated above, but its
-global Kpt realization has not been proved. No claim about M2/M3
-follows from the all-neutral map alone.}
+\textbf{Remaining manuscript obligations.}
+Retain the literal prescribed constructor, or its inserted type record,
+in the finite witness-existence conclusion. Then assemble the matching
+and neutral branches into a total map on the admissible $\KFpt$ nodes; prove all predecessor and injectivity cases,
+and transport the exact successor parameters and terminal letters.
+Finite record independence by itself is not this global theorem.
+For M2, the former third statement of Lemma~\ref{lem:comp} does not
+imply the strengthened B3; a new necessity or decomposition argument
+is required. For M3, verify the repaired age test for the actual
+duplication prescription. Finally, reconcile the I3 signature witnesses
+with finite $L$-structures rather than $E$-partial structures before
+claiming the upper bound. None of these conclusions follows merely
+from the neutral shape map.}

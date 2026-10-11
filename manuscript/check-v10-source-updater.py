@@ -101,3 +101,47 @@ assert app.transform("% ignored \\label{lem:meets}\n"+old, todos)[0].endswith(on
 assert app.label_line_end("escaped \\% \\label{only}\n", "only") is not None
 assert app.label_line_end("comment % \\label{only}\n", "only", optional=True) is None
 print("PASS: duplicate labels on one line and TeX-comment anchor handling")
+
+
+# The actual author V10 uses lem:boring. Install exactly one current note
+# under either alias and retain all unmarked B3 corrections and TODOs.
+author=old.replace(r"\label{lem:local-age}", r"\label{lem:boring}")
+author=author.replace("Another local age lemma.",
+    r"\todo[inline]{Author B3 repair and four earlier edits stay unchanged.}"
+    + "\nAnother local age lemma.")
+author_once,author_markers=app.transform(author,todos)
+assert "% successor-v10-proof:lem:boring\n" in author_once
+assert "% successor-v10-proof:lem:local-age\n" not in author_once
+assert app.transform(author_once,todos)[0]==author_once
+assert app.remove_only_managed(author_once)==app.remove_only_managed(author)
+assert "Author B3 repair and four earlier edits stay unchanged." in author_once
+assert len(author_markers)==9
+app.check_patch(author, author_once, app.patch(author,author_once))
+legacy_author=author.replace(r"\label{lem:boring}",
+    "\\label{lem:boring}\n% v10 validation note lem:local-age\n"
+    + r"\todo[inline]{Former alias note.}")
+assert "Former alias note." not in app.transform(legacy_author,todos)[0]
+for alias in app.BORING_LABELS:
+    single=old.replace(r"\label{lem:local-age}", "\\label{"+alias+"}")
+    for bad in [
+        single+"\n\\label{"+alias+"}\n",
+        single.replace("\\label{"+alias+"}",
+                       "\\label{"+alias+"}\\label{"+alias+"}"),
+    ]:
+        try:
+            app.transform(bad,todos)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("Duplicate alias was accepted")
+try:
+    app.transform(old+"\n\\label{lem:boring}\n",todos)
+except ValueError:
+    pass
+else:
+    raise AssertionError("Distinct boring-lemma aliases were both accepted")
+commented_alias="% not an anchor \\label{lem:boring}\n"+old
+assert app.transform(commented_alias,todos)[0].endswith(once)
+missing=old.replace(r"\label{lem:local-age}","")
+assert "OPTIONAL NOT FOUND: lem:boring or lem:local-age" in app.transform(missing,todos)[1]
+print("PASS: real V10 boring alias, legacy migration, idempotence, patch application, ambiguity rejection")
