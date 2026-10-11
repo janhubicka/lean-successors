@@ -36,6 +36,7 @@ theorem m3TotalBoringData_correctedB3
     (family : List (NormalizedForbidden db du dd))
     (n : Nat) (hn : n < ell) :
     (m3TotalBoringData family ell n hn).CorrectedB3 family := by
+  classical
   let F := m3TotalBoringData family ell n hn
   apply F.correctedB3_of_repeated_canonical_inputs family n hn
   intro T hT
@@ -52,9 +53,16 @@ theorem m3TotalBoringData_correctedB3
   have hOldRecord :
       T.restrict (Nat.succ_le_of_lt hn) =
         W.A.partialTypeAt (n+1) W.v := by
-    rw [hTRecord]
-    exact W.A.partialTypeAt_restrict (n+1) ell W.v
-      (Nat.succ_le_of_lt hn)
+    calc
+      T.restrict (Nat.succ_le_of_lt hn) =
+          (W.A.partialTypeAt ell W.v).restrict
+            (Nat.succ_le_of_lt hn) :=
+        congrArg
+          (fun Q : PartialTypeWithE ell db du dd =>
+            Q.restrict (Nat.succ_le_of_lt hn)) hTRecord
+      _ = W.A.partialTypeAt (n+1) W.v :=
+        W.A.partialTypeAt_restrict (n+1) ell W.v
+          (Nat.succ_le_of_lt hn)
   have hOldValid : ValidNewOrdinaryColumn
       (W.A.partialTypeAt (n+1) W.v) d := by
     exact validNewColumn_of_extracted_partialType W.A W.v
@@ -69,6 +77,7 @@ theorem m3TotalBoringData_correctedB3
     rw [dif_pos hAd]
     rfl
   have hBV : insertAddress ell W.v < B.size := by
+    have hv := W.hv
     have hIns := middleCloneInsertPartial_isLInsertion
       W.A ell n W.ell_le_size hn
     rw [hIns.size_eq]
@@ -107,7 +116,7 @@ theorem m3TotalBoringData_correctedB3
   refine ⟨p,c,?_,?_⟩
   · rw [hOldRecord]
     exact ⟨d,hd,hOldValid,rfl,rfl⟩
-  · exact ⟨d,hdEll,hNewValid,hNewParam,hNewLetter.symm⟩
+  · exact ⟨d,hdEll,hNewValid,hNewParam.symm,hNewLetter.symm⟩
 
 /-- An explicit normalized one-gap shape-preserving map realizing
 the actual M3 middle-duplication prescription on every admissible
