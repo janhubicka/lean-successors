@@ -33,6 +33,7 @@ import SuccessorTree.V10.HExactE
 import SuccessorTree.V10.PartialTypeRestriction
 import SuccessorTree.V10.HELinkage
 import SuccessorTree.V10.CommonSocleType
+import SuccessorTree.V10.FirstFullTypeDifference
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -209,3 +210,8 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.sameAmbient_cross_of_partialType_eq
 #print axioms SuccessorTree.V10.sameAmbient_partialType_eq_iff_cross
 #print axioms SuccessorTree.V10.sameAmbient_first_fullType_difference
+
+-- No first L+ discrepancy is invisible to directed binary traces within both free cuts.
+#print axioms SuccessorTree.V10.sameAmbient_root_of_prefix_eq
+#print axioms SuccessorTree.V10.sameAmbient_first_type_difference_has_binary_witness
+#print axioms SuccessorTree.V10.sameAmbient_first_type_difference_iff_binary
