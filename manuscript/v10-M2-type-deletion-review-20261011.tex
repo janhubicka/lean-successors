@@ -1,0 +1,32 @@
+% Successor v10, review-only M2 verification note, 11 October 2026.
+% This file is not automatically inserted into main.tex.
+% The four author-controlled repairs and all mathematical prose are frozen.
+% PENDING exact-head Lean and axiom audit; do not mark GREEN yet.
+%
+% Candidate insertion at Lemma 6.34. Locate the existing TeX label in
+% the actual author's v10 source before applying any patch:
+\todo[inline]{\textbf{v10 validation: level removal, complete type transport
+-- PENDING.}
+The existing finite \texttt{LevelRemovalPartial.lean} and
+\texttt{LevelRemovalFreeCut.lean} establish the strict spacing guard
+$\mathrm{fl}_A(m+1)<m$, preservation of the forbidden $L$-age, and
+the exact new free cut after deleting ordinary coordinate $m$.
+The proposed
+\texttt{deleteAtPartial\_partialTypeAt\_eq\_deleteOrdinary}
+in \texttt{LevelRemovalType.lean} additionally identifies the
+\emph{complete} $L^+$ type of each retained vertex with deletion
+of coordinate $m$ from its previous complete type, retaining
+both orientations and absences of every binary tuple, all
+unary/diagonal facts, and all $E$ pairs. Its proof is a direct
+induced-model calculation and imposes no new age hypothesis.
+
+This remains a \emph{finite local} lemma. To obtain
+the level-removal lemma globally, one must prove that the
+deletion position $m=\widetilde F(n)-1$ is guarded in every relevant
+image $F(T)$, that the resulting image types are admissible
+at their transported free cuts, and that the uniform map preserves
+predecessors and weak successors. For M2 one must then verify
+the corrected finite $L$-only B3 for the induced prescription;
+the earlier $E$-partial image-transport statement alone is
+insufficient. Do not mark M2 or Proposition~\ref{prob:upperbound}
+GREEN from this lemma.}
