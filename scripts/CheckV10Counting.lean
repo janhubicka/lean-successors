@@ -59,6 +59,7 @@ import SuccessorTree.V10.CanonicalStepGraph
 import SuccessorTree.V10.CanonicalStepRealization
 import SuccessorTree.V10.CanonicalCoverS3
 import SuccessorTree.V10.CanonicalStepUniqueness
+import SuccessorTree.V10.CanonicalRawSTree
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -394,3 +395,9 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.canonical_parameter_cut_unique
 #print axioms SuccessorTree.V10.canonicalKptStep_target_unique
 #print axioms SuccessorTree.V10.canonicalKptStep_inputs_unique
+
+-- S1-S3 are derived for the canonical Kpt successor with raw Sigma alphabet.
+#print axioms SuccessorTree.V10.canonicalKptSucc_spec
+#print axioms SuccessorTree.V10.canonicalKptSucc_eq_some_of_step
+#print axioms SuccessorTree.V10.canonicalKptRawSTree_succ_eq
+#print axioms SuccessorTree.V10.canonicalKptRawSTree

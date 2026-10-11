@@ -119,13 +119,18 @@ are under focused Lean audit in
 \texttt{CanonicalCoverS3.lean}. The input and output
 uniqueness of this graph are in
 \texttt{CanonicalStepUniqueness.lean}, also pending exact-head
-CI. Even once these have passed, the resulting graph must
-still be packaged into the manuscript's
-\emph{Option-valued} successor operation (and its
-letter alphabet restricted to the actual admissible
-$\Sigma$), rather than silently identifying an
-unrestricted raw terminal $L^+$ type with a letter
-of $K^\mathcal F_{pt}$.
+CI. The graph is then made into an Option-valued
+successor using its proved unique-output property, with
+all three S-tree axioms derived from the above
+lemmas in \texttt{CanonicalRawSTree.lean}
+(the exact-head Lean audit is pending).
+Its provisional alphabet consists of \emph{all}
+raw two-vertex $L^+$-types, whereas the manuscript's
+$\Sigma$ consists of \emph{admissible} level-one
+partial types. Construct a forbidden-free witness for
+the terminal letter and restrict the verified
+successor accordingly before marking the published
+Proposition~6.32 fully validated.
 Only then mark Proposition~6.32 as verified and start the
 concrete monoid checks (M1)--(M3); the checked abstract
 \texttt{LevelTree} instance alone does not give them.}
