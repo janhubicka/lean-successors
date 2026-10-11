@@ -1,15 +1,16 @@
 % Successor v10 M2 proof continuation; review-only note (11 October 2026).
 % Author mathematical prose and the four mathematical repairs are frozen.
-% This NEW local endpoint is PENDING exact-head full Lean and axiom CI.
+% This local endpoint is GREEN at PR 269 head 9cfbd5f1ad31a00e9dd7fe5ace598540c205525a.
+% Full Lean run 38174237646 and focused transitive axiom run 38174237715 succeeded.
 % Do not mark the global level-removal lemma or M2 GREEN.
 %
 % Proposed managed TODO after the author's level-removal lemma (6.34):
 \todo[inline]{\textbf{v10 validation: admissibility after guarded
-level removal -- PENDING local Lean audit.}
+level removal -- GREEN for the local normalized theorem.}
 The previously checked complete-type transport theorem in
 \texttt{LevelRemovalType.lean} identifies the extracted $L^+$ record
 after deletion with deletion of one ordinary coordinate in the
-original record. The additional candidate
+original record. The Lean-checked
 \texttt{admissible\_deleted\_complete\_type}
 in \texttt{LevelRemovalAdmissibleType.lean} starts with an actual
 forbidden-free finite partial structure $A$, the strict guard
