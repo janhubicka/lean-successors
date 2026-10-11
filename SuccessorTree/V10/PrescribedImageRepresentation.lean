@@ -73,7 +73,7 @@ theorem PrescribedBoringData.matchingKptImage_raw_eq_of_representation
     F.matching_constructor_avoids_of_valid_cut family hB3 A v S0 hS0 hComp
       hell hPos hAvoidA (hTargets S0 hS0) d hValid hd hGate
   have hFree : ell ≤ A.freeLevel v := by
-    have h := congrArg Sigma.fst hRawA
+    have h : a.1.1 = A.freeLevel v := congrArg Sigma.fst hRawA
     omega
   have hEllV : ell ≤ v := hFree.trans (A.freeLevel_le v)
   have hvB : insertAddress ell v < B.size := by
