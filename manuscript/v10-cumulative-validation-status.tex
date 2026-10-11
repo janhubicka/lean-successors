@@ -137,11 +137,21 @@ ingredients: the uniform level-removal shape map and M2
 decomposition have not been proved. In particular, at the
 source boundary level $n$ of the intended global deletion,
 the image has no ordinary coordinate
-$m+1=\widetilde F(n)$ in its socle yet. The strict guard
-must be derived using an actual image of a source successor,
-not asserted for arbitrary finite representatives of that
-boundary type; independence of the chosen successor must
-then be proved.
+$m+1=\widetilde F(n)$ in its socle yet.
+\texttt{LevelRemovalSourceSuccessor.lean} proves from the
+checked universal M3 law that every positive-level Kpt node
+admits a genuine successor, with actual parameters and letter
+(PR~273, full/focused Lean GREEN).
+\texttt{LevelRemovalGapColumn.lean} then shows that when
+$\ell(F(q))+1<\ell(F(a))$ for the preceding source level,
+each parameter of a genuine successor of $a$ maps strictly
+below $m=\ell(F(a))-1$, and the genuine \emph{weak} image
+successor has a valid ordinary E-column with cut $f<m$
+(PR~272, full/focused Lean GREEN).
+The successor is below the later image, not necessarily equal
+to that image. Transferring this strict E-cut into every
+finite representative of an upper image and proving
+independence of the chosen successor remain open.
 
 For M3, the actual gated finite middle-clone insertion satisfies
 the corrected $L$-only age test and yields one ShapeMap in $K_{pt}M$
@@ -554,11 +564,18 @@ $\mathrm{fl}_A(v)-1$ (PR~269, head \texttt{9cfbd5f1},
 full Lean 38174237646, focused audit 38174237715 GREEN).
 At the boundary of a uniform deletion map, however, the
 ordinary coordinate $m+1$ is absent from the level-$n$
-image type. The guard on that coordinate must first be
-obtained in the image of a genuine source successor, and
-its choice independence must be verified. These checked
-finite lemmas do not supply global M2 or corrected-B3
-necessity on arbitrary finite $L$-only witnesses.
+image type. The checked \texttt{LevelRemovalSourceSuccessor.lean}
+(PR~273) uses M3 without M2 to supply a genuine successor
+of each positive-level source type.
+The checked \texttt{LevelRemovalGapColumn.lean} (PR~272)
+derives a valid target successor column with strict E
+free cut $f<\ell(F(a))-1$ from the source gap and S1;
+the output is only required to lie below the source
+successor's image. The transfer of that bound to any
+representative of a longer image, the admissible shorter
+prefix, the global map's injectivity and weak successor
+preservation, and corrected-B3 necessity on arbitrary
+finite $L$-only witnesses remain OPEN.
 Finally, reconcile the I3 signature witnesses with finite
 $L$-structures rather than $E$-partial structures before claiming
 the upper bound.}
