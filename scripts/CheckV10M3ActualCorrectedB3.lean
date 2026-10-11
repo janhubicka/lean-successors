@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M3ActualCorrectedB3
+
+#print axioms SuccessorTree.V10.m3TotalBoringData_correctedB3
+#print axioms SuccessorTree.V10.m3TotalBoringData_boring_extension_exists
