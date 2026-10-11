@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M3MiddleParameter
+
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_new_parameter_type
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_parameterList_eq

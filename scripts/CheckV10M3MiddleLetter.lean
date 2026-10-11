@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M3MiddleLetter
+
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_terminalLetter_eq
