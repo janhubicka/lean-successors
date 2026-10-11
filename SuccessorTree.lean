@@ -140,3 +140,5 @@ import SuccessorTree.V10.ParameterLetterUniqueness
 import SuccessorTree.V10.ExtractedSuccessorS2
 
 import SuccessorTree.V10.EmptyParameterS2
+
+import SuccessorTree.V10.CanonicalStepGraph
