@@ -21,6 +21,11 @@
 % GREEN: a named finite/model theorem passed Lean and its axiom audit.
 % PARTIAL: a manuscript-facing bridge is still missing.
 % OPEN: the stated manuscript consequence is not yet certified.
+% PR 266 (2d7f26f364b2491a3ef65d4798ad5d302c6d7d03):
+% full Lean 38173146352, focused V10 38173146346 and TeX 38173146351 GREEN.
+% PR 267 (9b62b29ee172f54d7581a275e17772640b9480b1):
+% full Lean 38173035063 and focused V10 38173035018 GREEN.
+% New combined M3/M2 root and note updater are audited in a separate PR.
 %
 % Recorded checked checkpoints:
 % PR 153: 3c269231, full/focused CI and manuscript updater passed;
@@ -39,7 +44,7 @@
 % The actual Kpt crossing now supplies the full ambient L-type used by signatures.
 % PR 166 structural proof checkpoint: fc2af03f3b854ec8a14e1356ad82f6074ec91114.
 % Full Lean 38059711091, focused V10 38059711093: success.
-% Lemma 6.51 finite insertion and age-test reduction checked; global ShapeMap OPEN.
+% At PR 166 only the finite insertion/age-test reduction was checked; the ShapeMap was later proved.
 % PR 167 neutral insertion branch: 5a63b009b01ee9bca4d707d97ce2c2a083243a67.
 % Focused V10 audit 38060229228 PASSED at the proof checkpoint.
 % GREEN focused+full: neutral type record/level/prefix/injectivity through PR 176.
@@ -49,7 +54,7 @@
 % PR 183 all-level witnesses / SkipsOnly proof: 25668dab4644e885b84a7ec3cccdc5e6cfa18f3d.
 % V10 focused build + axiom audit 38075729225: SUCCESS.
 % The global neutral one-gap ShapeMap uses only standard Lean axioms.
-% The prescribed non-neutral f:S->Kpt(ell+1) boring map remains OPEN.
+% At PR 183 this prescribed non-neutral map remained open; PR 266 later closed M3.
 % PRs 186--196 prescribed-column/finite-age proofs are included in checked PR203.
 % PR 200 stages author-authorized mathematical B3/proof correction and source-safe patcher.
 % PR 201 corrected-B3-to-finite-insertion implication is included in checked PR203.
@@ -112,20 +117,31 @@ $\widetilde F(0)=0$, identity, composition and pointwise fusion
 preserve the condition; these maps fix every level-zero node.
 See \texttt{ConcreteKptM1.lean}.
 
-\textbf{M2 remains OPEN; global M3 is a PENDING proof candidate.}
-The separately checked local removal construction preserves the
-induced forbidden-free partial structure under the strict guard
-$\mathrm{fl}(m+1)<m$, and computes the exact transported free
-cut; see \texttt{LevelRemovalPartial.lean} and
-\texttt{LevelRemovalFreeCut.lean} (PRs~155--156).
-The separately checked terminal clone preserves the full
-partial structure, its copied type and the forbidden-free age;
-see \texttt{EndDuplicatePartial.lean} and
-\texttt{EndDuplicateAge.lean} (PRs~152--153).
-Neither local construction is yet a global shape-preserving
-one-level removal or duplication map. The global maps,
-compatibility preservation and decomposition needed for M2/M3
-must still be constructed.}
+\textbf{M3 duplication -- GREEN in the normalized Kpt S-tree;
+M2 remains OPEN.}
+The finite level-removal construction preserves the forbidden-free
+partial structure under the strict guard $\mathrm{fl}(m+1)<m$
+and computes the transported free cut
+(\texttt{LevelRemovalPartial.lean},
+\texttt{LevelRemovalFreeCut.lean}).
+The new \texttt{LevelRemovalType.lean} proves that the complete
+$L^+$ type of a retained vertex is precisely the old type
+with coordinate $m$ deleted, including absent directed tuples,
+singleton/diagonal information and every $E$ pair (PR~267).
+These remain local ingredients: the uniform level-removal
+shape map and M2 decomposition have not been proved.
+
+For M3, the actual gated finite middle-clone insertion satisfies
+the corrected $L$-only age test and yields one ShapeMap in $K_{pt}M$
+skipping only $\ell$ (PRs~253, 258--259).
+\texttt{M3RepresentativeIndependence.lean} proves independence
+of the chosen finite witness, and
+\texttt{M3LiteralDuplication.lean} proves the complete universal
+duplication law for every earlier admissible successor and the
+same parameter list and letter (PR~266).
+All new endpoints passed full builds and named transitive axiom
+audits with standard Lean axioms. The identification with the
+original unary/binary language is a separate OPEN adapter.}
 
 % Proposed consolidated TODO at Definition 6.45 / Observation 6.46
 \todo[inline]{\textbf{v10 validation: exact finite $H^+$ construction --
@@ -231,8 +247,9 @@ checked in \texttt{ConcreteOriginalPool.lean} and
 \texttt{HClosureCharge.lean}. The remaining inputs to the recurrence
 are the identification of the algorithm's seed types and selected sets,
 signature uniqueness from the actual crossing/age test, and the complete
-classification of selected levels. The global M2/M3 maps and the
-local-age lemma also remain open. Keep the exact-copy and language-normalization corrections
+classification of selected levels. The normalized M3 duplication map is now checked; the
+global M2 decomposition and the local-age/signature witness
+arguments remain open. Keep the exact-copy and language-normalization corrections
 separate from these proof obligations. Neither
 Proposition~\ref{prob:upperbound} nor Theorem~\ref{thm:zucker}
 is yet a fully checked consequence.}
@@ -273,7 +290,8 @@ whole upper-bound recurrence.}
 % Consolidated TODO at Lemma 6.51. Both known TeX labels are supported;
 % the updater rejects ambiguous aliases and changes only managed notes.
 \todo[inline]{\textbf{v10 validation: boring extension -- GREEN in the
-normalized finite unary/binary model; M2/M3 and language adapter OPEN.}
+normalized finite unary/binary model; M3 GREEN, M2 and
+language adapter OPEN.}
 The repaired B3 quantifies over finite ordered $L$-structures with the
 ordinary socle of a prescribed $f(S)$ and complete upper $L$-types
 through $\ell+1$ from the reducts of $f[S]$. If deleting $\ell$ leaves an $\mathcal F$-free structure, the whole
@@ -488,29 +506,35 @@ and distinct upper $L$-columns need not have compatible ordinary
 $E$-socles. Formalize either a selected-upper/weak age-transport lemma
 with these two issues resolved, or a direct one-level factorization
 that avoids inferring corrected B3 from the old third statement.
-This M2 obligation remains OPEN. For M3, the finite $E_3$-gated middle clone with linked-only
-upper copying supplies a candidate prescribed function $f$ on
-\emph{all} admissible level-$\ell$ source types. The corrected B3
-finite $L$-age premise is derived from the actual clone projection,
-with no auxiliary $E$ requirement on test witnesses and no single
-fixed free cut. The one-gap prescribed ShapeMap then agrees with
-$f$ and the full canonical successor input of the earlier $n$th
-crossing. The new selected-step endpoint is
-\texttt{m3OneGapShapeMap\_repeats\_old\_step}.
-For the manuscript's \emph{universal} M3 premise, the separate
-candidate \texttt{m3OneGapShapeMap\_literalM3} in
-\texttt{M3LiteralDuplication.lean} starts with an arbitrary earlier
-successor $S(a,\bar p,c)\preceq b$. The chosen earlier canonical
-step and this successor have the same level-$(n+1)$ endpoint
-below $b$, hence are equal by predecessor uniqueness; S2
-then forces the parameter list and letter to agree. Thus the
-\emph{same} one-gap map works simultaneously for all $a,b,\bar p,c$
-as required by (M3). Both new modules are in PR~266, contingent
-on exact-head focused builds and named transitive axiom audits,
-including the upper-clone arithmetic repair in PR~261. This is not yet a GREEN
-manuscript-language M3 claim: compare its full duplication clause
-and supply the diagonal/nullary/general-language adapter.
+This M2 obligation remains OPEN.
+
+\textbf{M3 duplication -- GREEN in the normalized model;
+original-language identification OPEN.}
+For every $n<\ell$, the actual $E_3$-gated finite clone produces
+a prescribed $f$ on \emph{all} admissible level-$\ell$ source types.
+The corrected B3 finite $L$-age test follows from the linked-only
+irreducible projection, without requiring $E$ on an arbitrary age
+witness and without imposing one free cut on incompatible sources.
+The one-gap ShapeMap agrees with this prescribed $f$ and skips
+precisely $\ell$.
+\texttt{M3RepresentativeIndependence.lean} identifies the complete
+target $L^+$ type for any two finite representatives of the same
+source, including every $E$-atom.
+\texttt{M3LiteralDuplication.lean} proves the literal universal
+(M3) condition: from any $S(a,\bar p,c)\preceq b$ with $a$ at
+level $n$ and $b$ at level $\ell$, the \emph{same} map satisfies
+$\Phi(b)=S(b,\bar p,c)$. This uses uniqueness of the earlier
+level-$(n+1)$ predecessor and S2 to identify the full parameter
+list and terminal letter; no successor or M3 axiom is added.
+Full Lean, focused named-axiom and source-annotation CI passed
+at PR~266, exact head \texttt{2d7f26f3} (runs 38173146352,
+38173146346, 38173146351). This certifies the complete normalized
+Kpt version of M3, not the unperformed original-language adapter.
+
+The finite guarded type-deletion transport
+\texttt{LevelRemovalType.lean} passed full/focused CI at PR~267,
+exact head \texttt{9b62b29e}; it strengthens the local M2
+construction but does not supply M2 or repaired-B3 necessity.
 Finally, reconcile the I3 signature witnesses with finite
 $L$-structures rather than $E$-partial structures before claiming
-the upper bound. None of these conclusions follows merely
-from the neutral shape map.}
+the upper bound.}
