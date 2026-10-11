@@ -2,6 +2,7 @@ name: Successor v10 manuscript annotations
 
 on:
   push:
+    branches: [main]
     paths:
       - 'manuscript/update-v10-source.py'
       - 'manuscript/check-v10-source-updater.py'
