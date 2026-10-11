@@ -1,0 +1,32 @@
+% Successor v10 M2 proof continuation; review-only note (11 October 2026).
+% Author mathematical prose and the four mathematical repairs are frozen.
+% This NEW local endpoint is PENDING exact-head full Lean and axiom CI.
+% Do not mark the global level-removal lemma or M2 GREEN.
+%
+% Proposed managed TODO after the author's level-removal lemma (6.34):
+\todo[inline]{\textbf{v10 validation: admissibility after guarded
+level removal -- PENDING local Lean audit.}
+The previously checked complete-type transport theorem in
+\texttt{LevelRemovalType.lean} identifies the extracted $L^+$ record
+after deletion with deletion of one ordinary coordinate in the
+original record. The additional candidate
+\texttt{admissible\_deleted\_complete\_type}
+in \texttt{LevelRemovalAdmissibleType.lean} starts with an actual
+forbidden-free finite partial structure $A$, the strict guard
+$\mathrm{fl}_A(m+1)<m$ and an original distinguished vertex $v$ with
+$m<\mathrm{fl}_A(v)$. It chooses the retained vertex $v-1$ in
+$A\ominus m$, calculates its \emph{canonical} free level as
+$\mathrm{fl}_A(v)-1$, and proves its complete $L^+$ type is
+the ordinary-coordinate deletion of the former type. Because
+the induced $L$ age remains $\mathcal F$-free, the resulting raw
+record is an \emph{admissible} Kpt node. The source representation,
+including unary, diagonal, both directed binary orientations,
+absent atoms and $E$, is retained without any extra E-age premise.
+
+This checks the local membership step only. To obtain the
+global level-removal ShapeMap, one must derive its guard uniformly
+from the gap in a given shape-preserving $F$, then verify its
+level function, predecessors and weak successor law. The
+full M2 factorization still requires an argument proving
+corrected B3 on arbitrary finite \emph{$L$-only} witnesses,
+not merely the older E-partial image-transport statement.}
