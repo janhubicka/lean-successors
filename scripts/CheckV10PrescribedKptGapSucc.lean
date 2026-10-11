@@ -1,0 +1,4 @@
+import SuccessorTree.V10.PrescribedKptGapSucc
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_self_prefix_at_gap
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_weak_succ_below_gap

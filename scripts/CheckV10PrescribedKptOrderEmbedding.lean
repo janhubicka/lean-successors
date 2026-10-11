@@ -1,0 +1,6 @@
+import SuccessorTree.V10.PrescribedKptOrderEmbedding
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_ancestor_level_bound
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_ancestor
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_prefix_iff
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptOrderEmbedding

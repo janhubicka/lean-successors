@@ -93,6 +93,7 @@ jobs:
             SuccessorTree/V10/HFinite*.lean
             SuccessorTree/V10/ConcreteOriginalPool.lean
             SuccessorTree/V10/HClosureCharge.lean
+            SuccessorTree/V10/Prescribed*.lean
             manuscript/v10-cumulative-validation-status.tex
             manuscript/update-v10-source.py
             manuscript/check-v10-source-updater.py

@@ -1,0 +1,4 @@
+import SuccessorTree.V10.PrescribedSourceFullValue
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedInsertPartial_source_full
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_agrees_on_source
