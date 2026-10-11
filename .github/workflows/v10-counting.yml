@@ -1,0 +1,62 @@
+name: V10 counting audit
+
+on:
+  push:
+    paths:
+      - 'SuccessorTree/V10/**'
+      - 'scripts/CheckV10Counting.lean'
+      - 'scripts/check_v10_meet_blocks.py'
+      - 'SuccessorTree.lean'
+      - '.github/workflows/v10-counting.yml'
+  pull_request:
+    paths:
+      - 'SuccessorTree/V10/**'
+      - 'scripts/CheckV10Counting.lean'
+      - 'scripts/check_v10_meet_blocks.py'
+      - 'SuccessorTree.lean'
+      - '.github/workflows/v10-counting.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: v10-count-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  counting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Cache Lean toolchain
+        uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - name: Cache Lake workspace
+        uses: actions/cache@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Download Mathlib cache
+        run: lake exe cache get
+      - name: Exhaustive H-block meet diagnostic
+        run: python3 scripts/check_v10_meet_blocks.py
+      - name: Build v10 counting module
+        run: lake build SuccessorTree.V10.Counting SuccessorTree.V10.MeetTrace SuccessorTree.V10.BlockOrder SuccessorTree.V10.MeetBundle SuccessorTree.V10.FirstDisagreement SuccessorTree.V10.MeetProvenance
+      - name: Check v10 theorem axioms
+        run: |
+          lake env lean scripts/CheckV10Counting.lean > v10-counting-axioms.log 2>&1 || {
+            cat v10-counting-axioms.log
+            exit 1
+          }
+          python3 scripts/check-axiom-log.py v10-counting-axioms.log scripts/CheckV10Counting.lean || {
+            cat v10-counting-axioms.log
+            exit 1
+          }
