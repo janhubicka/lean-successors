@@ -1,8 +1,9 @@
-# Prescribed total node map: remaining obligations
+# Prescribed one-gap map: verified endpoints and remaining applications
 
-This is a proof-development checklist, not a completed ShapeMap proof.
-The current source is the normalized Boolean L+ representation; the
-separate manuscript language-normalization adapter remains open.
+The concrete prescribed ShapeMap and the boring-extension conclusion are
+verified in the normalized finite Boolean L+ representation by the focused
+V10 build and named transitive axiom audits at PRs #226 and #227.
+The original-language adapter and uses in M2/M3 remain independent.
 
 ## Concrete map to use
 
@@ -33,50 +34,73 @@ it returns the original admissible node.
 See the new recovery/injectivity checkpoint for exact verification status;
 this checklist is not a substitute for its proof evidence.
 
-## Agreement with the prescribed partial function -- OPEN
+## Agreement with f -- GREEN
 
-For S in source at level ell, compatibility with itself forces the
-matching branch. Compare its complete inserted record with F.target S.
-B1 handles old coordinates, B2 supplies the complete ordinary output
-socle, and the selected upper column supplies the two L-relations to the
-distinguished vertex. The E comparison is a distinct obligation; an
-L-reduct equality alone is insufficient. The target's admissibility
-provides its last-E atom and its valid ordinary E cut. Do not assume the
-output equality in the image relation.
+`PrescribedSourceValues.lean` reconstructs the entire L-reduct of the
+literal inserted source. `PrescribedSourceE.lean` independently checks
+the auxiliary E record; `PrescribedSourceFullValue.lean` combines them
+into exact equality with f(S) for every admissible prescribed source.
+`prescribedKptSkip_agrees_on_source` compares the selected global image,
+not an arbitrary finite image relation. The endpoint was checked in
+PR #218 without an additional compatibility or E-age assumption.
 
-## All predecessors -- OPEN
+## All predecessors and order embedding -- GREEN
 
-For b <= a with both levels at least ell, use the actual one-filler
-`prefixReplicaPartialStructure` already used in
-`LocalAgeNeutralPrefix.lean`. First derive that restricting a and b to
-ell gives the same complete record. Consequently they make the same
-compatibility decision; this is not a premise to add.
+The common implementation is `PrescribedKptPrefixCases.lean`,
+`PrescribedKptPrefixMatching.lean`, and `PrescribedKptFullPrefix.lean`.
+It derives the common compatibility decision on upper source chains;
+computes matching images with the same source and inserted cut using the
+actual one-filler prefix replica; reuses the neutral upper-prefix theorem;
+and checks all crossing-gap atoms directly. The full endpoint is
+`PrescribedBoringData.prescribedKptSkip_prefix`. No extra age, same-branch,
+representation, or abstract monotonicity premise is added.
 
-In the matching case, represent a by A,v and put d = level(b). The replica
-R = prefixReplicaPartialStructure A v d realizes b at distinguished
-address d+1. Derive the same compatible prescribed source S0 for both.
-Choose its valid inserted cut once. The new
-`matchingKptImage_raw_eq_of_representation` computes b's selected image
-in R with that same cut. `matching_constructor_avoids_of_valid_cut`
-derives the needed avoidance from corrected B3, not from a new hypothesis
-about the replica insertion. Use the full prescribed record-independence
-theorem at cut d to compare this inserted replica with the restriction
-of the insertion of A; it permits their different distinguished indices.
-Finish with `rawPartialType_prefix_of_cut` and the exact free-level laws.
+`PrescribedKptOrderEmbedding.lean` derives the exact admissible ancestor
+identity at every n <= level(a), with image cut n below ell and n+1 at or
+above ell. It also derives order reflection and packages the actual map
+as `prescribedKptOrderEmbedding`. Order reflection takes an admissible
+prefix of the longer source at the shorter source's level, compares the
+equal-level image prefixes, and applies the established injectivity.
+There is no assumption that arbitrary coordinate deletion is admissible.
 
-In the unmatched case, reuse the neutral prefix theorem. For prefixes
-below the gap, extract only retained old coordinates. Use
-`record_eq_of_rawTypeAtFree` to avoid repeating dependent Sigma casts.
-The arbitrary-representation adapter is not itself the prefix theorem.
+The overlapping implementation in PR216 is archived as an alternative,
+not imported alongside the common implementation. The active checkpoint
+records exact tested heads and audit evidence; it is not a ShapeMap claim.
 
-## Successors -- OPEN
+## Weak successors below and across the gap -- GREEN
 
-Above the gap, transport the canonical empty-or-singleton parameter
-list and the exact terminal Sigma letter, using the same concrete node
-map. At the edge ell-1 -> ell the parent and parameters below ell are
-fixed. The ordinary successor at level ell need only be a prefix of the
-mapped child at level ell+1. Prove that weak statement separately; exact
-equality with the mapped child is not the required boundary law.
+`PrescribedKptGapSucc.lean` first combines matching and neutral self-prefix
+facts at level ell. For a successor base below ell, the actual S-tree
+parameter-level axiom puts every parameter still lower; both base and
+parameter list are fixed. The old successor is then the required witness
+below the mapped child. It is fixed strictly below ell and is a genuine
+prefix of its image at level ell. No equality with the mapped child is
+asserted at the crossing edge ell-1 -> ell.
+
+## Successors based at or above the gap -- GREEN
+
+`PrescribedTerminalLetter.lean` preserves the full terminal Sigma letter,
+including old E pairs, for the literal prescribed insertion.
+`PrescribedOldParameter.lean` proves exact selected old-vertex images
+at every free cut and transports the canonical empty-or-singleton list.
+Both components passed full Lean and focused audits in PRs #223/#224.
+
+`PrescribedUpperSuccMatching.lean` and
+`PrescribedUpperSuccUnmatched.lean` now establish the exact above-gap
+canonical successor law in the prescribed and neutral branches,
+respectively. `PrescribedKptShapeMap.lean` combines this law with the
+independently verified weak below/crossing case and constructs the
+concrete ShapeMap. PR #226's focused V10 build and axiom audit passed.
+
+## Exact skipped level and complete boring extension -- GREEN
+
+`PrescribedBoringCompletion.lean` obtains `SkipsOnly ell` from
+`admissibleKptLevel_nonempty` and the checked level shift. Its endpoint
+`prescribedKpt_boring_extension_exists` packages the ShapeMap in KptM
+with the omitted level and complete agreement with f. PR #227's
+focused V10 build and axiom audit passed. PR #228 separately imports
+this public endpoint from `SuccessorTree.lean` so the default full
+Lean library build checks it as well.
 
 ## Obligations outside this map construction
 
@@ -85,6 +109,5 @@ the corrected common-socle L-age B3 condition. The older third clause
 of lem:comp is not a proved source of the strengthened test.
 M3 still needs the repaired B3 age test for its actual duplication
 prescription. I3/signature witnesses must be finite L-structures, not
-subject to the rejected E-partial-structure premises. Neither the full
-boring extension lemma nor the final big-Ramsey bound is certified by
-totality and injectivity of the present candidate map.
+subject to the rejected E-partial-structure premises. The normalized finite-language boring extension lemma is certified.
+The final big-Ramsey bound is not certified by this lemma alone.
