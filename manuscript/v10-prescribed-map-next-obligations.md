@@ -1,8 +1,9 @@
-# Prescribed total node map: remaining obligations
+# Prescribed one-gap map: verified endpoints and remaining applications
 
-This is a proof-development checklist, not a completed ShapeMap proof.
-The current source is the normalized Boolean L+ representation; the
-separate manuscript language-normalization adapter remains open.
+The concrete prescribed ShapeMap and the boring-extension conclusion are
+verified in the normalized finite Boolean L+ representation by the focused
+V10 build and named transitive axiom audits at PRs #226 and #227.
+The original-language adapter and uses in M2/M3 remain independent.
 
 ## Concrete map to use
 
@@ -33,16 +34,15 @@ it returns the original admissible node.
 See the new recovery/injectivity checkpoint for exact verification status;
 this checklist is not a substitute for its proof evidence.
 
-## Agreement with the prescribed partial function -- OPEN
+## Agreement with f -- GREEN
 
-For S in source at level ell, compatibility with itself forces the
-matching branch. Compare its complete inserted record with F.target S.
-B1 handles old coordinates, B2 supplies the complete ordinary output
-socle, and the selected upper column supplies the two L-relations to the
-distinguished vertex. The E comparison is a distinct obligation; an
-L-reduct equality alone is insufficient. The target's admissibility
-provides its last-E atom and its valid ordinary E cut. Do not assume the
-output equality in the image relation.
+`PrescribedSourceValues.lean` reconstructs the entire L-reduct of the
+literal inserted source. `PrescribedSourceE.lean` independently checks
+the auxiliary E record; `PrescribedSourceFullValue.lean` combines them
+into exact equality with f(S) for every admissible prescribed source.
+`prescribedKptSkip_agrees_on_source` compares the selected global image,
+not an arbitrary finite image relation. The endpoint was checked in
+PR #218 without an additional compatibility or E-age assumption.
 
 ## All predecessors and order embedding -- GREEN
 
@@ -77,16 +77,30 @@ below the mapped child. It is fixed strictly below ell and is a genuine
 prefix of its image at level ell. No equality with the mapped child is
 asserted at the crossing edge ell-1 -> ell.
 
-## Successors based at or above the gap -- OPEN
+## Successors based at or above the gap -- GREEN
 
-Transport the canonical empty-or-singleton parameter list and the exact
-terminal Sigma letter using this same concrete node map. Use the exact
-finite-constructor representation for all old ordinary coordinates,
-including vertices whose free level lies below ell and therefore do not
-choose the upper branch. Then invoke canonical decomposition uniqueness.
-The lower/crossing weak law and the order embedding do not supply these
-identities. Parallel PR220 stages a finite terminal-letter result, but it
-is not imported into this active stack yet.
+`PrescribedTerminalLetter.lean` preserves the full terminal Sigma letter,
+including old E pairs, for the literal prescribed insertion.
+`PrescribedOldParameter.lean` proves exact selected old-vertex images
+at every free cut and transports the canonical empty-or-singleton list.
+Both components passed full Lean and focused audits in PRs #223/#224.
+
+`PrescribedUpperSuccMatching.lean` and
+`PrescribedUpperSuccUnmatched.lean` now establish the exact above-gap
+canonical successor law in the prescribed and neutral branches,
+respectively. `PrescribedKptShapeMap.lean` combines this law with the
+independently verified weak below/crossing case and constructs the
+concrete ShapeMap. PR #226's focused V10 build and axiom audit passed.
+
+## Exact skipped level and complete boring extension -- GREEN
+
+`PrescribedBoringCompletion.lean` obtains `SkipsOnly ell` from
+`admissibleKptLevel_nonempty` and the checked level shift. Its endpoint
+`prescribedKpt_boring_extension_exists` packages the ShapeMap in KptM
+with the omitted level and complete agreement with f. PR #227's
+focused V10 build and axiom audit passed. PR #228 separately imports
+this public endpoint from `SuccessorTree.lean` so the default full
+Lean library build checks it as well.
 
 ## Obligations outside this map construction
 
@@ -95,6 +109,5 @@ the corrected common-socle L-age B3 condition. The older third clause
 of lem:comp is not a proved source of the strengthened test.
 M3 still needs the repaired B3 age test for its actual duplication
 prescription. I3/signature witnesses must be finite L-structures, not
-subject to the rejected E-partial-structure premises. Neither the full
-boring extension lemma nor the final big-Ramsey bound is certified by
-the order embedding and predecessor identities of the present map.
+subject to the rejected E-partial-structure premises. The normalized finite-language boring extension lemma is certified.
+The final big-Ramsey bound is not certified by this lemma alone.
