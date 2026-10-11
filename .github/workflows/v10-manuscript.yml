@@ -1,0 +1,26 @@
+name: Successor v10 manuscript annotations
+
+on:
+  push:
+    paths:
+      - 'manuscript/update-v10-source.py'
+      - 'manuscript/check-v10-source-updater.py'
+      - 'manuscript/v10-cumulative-validation-status.tex'
+      - '.github/workflows/v10-manuscript.yml'
+  pull_request:
+    paths:
+      - 'manuscript/update-v10-source.py'
+      - 'manuscript/check-v10-source-updater.py'
+      - 'manuscript/v10-cumulative-validation-status.tex'
+      - '.github/workflows/v10-manuscript.yml'
+  workflow_dispatch:
+
+jobs:
+  manuscript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Python syntax and source-safe patch regression
+        run: |
+          python3 -m py_compile manuscript/update-v10-source.py manuscript/check-v10-source-updater.py
+          python3 manuscript/check-v10-source-updater.py

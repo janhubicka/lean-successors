@@ -49,6 +49,7 @@ import SuccessorTree.V10.AdmissibleKptMeet
 import SuccessorTree.V10.AdmissibleKptLevelTree
 import SuccessorTree.V10.CanonicalBinary
 import SuccessorTree.V10.CanonicalInsertionParameter
+import SuccessorTree.V10.CanonicalCrossing
 
 -- The estimates below are conditional: they do not silently assume the
 -- H-structure meet formula or the missing uniqueness of age signatures.
@@ -336,3 +337,10 @@ set_option autoImplicit false
 #print axioms SuccessorTree.V10.EnumeratedPartialStructure.insertionParameter_some_iff
 #print axioms SuccessorTree.V10.EnumeratedPartialStructure.insertionParameter_level_lt
 #print axioms SuccessorTree.V10.EnumeratedPartialStructure.insertionParameter_admissible
+
+-- Exact no-new-tuples crossing property for any new ordinary vertex.
+#print axioms SuccessorTree.V10.E_false_at_or_above_freeLevel
+#print axioms SuccessorTree.V10.binary_false_at_or_above_freeLevel
+#print axioms SuccessorTree.V10.binary_at_freeSocle_eq_parameter
+#print axioms SuccessorTree.V10.E_eq_decide_freeLevel
+#print axioms SuccessorTree.V10.canonicalCross_eq_actual
