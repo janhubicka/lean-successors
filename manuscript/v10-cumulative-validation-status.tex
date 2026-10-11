@@ -1,6 +1,6 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 10 October 2026. Cumulative continuation through PR 164.
+% 10 October 2026. Cumulative continuation through PR 165.
 %
 % Apply with update-v10-source.py to the author's current main.tex.
 % This file replaces overlapping machine-labelled notes; do not concatenate
@@ -24,6 +24,9 @@
 % PR 164 proof checkpoint: d2fad6fcafe9f40f278fc2cff22986af6b3ef2dd.
 % V10 audit 38051214553 passed; all 16 new endpoints have standard axioms only.
 % Detailed scope and downloaded-evidence checks are in v10-original-pool-review.md.
+% PR 165 crossing checkpoint: b44d378e7d19d937669c90bad3e20f407ee540ff.
+% V10 focused build/axiom audit 38056182806 passed.
+% The actual Kpt crossing now supplies the full ambient L-type used by signatures.
 % =====================================================================
 
 % Proposed consolidated TODO at obs:env1, retaining the type-forest checkpoint.
@@ -162,24 +165,31 @@ Corollary~\ref{cor:meet-origins}; the full recurrence still requires
 the selected-level and age-signature arguments.}
 
 % Proposed consolidated TODO at Observation 6.52 / Lemma 6.53
-\todo[inline]{\textbf{v10 validation: age signatures and relocation --
-PARTIAL.}
-The checked signature splice combines the earlier lower witness
-with the later upper witness, preserves order and all unary,
-diagonal and directed binary atoms, including absent atoms,
-and avoids the later tested vertex. Complete upper-type
-agreement through the earlier cut plus one is sufficient;
-see \texttt{SignatureCollision.lean} and
-\texttt{AmbientSignature.lean}.
-The lower-generation relocation in the exact $H$ model is
-checked, including both directions and the top-generation tie,
-in \texttt{RelocationIrreducible.lean}.
-Derive the required type-through-$\ell+1$ identification for
-every prescribed upper age-test vertex from the actual
-one-level crossing map and its named ambient original.
-The auxiliary $E$-relation is not a forbidden $L$-atom.
-Signature injectivity and the generation bound remain
-manuscript-facing obligations until this bridge is proved.}
+\todo[inline]{\textbf{v10 validation: signature crossing and splice --
+GREEN once the local-age witness supplies the prescribed actual crossing;
+local-age construction and generation bound PARTIAL.}
+The actual LevelTree ancestor of an admissible type represented by an
+ambient original is now identified with its complete induced $L^+$ prefix
+at the same cut in \texttt{ActualCrossingSignature.lean}. Consequently,
+if an upper age-test vertex realizes the prescribed genuine Kpt crossing
+at $\ell+1$, its complete directed atomic $L$-type through $\ell+1$
+is exactly that of the named ambient original. This derives the former
+full-type hypothesis rather than assuming it.
+Combining this with \texttt{AmbientSignature.lean} and
+\texttt{SignatureCollision.lean} gives the signature-collision
+contradiction from the actual crossings themselves: the splice preserves
+order and every unary, diagonal and directed binary atom, including absent
+atoms. The auxiliary relation $E$ is not used as a forbidden $L$-atom.
+
+The remaining manuscript-facing input to Observation~\ref{obs:signature-unique}
+is now precise: formalize Lemma~\ref{lem:local-age} strongly enough to
+construct the one-level insertion/shape map and prove that the upper
+vertices of its age-test witness realize those prescribed crossings.
+The lower-generation relocation calculations are separately checked,
+including both orientations and the special top-generation tie, in
+\texttt{RelocationIrreducible.lean} and related modules. The final
+generation estimate still needs to be assembled with the actual
+age-test witness; do not mark Lemma~\ref{lem:signatures} fully GREEN yet.}
 
 % Proposed consolidated TODO at Proposition 6.44 / Theorem 6.26
 \todo[inline]{\textbf{v10 validation: final big-Ramsey upper bound --
