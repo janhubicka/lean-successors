@@ -6,12 +6,18 @@ on:
       - 'manuscript/update-v10-source.py'
       - 'manuscript/check-v10-source-updater.py'
       - 'manuscript/v10-cumulative-validation-status.tex'
+      - 'manuscript/repair-v10-boring-lemma.py'
+      - 'manuscript/check-v10-boring-repair.py'
+      - 'manuscript/v10-boring-*-replacement.tex'
       - '.github/workflows/v10-manuscript.yml'
   pull_request:
     paths:
       - 'manuscript/update-v10-source.py'
       - 'manuscript/check-v10-source-updater.py'
       - 'manuscript/v10-cumulative-validation-status.tex'
+      - 'manuscript/repair-v10-boring-lemma.py'
+      - 'manuscript/check-v10-boring-repair.py'
+      - 'manuscript/v10-boring-*-replacement.tex'
       - '.github/workflows/v10-manuscript.yml'
   workflow_dispatch:
 
@@ -24,3 +30,5 @@ jobs:
         run: |
           python3 -m py_compile manuscript/update-v10-source.py manuscript/check-v10-source-updater.py
           python3 manuscript/check-v10-source-updater.py
+          python3 -m py_compile manuscript/repair-v10-boring-lemma.py manuscript/check-v10-boring-repair.py
+          python3 manuscript/check-v10-boring-repair.py
