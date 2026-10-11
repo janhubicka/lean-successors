@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M3MiddleAvoidance
+
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_without_avoids
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_preserves_avoidance
