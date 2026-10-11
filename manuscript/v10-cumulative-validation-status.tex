@@ -481,8 +481,34 @@ Lemma~\ref{lem:boring}, conditional on corrected B3; it does not
 certify the original-language identification or its applications.
 For M2, the former third statement of Lemma~\ref{lem:comp} does not
 imply the strengthened B3; a new necessity or decomposition argument
-is required. For M3, verify the repaired age test for the actual
-duplication prescription. Finally, reconcile the I3 signature witnesses
+is required. \textbf{M3: clone projection and local canonical atoms -- GREEN
+conditionally; full M3 OPEN.}
+\texttt{M3CloneProjection.lean} proves that every irreducible
+forbidden $L$-copy through an inserted clone projects, preserving
+the order and all positive/absent directed and singleton atoms,
+to a copy avoiding that coordinate. No $E$-partial-structure age
+witness is imposed. \texttt{M3CorrectedB3Reduction.lean} derives
+the corrected finite $L$-age test when the prescribed ordinary
+socle and all upper terminal pairs satisfy exact clone copying.
+The focused builds and named axiom audits for PRs~230--231 passed.
+\texttt{M3CanonicalCloneLetter.lean} derives the duplicated terminal
+pairs and singleton data from repetition of the earlier terminal
+$\Sigma$-letter; \texttt{M3CanonicalCloneParameter.lean} derives
+lower-copy pairs from the earlier shortened positive parameter
+and absence of all links beyond the valid free cut. Their focused
+axiom audits passed in PRs~232--233.
+
+\textbf{M3 canonical-input adapter -- OPEN.}
+A fixed old coordinate $n$ may have a different free cut in each
+prescribed ordinary socle; a globally constant cut is not an
+M3 assumption. The staged PRs~234--239 assemble the initial clone
+column with the empty-or-singleton parameter convention, allow
+source-dependent cuts, and reduce B3 to repeated canonical inputs
+of two actual Kpt successor steps. These endpoints are pending
+focused Lean validation and are NOT marked GREEN here.
+The remaining direct step is to build the actual M3 duplication
+prescription and show those same canonical parameter/letter inputs
+hold for its targets, without a new age or shape-map axiom. Finally, reconcile the I3 signature witnesses
 with finite $L$-structures rather than $E$-partial structures before
 claiming the upper bound. None of these conclusions follows merely
 from the neutral shape map.}
