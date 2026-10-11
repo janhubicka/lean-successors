@@ -48,8 +48,22 @@ theorem admissible_deleted_lower_of_guarded_upper
     change upper.1.1 = A.freeLevel v at hh
     exact hh
   have hUpperRecord :
-      upper.1.2 = A.partialTypeAt upper.1.1 v :=
-    record_eq_of_rawTypeAtFree upper.1.2 A v hRaw
+      upper.1.2 = A.partialTypeAt upper.1.1 v := by
+    have hSigma :
+        (⟨upper.1.1,upper.1.2⟩ : RawPartialTypeNode db du dd) =
+          (⟨upper.1.1,A.partialTypeAt upper.1.1 v⟩ :
+            RawPartialTypeNode db du dd) := by
+      calc
+        (⟨upper.1.1,upper.1.2⟩ : RawPartialTypeNode db du dd) =
+            A.rawTypeAtFree v := hRaw
+        _ = (⟨upper.1.1,A.partialTypeAt upper.1.1 v⟩ :
+            RawPartialTypeNode db du dd) := by
+          change
+            (⟨A.freeLevel v,
+              A.partialTypeAt (A.freeLevel v) v⟩ :
+                RawPartialTypeNode db du dd) = _
+          rw [←hFree]
+    simpa only [Sigma.mk.inj_iff, heq_eq_eq, true_and] using hSigma
   have hLowerRecord :
       lower.1.2 = A.partialTypeAt lower.1.1 v := by
     calc
