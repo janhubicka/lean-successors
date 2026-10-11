@@ -23,24 +23,41 @@ The following branches passed the **full Lean** and **focused V10 axiom audit**:
 These five module files and their named axiom audit scripts were copied
 unaltered to the new common branch, based on the PR225 review checkpoint.
 
-## New successor assembly — awaiting new branch verification
+## Verified successor assembly and exact boring extension
 
-- `PrescribedUpperSuccMatching.lean`:
-  exact canonical successor above ell for matching prescribed sources,
-  via the actual finite prescribed constructor and its already-checked
-  terminal-letter/parameter transport.
-- `PrescribedUpperSuccUnmatched.lean`:
-  if the successor's ell-socle has no compatible prescribed input, the
-  source, target and canonical old parameter all use the neutral map.
-  Reuses the existing verified neutral upper successor theorem.
-- `PrescribedKptShapeMap.lean`:
-  combines both exact upper successor branches with the checked weak
-  below/crossing law, node injectivity, equal-level preservation and
-  root fixing. Also states membership in KptM and omission of ell.
+The combined successor assembly and complete one-gap theorem are now
+**GREEN in the normalized finite Boolean unary/binary model**, as
+certified by the focused V10 module builds and named-axiom checks.
 
-**Do not mark these new endpoints GREEN until the focused named axiom
-audit and full Lean CI pass.** No new assumptions were deliberately added
-to the existing corrected-B3/target-admissibility framework.
+- PR #226 at `acdec3ef85205ce145810c73390b4a8811e02f40`,
+  focused V10 workflow `38114806463`: **success**.
+  `PrescribedUpperSuccMatching.lean` proves the exact canonical
+  above-gap successor equation for the matching branch.
+  `PrescribedUpperSuccUnmatched.lean` reduces the unmatched branch
+  to the already checked neutral successor theorem, including the
+  actual singleton-parameter equality. `PrescribedKptShapeMap.lean`
+  combines these with the weak below/crossing successor law.
+- PR #227 at `694b6654322eebce9dacb948effaf2b3a9f95b46`,
+  focused V10 workflow `38114809104`: **success**.
+  `PrescribedBoringCompletion.lean` establishes `SkipsOnly ell`,
+  agreement with prescribed f on the complete L+ type, and the
+  existential endpoint `prescribedKpt_boring_extension_exists`.
+
+Two localized elaboration errors were repaired during development:
+the unmatched branch now explicitly rewrites the mapped singleton
+parameter using its proven equality; the `ShapeMap` module explicitly
+imports the earlier `PrescribedKptInjective` proof. Neither fix
+changes a theorem statement or adds a hypothesis.
+
+**CI coverage caveat:** the default `lake build` previously omitted
+the new modules because the root `SuccessorTree.lean` did not import
+them. PR #228 stages the public root import of the completed endpoint.
+Its default-root build check is separate from the successful focused
+V10 checks recorded above; do not claim it passed until CI confirms.
+
+The verified conclusion is conditional on corrected finite L-age B3
+and target admissibility on the prescribed source set. No additional
+abstract successor-preservation axiom is used.
 
 ## Remaining manuscript-level boundaries
 
