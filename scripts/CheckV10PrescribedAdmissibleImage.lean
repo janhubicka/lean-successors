@@ -1,0 +1,8 @@
+import SuccessorTree.V10.PrescribedAdmissibleImage
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.matching_prescribed_constructor_exists
+#print axioms SuccessorTree.V10.PrescribedBoringData.matching_prescribed_insertion_exists
+#print axioms SuccessorTree.V10.PrescribedBoringData.matching_constructor_of_correctedB3
+#print axioms SuccessorTree.V10.record_eq_of_rawTypeAtFree
+#print axioms SuccessorTree.V10.PrescribedBoringData.matchingKptImage_exists
+#print axioms SuccessorTree.V10.PrescribedBoringData.matchingKptImage_graph_unique
