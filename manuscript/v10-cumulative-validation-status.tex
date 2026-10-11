@@ -83,9 +83,15 @@ bound follows from spacing, and is isolated in
 \texttt{CanonicalInsertionParameter.lean}
 (PR #134, full and focused CI checked).
 The no-new-tuples consequence of E3, including both directed
-orientations above the new vertex's free cut, is proved separately
-by \texttt{CanonicalCrossing.lean} (current review branch; precise
-CI status still to be checked). Prove that these data recover the
+orientations above the new vertex's free cut, is kernel-checked
+in \texttt{CanonicalCrossing.lean}. The exact one-level type is
+uniquely determined by its complete predecessor and the full
+new ordinary vertex column (\texttt{CompleteNextColumn.lean}).
+The predecessor, the canonical singleton parameter as an
+induced type, and the terminal level-one $\Sigma$-letter are
+extracted in \texttt{ExtractSuccessorComponents.lean}
+(the latter two modules remain subject to their current
+exact-head CI audits). Prove that these data recover the
 complete successor record uniquely (S2) and that every
 cover of admissible types arises this way (S3).
 Only then mark Proposition~6.32 as verified and start the
