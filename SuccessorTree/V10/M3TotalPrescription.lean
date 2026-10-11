@@ -226,10 +226,10 @@ noncomputable def m3TotalBoringData
       rw [←hWT,←hUV]
       exact hComp
     change SameOrdinarySocle
-      ((middleCloneInsertPartial W.A ell n W.ell_le_size hn)
-        .partialTypeAt (ell+1) (insertAddress ell W.v))
-      ((middleCloneInsertPartial V.A ell n V.ell_le_size hn)
-        .partialTypeAt (ell+1) (insertAddress ell V.v))
+      ((middleCloneInsertPartial W.A ell n W.ell_le_size hn).partialTypeAt
+        (ell+1) (insertAddress ell W.v))
+      ((middleCloneInsertPartial V.A ell n V.ell_le_size hn).partialTypeAt
+        (ell+1) (insertAddress ell V.v))
     exact middleCloneInsertPartial_sameOrdinarySocle W.A V.A
       ell n W.v V.v W.ell_le_size V.ell_le_size hn hOrd
 
