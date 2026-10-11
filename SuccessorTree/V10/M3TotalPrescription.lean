@@ -28,6 +28,34 @@ to the selected output.
 
 namespace SuccessorTree.V10
 
+/-- Equality of represented raw Kpt nodes identifies their entire
+complete L+ records at the same free cut, not just the L reduct. -/
+theorem record_eq_of_rawTypeAtFree
+    {ell db du dd : Nat}
+    (T : PartialTypeWithE ell db du dd)
+    (A : EnumeratedPartialStructure db du dd)
+    (v : Nat)
+    (hRaw : (⟨ell,T⟩ : RawPartialTypeNode db du dd) =
+      A.rawTypeAtFree v) :
+    T = A.partialTypeAt ell v := by
+  have hFree : A.freeLevel v = ell := by
+    have h := congrArg Sigma.fst hRaw
+    change ell = A.freeLevel v at h
+    exact h.symm
+  have hNode :
+      (⟨ell,T⟩ : RawPartialTypeNode db du dd) =
+      (⟨ell,A.partialTypeAt ell v⟩ : RawPartialTypeNode db du dd) := by
+    calc
+      (⟨ell,T⟩ : RawPartialTypeNode db du dd) =
+          A.rawTypeAtFree v := hRaw
+      _ = (⟨ell,A.partialTypeAt ell v⟩ :
+          RawPartialTypeNode db du dd) := by
+        change (⟨A.freeLevel v,
+          A.partialTypeAt (A.freeLevel v) v⟩ :
+            RawPartialTypeNode db du dd) = _
+        rw [hFree]
+  simpa only [Sigma.mk.inj_iff, heq_eq_eq, true_and] using hNode
+
 /-- A chosen finite representative of one admissible level-ell
 source record, retaining its actual forbidden-age witness. -/
 structure M3ChosenWitness
@@ -73,6 +101,7 @@ theorem M3ChosenWitness.ell_le_size
     (W : M3ChosenWitness family ell T) : ell ≤ W.A.size := by
   have hh := W.freeLevel_eq
   have hCut := W.A.freeLevel_le W.v
+  have hv := W.hv
   omega
 
 /-- The exact one-step M3 image obtained from a selected finite
@@ -103,8 +132,8 @@ theorem m3FiniteTarget_restrict
   let W := chooseM3Witness family T hT
   have hSource : T = W.A.partialTypeAt ell W.v :=
     record_eq_of_rawTypeAtFree T W.A W.v W.raw_eq
-  change ((middleCloneInsertPartial W.A ell n W.ell_le_size hn)
-    .partialTypeAt (ell+1) (insertAddress ell W.v)).restrict
+  change ((middleCloneInsertPartial W.A ell n W.ell_le_size hn).partialTypeAt
+    (ell+1) (insertAddress ell W.v)).restrict
       (Nat.le_succ ell) = T
   exact (middleCloneInsertPartial_target_restrict W.A ell n
     W.ell_le_size hn W.v W.hv).trans hSource.symm
@@ -124,8 +153,8 @@ theorem m3FiniteTarget_admissible
   let W := chooseM3Witness family T hT
   change IsAdmissibleRawType family
     (⟨ell+1,
-      (middleCloneInsertPartial W.A ell n W.ell_le_size hn)
-        .partialTypeAt (ell+1) (insertAddress ell W.v)⟩ :
+      (middleCloneInsertPartial W.A ell n W.ell_le_size hn).partialTypeAt
+        (ell+1) (insertAddress ell W.v)⟩ :
           RawPartialTypeNode db du dd)
   exact middleCloneInsertPartial_target_admissible family W.A
     ell n W.ell_le_size hn W.v W.hv W.freeLevel_eq W.avoids
@@ -150,12 +179,14 @@ noncomputable def m3TotalBoringData
     PrescribedBoringData ell db du dd where
   source := {T | IsAdmissibleRawType family
     (⟨ell,T⟩ : RawPartialTypeNode db du dd)}
-  target := fun T =>
-    if hT : IsAdmissibleRawType family
+  target := fun T => by
+    classical
+    exact (if hT : IsAdmissibleRawType family
         (⟨ell,T⟩ : RawPartialTypeNode db du dd) then
       m3FiniteTarget family n hn T hT
-    else m3UnusedTarget ell db du dd
+    else m3UnusedTarget ell db du dd)
   extendsSource := by
+    classical
     intro T hT
     change IsAdmissibleRawType family
       (⟨ell,T⟩ : RawPartialTypeNode db du dd) at hT
@@ -167,6 +198,7 @@ noncomputable def m3TotalBoringData
     rw [dif_pos hT]
     exact m3FiniteTarget_restrict family n hn T hT
   preservesCompatibility := by
+    classical
     intro T U hT hU hComp
     change IsAdmissibleRawType family
       (⟨ell,T⟩ : RawPartialTypeNode db du dd) at hT
@@ -212,6 +244,7 @@ theorem m3TotalBoringData_target_admissible
     IsAdmissibleRawType family
       (⟨ell+1,(m3TotalBoringData family ell n hn).target T⟩ :
         RawPartialTypeNode db du dd) := by
+  classical
   change IsAdmissibleRawType family
     (⟨ell,T⟩ : RawPartialTypeNode db du dd) at hT
   change IsAdmissibleRawType family
