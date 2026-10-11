@@ -84,7 +84,7 @@ theorem PrescribedBoringData.prescribedInsertPartial_source_E
     cases he : W.E ell ell with
     | false => rfl
     | true =>
-      have hlt := (W.E_inside ell ell he).1
+      have hlt := W.spaced ell ell he
       omega
   have hQOld (i j : Fin ell) :
       Q.eRelation (some i.castSucc) (some j.castSucc) =
@@ -117,7 +117,7 @@ theorem PrescribedBoringData.prescribedInsertPartial_source_E
     cases he : B.E ell i.val with
     | false => rfl
     | true =>
-      have hlt := (B.E_inside ell i.val he).1
+      have hlt := B.spaced ell i.val he
       omega
   have hBToNew (i : Fin ell) :
       B.E i.val ell = decide (i.val < k) := by
