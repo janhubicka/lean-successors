@@ -1,0 +1,6 @@
+import SuccessorTree.V10.LevelRemovalParameter
+
+#print axioms SuccessorTree.V10.deleteTypeCoordinate_lastOrdinary_inside
+#print axioms SuccessorTree.V10.PartialTypeWithE.deleteOrdinary_lastOrdinary_inside
+#print axioms SuccessorTree.V10.deleteTypeCoordinate_lastOrdinary_outside
+#print axioms SuccessorTree.V10.PartialTypeWithE.deleteOrdinary_lastOrdinary_outside

@@ -185,6 +185,7 @@ import SuccessorTree.V10.LevelRemovalRawPrefix
 import SuccessorTree.V10.LevelRemovalCrossGapPrefix
 import SuccessorTree.V10.LevelRemovalBoundaryWeakSucc
 import SuccessorTree.V10.LevelRemovalPrefixCommute
+import SuccessorTree.V10.LevelRemovalParameter
 import SuccessorTree.V10.LevelRemovalAdmissibleType
 import SuccessorTree.V10.LevelRemovalAdmissiblePrefix
 import SuccessorTree.V10.LevelRemovalWitnessCut
