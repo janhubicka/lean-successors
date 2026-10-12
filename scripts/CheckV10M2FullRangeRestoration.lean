@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LevelRemovalFullRangeRestoration
+
+#print axioms SuccessorTree.V10.uniformDeletedFullRestoration_spec
+#print axioms SuccessorTree.V10.uniformDeletedFullRestoration_level
