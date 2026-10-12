@@ -172,10 +172,14 @@ for every source $x$ at or above the boundary level,
 across every tree component, using one fixed deletion
 coordinate $m$ (PR~287, exact head \texttt{68069ab3},
 full Lean run 38195482771 and focused transitive axiom
-run 38195482724 GREEN). The candidate total function,
-its strict level map and order properties are staged in
-PRs~288, 289 and~291, \emph{not yet verified}.
-No global M2 ShapeMap is claimed.
+run 38195482724 GREEN). The intrinsic \emph{total} deletion function, its strict
+source-level map and preservation of the complete Kpt prefix
+order were integrated in PR~299 (head \texttt{47ae0e27},
+full Lean 38237305047, focused 38237304990 GREEN).
+Its values are chosen from the fixed complete deleted raw record;
+finite witnesses only certify admissibility. It is \emph{not yet}
+a ShapeMap because its full weak-successor law has not been
+certified, and no global M2 decomposition is claimed.
 
 For M3, the actual gated finite middle-clone insertion satisfies
 the corrected $L$-only age test and yields one ShapeMap in $K_{pt}M$
@@ -615,9 +619,12 @@ is proved for the uniform deleted map. Complete cross-gap prefix compatibility i
 (PR~286, exact head \texttt{5172a0f2}, full Lean
 38194440667 and focused 38194440660 GREEN).
 The all-level intrinsic deletion \emph{membership}
-is verified in PR~287, but its proposed total function,
-strict levels and order laws in PRs~288, 289 and~291
-are being checked for final stacked-branch integration.
+is verified in PR~287. The ensuing total Kpt-valued
+function, strict image-level inequalities, and literal complete
+prefix preservation were verified together and merged in PR~299.
+The older diverged PRs~288, 289 and~291 were retired only after
+an exact Git-blob preservation audit. These facts do not by
+themselves imply the weak successor clause or injectivity.
 \textbf{Genuine crossing weak successor -- GREEN locally.}
 \texttt{LevelRemovalBoundaryWeakSucc.lean} (PR~292,
 full Lean 38196554700 and focused 38196554661 GREEN)
@@ -636,13 +643,22 @@ shows that the last-ordinary parameter is deleted
 at its own socle if $m<f$, and otherwise is unchanged.
 It includes all positive and absent directed tuples,
 singleton values and auxiliary $E$ atoms.
-These results do not establish the \emph{whole} above-gap
-successor law. The Option-valued empty-or-singleton
-parameter adapter (PR~297) and valid E-column transport
-(PR~296) are PENDING exact-head Lean audits.
-Global injection, (M2) factorization and corrected-B3
-necessity on arbitrary finite $L$-only witnesses
-remain OPEN.
+The valid E-column transport (PR~296) and exact
+empty-or-singleton canonical parameter transport (PR~297)
+both passed full and focused Lean audits. Their unified
+formula, \texttt{canonicalParameterRecord\_delete\_unified},
+was integrated with unchanged mathematical source in PR~305
+(head \texttt{46f27d25}, full Lean 38241191986, focused
+38241192051 GREEN), retaining the complete $L^+$ parameter
+record and its empty case. These verified ingredients do
+\emph{not yet} establish the upper-base weak successor law.
+The combined canonical-step, parameter-list, admissible
+weak-target, and lower/crossing successor interfaces are in
+PR~306; the remaining strict boundary safety condition is
+being audited separately in PR~307. Neither is marked GREEN
+until its exact-head audit passes. Full injection, the (M2)
+factorization and corrected-B3 necessity on arbitrary
+finite $L$-only witnesses remain OPEN.
 Finally, reconcile the I3 signature witnesses with finite
 $L$-structures rather than $E$-partial structures before claiming
 the upper bound.}
