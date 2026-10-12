@@ -147,7 +147,18 @@ theorem uniformGapDeletedShapeMap_fills_gap
     F.Skips (LevelTree.lev (F a₀) - 1) ∧
       LevelTree.lev (F a₀) - 1 ∈
         (uniformGapDeletedShapeMap family F q₀ a₀ hprev hgap).levelRange := by
-  refine ⟨shapeMap_skips_last_target_gap family F q₀ a₀ hprev hgap, ?_⟩
+  have hFSkip : F.Skips (LevelTree.lev (F a₀) - 1) := by
+    intro hRange
+    obtain ⟨x,hx⟩ := hRange
+    by_cases hLow : LevelTree.lev x < LevelTree.lev a₀
+    · have hXQ : LevelTree.lev x ≤ LevelTree.lev q₀ := by omega
+      have hBound := shapeMap_level_le_of_level_le family F hXQ
+      omega
+    · have hAX : LevelTree.lev a₀ ≤ LevelTree.lev x :=
+        Nat.le_of_not_gt hLow
+      have hBound := shapeMap_level_le_of_level_le family F hAX
+      omega
+  refine ⟨hFSkip, ?_⟩
   refine ⟨a₀, ?_⟩
   simpa using
     (uniformGapDeletedShapeMap_level family F q₀ a₀ hprev hgap a₀)
