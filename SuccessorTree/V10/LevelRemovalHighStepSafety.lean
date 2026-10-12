@@ -89,8 +89,9 @@ theorem mapped_upper_canonical_step_safe_for_gap
       intro y hy
       obtain ⟨x,hx,hxy⟩ := List.mem_map.mp hy
       subst y
-      exact mapped_successor_parameters_below_gap
+      have hBound := mapped_successor_parameters_below_gap
         family F q₀ a b p c hPrevA hGapA hSucc x hx
+      simpa only [hFEqual, m] using hBound
     by_cases hfZero : f = 0
     · omega
     · have hMember :
