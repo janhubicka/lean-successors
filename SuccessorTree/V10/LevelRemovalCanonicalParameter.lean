@@ -40,6 +40,7 @@ theorem PartialTypeWithE.canonicalParameterRecord_delete_outside
             f (by omega)) =
           Q.lastOrdinaryParameter f (by omega) :=
       Q.deleteOrdinary_lastOrdinary_outside m f hm hf
+    simp only [PartialTypeWithE.canonicalParameterRecord, if_neg hz]
     change
       some (⟨f, (Q.deleteOrdinary m (by omega)).lastOrdinaryParameter
         f (by omega)⟩ : RawPartialTypeNode db du dd) =
@@ -69,6 +70,7 @@ theorem PartialTypeWithE.canonicalParameterRecord_delete_inside
         (f - 1) (by omega)) =
         (Q.lastOrdinaryParameter f hf).deleteOrdinary m hmf :=
     Q.deleteOrdinary_lastOrdinary_inside m f hm hf hmf
+  simp only [PartialTypeWithE.canonicalParameterRecord, if_neg hNewPos]
   change
     some (⟨f - 1,
       (Q.deleteOrdinary m (by omega)).lastOrdinaryParameter
