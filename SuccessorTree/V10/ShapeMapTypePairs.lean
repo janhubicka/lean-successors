@@ -76,6 +76,7 @@ theorem canonicalKptStep_letter_in_upper {db du dd : Nat}
     rw [←hB]
     exact hBelow
   obtain ⟨hLe,hQ⟩ := hPrefix
+  change ell+1 ≤ u.1.1 at hLe
   rw [hLevel]
   refine ⟨by change ell < u.1.1; omega, ?_⟩
   rw [hC,←Q.pairAt_last]
