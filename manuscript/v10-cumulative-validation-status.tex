@@ -1,5 +1,10 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
+% 2026-10-12 M2 checkpoint (pending exact-head CI): PR306 integrates
+% canonical parameters and low/crossing weak successors; PR310 proposes
+% the upper weak successor; PR311 proposes the global ShapeMap and
+% missing-gap recovery. Do NOT mark M2 GREEN before checking the merged
+% exact head and its transitive axiom report.
 % Cumulative continuation: common full-prefix implementation and PR219 order transport.
 % Proof-check status is recorded in v10-prescribed-order-transport-checkpoint-20261011.md.
 % No independent/simultaneous prefix implementation is imported into this stack.
@@ -172,10 +177,17 @@ for every source $x$ at or above the boundary level,
 across every tree component, using one fixed deletion
 coordinate $m$ (PR~287, exact head \texttt{68069ab3},
 full Lean run 38195482771 and focused transitive axiom
-run 38195482724 GREEN). The candidate total function,
-its strict level map and order properties are staged in
-PRs~288, 289 and~291, \emph{not yet verified}.
-No global M2 ShapeMap is claimed.
+run 38195482724 GREEN). The intrinsically specified total deletion, strict level function
+and full prefix order have been integrated in PR~299, with the
+canonical empty-or-singleton parameter transport integrated in PR~305.
+The checked sharp upper-step safety is recorded in PR~309.
+The four component proofs are restaged in PR~306; PR~310 proposes the
+remaining high-base weak successor, while PR~311 packages its
+consequence as a genuine root-preserving Kpt ShapeMap using
+injectivity derived from weak successors rather than assumed.
+These latter integrated claims remain \emph{PENDING exact-head Lean
+and transitive named-axiom audits}; no complete M2 factorization
+is asserted.
 
 For M3, the actual gated finite middle-clone insertion satisfies
 the corrected $L$-only age test and yields one ShapeMap in $K_{pt}M$
@@ -614,10 +626,13 @@ is proved for the uniform deleted map. Complete cross-gap prefix compatibility i
 \texttt{LevelRemovalCrossGapPrefix.lean}
 (PR~286, exact head \texttt{5172a0f2}, full Lean
 38194440667 and focused 38194440660 GREEN).
-The all-level intrinsic deletion \emph{membership}
-is verified in PR~287, but its proposed total function,
-strict levels and order laws in PRs~288, 289 and~291
-are being checked for final stacked-branch integration.
+The all-level intrinsic deletion \emph{membership} is
+verified in PR~287. The intrinsic function and strict level/order
+laws have been integrated in PR~299, and the unified canonical
+parameter transport in PR~305. PR~306 assembles the genuine
+low/crossing weak-successor components; PR~310 (upper case)
+and PR~311 (ShapeMap) are proof candidates requiring exact-head
+CI, focused checks and axiom audit before being marked GREEN.
 \textbf{Genuine crossing weak successor -- GREEN locally.}
 \texttt{LevelRemovalBoundaryWeakSucc.lean} (PR~292,
 full Lean 38196554700 and focused 38196554661 GREEN)
@@ -636,13 +651,27 @@ shows that the last-ordinary parameter is deleted
 at its own socle if $m<f$, and otherwise is unchanged.
 It includes all positive and absent directed tuples,
 singleton values and auxiliary $E$ atoms.
-These results do not establish the \emph{whole} above-gap
-successor law. The Option-valued empty-or-singleton
-parameter adapter (PR~297) and valid E-column transport
-(PR~296) are PENDING exact-head Lean audits.
-Global injection, (M2) factorization and corrected-B3
-necessity on arbitrary finite $L$-only witnesses
-remain OPEN.
+The Option-valued empty-or-singleton parameter adapter
+(PR~297) and canonical E-column validity (PR~296) have
+subsequently passed their respective checks and were integrated.
+The local deletion proof no longer needs an auxiliary successor
+axiom: PR~309 derives the sharp $m<k$ or $f<m$ guard
+from the actual mapped upper canonical step. PR~310 assembles
+the missing high-base weak-successor proof from the complete
+deleted record and admissible deleted weak target; PR~311 packages
+the intrinsic function as a candidate ShapeMap, deriving
+injectivity from strict levels, root extension and weak successors.
+It also records literal agreement below the source gap and
+the recovery of the skipped target level by the deletion factor.
+\textbf{Status: PRs~310--311 remain PENDING exact-head CI and
+named-axiom audits.} Even if both are certified, the
+complementary one-gap map, equality of the composition with
+the original $F$ through source level $n$, and corrected-B3
+necessity on arbitrary finite $L$-only witnesses remain OPEN.
+Do not conflate constructing the first factor with proving (M2).
+Finally, reconcile the I3 signature witnesses with finite
+$L$-structures rather than $E$-partial structures before
+claiming the upper bound.
 Finally, reconcile the I3 signature witnesses with finite
 $L$-structures rather than $E$-partial structures before claiming
 the upper bound.}

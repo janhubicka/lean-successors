@@ -190,6 +190,7 @@ import SuccessorTree.V10.LevelRemovalCanonicalStepAssembly
 import SuccessorTree.V10.LevelRemovalDeletedWeakTarget
 import SuccessorTree.V10.LevelRemovalUniformLowWeakSucc
 import SuccessorTree.V10.LevelRemovalUniformHighWeakSucc
+import SuccessorTree.V10.LevelRemovalUniformShapeMap
 import SuccessorTree.V10.LevelRemovalColumnTransport
 import SuccessorTree.V10.LevelRemovalTerminalLetter
 import SuccessorTree.V10.LevelRemovalRawPrefix
