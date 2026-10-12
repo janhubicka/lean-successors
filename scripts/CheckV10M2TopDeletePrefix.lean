@@ -3,3 +3,5 @@ import SuccessorTree.V10.LevelRemovalTopDeletePrefix
 #print axioms SuccessorTree.V10.deleteLastTypeCoordinate_eq_lift
 #print axioms SuccessorTree.V10.PartialTypeWithE.deleteOrdinary_last_eq_restrict
 #print axioms SuccessorTree.V10.rawPartialTypeDeleteAt_last_eq_ancestor
+#print axioms SuccessorTree.V10.uniformGapDeletedShapeMap_boundary_raw_ancestor
+#print axioms SuccessorTree.V10.uniformGapDeletedShapeMap_boundary_le_image
