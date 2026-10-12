@@ -83,6 +83,7 @@ theorem rawPartialTypeDeleteAt_last_eq_ancestor
     rawPartialTypeDeleteAt N (N.1 - 1) (by omega) =
       rawPartialTypeAncestor N (N.1 - 1) (Nat.sub_le N.1 1) := by
   rcases N with ⟨cut,T⟩
+  change 0 < cut at hPos
   cases cut with
   | zero => omega
   | succ m =>
@@ -114,6 +115,7 @@ theorem uniformGapDeletedShapeMap_boundary_raw_ancestor
         (by
           have hlevel := F.level_eq_of_level_eq hx
           change (F x).1.1 = (F a₀).1.1 at hlevel
+          change (F a₀).1.1 - 1 ≤ (F x).1.1
           omega) := by
   change (uniformGapDeletedKpt family F q₀ a₀ hprev hgap x).1 = _
   obtain ⟨hm,hRaw⟩ :=
@@ -152,6 +154,7 @@ theorem uniformGapDeletedShapeMap_boundary_le_image
     (by
       have hlevel := F.level_eq_of_level_eq hx
       change (F x).1.1 = (F a₀).1.1 at hlevel
+      change (F a₀).1.1 - 1 ≤ (F x).1.1
       omega)
 
 end SuccessorTree.V10
