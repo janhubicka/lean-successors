@@ -584,7 +584,44 @@ $D(x)\mapsto F(x)$ to an arbitrary one-gap Kpt ShapeMap.
 Lower-level agreement can be derived without corrected B3 or M2,
 provided one first establishes identity below a unique skipped level
 directly from the Kpt level-range formula and weak successors.
-The corresponding independent Lean proof remains PENDING CI.
+The M2-independent lower-identity and arbitrary one-gap
+boundary-extension equivalence are GREEN in PR~313, which passed
+full Lean 38268558208 and focused transitive axiom audit
+38268558200 and has been merged. No M2 is assumed.
+PR~314 constructs the partial restoration graph on the actual deleted
+boundary image $D[K_{pt}(n)]$: by injectivity of $D$, the prescription
+$D(x)\mapsto F(x)$ is a well-defined function, with input level $m$ and
+output level $m+1$ across all tree components. PR~314 passed full Lean
+38268563188 and focused standard-axiom audit 38268563272 and was merged.
+The remaining task is to extend this partial function to a one-gap
+Kpt ShapeMap; its finite age/compatibility requirements have not
+been proved.
+PR~315 is GREEN: deleting the final ordinary coordinate from a
+complete $L^+$ type equals its full predecessor restriction,
+including all directed, singleton and auxiliary $E$ data, and the
+actual intrinsic boundary deletion is this same predecessor of $F(x)$.
+The exact-head full Lean 38270726577 and focused standard-axiom
+audit 38270726588 passed and the PR was merged. This verifies B1,
+but does not imply B2 or corrected finite $L$-age necessity.
+A direct finite-age alternative is staged in PR~316: if the new
+ordinary vertex is $L$-linked to at most one designated upper vertex
+and the induced $L$-structure on the initial socle plus that vertex
+is forbidden-free, then binary irreducibility rules out every
+forbidden copy involving the inserted coordinate. Copies avoiding
+it project back to the old age. This one-linked-upper age theorem passed exact-head full Lean
+38270821103 and focused standard-axiom audit 38270821068,
+and was merged as PR~316. It does NOT construct the insertion or
+prove the one-link condition for the desired global map.
+In fact, canonical parameter transport may force the inserted
+vertex to be linked to several upper vertices simultaneously;
+thus the one-linked lemma is NOT a substitute for corrected B3
+without an additional compatibility invariant.
+A possible next step for B2 is to free-amalgamate two compatible
+source types over their common ordinary socle, and use an actual
+mapped successor whose canonical parameter is the second type
+to compare their inserted ordinary columns. This is a proposed
+argument only, not yet validated. The finite L-only age test
+with several linked upper vertices remains OPEN.
 This M2 obligation remains OPEN.
 
 \textbf{M3 duplication -- GREEN in the normalized model;
