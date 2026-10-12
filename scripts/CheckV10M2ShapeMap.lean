@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LevelRemovalUniformShapeMap
+
+#print axioms SuccessorTree.V10.uniformGapDeletedShapeMap
+#print axioms SuccessorTree.V10.uniformGapDeletedShapeMap_mem_KptM
+#print axioms SuccessorTree.V10.uniformGapDeletedShapeMap_level
