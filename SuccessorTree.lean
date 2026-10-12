@@ -180,6 +180,11 @@ import SuccessorTree.V10.EndDuplicateAge
 
 import SuccessorTree.V10.LevelRemovalFreeCut
 import SuccessorTree.V10.LevelRemovalType
+import SuccessorTree.V10.LevelRemovalUniformParameter
+import SuccessorTree.V10.LevelRemovalUniformFunction
+import SuccessorTree.V10.LevelRemovalUniformLevel
+import SuccessorTree.V10.LevelRemovalUniformOrder
+import SuccessorTree.V10.LevelRemovalColumnTransport
 import SuccessorTree.V10.LevelRemovalTerminalLetter
 import SuccessorTree.V10.LevelRemovalRawPrefix
 import SuccessorTree.V10.LevelRemovalCrossGapPrefix
@@ -197,10 +202,6 @@ import SuccessorTree.V10.LevelRemovalUniformImageGuard
 import SuccessorTree.V10.LevelRemovalIntrinsicAdmissible
 import SuccessorTree.V10.LevelRemovalBoundaryAdmissible
 import SuccessorTree.V10.LevelRemovalAllLevelsAdmissible
-import SuccessorTree.V10.LevelRemovalUniformFunction
-import SuccessorTree.V10.LevelRemovalUniformLevel
-import SuccessorTree.V10.LevelRemovalUniformOrder
-import SuccessorTree.V10.LevelRemovalUniformParameter
 
 import SuccessorTree.V10.PrescribedB3Spacing
 
