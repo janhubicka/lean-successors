@@ -165,9 +165,17 @@ image is admissible both at the source boundary and above
 a chosen actual successor (PR~285, GREEN).
 The successor and finite witness are used only to prove
 membership, not to choose the deleted value.
-The extension to every source component/level and a total
-deleted function is under separate Lean review (PRs~287--289);
-no global M2 ShapeMap is yet established.
+The full \emph{all-level} admissibility consequence is now
+checked in \texttt{LevelRemovalAllLevelsAdmissible.lean}:
+the deleted complete raw record of $F(x)$ belongs to Kpt
+for every source $x$ at or above the boundary level,
+across every tree component, using one fixed deletion
+coordinate $m$ (PR~287, exact head \texttt{68069ab3},
+full Lean run 38195482771 and focused transitive axiom
+run 38195482724 GREEN). The candidate total function,
+its strict level map and order properties are staged in
+PRs~288, 289 and~291, \emph{not yet verified}.
+No global M2 ShapeMap is claimed.
 
 For M3, the actual gated finite middle-clone insertion satisfies
 the corrected $L$-only age test and yields one ShapeMap in $K_{pt}M$
@@ -602,11 +610,18 @@ cuts exceed the deleted coordinate.
 derives injectivity \emph{conditionally} from strict
 level ordering, root extension and the genuine weak
 successor law; it cannot be invoked before that law
-is proved for the uniform deleted map. Cross-gap
-prefix compatibility (PR~286), all-level membership
-and the total candidate (PRs~287--289), and the
-three weak-successor cases remain subject to separate
-validation. Global (M2) factorization and corrected-B3
+is proved for the uniform deleted map. Complete cross-gap prefix compatibility is verified in
+\texttt{LevelRemovalCrossGapPrefix.lean}
+(PR~286, exact head \texttt{5172a0f2}, full Lean
+38194440667 and focused 38194440660 GREEN).
+The all-level intrinsic deletion \emph{membership}
+is verified in PR~287, but its proposed total function,
+strict levels and order laws in PRs~288, 289 and~291
+are still awaiting exact-head checks. Genuine lower
+crossing weak successor and complete terminal-letter
+transport are separately being audited in PRs~292--293;
+the full above-gap successor law and global injection
+remain OPEN. Global (M2) factorization and corrected-B3
 necessity on arbitrary finite $L$-only witnesses
 remain OPEN.
 Finally, reconcile the I3 signature witnesses with finite
