@@ -1,0 +1,26 @@
+% Successor v10 reviewer-only M2 parameter transport note (12 Oct 2026).
+% New Lean lemma is PENDING exact-head full and focused CI.
+% Keep the author's mathematical prose and four approved repairs frozen.
+%
+\todo[inline]{\textbf{v10 M2: uniform optional parameter deletion
+-- PENDING exact-head verification.}
+The two previously verified finite successor-parameter identities
+(for a free E cut $f\leq m$ and $m<f$, respectively) are combined
+in \texttt{LevelRemovalUnifiedParameter.lean}. For a complete
+successor $L^+$ record $Q$, an earlier coordinate $m>0$ and
+its canonical free cut $f$, the optional parameter of
+$Q\ominus m$ with free cut $\mathrm{deleteAtCut}(m,f)$ is
+exactly the old optional parameter acted upon by
+\texttt{rawPartialTypeDeleteIfAbove}: an empty parameter stays
+empty; a singleton parameter with cut at most $m$ is unchanged;
+one with cut above $m$ loses that ordinary coordinate.
+All positive and absent directed $L$-atoms, singleton bits
+and $E$ pairs are included.
+
+This is a finite record equation. Identifying it with the image
+of every actual parameter node under the piecewise global
+M2 candidate still requires a source-level comparison, the
+corrected canonical E-column, and the admissible target step.
+It does not assert weak successor preservation, injectivity,
+the global level-removal ShapeMap or the M2 factorization.
+The corrected B3 condition is still an $L$-only finite age test.}
