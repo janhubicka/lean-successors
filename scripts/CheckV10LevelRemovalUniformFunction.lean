@@ -1,0 +1,6 @@
+import SuccessorTree.V10.LevelRemovalUniformFunction
+
+#print axioms SuccessorTree.V10.uniformGapDeletedKpt_below
+#print axioms SuccessorTree.V10.uniformGapDeletedKpt_above_level
+#print axioms SuccessorTree.V10.uniformGapDeletedKpt_level_eq
+#print axioms SuccessorTree.V10.uniformGapDeletedKpt_root_le
