@@ -1,0 +1,31 @@
+% Successor-v10 M2 crossing-prefix lemma: review-only note.
+% Mathematical author text/four controlled source repairs are frozen.
+% Candidate Lean proof PENDING current-head full and focused CI.
+%
+\todo[inline]{\textbf{v10 M2: complete prefix across a deleted level
+-- PENDING Lean.}
+The predecessor clause of a uniform M2 deletion map must
+also cover source types which lie \emph{below} its first
+affected level. If a complete raw $L^+$ type $a$ ends
+at cut $c\leq m$, and $a\subseteq b$ with $\ell(b)>m$,
+then the proposed
+\texttt{rawPartialTypePrefix\_delete\_above\_cut}
+establishes
+\[
+  a\subseteq b\ominus m.
+\]
+Indeed no ordinary coordinate of the initial $c$-socle
+is changed by deletion of coordinate $m\geq c$.
+The proof checks the literal coordinates and the
+whole L/E record, including absent directed binary
+relations. Combined with the already checked
+\texttt{rawPartialTypeDeleteAt\_prefix} for two cuts
+above $m$, this covers both predecessor-order cases
+for the proposed uniform deletion function.
+
+This does not produce admissibility for every output,
+strict level monotonicity, weak successor preservation
+(in particular the crossing step), or the corrected
+finite $L$-only B3 factorization needed for (M2).
+The new statements must pass exact-head Lean CI
+before being marked GREEN.}
