@@ -63,7 +63,8 @@ theorem IsLInsertion.avoids_of_one_linked_upper
           have ha : a = 0 := Subsingleton.elim _ _
           simpa [ha] using hEll
         exact (hAvoidA (.singleton P hNeutral) hbad)
-          ⟨e, hInsert.realizes_away_projects P e he hAway⟩
+          ⟨fun a => removeInserted ell (e a),
+            hInsert.realizes_away_projects P e he hAway⟩
   | nontrivial r P hr hIrred =>
       rintro ⟨e, he⟩
       by_cases hContains : ∃ a : Fin r, e a = ell
@@ -100,6 +101,7 @@ theorem IsLInsertion.avoids_of_one_linked_upper
           intro a hEq
           exact hContains ⟨a, hEq⟩
         exact (hAvoidA (.nontrivial r P hr hIrred) hbad)
-          ⟨e, hInsert.realizes_away_projects P e he hAway⟩
+          ⟨fun a => removeInserted ell (e a),
+            hInsert.realizes_away_projects P e he hAway⟩
 
 end SuccessorTree.V10
