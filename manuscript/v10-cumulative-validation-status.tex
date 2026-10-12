@@ -584,7 +584,16 @@ $D(x)\mapsto F(x)$ to an arbitrary one-gap Kpt ShapeMap.
 Lower-level agreement can be derived without corrected B3 or M2,
 provided one first establishes identity below a unique skipped level
 directly from the Kpt level-range formula and weak successors.
-The corresponding independent Lean proof remains PENDING CI.
+The M2-independent lower-identity and arbitrary one-gap
+boundary-extension equivalence are staged in PR~313, still PENDING
+exact-head Lean and named-axiom audits.
+PR~314 constructs the partial restoration graph on the actual deleted
+boundary image $D[K_{pt}(n)]$: by injectivity of $D$, the prescription
+$D(x)\mapsto F(x)$ is a well-defined function, with input level $m$ and
+output level $m+1$ across all tree components. The remaining task is
+to extend this partial function to a one-gap Kpt ShapeMap; its finite
+age/compatibility requirements have not been proved. These new
+proof endpoints likewise remain PENDING exact-head verification.
 This M2 obligation remains OPEN.
 
 \textbf{M3 duplication -- GREEN in the normalized model;
