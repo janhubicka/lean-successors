@@ -1,0 +1,29 @@
+% Successor v10, 12 October 2026. Review-only M2 crossing-step note.
+% Original mathematical prose/four controlled repairs remain untouched.
+% PENDING exact-head full Lean and named transitive axiom audit.
+%
+\todo[inline]{\textbf{v10 M2: weak successor across the lower image
+gap -- PENDING.}
+Let $F$ be a genuine shape-preserving Kpt map, and let
+$S(a,\bar p,c)=b$ be a source edge with $a$ at level
+$n-1$ and $b$ at the first level $n$ after a target image
+gap. Put $m=\widetilde F(n)-1$. The real weak image
+successor $S(F(a),F(\bar p),c)=d\preceq F(b)$ has
+$\ell(d)=\ell(F(a))+1\le m$. Deleting ordinary coordinate
+$m$ from the complete $L^+$ record $F(b)$ leaves its
+full prefix through level $m$ unchanged. Thus the
+proposed \texttt{weak\_image\_successor\_below\_deleted\_boundary}
+in \texttt{LevelRemovalBoundaryWeakSucc.lean} proves
+$d\preceq F(b)\ominus m$ with the SAME mapped parameters
+and terminal letter.
+
+This verifies the crucial target-order part of the
+weak-successor requirement in the single crossing case.
+To use it for the intrinsic piecewise deleted map, one
+must also prove that the source base and every parameter
+below $n$ are unchanged, and identify its value on $b$
+with the prescribed intrinsic deletion. The upper-base
+case (deleting a coordinate from a genuine canonical
+successor step) and global injection remain open.
+The finite $L$-only corrected B3 and M2 factorization
+are not consequences of this lemma.}
