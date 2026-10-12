@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LevelRemovalFullRangeOrder
+
+#print axioms SuccessorTree.ShapeMap.reflects_le
+#print axioms SuccessorTree.V10.uniformDeletedFullRestoration_le_iff
+#print axioms SuccessorTree.V10.uniformDeletedFullRestoration_injective

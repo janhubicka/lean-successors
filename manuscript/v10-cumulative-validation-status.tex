@@ -631,15 +631,29 @@ on its original branch; the proof is restaged byte-identically here
 for integration testing. It does not give a total ShapeMap outside
 $D[K_{pt}]$, and the multi-upper age and successor conditions remain OPEN.
 
-A further finite reduction is proposed in
-\texttt{PrescribedB3BoundedCores.lean}: corrected B3 is equivalent
-to testing induced $L$-cores consisting of the full initial socle
-and at most $r$ chosen upper addresses, where $r$ is bounded by
-the largest forbidden arity in $\mathcal F$. Every forbidden copy
-in a purported counterexample is contained in such a core.
-This does not prove B3 from $F$ or furnish an $E$-lift; it isolates
-the genuinely bounded simultaneous-upper compatibility problem.
-The new Lean proof and named-axiom audit are PENDING.
+PR~318 proves that shape-preserving maps also reflect the
+complete predecessor order, using injectivity and uniqueness of
+ancestors. Thus the partial restoration $R$ on $D[K_{pt}]$
+preserves and reflects prefix order and is injective; it is an
+order embedding of its partial domain. This proof passed full Lean
+38272059762, focused standard-axiom audit 38272059862 and TeX
+checks on its original exact head, and is restaged with the same
+mathematical proof blobs for cumulative integration.
+Order embedding alone neither extends $R$ to all Kpt types nor
+supplies the missing successor and multi-upper age conditions.
+
+PR~320 establishes an equivalent uniformly bounded formulation of
+the corrected finite B3 age test: any forbidden copy is contained in
+an induced core consisting of the initial ordinary socle and at most
+$r$ selected upper addresses, where $r$ is bounded by the largest
+arity of a configuration in the finite forbidden family.
+Its mathematical Lean proof passed full build 38279286002 and
+focused standard-axiom audit 38279286062 on the original PR head;
+this cumulative restaging preserves those proof bytes and requires
+its own integration audit. This is an exact localization of B3,
+NOT its derivation from an arbitrary $F$. In particular the
+simultaneous $E$-socle compatibility of several upper types and the
+global successor-preserving extension remain OPEN.
 
 This M2 obligation remains OPEN.
 
