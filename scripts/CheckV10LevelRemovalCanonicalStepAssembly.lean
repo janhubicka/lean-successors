@@ -1,0 +1,3 @@
+import SuccessorTree.V10.LevelRemovalCanonicalStepAssembly
+
+#print axioms SuccessorTree.V10.canonicalKptStep_of_deleted_record
