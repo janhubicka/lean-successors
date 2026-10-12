@@ -1,0 +1,3 @@
+import SuccessorTree.V10.LocalAgeOneLinkedUpper
+
+#print axioms SuccessorTree.V10.IsLInsertion.avoids_of_one_linked_upper
