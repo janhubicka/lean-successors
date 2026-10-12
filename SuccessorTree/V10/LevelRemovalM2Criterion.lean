@@ -67,6 +67,7 @@ theorem uniformGapDeletedShapeMap_factorization_if_prescribed
       (by
         have hXQ : LevelTree.lev x ≤ LevelTree.lev q₀ := by omega
         have hFBound := shapeMap_level_le_of_level_le family F hXQ
+        change LevelTree.lev (F x) < LevelTree.lev (F a₀) - 1
         omega)
   · exact hBoundary x hEq
 
