@@ -96,6 +96,40 @@ for bad in [
         raise AssertionError("Invalid input was accepted")
 print("PASS: required-anchor and malformed-note negative tests")
 
+# The older source contains this exact observation but no TeX label.
+# Use only its unique introductory sentence and immediate lem:signatures
+# adjacency, preserving the mathematical paragraph byte-for-byte.
+legacy = old.replace(
+    r"\begin{observation}\label{obs:signature-unique}",
+    "Signatures are not necessarily unique, however:\n"
+    + r"\begin{observation}"
+)
+legacy_once, legacy_markers = app.transform(legacy, todos)
+assert "LEGACY UNLABELLED: obs:signature-unique" in legacy_markers
+assert (
+    r"\end{observation}" + "\n"
+    + r"% successor-v10-proof:obs:signature-unique"
+) in legacy_once
+assert app.transform(legacy_once, todos)[0] == legacy_once
+assert app.remove_only_managed(legacy_once) == app.remove_only_managed(legacy)
+assert len(legacy_markers) == 9
+for bad_legacy in [
+    legacy.replace("Signatures are not necessarily unique, however:",
+                   "Another observation."),
+    legacy.replace("Signatures are not necessarily unique, however:",
+                   "Signatures are not necessarily unique, however:\n"
+                   "Signatures are not necessarily unique, however:"),
+    legacy.replace(r"\label{lem:signatures}", ""),
+]:
+    try:
+        app.transform(bad_legacy, todos)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Ambiguous legacy signature anchor was accepted")
+print("PASS: unique legacy signature observation and fail-closed fallback")
+
+
 # Labels after real comments do not count; escaped percent is ordinary text.
 assert app.transform("% ignored \\label{lem:meets}\n"+old, todos)[0].endswith(once)
 assert app.label_line_end("escaped \\% \\label{only}\n", "only") is not None
