@@ -37,9 +37,11 @@ noncomputable def uniformGapDeletedKpt
     AdmissibleKptNode family := by
   classical
   by_cases hx : LevelTree.lev a₀ ≤ LevelTree.lev x
-  · obtain ⟨hm,hAd⟩ :=
+  · let hExists :=
       admissible_deleted_image_at_all_upper_source_levels
         family F q₀ a₀ hprev hgap x hx
+    let hm := Classical.choose hExists
+    have hAd := Classical.choose_spec hExists
     exact ⟨⟨(F x).1.1 - 1,
       (F x).1.2.deleteOrdinary
         (LevelTree.lev (F a₀) - 1) hm⟩,hAd⟩
