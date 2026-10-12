@@ -1,0 +1,32 @@
+% Successor v10 M2 high-source canonical deletion guard (2026-10-12).
+% New independent normalized Lean endpoint PENDING full/focused exact-head CI.
+% No mathematical author prose or four prior corrections are modified.
+%
+\todo[inline]{\textbf{v10 M2: safe canonical deletion above the boundary
+-- PENDING exact-head Lean verification.}
+Let $F$ be shape-preserving with a strict gap before the first
+affected source level $n$, let $m=\widetilde F(n)-1$, and consider
+a genuine source successor at level $j\geq n$.
+Write its mapped canonical successor predecessor level as
+$k+1=\widetilde F(j)$, and its canonical new E cut as $f$.
+The proposed theorem
+\texttt{mapped\_upper\_canonical\_step\_safe\_for\_gap}
+shows \emph{either} $m<k$ \emph{or} $f<m$.
+If $j>n$, strict preservation of levels makes the first
+alternative hold. At $j=n$, (S1), the image target gap and
+the actual empty-or-singleton canonical parameter record
+force the second: $f=0$ when the parameter is empty;
+otherwise the unique parameter has level $f<m$.
+The old parameter list is exactly the image of the genuine
+source successor parameters, without an additional age,
+successor or free-cut hypothesis.
+
+This proves the exact condition needed for
+\texttt{canonicalKptStep\_of\_deleted\_record}
+to reconstruct a genuine successor after deleting $m$,
+including the boundary step where the preceding ordinary
+vertex would otherwise become consecutive in $E$.
+It does \emph{not} itself prove weak successor preservation
+of the intrinsic deleted-image function, injection or
+M2 factorization; corrected finite $L$-only B3 necessity
+remains OPEN.}
