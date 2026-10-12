@@ -44,6 +44,6 @@ theorem reflects_le (F : ShapeMap S) {a b : T}
     · exact LevelTree.same_level_of_le hac hFlevels.symm
     · exact (LevelTree.same_level_of_le hca hFlevels).symm
   have hac : a = c := F.injective' hEq
-  exact hac.le.trans hcb
+  simpa only [hac] using hcb
 
 end SuccessorTree.ShapeMap
