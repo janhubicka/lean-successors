@@ -93,7 +93,8 @@ theorem uniformGapDeletedKpt_map_le
         omega
       have hRaw : (F x).1 ≤ rawPartialTypeDeleteAt (F y).1 m hmy :=
         rawPartialTypePrefix_delete_above_cut hFxy m hLowFx hmy
-      change (D x).1 ≤ (D y).1
+      change (uniformGapDeletedKpt family F q₀ a₀ hprev hgap x).1 ≤
+        (uniformGapDeletedKpt family F q₀ a₀ hprev hgap y).1
       rw [uniformGapDeletedKpt_below family F q₀ a₀
         hprev hgap x hLowX, hDy]
       exact hRaw
