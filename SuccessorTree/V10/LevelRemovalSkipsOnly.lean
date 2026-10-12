@@ -1,5 +1,5 @@
 import SuccessorTree.V10.LocalAgeAllLevels
-import SuccessorTree.V10.LevelRemovalM2Criterion
+import SuccessorTree.V10.LevelRemovalUniformShapeMap
 import SuccessorTree.Monoid
 import Mathlib.Tactic
 
