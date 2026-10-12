@@ -1,0 +1,27 @@
+% Successor v10 — M2 deletion of the full valid ordinary E-column.
+% Review-only candidate, 12 October 2026. No author mathematical prose
+% or prior four controlled corrections are edited; GREEN is not claimed.
+%
+\todo[inline]{\textbf{v10 M2: validity of the successor column
+after ordinary-coordinate deletion -- PENDING exact-head Lean.}
+For a complete successor $L^+$ record at cut $\ell+2$,
+assume its last ordinary vertex has a valid canonical E-column
+with free cut $f\leq\ell+1$. Deleting any prior ordinary
+coordinate $m<\ell+1$ replaces this by the exact cut
+$\operatorname{deleteAtCut}(m,f)$, equal to $f-1$
+if $m<f$ and to $f$ otherwise. The proposed theorem
+\texttt{validNewOrdinaryColumn\_deleteOrdinary}
+checks directly that the shortened record satisfies all
+three axioms of a valid new ordinary column: initial-segment
+E-incidences, absence of reverse E-pairs, and the absence
+of either directed binary tuple beyond the transported cut.
+No free-level or compatibility assumption beyond the original
+validity certificate is needed.
+
+This and the separate exact terminal-letter and
+canonical-parameter transport lemmas are prerequisites
+for the above-gap weak successor argument. They do not
+themselves produce the new admissible successor with the
+deleted parameter list, injectivity or a shape-preserving
+uniform deletion map, and do not resolve corrected finite
+$L$-only B3 or global (M2).}
