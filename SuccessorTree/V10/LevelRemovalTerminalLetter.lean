@@ -114,6 +114,8 @@ theorem deleteAtPartial_terminalLetter_eq
     deleteAtPartial_partialTypeAt_eq_deleteOrdinary
       A m (ell + 2) (v - 1) hnext hguard (by omega)
   rw [hAddr] at hRecords
+  have hCutEq : ell + 2 - 1 = ell + 1 := by omega
+  rw [hCutEq] at hRecords
   rw [hRecords]
   exact PartialTypeWithE.deleteOrdinary_terminalLetter
     (A.partialTypeAt (ell + 2) v) m hm
