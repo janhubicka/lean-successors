@@ -161,13 +161,20 @@ def transform(src: str, todos: list[str]) -> tuple[str,list[str]]:
     out=original_prose
     found=[]
     for label, index in {**LABELS, **OPTIONAL_LABELS}.items():
-        point=label_line_end(out,label,optional=label in OPTIONAL_LABELS)
+        if label == "obs:signature-unique" and (
+            label_line_end(out,label,optional=True) is None
+        ):
+            point=legacy_signature_point(out)
+            recorded="LEGACY UNLABELLED: obs:signature-unique"
+        else:
+            point=label_line_end(out,label,optional=label in OPTIONAL_LABELS)
+            recorded=label
         if point is None:
             found.append(f"OPTIONAL NOT FOUND: {label}")
             continue
         note=(f"% {PREFIX}:{label}\n"+todos[index]+"\n")
         out=out[:point]+note+out[point:]
-        found.append(label)
+        found.append(recorded)
     anchor=boring_anchor(out)
     if anchor is None:
         found.append("OPTIONAL NOT FOUND: lem:boring or lem:local-age")
