@@ -180,6 +180,7 @@ import SuccessorTree.V10.EndDuplicateAge
 
 import SuccessorTree.V10.LevelRemovalFreeCut
 import SuccessorTree.V10.LevelRemovalType
+import SuccessorTree.V10.LevelRemovalColumnTransport
 import SuccessorTree.V10.LevelRemovalTerminalLetter
 import SuccessorTree.V10.LevelRemovalRawPrefix
 import SuccessorTree.V10.LevelRemovalCrossGapPrefix
