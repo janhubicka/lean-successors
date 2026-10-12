@@ -107,7 +107,7 @@ theorem realizes_projects {r db du dd : Nat}
     exact (hCarrier _).2
       (project_lt n N (e a) hn (hCopy.2.1 a) (hReal a))
   · intro a b hab t
-    simpa only [model, if_pos ⟨hReal a,hReal b⟩] using
+    simpa [model, hReal a, hReal b] using
       hCopy.2.2.1 a b hab t
   · intro a t
     simpa only [model, if_pos (hReal a)] using hCopy.2.2.2.1 a t
@@ -197,7 +197,7 @@ def E {db du dd : Nat}
 /-- The source-side padding supplies a genuine E-expansion relative to
 ANY fixed compatible initial E-socle, even when the old numerical
 layout itself has consecutive L-linked upper vertices. -/
-def partial {db du dd : Nat}
+def partialStructure {db du dd : Nat}
     (C : EnumeratedPartialStructure db du dd)
     (A : AgeTestModel db du dd) (n N : Nat)
     (hC : n ≤ C.size)
@@ -264,7 +264,7 @@ theorem partial_preserves_avoidance {db du dd : Nat}
       A.binary x y t = C.L.binary x y t)
     (hn : n ≤ N) (hCarrier : ∀ x, x ∈ A.carrier ↔ x < N)
     (bad : NormalizedForbidden db du dd) (hAvoid : bad.Avoids A) :
-    bad.Avoids (partial C A n N hC hSocle).L :=
+    bad.Avoids (partialStructure C A n N hC hSocle).L :=
   preserves_avoidance A n N hn hCarrier bad hAvoid
 
 /-- The padded witness leaves the entire initial auxiliary E-socle unchanged. -/
@@ -275,8 +275,8 @@ theorem partial_E_socle {db du dd : Nat}
     (hSocle : ∀ x y, x < n → y < n → ∀ t : Fin db,
       A.binary x y t = C.L.binary x y t)
     (u v : Nat) (hv : v < n) :
-    (partial C A n N hC hSocle).E u v = C.E u v := by
-  simp [partial,E,hv]
+    (partialStructure C A n N hC hSocle).E u v = C.E u v := by
+  simp [partialStructure,E,hv]
 
 /-- Every real upper vertex has all E-links to the retained initial
 socle; hence its type over that socle is available before applying F. -/
@@ -287,14 +287,14 @@ theorem partial_upper_full_socle {db du dd : Nat}
     (hSocle : ∀ x y, x < n → y < n → ∀ t : Fin db,
       A.binary x y t = C.L.binary x y t)
     (i u : Nat) (hi : i < N) (hni : n ≤ i) (hu : u < n) :
-    (partial C A n N hC hSocle).E u (address n i) = true := by
+    (partialStructure C A n N hC hSocle).E u (address n i) = true := by
   have hAddr : n < address n i := by
     unfold address
     split_ifs <;> omega
   have hSpace : u + 1 < address n i := by
     unfold address
     split_ifs <;> omega
-  simp only [partial,E,if_neg (by omega : ¬ address n i < n),decide_eq_true_eq]
+  simp only [partialStructure,E,if_neg (by omega : ¬ address n i < n),decide_eq_true_eq]
   exact ⟨address_lt_size n N i hi,address_real n i,hSpace⟩
 
 end NonedgePadding
