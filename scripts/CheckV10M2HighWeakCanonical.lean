@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LevelRemovalUniformHighWeakSucc
+
+#print axioms SuccessorTree.V10.uniformGapDeletedKpt_high_weak_succ
+#print axioms SuccessorTree.V10.uniformGapDeletedKpt_weak_succ
