@@ -55,11 +55,10 @@ theorem uniformGapDeletedKpt_raw_if_above
     change (uniformGapDeletedKpt family F q₀ a₀ hprev hgap x).1 =
       (if h : m < (F x).1.1 then
         rawPartialTypeDeleteAt (F x).1 m h else (F x).1)
-    split_ifs with h
-    · exact (hmLow h).elim
-    · exact congrArg Subtype.val
-        (uniformGapDeletedKpt_below family F q₀ a₀
-          hprev hgap x hLow)
+    simp only [dif_neg hmLow]
+    exact congrArg Subtype.val
+      (uniformGapDeletedKpt_below family F q₀ a₀
+        hprev hgap x hLow)
 
 /-- The same equality for an entire successor parameter list.
 Every parameter is mapped individually; there is no need to select
