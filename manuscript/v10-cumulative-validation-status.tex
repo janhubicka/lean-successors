@@ -148,10 +148,26 @@ each parameter of a genuine successor of $a$ maps strictly
 below $m=\ell(F(a))-1$, and the genuine \emph{weak} image
 successor has a valid ordinary E-column with cut $f<m$
 (PR~272, full/focused Lean GREEN).
-The successor is below the later image, not necessarily equal
-to that image. Transferring this strict E-cut into every
-finite representative of an upper image and proving
-independence of the chosen successor remain open.
+The weak successor is below the later image, not necessarily
+equal to that image. The exact free E-cut transfers through
+complete $L^+$ prefixes to \emph{every} actual finite
+representative of an upper image
+(\texttt{LevelRemovalWitnessCut.lean} and
+\texttt{LevelRemovalPrefixCut.lean}, PRs~274, 276, GREEN).
+\texttt{LevelRemovalGapSeparation.lean} and the
+verified source-level comparison (PR~281) show the
+coordinate $m$ is genuinely omitted by $F$.
+The checked uniform image guard and admissible shortened
+prefix were integrated in PR~283, and
+\texttt{LevelRemovalBoundaryAdmissible.lean} proves that
+the \emph{intrinsically specified} deleted complete $L^+$
+image is admissible both at the source boundary and above
+a chosen actual successor (PR~285, GREEN).
+The successor and finite witness are used only to prove
+membership, not to choose the deleted value.
+The extension to every source component/level and a total
+deleted function is under separate Lean review (PRs~287--289);
+no global M2 ShapeMap is yet established.
 
 For M3, the actual gated finite middle-clone insertion satisfies
 the corrected $L$-only age test and yields one ShapeMap in $K_{pt}M$
@@ -571,11 +587,28 @@ The checked \texttt{LevelRemovalGapColumn.lean} (PR~272)
 derives a valid target successor column with strict E
 free cut $f<\ell(F(a))-1$ from the source gap and S1;
 the output is only required to lie below the source
-successor's image. The transfer of that bound to any
-representative of a longer image, the admissible shorter
-prefix, the global map's injectivity and weak successor
-preservation, and corrected-B3 necessity on arbitrary
-finite $L$-only witnesses remain OPEN.
+successor's image. The transfer of this bound into \emph{every} representative
+of a later image and the admissibility of a shorter
+complete deleted prefix are now proved in PRs~276 and~283,
+respectively. PR~285 verifies admissibility of the
+intrinsically specified deleted image at the boundary and
+above a genuine successor; witnesses certify membership
+but do not choose the output.
+\texttt{LevelRemovalPrefixCommute.lean} (PR~277) and
+\texttt{LevelRemovalRawPrefix.lean} (PR~280) prove
+complete $L^+$ prefix order preservation when both
+cuts exceed the deleted coordinate.
+\texttt{WeakSuccessorInjectivity.lean} (PR~284)
+derives injectivity \emph{conditionally} from strict
+level ordering, root extension and the genuine weak
+successor law; it cannot be invoked before that law
+is proved for the uniform deleted map. Cross-gap
+prefix compatibility (PR~286), all-level membership
+and the total candidate (PRs~287--289), and the
+three weak-successor cases remain subject to separate
+validation. Global (M2) factorization and corrected-B3
+necessity on arbitrary finite $L$-only witnesses
+remain OPEN.
 Finally, reconcile the I3 signature witnesses with finite
 $L$-structures rather than $E$-partial structures before claiming
 the upper bound.}
