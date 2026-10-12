@@ -117,4 +117,39 @@ theorem uniformGapDeletedShapeMap_level
   exact uniformGapDeletedKpt_level family F q₀ a₀
     hprev hgap x
 
+
+/-- Deleting the intrinsic gap leaves all lower source images literally
+unchanged. This is the first equality needed by a later M2 factorization,
+and is stronger than preservation of their image levels. -/
+theorem uniformGapDeletedShapeMap_below
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (q₀ a₀ : AdmissibleKptNode family)
+    (hprev : LevelTree.lev q₀ + 1 = LevelTree.lev a₀)
+    (hgap : LevelTree.lev (F q₀) + 1 < LevelTree.lev (F a₀))
+    (x : AdmissibleKptNode family)
+    (hLow : LevelTree.lev x < LevelTree.lev a₀) :
+    uniformGapDeletedShapeMap family F q₀ a₀ hprev hgap x = F x := by
+  change uniformGapDeletedKpt family F q₀ a₀ hprev hgap x = F x
+  exact uniformGapDeletedKpt_below family F q₀ a₀ hprev hgap x hLow
+
+/-- The original map omits the chosen target gap m, while the
+intrinsic global deletion factor meets m. This certifies a genuine
+range improvement, not the still-open complementary insertion factor. -/
+theorem uniformGapDeletedShapeMap_fills_gap
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (q₀ a₀ : AdmissibleKptNode family)
+    (hprev : LevelTree.lev q₀ + 1 = LevelTree.lev a₀)
+    (hgap : LevelTree.lev (F q₀) + 1 < LevelTree.lev (F a₀)) :
+    F.Skips (LevelTree.lev (F a₀) - 1) ∧
+      LevelTree.lev (F a₀) - 1 ∈
+        (uniformGapDeletedShapeMap family F q₀ a₀ hprev hgap).levelRange := by
+  refine ⟨shapeMap_skips_last_target_gap family F q₀ a₀ hprev hgap, ?_⟩
+  refine ⟨a₀, ?_⟩
+  simpa using
+    (uniformGapDeletedShapeMap_level family F q₀ a₀ hprev hgap a₀)
+
 end SuccessorTree.V10
