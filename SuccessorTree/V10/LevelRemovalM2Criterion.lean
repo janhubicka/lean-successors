@@ -64,8 +64,10 @@ theorem uniformGapDeletedShapeMap_factorization_if_prescribed
       hprev hgap x hLow]
     exact P.prescribedKptSkip_fixed_below family hB3 hTargets hPos
       (F x)
-      (shapeMap_image_below_target_gap family F q₀ a₀ x
-        hprev hgap hLow)
+      (by
+        have hXQ : LevelTree.lev x ≤ LevelTree.lev q₀ := by omega
+        have hFBound := shapeMap_level_le_of_level_le family F hXQ
+        omega)
   · exact hBoundary x hEq
 
 end SuccessorTree.V10
