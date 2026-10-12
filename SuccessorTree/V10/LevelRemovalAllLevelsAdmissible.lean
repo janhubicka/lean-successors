@@ -69,7 +69,7 @@ theorem admissible_deleted_image_at_all_upper_source_levels
     have hqLevel : LevelTree.lev q = n - 1 :=
       LevelTree.level_ancestor x (n - 1) (by omega)
     have hPrev : LevelTree.lev q + 1 = LevelTree.lev x := by
-      dsimp [q] at hqLevel
+      rw [hqLevel, hAt]
       omega
     have hqEq : LevelTree.lev q = LevelTree.lev q₀ := by
       dsimp [n] at hqLevel
@@ -86,7 +86,7 @@ theorem admissible_deleted_image_at_all_upper_source_levels
     dsimp at hExist
     simpa only [hFLevel] using hExist
   · have hAbove : n < LevelTree.lev x := by
-      dsimp [n] at hx
+      change n ≤ LevelTree.lev x at hx
       omega
     let a := LevelTree.ancestor x n (Nat.le_of_lt hAbove)
     have haLevel : LevelTree.lev a = n :=
