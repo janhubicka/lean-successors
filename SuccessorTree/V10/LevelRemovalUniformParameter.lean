@@ -52,8 +52,12 @@ theorem uniformGapDeletedKpt_raw_if_above
       change ¬ m < LevelTree.lev (F x)
       dsimp [m]
       omega
-    simpa only [dif_neg hmLow] using
-      congrArg Subtype.val
+    change (uniformGapDeletedKpt family F q₀ a₀ hprev hgap x).1 =
+      (if h : m < (F x).1.1 then
+        rawPartialTypeDeleteAt (F x).1 m h else (F x).1)
+    split_ifs with h
+    · exact (hmLow h).elim
+    · exact congrArg Subtype.val
         (uniformGapDeletedKpt_below family F q₀ a₀
           hprev hgap x hLow)
 
