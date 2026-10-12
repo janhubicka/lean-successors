@@ -1,0 +1,6 @@
+import SuccessorTree.V10.ShapeMapParameterTransport
+
+#print axioms SuccessorTree.V10.PartialTypeWithE.ordinaryType_restrict
+#print axioms SuccessorTree.V10.PartialTypeWithE.lastOrdinaryParameter_eq_ordinaryType
+#print axioms SuccessorTree.V10.canonicalKptStep_parameter_in_upper
+#print axioms SuccessorTree.V10.shapeMap_transports_parameter_record
