@@ -94,4 +94,64 @@ theorem rawPartialTypeDeleteAt_last_eq_ancestor
       exact congrArg (Sigma.mk m)
         (T.deleteOrdinary_last_eq_restrict)
 
+/-- At the first affected SOURCE level, every image F(x) has the
+same ordinary cut as F(a₀). Therefore the fixed deleted coordinate
+m=lev(F(a₀))-1 is literally its final ordinary coordinate, and the
+intrinsic deleted image D(x) equals the exact complete predecessor
+of F(x) at level m. This is the desired B1 property on the actual
+boundary restoration graph, with no finite B3 age hypothesis. -/
+theorem uniformGapDeletedShapeMap_boundary_raw_ancestor
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (q₀ a₀ : AdmissibleKptNode family)
+    (hprev : LevelTree.lev q₀ + 1 = LevelTree.lev a₀)
+    (hgap : LevelTree.lev (F q₀) + 1 < LevelTree.lev (F a₀))
+    (x : AdmissibleKptNode family)
+    (hx : LevelTree.lev x = LevelTree.lev a₀) :
+    (uniformGapDeletedShapeMap family F q₀ a₀ hprev hgap x).1 =
+      rawPartialTypeAncestor (F x).1 (LevelTree.lev (F a₀) - 1)
+        (by
+          have hlevel := F.level_eq_of_level_eq hx
+          change (F x).1.1 = (F a₀).1.1 at hlevel
+          omega) := by
+  change (uniformGapDeletedKpt family F q₀ a₀ hprev hgap x).1 = _
+  obtain ⟨hm,hRaw⟩ :=
+    uniformGapDeletedKpt_above_raw family F q₀ a₀
+      hprev hgap x (Nat.le_of_eq hx.symm)
+  rw [hRaw]
+  have hlevel := F.level_eq_of_level_eq hx
+  change (F x).1.1 = (F a₀).1.1 at hlevel
+  have hM : LevelTree.lev (F a₀) - 1 = (F x).1.1 - 1 := by
+    change (F a₀).1.1 - 1 = (F x).1.1 - 1
+    omega
+  rw [hM]
+  have hPositive : 0 < (F x).1.1 := by
+    have ha : 0 < (F a₀).1.1 := by omega
+    omega
+  exact rawPartialTypeDeleteAt_last_eq_ancestor (F x).1 hPositive
+
+/-- The intrinsic boundary deletion is below F(x) as an actual
+admissible Kpt predecessor, not merely as a compatible L-reduct. -/
+theorem uniformGapDeletedShapeMap_boundary_le_image
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (q₀ a₀ : AdmissibleKptNode family)
+    (hprev : LevelTree.lev q₀ + 1 = LevelTree.lev a₀)
+    (hgap : LevelTree.lev (F q₀) + 1 < LevelTree.lev (F a₀))
+    (x : AdmissibleKptNode family)
+    (hx : LevelTree.lev x = LevelTree.lev a₀) :
+    uniformGapDeletedShapeMap family F q₀ a₀ hprev hgap x ≤ F x := by
+  change (uniformGapDeletedShapeMap family F q₀ a₀
+    hprev hgap x).1 ≤ (F x).1
+  rw [uniformGapDeletedShapeMap_boundary_raw_ancestor
+    family F q₀ a₀ hprev hgap x hx]
+  exact rawPartialTypeAncestor_le (F x).1
+    (LevelTree.lev (F a₀) - 1)
+    (by
+      have hlevel := F.level_eq_of_level_eq hx
+      change (F x).1.1 = (F a₀).1.1 at hlevel
+      omega)
+
 end SuccessorTree.V10
