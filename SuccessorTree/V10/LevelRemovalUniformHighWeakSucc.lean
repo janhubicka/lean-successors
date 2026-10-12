@@ -139,6 +139,7 @@ theorem uniformGapDeletedKpt_high_weak_succ
             simpa only [Nat.add_sub_cancel] using
               (Q.deleteOrdinary_restrict (Nat.le_succ (k+1))
                 m (by omega)).symm
+      have hmTarget : m < k + 2 := Nat.lt_succ_of_lt hm
       have hDTarget :
           d'.1 =
             (⟨k + 1, Q.deleteOrdinary m (by omega)⟩ :
@@ -147,13 +148,13 @@ theorem uniformGapDeletedKpt_high_weak_succ
             rawPartialTypeDeleteAt d.1 m hmd =
               rawPartialTypeDeleteAt
                 (⟨k + 2,Q⟩ : RawPartialTypeNode db du dd)
-                m (by omega) :=
-          rawDelete_congr hmd (by omega) hTarget
+                m hmTarget :=
+          rawDelete_congr hmd hmTarget hTarget
         calc
           d'.1 = rawPartialTypeDeleteAt d.1 m hmd := hDPrimeRaw
           _ = rawPartialTypeDeleteAt
                 (⟨k + 2,Q⟩ : RawPartialTypeNode db du dd)
-                m (by omega) := hTargetDelete
+                m hmTarget := hTargetDelete
           _ = (⟨k + 1,Q.deleteOrdinary m (by omega)⟩ :
                 RawPartialTypeNode db du dd) := by
             rfl
@@ -161,8 +162,8 @@ theorem uniformGapDeletedKpt_high_weak_succ
           (p.map D).map (fun x => x.1) =
             ((p.map F).map (fun x => x.1)).map
               (rawPartialTypeDeleteIfAbove m) := by
-        simpa only [rawPartialTypeDeleteIfAbove, List.map_map]
-          using
+        simpa only [D, m, rawPartialTypeDeleteIfAbove, List.map_map,
+          Function.comp_def] using
             (uniformGapDeletedKpt_raw_parameter_list family
               F q₀ a₀ hprev hgap p)
       have hDeletedStep :
