@@ -1,0 +1,30 @@
+% Successor v10, 12 October 2026 -- review-only M2 continuation.
+% The original author mathematical text and four repairs remain untouched.
+% Exact-head full Lean and transitive axiom verification are PENDING.
+%
+\todo[inline]{\textbf{v10 M2: all-level admissibility of deleted images
+-- PENDING Lean.}
+Assume a shape-preserving $F$ has a genuine gap between the images
+of two consecutive source levels $n-1$ and $n$, and put
+$m=\widetilde F(n)-1$. The candidate for any source type $x$ of
+level at least $n$ is the intrinsically specified complete raw type
+obtained by deleting ordinary coordinate $m$ from $F(x)$.
+The proposed
+\texttt{admissible\_deleted\_image\_at\_all\_upper\_source\_levels}
+in \texttt{LevelRemovalAllLevelsAdmissible.lean} proves that
+this raw output belongs to the normalized admissible Kpt class
+\emph{for every such $x$}, without defining its value from a
+chosen finite witness or successor.
+
+At level $n$, choose the actual predecessor of $x$ at level
+$n-1$ and invoke the checked boundary deletion lemma. Above
+$n$, take the level-$n$ predecessor $a$ of $x$ and its genuine
+next successor $b$ along the branch toward $x$, then invoke
+the checked upper-witness guard and deletion lemma. Shape-map
+level preservation makes the selected deletion coordinate $m$
+the same across all source branches and components.
+This handles the full admissibility/membership part, but not
+yet the complete global shape-map axioms: level preservation,
+injectivity, and all three weak-successor cases remain to be
+assembled. The corrected finite $L$-only B3 necessity and M2
+factorization remain separately OPEN.}
