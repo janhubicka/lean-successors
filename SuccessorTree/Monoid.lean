@@ -290,6 +290,14 @@ private theorem strictMono_range_compl_singleton
     obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hmn
     simp [habove d]
 
+/-- A reusable order-theoretic range formula independent of the
+SMTree axioms. -/
+theorem strictMono_nat_range_compl_singleton
+    (f : Nat → Nat) (hf : StrictMono f) (m : Nat)
+    (hr : Set.range f = {k | k ≠ m}) :
+    ∀ n : Nat, f n = if n < m then n else n + 1 :=
+  strictMono_range_compl_singleton f hf m hr
+
 /-- Exact level behaviour of a map which skips only one level. -/
 theorem levelMap_of_skipsOnly (H : SMTree S) (F : ShapeMap S) (m : Nat)
     (hskip : F.SkipsOnly m) (n : Nat) :
@@ -324,11 +332,16 @@ private theorem list_map_eq_self_of_mem_eq
       simp only [List.map_cons]
       rw [hx, ih hxs]
 
-/-- A map which skips only level `m` is literally the identity below `m`.
+/-- **No M2 is used:** weak successors, root extension and the
+unchanged image level below a threshold force a shape map to be the
+identity below that threshold. This makes the one-gap normalization
+argument available before any SMTree structure has been constructed. -/
 This formalizes the first sentence of the paper's uniqueness discussion for
 one-level skip maps. -/
-theorem eq_id_below_skip (H : SMTree S) (F : ShapeMap S) (m : Nat)
-    (hskip : F.SkipsOnly m) {a : T} (ha : LevelTree.lev a < m) :
+theorem eq_id_below_of_level_eq (F : ShapeMap S) (m : Nat)
+    (hLevel : ∀ a : T, LevelTree.lev a < m →
+      LevelTree.lev (F a) = LevelTree.lev a)
+    {a : T} (ha : LevelTree.lev a < m) :
     F a = a := by
   have hp : ∀ k : Nat, ∀ a : T,
       LevelTree.lev a = k → k < m → F a = a := by
@@ -337,7 +350,7 @@ theorem eq_id_below_skip (H : SMTree S) (F : ShapeMap S) (m : Nat)
     | h k ih =>
         intro a hlev hkm
         have hFaLevel : LevelTree.lev (F a) = LevelTree.lev a :=
-          H.level_eq_of_lt_skipped F m hskip (by simpa [hlev] using hkm)
+          hLevel a (by simpa [hlev] using hkm)
         cases k with
         | zero =>
             have hroot : a ≤ F a := F.root_le' (by simpa [hlev])
@@ -370,6 +383,15 @@ theorem eq_id_below_skip (H : SMTree S) (F : ShapeMap S) (m : Nat)
             subst d
             exact (LevelTree.same_level_of_le hda hFaLevel.symm).symm
   exact hp (LevelTree.lev a) a rfl ha
+
+/-- A map which skips only level `m` is literally the identity below `m`.
+This formalizes the first sentence of the paper's uniqueness discussion for
+one-level skip maps. -/
+theorem eq_id_below_skip (H : SMTree S) (F : ShapeMap S) (m : Nat)
+    (hskip : F.SkipsOnly m) {a : T} (ha : LevelTree.lev a < m) :
+    F a = a := by
+  exact eq_id_below_of_level_eq F m
+    (fun x hx => H.level_eq_of_lt_skipped F m hskip hx) ha
 
 /-- Above the unique skipped level, weak successor preservation is exact. -/
 theorem succ_eq_above_skip (H : SMTree S) (F : ShapeMap S) (m : Nat)
