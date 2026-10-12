@@ -193,6 +193,7 @@ import SuccessorTree.V10.LevelRemovalIntrinsicAdmissible
 import SuccessorTree.V10.LevelRemovalBoundaryAdmissible
 import SuccessorTree.V10.LevelRemovalAllLevelsAdmissible
 import SuccessorTree.V10.LevelRemovalUniformFunction
+import SuccessorTree.V10.LevelRemovalUniformLevel
 
 import SuccessorTree.V10.PrescribedB3Spacing
 
