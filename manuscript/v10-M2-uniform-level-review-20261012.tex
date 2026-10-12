@@ -1,0 +1,26 @@
+% V10 successor paper, 12 October 2026. Review-only validation note.
+% Mathematical author prose and the four existing repairs remain frozen.
+% Pending exact-head Lean and named transitive axiom audit.
+%
+\todo[inline]{\textbf{v10 M2: strict level order after deleting a
+single target gap -- PENDING.}
+For the intrinsic candidate $D$ that equals $F$ below source
+level $n$ and deletes one target coordinate $m=\widetilde F(n)-1$
+from every complete image at levels $\ge n$, the proposed
+\texttt{uniformGapDeletedKpt\_level\_strictMono}
+shows that $\ell(x)<\ell(y)$ implies $\ell(Dx)<\ell(Dy)$.
+The original image levels are strictly increasing, and the
+gap $\widetilde F(n-1)+1<\widetilde F(n)$ ensures that
+subtracting one after the source boundary does not collapse
+the two adjacent image levels. At and above the boundary,
+all affected image levels are positive, so subtracting one
+preserves strict level order as well.
+
+This verifies the numerical level condition needed for the
+global deletion ShapeMap. It does NOT establish injectivity
+of deletion on the range of $F$: raw coordinate deletion can
+erase first differences in ordinary tuples. The generic
+weak-successor injectivity theorem is available but must not
+be applied until the piecewise map's genuine weak-successor
+property (including crossing the gap) is proved. Neither
+global (M2) nor corrected finite $L$-only B3 follows yet.}
