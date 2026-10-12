@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LevelRemovalUnifiedParameter
+
+#print axioms SuccessorTree.V10.rawPartialTypeDeleteIfAbove_low
+#print axioms SuccessorTree.V10.rawPartialTypeDeleteIfAbove_high
+#print axioms SuccessorTree.V10.PartialTypeWithE.canonicalParameterRecord_delete_unified
