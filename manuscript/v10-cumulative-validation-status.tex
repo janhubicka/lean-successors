@@ -631,6 +631,16 @@ on its original branch; the proof is restaged byte-identically here
 for integration testing. It does not give a total ShapeMap outside
 $D[K_{pt}]$, and the multi-upper age and successor conditions remain OPEN.
 
+A further finite reduction is proposed in
+\texttt{PrescribedB3BoundedCores.lean}: corrected B3 is equivalent
+to testing induced $L$-cores consisting of the full initial socle
+and at most $r$ chosen upper addresses, where $r$ is bounded by
+the largest forbidden arity in $\mathcal F$. Every forbidden copy
+in a purported counterexample is contained in such a core.
+This does not prove B3 from $F$ or furnish an $E$-lift; it isolates
+the genuinely bounded simultaneous-upper compatibility problem.
+The new Lean proof and named-axiom audit are PENDING.
+
 This M2 obligation remains OPEN.
 
 \textbf{M3 duplication -- GREEN in the normalized model;
