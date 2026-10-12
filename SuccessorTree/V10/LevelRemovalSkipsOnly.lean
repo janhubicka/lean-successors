@@ -57,6 +57,8 @@ theorem kptShapeLevelMap_strictMono
     (admissibleKptLevel_nonempty family n)
   have hm := Classical.choose_spec
     (admissibleKptLevel_nonempty family m)
+  change (Classical.choose (admissibleKptLevel_nonempty family n)).1.1 = n at hn
+  change (Classical.choose (admissibleKptLevel_nonempty family m)).1.1 = m at hm
   omega
 
 theorem kptShapeLevelMap_range
