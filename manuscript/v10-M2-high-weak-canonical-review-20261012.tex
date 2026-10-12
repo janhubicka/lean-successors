@@ -1,0 +1,42 @@
+% Successor v10; M2 all-level weak successor proof candidate, 12 Oct 2026.
+% REVIEW-ONLY. Keep the author's mathematical TeX and four controlled repairs
+% unchanged. This endpoint remains PENDING its own exact-head Lean/axiom audit.
+% Merge into one of the existing nine managed TODOs only when GREEN.
+%
+\todo[inline]{\textbf{v10 validation: intrinsic deletion preserves
+all weak successor steps -- PENDING exact-head Lean.}
+The checked intrinsic complete-record function
+\texttt{uniformGapDeletedKpt} already preserves source level order,
+the full Kpt prefix order, and the root-extension condition.
+Its lower/crossing-edge weak successor property, the
+elementwise empty/singleton parameter transport, and the finite
+canonical-step reconstruction are independently verified.
+
+The candidate \texttt{uniformGapDeletedKpt\_high\_weak\_succ}
+uses a genuine weak image successor $d\preceq F(b)$ for every
+successor $\mathcal S(a,\bar p,c)=b$ at or above the first
+affected source level. It deletes the fixed ordinary coordinate
+$m=\widetilde F(n)-1$ from the full record of $d$. The existing
+admissible-prefix lemma then yields a deleted $d'$ below the
+intrinsic deleted $F(b)$. The sharp disjunction
+$m<k$ or $f<m$ for the canonical column is derived from
+the actual source level gap and parameter bounds, not assumed.
+The checked complete parameter/letter/column transport produces
+the \emph{genuine} successor
+\[
+ \mathcal S(D(a),D(\bar p),c)=d'\preceq D(b).
+\]
+This is the weak, not false exact, equality at the original source gap.
+The candidate \texttt{uniformGapDeletedKpt\_weak\_succ}
+combines it with the checked lower/crossing case, without using
+(M2) or assuming a ShapeMap structure for $D$.
+
+Once the named transitive axiom check and full build pass,
+injectivity should follow from the separately checked
+\texttt{injective\_of\_level\_order\_and\_weak\_successors},
+allowing the intrinsic $D$ to be packaged as a ShapeMap.
+This would supply the uniform deletion factor of (M2), not yet
+the concluding second one-gap map. The corrected finite
+$L$-only B3 necessity/age-transport and factorization
+remain OPEN, as do original-language identification and
+the final upper bound.}
