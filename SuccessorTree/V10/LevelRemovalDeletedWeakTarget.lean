@@ -54,7 +54,9 @@ theorem admissible_deleted_raw_predecessor
       (⟨X.1,Y.2.restrict hCut⟩ :
         RawPartialTypeNode db du dd) = X :=
     congrArg (Sigma.mk X.1) hRecord.symm
-  exact hEq ▸ hAdPrefix
+  have hAdX : IsAdmissibleRawType family X :=
+    Eq.mp (congrArg (IsAdmissibleRawType family) hEq) hAdPrefix
+  exact hAdX
 
 /-- The same fact expressed with actual admissible source and upper
 output nodes, giving the short Kpt node needed for a genuine
