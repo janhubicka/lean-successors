@@ -127,11 +127,11 @@ theorem uniformGapDeletedShapeMap_boundary_raw_ancestor
   have hM : LevelTree.lev (F a₀) - 1 = (F x).1.1 - 1 := by
     change (F a₀).1.1 - 1 = (F x).1.1 - 1
     omega
-  rw [hM]
   have hPositive : 0 < (F x).1.1 := by
     have ha : 0 < (F a₀).1.1 := by omega
     omega
-  exact rawPartialTypeDeleteAt_last_eq_ancestor (F x).1 hPositive
+  simpa only [←hM] using
+    (rawPartialTypeDeleteAt_last_eq_ancestor (F x).1 hPositive)
 
 /-- The intrinsic boundary deletion is below F(x) as an actual
 admissible Kpt predecessor, not merely as a compatible L-reduct. -/
