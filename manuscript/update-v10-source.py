@@ -37,6 +37,31 @@ OPTIONAL_LABELS = {
 # lem:local-age. They are aliases for ONE note, never two independent anchors.
 BORING_LABELS = ("lem:boring", "lem:local-age")
 
+def legacy_signature_point(tex: str) -> int:
+    """Find the unlabeled legacy signature observation, or reject ambiguity."""
+    label_line_end(tex, "lem:signatures")
+    phrase = "Signatures are not necessarily unique, however:"
+    if tex.count(phrase) != 1:
+        raise ValueError("Ambiguous or missing legacy signature observation")
+    start = tex.index(phrase) + len(phrase)
+    opening = "\\begin{observation}"
+    closing = "\\end{observation}"
+    if not tex[start:].lstrip().startswith(opening):
+        raise ValueError("Legacy signature observation is not adjacent")
+    begin = tex.index(opening, start)
+    end = tex.find(closing, begin + len(opening))
+    if end < 0:
+        raise ValueError("Missing legacy signature end")
+    point = end + len(closing)
+    if not re.match(r"\s*\\begin\{lemma\}\s*\\label\{lem:signatures\}",
+                    tex[point:point+140]):
+        raise ValueError("Legacy signature lemma not adjacent")
+    newline = tex.find("\n", point)
+    if newline < 0:
+        raise ValueError("Legacy signature end has no line break")
+    return newline + 1
+
+
 def boring_anchor(tex: str) -> tuple[str, int] | None:
     matches = [(label, point) for label in BORING_LABELS
                if (point := label_line_end(tex, label, optional=True)) is not None]
