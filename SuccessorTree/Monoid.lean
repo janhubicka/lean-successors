@@ -336,8 +336,6 @@ private theorem list_map_eq_self_of_mem_eq
 unchanged image level below a threshold force a shape map to be the
 identity below that threshold. This makes the one-gap normalization
 argument available before any SMTree structure has been constructed. -/
-This formalizes the first sentence of the paper's uniqueness discussion for
-one-level skip maps. -/
 theorem eq_id_below_of_level_eq (F : ShapeMap S) (m : Nat)
     (hLevel : ∀ a : T, LevelTree.lev a < m →
       LevelTree.lev (F a) = LevelTree.lev a)
