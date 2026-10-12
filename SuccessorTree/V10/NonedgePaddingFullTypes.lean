@@ -65,17 +65,20 @@ theorem upper_type_eq_prescribed {db du dd : Nat}
   · intro x y
     cases x with
     | none =>
-      cases y with
-      | none => exact (B.partialTypeAt_no_typeE_loop n (address n i)).trans hTE.2.2.symm
-      | some k => exact (B.partialTypeAt_no_reverseE n (address n i) hReach k).trans
-          (hTE.2.1 k).symm
+        cases y with
+        | none =>
+            exact (B.partialTypeAt_no_typeE_loop n (address n i)).trans hTE.2.2.symm
+        | some k =>
+            exact (B.partialTypeAt_no_reverseE n (address n i) hReach k).trans
+              (hTE.2.1 k).symm
     | some j =>
-      cases y with
-      | none => exact (B.partialTypeAt_fullESocle n (address n i) hReach j).trans
-          (hTE.1 j).symm
-      | some k =>
-        change B.E j.val k.val = T.eRelation (some j) (some k)
-        exact (partial_E_socle C A n N hC hSocle j.val k.val k.isLt).trans (hE j k)
+        cases y with
+        | none =>
+            exact (B.partialTypeAt_fullESocle n (address n i) hReach j).trans
+              (hTE.1 j).symm
+        | some k =>
+            change B.E j.val k.val = T.eRelation (some j) (some k)
+            exact (partial_E_socle C A n N hC hSocle j.val k.val k.isLt).trans (hE j k)
 
 /-- Every finite compatible family is realized simultaneously in the
 SAME padded forbidden-free partial structure. Upper-upper relations
