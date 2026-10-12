@@ -76,7 +76,8 @@ theorem uniformGapDeletedKpt_above_level
     LevelTree.lev (uniformGapDeletedKpt family F q₀ a₀ hprev hgap x) =
       LevelTree.lev (F x) - 1 := by
   classical
-  simp [uniformGapDeletedKpt, hHigh]
+  simp [uniformGapDeletedKpt, hHigh] <;>
+    (change (F x).1.1 - 1 = (F x).1.1 - 1; rfl)
 
 /-- The candidate's level function is precisely the old image
 level function minus one from the boundary onward. -/
