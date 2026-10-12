@@ -1,0 +1,28 @@
+% Successor v10, 12 October 2026, review-only M2 TODO.
+% Original author TeX and the four prior mathematical repairs are frozen.
+% Proposed Lean module is PENDING exact-head full and focused verification.
+%
+\todo[inline]{\textbf{v10 validation: intrinsic total M2 deletion
+function -- PENDING.}
+The all-level admissibility theorem for a single target gap permits
+a uniform \emph{function} $D$ on admissible Kpt nodes. Fix a
+shape-preserving $F$ with a gap between source levels $n-1$ and $n$
+and put $m=\widetilde F(n)-1$. For $\ell(x)<n$ set $D(x)=F(x)$.
+For $\ell(x)\ge n$ set $D(x)=F(x)\ominus m$, deleting the ordinary
+coordinate $m$ from the \emph{complete} $L^+$ record of $F(x)$.
+Its admissibility proof uses checked genuine image successors
+only as certificates, not to choose the output value.
+
+The proposed \texttt{LevelRemovalUniformFunction.lean} constructs
+this total function in the actual normalized Kpt type and proves
+that it agrees with $F$ below $n$, sends every source level $k\ge n$
+to target level $\widetilde F(k)-1$, preserves equality of levels,
+and satisfies the root-extension condition. The candidate is
+deliberately \emph{not} declared a ShapeMap yet: strict order,
+injectivity and weak successor preservation at, below and above
+the first gap remain separate obligations. In particular
+deletion of arbitrary raw types is not injective, and the
+generic weak-successor injectivity criterion cannot be used
+until its true hypotheses have been proved.
+The corrected finite $L$-only B3 necessity and M2
+factorization also remain OPEN.}
