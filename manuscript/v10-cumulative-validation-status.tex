@@ -617,11 +617,30 @@ is proved for the uniform deleted map. Complete cross-gap prefix compatibility i
 The all-level intrinsic deletion \emph{membership}
 is verified in PR~287, but its proposed total function,
 strict levels and order laws in PRs~288, 289 and~291
-are still awaiting exact-head checks. Genuine lower
-crossing weak successor and complete terminal-letter
-transport are separately being audited in PRs~292--293;
-the full above-gap successor law and global injection
-remain OPEN. Global (M2) factorization and corrected-B3
+are being checked for final stacked-branch integration.
+\textbf{Genuine crossing weak successor -- GREEN locally.}
+\texttt{LevelRemovalBoundaryWeakSucc.lean} (PR~292,
+full Lean 38196554700 and focused 38196554661 GREEN)
+proves that the actual weak successor at the first gap
+lies below the complete coordinate-deleted upper image,
+without asserting equality across the skipped level.
+\textbf{Complete terminal letter -- GREEN locally.}
+\texttt{LevelRemovalTerminalLetter.lean} (PR~293,
+full Lean 38196947662 and focused 38196947688 GREEN)
+proves that deletion of an earlier ordinary coordinate
+preserves the entire terminal $L^+$ Sigma letter.
+\textbf{Complete canonical predecessor parameter -- GREEN locally.}
+\texttt{LevelRemovalParameter.lean} (PR~295,
+full Lean 38197151180 and focused 38197151194 GREEN)
+shows that the last-ordinary parameter is deleted
+at its own socle if $m<f$, and otherwise is unchanged.
+It includes all positive and absent directed tuples,
+singleton values and auxiliary $E$ atoms.
+These results do not establish the \emph{whole} above-gap
+successor law. The Option-valued empty-or-singleton
+parameter adapter (PR~297) and valid E-column transport
+(PR~296) are PENDING exact-head Lean audits.
+Global injection, (M2) factorization and corrected-B3
 necessity on arbitrary finite $L$-only witnesses
 remain OPEN.
 Finally, reconcile the I3 signature witnesses with finite
