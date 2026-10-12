@@ -183,6 +183,7 @@ import SuccessorTree.V10.LevelRemovalType
 import SuccessorTree.V10.LevelRemovalColumnTransport
 import SuccessorTree.V10.LevelRemovalTerminalLetter
 import SuccessorTree.V10.LevelRemovalRawPrefix
+import SuccessorTree.V10.LevelRemovalDeletedWeakTarget
 import SuccessorTree.V10.LevelRemovalCrossGapPrefix
 import SuccessorTree.V10.LevelRemovalBoundaryWeakSucc
 import SuccessorTree.V10.LevelRemovalPrefixCommute
