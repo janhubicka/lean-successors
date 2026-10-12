@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LevelRemovalTerminalLetter
+
+#print axioms SuccessorTree.V10.deleteTypeCoordinate_terminal
+#print axioms SuccessorTree.V10.PartialTypeWithE.deleteOrdinary_terminalLetter
+#print axioms SuccessorTree.V10.deleteAtPartial_terminalLetter_eq
