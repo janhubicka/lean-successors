@@ -197,6 +197,8 @@ import SuccessorTree.V10.LevelRemovalM2ExactExtension
 import SuccessorTree.V10.LevelRemovalBoundaryRestoration
 import SuccessorTree.V10.LevelRemovalFullRangeRestoration
 import SuccessorTree.V10.LevelRemovalFullRangeOrder
+import SuccessorTree.V10.LevelRemovalTopDeletePrefix
+import SuccessorTree.V10.LocalAgeOneLinkedUpper
 import SuccessorTree.V10.LevelRemovalColumnTransport
 import SuccessorTree.V10.LevelRemovalTerminalLetter
 import SuccessorTree.V10.LevelRemovalRawPrefix

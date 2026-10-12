@@ -585,26 +585,63 @@ Lower-level agreement can be derived without corrected B3 or M2,
 provided one first establishes identity below a unique skipped level
 directly from the Kpt level-range formula and weak successors.
 The M2-independent lower-identity and arbitrary one-gap
-boundary-extension equivalence are staged in PR~313, still PENDING
-exact-head Lean and named-axiom audits.
+boundary-extension equivalence are GREEN in PR~313, which passed
+full Lean 38268558208 and focused transitive axiom audit
+38268558200 and has been merged. No M2 is assumed.
 PR~314 constructs the partial restoration graph on the actual deleted
 boundary image $D[K_{pt}(n)]$: by injectivity of $D$, the prescription
 $D(x)\mapsto F(x)$ is a well-defined function, with input level $m$ and
-output level $m+1$ across all tree components. PR~314 subsequently passed
-its full/focused/standard-axiom checks and was merged.
-PR~317 extends this \emph{partial} inverse prescription to the entire
-range of $D$, and proves the exact level function: it is the identity
-below the missing coordinate $m$ and adds one above it. This is a
-PENDING Lean proof candidate and is not yet certified.
-PR~318 proposes the general M2-independent order-reflection lemma
-for shape maps and applies it to the partial restoration, giving an
-actual prefix-order embedding on the entire $D$-image. The claimed
-order and injectivity endpoints likewise remain PENDING full Lean
-and transitive named-axiom audits. This partial order embedding does
-not supply a global successor-preserving extension.
-The remaining task is to extend this partial function outside the
-range of $D$ to a one-gap Kpt ShapeMap; its finite age/weak-successor
-compatibility requirements have not been proved.
+output level $m+1$ across all tree components. PR~314 passed full Lean
+38268563188 and focused standard-axiom audit 38268563272 and was merged.
+The remaining task is to extend this partial function to a one-gap
+Kpt ShapeMap; its finite age/compatibility requirements have not
+been proved.
+PR~315 is GREEN: deleting the final ordinary coordinate from a
+complete $L^+$ type equals its full predecessor restriction,
+including all directed, singleton and auxiliary $E$ data, and the
+actual intrinsic boundary deletion is this same predecessor of $F(x)$.
+The exact-head full Lean 38270726577 and focused standard-axiom
+audit 38270726588 passed and the PR was merged. This verifies B1,
+but does not imply B2 or corrected finite $L$-age necessity.
+A direct finite-age alternative is staged in PR~316: if the new
+ordinary vertex is $L$-linked to at most one designated upper vertex
+and the induced $L$-structure on the initial socle plus that vertex
+is forbidden-free, then binary irreducibility rules out every
+forbidden copy involving the inserted coordinate. Copies avoiding
+it project back to the old age. This one-linked-upper age theorem passed exact-head full Lean
+38270821103 and focused standard-axiom audit 38270821068,
+and was merged as PR~316. It does NOT construct the insertion or
+prove the one-link condition for the desired global map.
+In fact, canonical parameter transport may force the inserted
+vertex to be linked to several upper vertices simultaneously;
+thus the one-linked lemma is NOT a substitute for corrected B3
+without an additional compatibility invariant.
+A possible next step for B2 is to free-amalgamate two compatible
+source types over their common ordinary socle, and use an actual
+mapped successor whose canonical parameter is the second type
+to compare their inserted ordinary columns. This is a proposed
+argument only, not yet validated. The finite L-only age test
+with several linked upper vertices remains OPEN.
+PR~317 defines the unique partial restoration $R(D(x))=F(x)$
+on the entire image of $D$, with the exact one-gap level function:
+below $m$ the level is fixed and at or above $m$ it increases by one.
+This stronger partial result passed exact-head full Lean 38271325042,
+focused standard-axiom audit 38271325092 and TeX annotation checks
+on its original branch; the proof is restaged byte-identically here
+for integration testing. It does not give a total ShapeMap outside
+$D[K_{pt}]$, and the multi-upper age and successor conditions remain OPEN.
+
+PR~318 proves that shape-preserving maps also reflect the
+complete predecessor order, using injectivity and uniqueness of
+ancestors. Thus the partial restoration $R$ on $D[K_{pt}]$
+preserves and reflects prefix order and is injective; it is an
+order embedding of its partial domain. This proof passed full Lean
+38272059762, focused standard-axiom audit 38272059862 and TeX
+checks on its original exact head, and is restaged with the same
+mathematical proof blobs for cumulative integration.
+Order embedding alone neither extends $R$ to all Kpt types nor
+supplies the missing successor and multi-upper age conditions.
+
 This M2 obligation remains OPEN.
 
 \textbf{M3 duplication -- GREEN in the normalized model;
