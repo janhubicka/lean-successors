@@ -1,0 +1,7 @@
+import SuccessorTree.V10.LevelRemovalColumnTransport
+
+#print axioms SuccessorTree.V10.deletedOldPredecessorIndex
+#print axioms SuccessorTree.V10.deleteTypeCoordinate_oldLast
+#print axioms SuccessorTree.V10.deleteTypeCoordinate_oldPredecessor
+#print axioms SuccessorTree.V10.deleteAtCut_le_shorter
+#print axioms SuccessorTree.V10.validNewOrdinaryColumn_deleteOrdinary
