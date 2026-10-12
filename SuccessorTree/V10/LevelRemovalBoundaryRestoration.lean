@@ -113,4 +113,48 @@ theorem uniformDeletedBoundaryRestoration_level
     LevelTree.lev (F a₀)
   exact F.level_eq_of_level_eq (Classical.choose_spec y.2).1
 
+/-- A global one-gap ShapeMap extending the canonical partial
+restoration gives the complete M2 factorization through the chosen
+source boundary. The only unproved existence assertion is the
+extension itself; the inverse prescription, lower-level action, and
+membership of the intrinsic deletion factor are already certified. -/
+theorem uniformDeletedBoundaryRestoration_factorization_if_extends
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (hFM : F ∈ KptM family)
+    (q₀ a₀ : AdmissibleKptNode family)
+    (hprev : LevelTree.lev q₀ + 1 = LevelTree.lev a₀)
+    (hgap : LevelTree.lev (F q₀) + 1 < LevelTree.lev (F a₀))
+    (G : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (hGM : G ∈ KptM family)
+    (hSkip : G.SkipsOnly (LevelTree.lev (F a₀) - 1))
+    (hExt :
+      ∀ y : {y : AdmissibleKptNode family //
+        y ∈ uniformDeletedBoundaryImage family F q₀ a₀ hprev hgap},
+        G y.1 =
+          uniformDeletedBoundaryRestoration family F q₀ a₀ hprev hgap y) :
+    ∃ F1 F2 : SuccessorTree.ShapeMap (admissibleKptSTree family),
+      F1 ∈ KptM family ∧
+      F2 ∈ KptM family ∧
+      F2.SkipsOnly (LevelTree.lev (F a₀) - 1) ∧
+      ∀ x : AdmissibleKptNode family,
+        LevelTree.lev x ≤ LevelTree.lev a₀ →
+        F2 (F1 x) = F x := by
+  apply uniformGapDeletedShapeMap_factorization_of_boundary_extension
+    family F hFM q₀ a₀ hprev hgap G hGM hSkip
+  intro x hx
+  let D := uniformGapDeletedShapeMap family F q₀ a₀ hprev hgap
+  let y : {z : AdmissibleKptNode family //
+      z ∈ uniformDeletedBoundaryImage family F q₀ a₀ hprev hgap} :=
+    ⟨D x, ⟨x,hx,rfl⟩⟩
+  change G y.1 = F x
+  calc
+    G y.1 =
+        uniformDeletedBoundaryRestoration family F q₀ a₀ hprev hgap y :=
+      hExt y
+    _ = F x :=
+      uniformDeletedBoundaryRestoration_spec family F q₀ a₀
+        hprev hgap x hx
+
 end SuccessorTree.V10
