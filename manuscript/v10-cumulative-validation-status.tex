@@ -1,10 +1,12 @@
 % =====================================================================
 % SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
-% 2026-10-12 M2 checkpoint (pending exact-head CI): PR306 integrates
-% canonical parameters and low/crossing weak successors; PR310 proposes
-% the upper weak successor; PR311 proposes the global ShapeMap and
-% missing-gap recovery. Do NOT mark M2 GREEN before checking the merged
-% exact head and its transitive axiom report.
+% 2026-10-12 M2 checkpoint: PR306, PR310, PR311 and PR312 merged
+% after exact-head successful Lean, v10 axiom and manuscript audits.
+% The intrinsic deletion ShapeMap and its complete weak-successor law
+% are GREEN in normalized Kpt; the complementary one-gap extension
+% (hence global M2), final signature recurrence and language adapter OPEN.
+% New M2-independent one-gap rigidity/boundary criterion is a separate
+% PENDING candidate until its own full CI and named axiom checks pass.
 % Cumulative continuation: common full-prefix implementation and PR219 order transport.
 % Proof-check status is recorded in v10-prescribed-order-transport-checkpoint-20261011.md.
 % No independent/simultaneous prefix implementation is imported into this stack.
@@ -181,13 +183,15 @@ run 38195482724 GREEN). The intrinsically specified total deletion, strict level
 and full prefix order have been integrated in PR~299, with the
 canonical empty-or-singleton parameter transport integrated in PR~305.
 The checked sharp upper-step safety is recorded in PR~309.
-The four component proofs are restaged in PR~306; PR~310 proposes the
-remaining high-base weak successor, while PR~311 packages its
-consequence as a genuine root-preserving Kpt ShapeMap using
-injectivity derived from weak successors rather than assumed.
-These latter integrated claims remain \emph{PENDING exact-head Lean
-and transitive named-axiom audits}; no complete M2 factorization
-is asserted.
+The four component proofs and sharp guard are integrated in PR~306;
+PR~310 proves the remaining high-base weak successor, and PR~311
+packages the complete intrinsic deletion as a root-preserving Kpt
+ShapeMap, deriving injectivity from weak successors.
+The exact-head full and focused named-axiom runs passed for PR~306
+(38253790327/38253790321), PR~310 (38250692961/38250692981)
+and PR~311 (38252865811/38252865671), each with standard axioms.
+These normalized local facts are GREEN; the complete M2
+factorization remains OPEN.
 
 For M3, the actual gated finite middle-clone insertion satisfies
 the corrected $L$-only age test and yields one ShapeMap in $K_{pt}M$
@@ -570,9 +574,17 @@ boundary-level agreement with the intrinsic deletion factor, then
 derives the required composition equality at \emph{all} earlier
 source levels: below the boundary the deletion factor is literally
 $F$ and the prescribed map is literally the identity beneath its
-one omitted target level. The new endpoint remains PENDING its own
-exact-head build and named-axiom audit. It does not construct the
-prescribed data or establish the corrected-B3 age condition from $F$.
+one omitted target level. PR~312 passed exact-head full Lean run 38253923339, focused
+named-axiom audit 38253923143 and manuscript validation.
+It does not construct the prescribed data or establish corrected-B3
+age necessity from $F$.
+The subsequent exact-extension reduction isolates a weaker open task:
+extend the well-defined boundary prescription
+$D(x)\mapsto F(x)$ to an arbitrary one-gap Kpt ShapeMap.
+Lower-level agreement can be derived without corrected B3 or M2,
+provided one first establishes identity below a unique skipped level
+directly from the Kpt level-range formula and weak successors.
+The corresponding independent Lean proof remains PENDING CI.
 This M2 obligation remains OPEN.
 
 \textbf{M3 duplication -- GREEN in the normalized model;
@@ -639,9 +651,10 @@ The all-level intrinsic deletion \emph{membership} is
 verified in PR~287. The intrinsic function and strict level/order
 laws have been integrated in PR~299, and the unified canonical
 parameter transport in PR~305. PR~306 assembles the genuine
-low/crossing weak-successor components; PR~310 (upper case)
-and PR~311 (ShapeMap) are proof candidates requiring exact-head
-CI, focused checks and axiom audit before being marked GREEN.
+low/crossing weak-successor components; PR~310 proves the upper case,
+and PR~311 gives the intrinsic global ShapeMap. All three merged after
+successful exact-head full builds and focused transitive axiom audits.
+The first global M2 deletion factor is GREEN in normalized Kpt.
 \textbf{Genuine crossing weak successor -- GREEN locally.}
 \texttt{LevelRemovalBoundaryWeakSucc.lean} (PR~292,
 full Lean 38196554700 and focused 38196554661 GREEN)
@@ -667,20 +680,18 @@ The local deletion proof no longer needs an auxiliary successor
 axiom: PR~309 derives the sharp $m<k$ or $f<m$ guard
 from the actual mapped upper canonical step. PR~310 assembles
 the missing high-base weak-successor proof from the complete
-deleted record and admissible deleted weak target; PR~311 packages
-the intrinsic function as a candidate ShapeMap, deriving
-injectivity from strict levels, root extension and weak successors.
+deleted record and admissible deleted weak target; PR~311 constructs the intrinsic function as a genuine ShapeMap,
+deriving injectivity from strict levels, root extension and weak
+successors.
 It also records literal agreement below the source gap and
 the recovery of the skipped target level by the deletion factor.
-\textbf{Status: PRs~310--311 remain PENDING exact-head CI and
-named-axiom audits.} Even if both are certified, the
-complementary one-gap map, equality of the composition with
-the original $F$ through source level $n$, and corrected-B3
-necessity on arbitrary finite $L$-only witnesses remain OPEN.
+\textbf{Status: global deletion ShapeMap GREEN (PRs~310--311).}
+The complementary one-gap map, and the existence of an extension
+realizing $F$ at every boundary source type, remain OPEN.
+The corrected-B3 finite $L$-only age necessity is still required
+for the prescribed-extension route, but the exact-extension
+criterion does not assume it.
 Do not conflate constructing the first factor with proving (M2).
-Finally, reconcile the I3 signature witnesses with finite
-$L$-structures rather than $E$-partial structures before
-claiming the upper bound.
 Finally, reconcile the I3 signature witnesses with finite
 $L$-structures rather than $E$-partial structures before claiming
 the upper bound.}

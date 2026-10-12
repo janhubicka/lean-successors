@@ -192,6 +192,8 @@ import SuccessorTree.V10.LevelRemovalUniformLowWeakSucc
 import SuccessorTree.V10.LevelRemovalUniformHighWeakSucc
 import SuccessorTree.V10.LevelRemovalUniformShapeMap
 import SuccessorTree.V10.LevelRemovalM2Criterion
+import SuccessorTree.V10.LevelRemovalSkipsOnly
+import SuccessorTree.V10.LevelRemovalM2ExactExtension
 import SuccessorTree.V10.LevelRemovalColumnTransport
 import SuccessorTree.V10.LevelRemovalTerminalLetter
 import SuccessorTree.V10.LevelRemovalRawPrefix
