@@ -631,6 +631,17 @@ on its original branch; the proof is restaged byte-identically here
 for integration testing. It does not give a total ShapeMap outside
 $D[K_{pt}]$, and the multi-upper age and successor conditions remain OPEN.
 
+PR~318 proves that shape-preserving maps also reflect the
+complete predecessor order, using injectivity and uniqueness of
+ancestors. Thus the partial restoration $R$ on $D[K_{pt}]$
+preserves and reflects prefix order and is injective; it is an
+order embedding of its partial domain. This proof passed full Lean
+38272059762, focused standard-axiom audit 38272059862 and TeX
+checks on its original exact head, and is restaged with the same
+mathematical proof blobs for cumulative integration.
+Order embedding alone neither extends $R$ to all Kpt types nor
+supplies the missing successor and multi-upper age conditions.
+
 This M2 obligation remains OPEN.
 
 \textbf{M3 duplication -- GREEN in the normalized model;
