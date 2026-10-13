@@ -65,12 +65,12 @@ theorem shapeMap_preserves_type_pair_at_levelMap {db du dd : Nat}
   have hImageLevel : LevelTree.lev (F a) = kptShapeLevelMap family F i := by
     simpa only [ha] using (kptShapeLevelMap_eq family F a).symm
   obtain ⟨h, hPair⟩ := shapeMap_preserves_type_pair family F u i hi
-  change ∃ h : kptShapeLevelMap family F i < (F u).1.1,
-    (F u).1.2.pairAt (kptShapeLevelMap family F i) h = u.1.2.pairAt i hi
-  have hPair' : ∃ h : LevelTree.lev (F a) < LevelTree.lev (F u),
-      (F u).1.2.pairAt (LevelTree.lev (F a)) h = u.1.2.pairAt i hi :=
-    ⟨h, hPair⟩
-  simpa only [hImageLevel] using hPair'
+  have hNew : kptShapeLevelMap family F i < LevelTree.lev (F u) := by
+    rw [← hImageLevel]
+    exact h
+  refine ⟨hNew, ?_⟩
+  rw [← hImageLevel]
+  exact hPair
 
 /-- Full induced pair preservation between a retained ordinary
 coordinate and the vertex introduced with an actual parameter whose
@@ -104,8 +104,12 @@ theorem shapeMap_preserves_ordinary_pair_in_parameter
   obtain ⟨hIn, hPair⟩ := shapeMap_preserves_type_pair_at_levelMap family F v i hi
   refine ⟨lt_of_lt_of_le hi hOldF, hOldJ,
     lt_of_lt_of_le hIn hNewF, hNewJ, ?_⟩
-  rw [hNewRecord, hOldRecord, PartialTypeWithE.ordinaryType_pairAt,
-    PartialTypeWithE.ordinaryType_pairAt] at hPair
-  exact hPair
+  have hNew := PartialTypeWithE.ordinaryType_pairAt (F u).1.2
+    (LevelTree.lev (F a)) hNewJ (LevelTree.lev (F v)) hNewF
+    (kptShapeLevelMap family F i) hIn
+  have hOld := PartialTypeWithE.ordinaryType_pairAt u.1.2
+    (LevelTree.lev a) hOldJ (LevelTree.lev v) hOldF i hi
+  rw [hNewRecord, hOldRecord] at hPair
+  exact hNew.symm.trans (hPair.trans hOld)
 
 end SuccessorTree.V10
