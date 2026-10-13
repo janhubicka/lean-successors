@@ -21,6 +21,27 @@ supplies that separate first half.
 
 namespace SuccessorTree.V10
 
+/-- Equal image lengths can be transported at the level of the
+numerical record indices before comparing their common ordinary socles.
+Keeping the index variables explicit avoids dependent elimination on
+the underlying subtype-valued image nodes. -/
+theorem sameOrdinaryAtCut_of_jointOrdinaryTypes
+    {ell db du dd : Nat}
+    (Q : PartialTypeWithE ell db du dd)
+    (i j : Nat) (hi : i < ell) (hj : j < ell)
+    (n m : Nat) (hn : n ≤ ell) (hm : m ≤ ell)
+    (R : PartialTypeWithE n db du dd)
+    (S : PartialTypeWithE m db du dd)
+    (h : n = m)
+    (hR : Q.ordinaryType i hi n hn = R)
+    (hS : Q.ordinaryType j hj m hm = S) :
+    SameOrdinaryAtCut R
+      (cast (congrArg (fun k => PartialTypeWithE k db du dd) h.symm) S) := by
+  cases h
+  change SameOrdinaryAtCut R S
+  rw [← hR, ← hS]
+  exact Q.ordinaryTypes_sameSocle i j hi hj hn
+
 /-- After transporting two genuine source ordinary types into the
 same F(u), their ordinary L+ records are identical. This is a
 raw, representation-independent form using a common target level
@@ -65,11 +86,9 @@ theorem shapeMap_compatible_of_joint_ambient
   have hEq : LevelTree.lev (F ti) = LevelTree.lev (F tj) :=
     F.level_eq_of_level_eq (hLevelTI.trans hLevelTJ.symm)
   refine ⟨hEq, ?_⟩
-  cases hEq
-  change SameOrdinaryAtCut (F ti).1.2 (F tj).1.2
-  rw [← hTypeI, ← hTypeJ]
-  exact (F u).1.2.ordinaryTypes_sameSocle
-    (LevelTree.lev (F ai)) (LevelTree.lev (F aj))
-    hai haj hfi
+  exact sameOrdinaryAtCut_of_jointOrdinaryTypes (F u).1.2
+    (LevelTree.lev (F ai)) (LevelTree.lev (F aj)) hai haj
+    (LevelTree.lev (F ti)) (LevelTree.lev (F tj)) hfi hfj
+    (F ti).1.2 (F tj).1.2 hEq hTypeI hTypeJ
 
 end SuccessorTree.V10
