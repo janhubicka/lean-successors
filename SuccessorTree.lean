@@ -249,3 +249,6 @@ import SuccessorTree.V10.CanonicalPrefixStep
 import SuccessorTree.V10.ContainedCanonicalParameter
 import SuccessorTree.V10.ShapeMapAmbientOrdinaryTransport
 import SuccessorTree.V10.M2CapTypesAxiomAudit
+
+-- M2: identical image ordinary socles of source types from one ambient Kpt witness.
+import SuccessorTree.V10.M2JointImageCompatibility
