@@ -1,0 +1,5 @@
+import SuccessorTree.V10.M2TwoTypePaddedWitness
+#print axioms SuccessorTree.V10.twoTypeFreeAge_first_type
+#print axioms SuccessorTree.V10.twoTypeFreeAge_second_type
+#print axioms SuccessorTree.V10.twoTypeFreeAge_padded_types
+#print axioms SuccessorTree.V10.twoCompatibleTypes_joint_padded
