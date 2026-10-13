@@ -6,6 +6,9 @@ on:
     paths:
       - 'manuscript/update-v10-source.py'
       - 'manuscript/check-v10-source-updater.py'
+      - 'manuscript/install-v10-m2-appendix.py'
+      - 'manuscript/check-v10-m2-appendix.py'
+      - 'manuscript/v10-m2-nonedge-appendix.tex'
       - 'manuscript/v10-cumulative-validation-status.tex'
       - 'manuscript/repair-v10-boring-lemma.py'
       - 'manuscript/check-v10-boring-repair.py'
@@ -15,6 +18,9 @@ on:
     paths:
       - 'manuscript/update-v10-source.py'
       - 'manuscript/check-v10-source-updater.py'
+      - 'manuscript/install-v10-m2-appendix.py'
+      - 'manuscript/check-v10-m2-appendix.py'
+      - 'manuscript/v10-m2-nonedge-appendix.tex'
       - 'manuscript/v10-cumulative-validation-status.tex'
       - 'manuscript/repair-v10-boring-lemma.py'
       - 'manuscript/check-v10-boring-repair.py'
@@ -31,5 +37,7 @@ jobs:
         run: |
           python3 -m py_compile manuscript/update-v10-source.py manuscript/check-v10-source-updater.py
           python3 manuscript/check-v10-source-updater.py
+          python3 -m py_compile manuscript/install-v10-m2-appendix.py manuscript/check-v10-m2-appendix.py
+          python3 manuscript/check-v10-m2-appendix.py
           python3 -m py_compile manuscript/repair-v10-boring-lemma.py manuscript/check-v10-boring-repair.py
           python3 manuscript/check-v10-boring-repair.py
