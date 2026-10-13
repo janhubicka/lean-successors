@@ -261,3 +261,6 @@ import SuccessorTree.V10.M2SourceTypeAge
 
 -- M2: forbidden-free free L amalgamation of two compatible complete source types.
 import SuccessorTree.V10.M2TwoTypeFreeAge
+
+-- M2: two compatible source L+ types in one nonedge-padded admissible witness.
+import SuccessorTree.V10.M2TwoTypePaddedWitness
