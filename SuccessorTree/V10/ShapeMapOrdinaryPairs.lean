@@ -69,8 +69,9 @@ theorem shapeMap_preserves_type_pair_at_levelMap {db du dd : Nat}
     rw [← hImageLevel]
     exact h
   refine ⟨hNew, ?_⟩
-  rw [← hImageLevel]
-  exact hPair
+  simpa only [show LevelTree.lev
+    (F (LevelTree.ancestor u i (Nat.le_of_lt hi))) =
+      kptShapeLevelMap family F i from hImageLevel] using hPair
 
 /-- Full induced pair preservation between a retained ordinary
 coordinate and the vertex introduced with an actual parameter whose
