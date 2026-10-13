@@ -271,3 +271,6 @@ import SuccessorTree.V10.M2B2Transfer
 
 -- M2 finite B3: real selected vertices retain full directed L records.
 import SuccessorTree.V10.M2BoundedCopyRecords
+
+-- M2: B1/B2 family packaging at the deletion boundary.
+import SuccessorTree.V10.M2BoundaryFamily
