@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M2NonedgePairAge
+#print axioms SuccessorTree.V10.ForbiddenAtomicPattern.no_copy_uses_nonedge_pair
+#print axioms SuccessorTree.V10.NormalizedForbidden.avoids_of_nonedge_pair
