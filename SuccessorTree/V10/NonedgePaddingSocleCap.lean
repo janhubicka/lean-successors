@@ -1,4 +1,5 @@
 import SuccessorTree.V10.NonedgePaddingFullTypes
+import SuccessorTree.V10.AdmissibleKptLevelTree
 import SuccessorTree.V10.PrefixReplicaE
 import Mathlib.Tactic
 
@@ -26,42 +27,111 @@ def twoNeutralL {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd) : AgeTestModel db du dd :=
   model (model A.L A.size A.size) (A.size+1) (A.size+1)
 
-/-- The entire old ordered L-reduct is induced inside the extension. -/
+/-- At coordinates below the copied initial segment, the non-edge
+padding constructor preserves every directed positive and negative atom. -/
+theorem model_old_binary {db du dd : Nat}
+    (L : AgeTestModel db du dd) (n N x y : Nat)
+    (hx : x < n) (hy : y < n) (t : Fin db) :
+    (model L n N).binary x y t = L.binary x y t := by
+  have hrx : Real n x := Or.inl hx
+  have hry : Real n y := Or.inl hy
+  simp [model,hrx,hry,project,hx,hy]
+
+theorem model_old_unary {db du dd : Nat}
+    (L : AgeTestModel db du dd) (n N x : Nat)
+    (hx : x < n) (t : Fin du) :
+    (model L n N).unary x t = L.unary x t := by
+  have hrx : Real n x := Or.inl hx
+  simp [model,hrx,project,hx]
+
+theorem model_old_diagonal {db du dd : Nat}
+    (L : AgeTestModel db du dd) (n N x : Nat)
+    (hx : x < n) (t : Fin dd) :
+    (model L n N).diagonal x t = L.diagonal x t := by
+  have hrx : Real n x := Or.inl hx
+  simp [model,hrx,project,hx]
+
+/-- A non-real padding vertex has no incident L relation, in either
+direction, regardless of the other vertex. -/
+theorem model_neutral_left {db du dd : Nat}
+    (L : AgeTestModel db du dd) (n N x y : Nat)
+    (hx : ¬ Real n x) (t : Fin db) :
+    (model L n N).binary x y t = false := by
+  simp [model,hx]
+
+theorem model_neutral_right {db du dd : Nat}
+    (L : AgeTestModel db du dd) (n N x y : Nat)
+    (hy : ¬ Real n y) (t : Fin db) :
+    (model L n N).binary x y t = false := by
+  simp [model,hy]
+
+/-- The two padding steps are literal identity on the original
+carrier, even for absent atoms. -/
 theorem twoNeutralL_old_binary {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (x y : Nat) (hx : x < A.size) (hy : y < A.size)
     (t : Fin db) :
     (twoNeutralL A).binary x y t = A.L.binary x y t := by
-  simp [twoNeutralL, model, Real, project, hx, hy, show x < A.size+1 by omega,
-    show y < A.size+1 by omega]
+  calc
+    (twoNeutralL A).binary x y t =
+      (model A.L A.size A.size).binary x y t :=
+        model_old_binary (model A.L A.size A.size)
+          (A.size+1) (A.size+1) x y (by omega) (by omega) t
+    _ = A.L.binary x y t :=
+        model_old_binary A.L A.size A.size x y hx hy t
 
 theorem twoNeutralL_old_unary {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (x : Nat) (hx : x < A.size) (t : Fin du) :
     (twoNeutralL A).unary x t = A.L.unary x t := by
-  simp [twoNeutralL, model, Real, project, hx, show x < A.size+1 by omega]
+  calc
+    (twoNeutralL A).unary x t =
+      (model A.L A.size A.size).unary x t :=
+        model_old_unary (model A.L A.size A.size)
+          (A.size+1) (A.size+1) x (by omega) t
+    _ = A.L.unary x t := model_old_unary A.L A.size A.size x hx t
 
 theorem twoNeutralL_old_diagonal {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (x : Nat) (hx : x < A.size) (t : Fin dd) :
     (twoNeutralL A).diagonal x t = A.L.diagonal x t := by
-  simp [twoNeutralL, model, Real, project, hx, show x < A.size+1 by omega]
+  calc
+    (twoNeutralL A).diagonal x t =
+      (model A.L A.size A.size).diagonal x t :=
+        model_old_diagonal (model A.L A.size A.size)
+          (A.size+1) (A.size+1) x (by omega) t
+    _ = A.L.diagonal x t :=
+        model_old_diagonal A.L A.size A.size x hx t
 
-/-- On the actual carrier, no L-edge can touch either new position. -/
+/-- No L relation involves the two fresh vertices. -/
 theorem twoNeutralL_binary_new {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (x y : Nat) (hx : x < A.size+2) (hy : y < A.size+2)
     (hNew : A.size ≤ x ∨ A.size ≤ y) (t : Fin db) :
     (twoNeutralL A).binary x y t = false := by
   rcases hNew with hNew | hNew
-  · have hPos : x = A.size ∨ x = A.size+1 := by omega
-    rcases hPos with rfl | rfl
-    · simp [twoNeutralL,model,Real]
-    · simp [twoNeutralL,model,Real]
-  · have hPos : y = A.size ∨ y = A.size+1 := by omega
-    rcases hPos with rfl | rfl
-    · simp [twoNeutralL,model,Real]
-    · simp [twoNeutralL,model,Real]
+  · have hxCases : x = A.size ∨ x = A.size+1 := by omega
+    rcases hxCases with rfl | rfl
+    · calc
+        (twoNeutralL A).binary A.size y t =
+            (model A.L A.size A.size).binary A.size y t :=
+              model_old_binary (model A.L A.size A.size)
+                (A.size+1) (A.size+1) A.size y (by omega) (by omega) t
+        _ = false :=
+          model_neutral_left A.L A.size A.size A.size y (by simp [Real]) t
+    · exact model_neutral_left (model A.L A.size A.size)
+        (A.size+1) (A.size+1) (A.size+1) y (by simp [Real]) t
+  · have hyCases : y = A.size ∨ y = A.size+1 := by omega
+    rcases hyCases with rfl | rfl
+    · calc
+        (twoNeutralL A).binary x A.size t =
+            (model A.L A.size A.size).binary x A.size t :=
+              model_old_binary (model A.L A.size A.size)
+                (A.size+1) (A.size+1) x A.size (by omega) (by omega) t
+        _ = false :=
+          model_neutral_right A.L A.size A.size x A.size (by simp [Real]) t
+    · exact model_neutral_right (model A.L A.size A.size)
+        (A.size+1) (A.size+1) x (A.size+1) (by simp [Real]) t
 
 /-- Two neutral fillers followed by the canonical maximal incoming E
 socle: the last vertex has precisely the original free cut. -/
@@ -72,7 +142,9 @@ def socleCap {db du dd : Nat}
   L := twoNeutralL A
   carrier_iff := by
     intro x
-    simp [twoNeutralL,model,size]
+    change x < size (A.size+1) (A.size+1) ↔ x < A.size+2
+    simp [size]
+    omega
   E := prefixReplicaE A A.size
   E_inside := by
     intro u v h
