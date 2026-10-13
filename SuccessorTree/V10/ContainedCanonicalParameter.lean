@@ -55,7 +55,12 @@ theorem ambient_prefix_actual_parameter_below
     exact hPrefix
   refine ⟨a,b,p,c',q,hSucc,hBelow,hMem,hQ,?_⟩
   obtain ⟨ell,f,hf,Q,hA,hTarget,hLetter,hValid,hParamEq,hGate⟩ := hStep
-  have hLevel := congrArg Sigma.fst hA
-  exact hLevel
+  have hLevelA := congrArg Sigma.fst hA
+  have hLevelB := congrArg Sigma.fst hTarget
+  have hLevelB' := congrArg Sigma.fst hB
+  change LevelTree.lev a = ell at hLevelA
+  change LevelTree.lev b = ell+1 at hLevelB
+  change LevelTree.lev b = j+1 at hLevelB'
+  omega
 
 end SuccessorTree.V10
