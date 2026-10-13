@@ -1,0 +1,5 @@
+import SuccessorTree.V10.PrescribedB3BoundedCores
+
+#print axioms SuccessorTree.V10.normalizedForbidden_arity_le_family_bound
+#print axioms SuccessorTree.V10.NormalizedForbidden.avoids_restrictCarrier
+#print axioms SuccessorTree.V10.boundedUpperCoreAgeTest_iff_commonSocleAgeTest
