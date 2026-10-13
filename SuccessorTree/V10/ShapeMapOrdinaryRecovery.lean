@@ -54,10 +54,12 @@ theorem canonicalKptStep_empty_cross_after_parameters
     rw [←hB]
     exact hBelow
   obtain ⟨hLe, hQ⟩ := hPrefix
+  change ell+1 ≤ u.1.1 at hLe
+  change Q = u.1.2.restrict hLe at hQ
   have hiEll : i < ell := by omega
   rw [hALevel]
-  refine ⟨by change i < u.1.1; change ell+1 ≤ u.1.1 at hLe; omega,
-    by change ell < u.1.1; change ell+1 ≤ u.1.1 at hLe; omega, ?_⟩
+  refine ⟨by change i < u.1.1; omega,
+    by change ell < u.1.1; omega, ?_⟩
   refine ⟨?_, ?_, ?_⟩
   · intro t
     have h := hValid.noNewBinaryBeyondCut ⟨i, hiEll⟩ hCut t
@@ -88,37 +90,45 @@ theorem ordinaryPair_eq_of_empty_cross
       cases x with
       | none =>
         cases y with
-        | none => exact congrArg
+        | none =>
+          exact congrArg
             (fun P : PartialTypeWithE 1 db du dd => P.lReduct.binary (some 0) (some 0) t) hJ
         | some k => exact (hNew.1 t).2.trans (hOld.1 t).2.symm
       | some k =>
         cases y with
         | none => exact (hNew.1 t).1.trans (hOld.1 t).1.symm
-        | some l => exact congrArg
+        | some l =>
+          exact congrArg
             (fun P : PartialTypeWithE 1 db du dd => P.lReduct.binary (some 0) (some 0) t) hI
     · intro x t
       cases x with
-      | none => exact congrArg
+      | none =>
+        exact congrArg
           (fun P : PartialTypeWithE 1 db du dd => P.lReduct.unary (some 0) t) hJ
-      | some k => exact congrArg
+      | some k =>
+        exact congrArg
           (fun P : PartialTypeWithE 1 db du dd => P.lReduct.unary (some 0) t) hI
     · intro x t
       cases x with
-      | none => exact congrArg
+      | none =>
+        exact congrArg
           (fun P : PartialTypeWithE 1 db du dd => P.lReduct.diagonal (some 0) t) hJ
-      | some k => exact congrArg
+      | some k =>
+        exact congrArg
           (fun P : PartialTypeWithE 1 db du dd => P.lReduct.diagonal (some 0) t) hI
   · intro x y
     cases x with
     | none =>
       cases y with
-      | none => exact congrArg
+      | none =>
+        exact congrArg
           (fun P : PartialTypeWithE 1 db du dd => P.eRelation (some 0) (some 0)) hJ
       | some k => exact hNew.2.2.trans hOld.2.2.symm
     | some k =>
       cases y with
       | none => exact hNew.2.1.trans hOld.2.1.symm
-      | some l => exact congrArg
+      | some l =>
+        exact congrArg
           (fun P : PartialTypeWithE 1 db du dd => P.eRelation (some 0) (some 0)) hI
 
 /-- Arbitrary distinct retained ordinary coordinates preserve their
