@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Pack Lean source only
         run: |
-          tar -czf successor-m2-source.tar.gz             SuccessorTree SuccessorTree.lean scripts             lakefile.toml lake-manifest.json lean-toolchain
+          tar -czf successor-m2-source.tar.gz             SuccessorTree SuccessorTree.lean scripts             lakefile.toml lean-toolchain
           sha256sum successor-m2-source.tar.gz > SOURCE-SHA256
       - name: Export snapshot
         uses: actions/upload-artifact@v4
