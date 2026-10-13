@@ -1,6 +1,5 @@
 import SuccessorTree.V10.ShapeMapAmbientOrdinaryTransport
 import SuccessorTree.V10.NonedgePaddingCapTypes
-import SuccessorTree.V10.OneGapSocleGluing
 import Mathlib.Tactic
 
 /-!
