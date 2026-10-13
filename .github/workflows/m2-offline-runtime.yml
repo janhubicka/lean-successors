@@ -1,0 +1,91 @@
+name: M2 offline runtime
+
+on:
+  pull_request:
+    paths: ['.github/workflows/m2-offline-runtime.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/cache/restore@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache/restore@v5
+        with:
+          path: .lake
+          key: lake-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
+          restore-keys: |
+            lake-v2-${{ runner.os }}-${{ runner.arch }}-
+      - name: Resolve pinned checker and build the existing M2 inputs
+        run: |
+          set -euo pipefail
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          export PATH="$HOME/.elan/bin:$PATH"
+          test -s lake-manifest.json || lake update
+          lake exe cache get
+          lake build SuccessorTree.V10.PrescribedBoringCompletion SuccessorTree.V10.NonedgePadding SuccessorTree.V10.ShapeMapParameterTransport SuccessorTree.V10.LevelRemovalM2ExactExtension
+      - name: Export checker without credentials or static build objects
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          TOOLCHAIN=$(dirname "$(dirname "$(elan which lean)")")
+          mkdir runtime-export
+          git rev-parse HEAD > runtime-export/COMMIT
+          git archive --format=tar.gz -o runtime-export/source.tar.gz HEAD
+          tar --exclude='*.a' --exclude='*.o' --exclude='*.ilean' --exclude='.git' --exclude='*/ir' -C "$TOOLCHAIN" -cf - bin lib | zstd -T2 -3 > runtime-export/toolchain.tar.zst
+          tar --exclude='.git' --exclude='*.a' --exclude='*.o' --exclude='*.ilean' --exclude='*/ir' -cf - .lake lakefile.toml lake-manifest.json lean-toolchain | zstd -T2 -3 > runtime-export/dependencies.tar.zst
+          (cd runtime-export && sha256sum source.tar.gz toolchain.tar.zst dependencies.tar.zst > SHA256SUMS)
+          du -h runtime-export/*
+          tar -cf - -C runtime-export . | split -b 180M - runtime-part-
+          test ! -e runtime-part-aq
+          sha256sum runtime-part-* > runtime-parts-SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-runtime-manifest
+          path: |
+            runtime-parts-SHA256SUMS
+            runtime-export/COMMIT
+            runtime-export/SHA256SUMS
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-aa, path: runtime-part-aa, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-ab, path: runtime-part-ab, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-ac, path: runtime-part-ac, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-ad, path: runtime-part-ad, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-ae, path: runtime-part-ae, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-af, path: runtime-part-af, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-ag, path: runtime-part-ag, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-ah, path: runtime-part-ah, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-ai, path: runtime-part-ai, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-aj, path: runtime-part-aj, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-ak, path: runtime-part-ak, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-al, path: runtime-part-al, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-am, path: runtime-part-am, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-an, path: runtime-part-an, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-ao, path: runtime-part-ao, compression-level: 0, retention-days: 2}
+      - uses: actions/upload-artifact@v4
+        with: {name: m2-runtime-ap, path: runtime-part-ap, compression-level: 0, retention-days: 2}
