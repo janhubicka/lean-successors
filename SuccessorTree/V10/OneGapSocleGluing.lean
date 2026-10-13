@@ -52,6 +52,7 @@ theorem ordinarySocleAt_of_le {db du dd : Nat}
     {a b : AdmissibleKptNode family}
     (ha : ell ≤ LevelTree.lev a) (hab : a ≤ b) :
     ordinarySocleAt family ell a = ordinarySocleAt family ell b := by
+  change ell ≤ a.1.1 at ha
   have hb : ell ≤ b.1.1 := le_trans ha hab.1
   simp only [ordinarySocleAt, dif_pos ha, dif_pos hb]
   rw [hab.2, PartialTypeWithE.restrict_trans]
@@ -70,6 +71,7 @@ theorem ordinarySocleAt_of_parameter {db du dd : Nat}
     (canonicalKptSucc_spec family hSucc) le_rfl v hv
   have hRecord : v.1.2 = b.1.2.ordinaryType (LevelTree.lev a) hj
       (LevelTree.lev v) hf := eq_of_heq (Sigma.mk.inj_iff.mp hRaw).2
+  change ell ≤ v.1.1 at hHigh
   have hb : ell ≤ b.1.1 := le_trans hHigh hf
   simp only [ordinarySocleAt, dif_pos hHigh, dif_pos hb]
   rw [hRecord]
