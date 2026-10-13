@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M2TwoTypeImageCompatibility
+#print axioms SuccessorTree.V10.partialTypeAt_freeLevel_ge_of_admissible
+#print axioms SuccessorTree.V10.shapeMap_preserves_source_compatibility
