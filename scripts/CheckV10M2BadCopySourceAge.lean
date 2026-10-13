@@ -1,0 +1,2 @@
+import SuccessorTree.V10.M2BadCopySourceAge
+#print axioms SuccessorTree.V10.boundedCopySourceAge_avoids_from_forbidden_copy
