@@ -247,3 +247,6 @@ import SuccessorTree.V10.M2InducedAgeTransfer
 
 -- M2: neutral completion of sparse finite L-age carriers.
 import SuccessorTree.V10.M2NeutralCarrierFill
+
+-- M2: relative finite induced pullback and neutral completion.
+import SuccessorTree.V10.M2SparsePullbackAge
