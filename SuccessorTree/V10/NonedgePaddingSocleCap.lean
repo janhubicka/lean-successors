@@ -115,6 +115,29 @@ theorem socleCap_old_E {db du dd : Nat}
     (socleCap A).E u v = A.E u v :=
   prefixReplicaE_old A A.size u v hv
 
+/-- Keeping each old E-column unchanged also keeps its canonically
+determined free cut; this is needed to identify the genuine
+successor parameter of an ordinary source vertex. -/
+theorem socleCap_old_freeLevel {db du dd : Nat}
+    (A : EnumeratedPartialStructure db du dd)
+    (j : Nat) (hj : j < A.size) :
+    (socleCap A).freeLevel j = A.freeLevel j := by
+  apply Nat.le_antisymm
+  · by_contra hNot
+    have h : A.freeLevel j < (socleCap A).freeLevel j := by omega
+    have hE : (socleCap A).E (A.freeLevel j) j = true :=
+      ((socleCap A).E_iff_freeLevel (A.freeLevel j) j).2 h
+    have hOld : A.E (A.freeLevel j) j = true :=
+      (socleCap_old_E A (A.freeLevel j) j hj).symm.trans hE
+    exact Bool.false_ne_true ((A.freeLevel_firstMissing j).symm.trans hOld)
+  · by_contra hNot
+    have h : (socleCap A).freeLevel j < A.freeLevel j := by omega
+    have hE : A.E ((socleCap A).freeLevel j) j = true :=
+      (A.E_iff_freeLevel ((socleCap A).freeLevel j) j).2 h
+    have hNew : (socleCap A).E ((socleCap A).freeLevel j) j = true :=
+      (socleCap_old_E A ((socleCap A).freeLevel j) j hj).trans hE
+    exact Bool.false_ne_true (((socleCap A).freeLevel_firstMissing j).symm.trans hNew)
+
 /-- Every old ordinary vertex retains its COMPLETE type over each
 original initial socle, including all directed, unary, diagonal and E
 atoms; this is more precise than mere age preservation. -/
