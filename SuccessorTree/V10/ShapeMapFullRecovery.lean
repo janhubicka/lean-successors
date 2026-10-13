@@ -101,38 +101,48 @@ theorem shapeMap_recovers_complete_record {db du dd : Nat}
       cases x with
       | none =>
         cases y with
-        | none => exact congrArg
+        | none =>
+          exact congrArg
             (fun P : PartialTypeWithE 0 db du dd => P.lReduct.binary none none t) hSingleton
-        | some j => exact congrArg
+        | some j =>
+          exact congrArg
             (fun P : PartialTypeWithE 1 db du dd => P.lReduct.binary none (some 0) t) (hPair j)
       | some i =>
         cases y with
-        | none => exact congrArg
+        | none =>
+          exact congrArg
             (fun P : PartialTypeWithE 1 db du dd => P.lReduct.binary (some 0) none t) (hPair i)
         | some j => exact (hOrdinary i j).1 t
     · intro x t
       cases x with
-      | none => exact congrArg
+      | none =>
+        exact congrArg
           (fun P : PartialTypeWithE 0 db du dd => P.lReduct.unary none t) hSingleton
-      | some i => exact congrArg
+      | some i =>
+        exact congrArg
           (fun P : PartialTypeWithE 1 db du dd => P.lReduct.unary (some 0) t) (hPair i)
     · intro x t
       cases x with
-      | none => exact congrArg
+      | none =>
+        exact congrArg
           (fun P : PartialTypeWithE 0 db du dd => P.lReduct.diagonal none t) hSingleton
-      | some i => exact congrArg
+      | some i =>
+        exact congrArg
           (fun P : PartialTypeWithE 1 db du dd => P.lReduct.diagonal (some 0) t) (hPair i)
   · intro x y
     cases x with
     | none =>
       cases y with
-      | none => exact congrArg
+      | none =>
+        exact congrArg
           (fun P : PartialTypeWithE 0 db du dd => P.eRelation none none) hSingleton
-      | some j => exact congrArg
+      | some j =>
+        exact congrArg
           (fun P : PartialTypeWithE 1 db du dd => P.eRelation none (some 0)) (hPair j)
     | some i =>
       cases y with
-      | none => exact congrArg
+      | none =>
+        exact congrArg
           (fun P : PartialTypeWithE 1 db du dd => P.eRelation (some 0) none) (hPair i)
       | some j => exact (hOrdinary i j).2
 
