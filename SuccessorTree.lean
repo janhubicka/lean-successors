@@ -277,3 +277,6 @@ import SuccessorTree.V10.M2BoundaryFamily
 
 -- M2 B3: selected compatible types admit one padded source witness.
 import SuccessorTree.V10.M2SelectedFamilyPadding
+
+-- M2 B3: full selected parameter image at its concrete level-map coordinate.
+import SuccessorTree.V10.M2AmbientLevelTransport

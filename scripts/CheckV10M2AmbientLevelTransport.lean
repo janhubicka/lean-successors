@@ -1,0 +1,2 @@
+import SuccessorTree.V10.M2AmbientLevelTransport
+#print axioms SuccessorTree.V10.shapeMap_transports_ambient_ordinary_type_at_levelMap
