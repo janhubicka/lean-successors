@@ -250,3 +250,6 @@ import SuccessorTree.V10.M2NeutralCarrierFill
 
 -- M2: relative finite induced pullback and neutral completion.
 import SuccessorTree.V10.M2SparsePullbackAge
+
+-- M2: reindex a bounded forbidden copy through retained source levels.
+import SuccessorTree.V10.M2BoundedCopySourceAge
