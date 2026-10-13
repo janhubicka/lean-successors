@@ -103,6 +103,39 @@ are both the complete types of ordinary vertices above one and the
 same initial $L^+$-socle in $F(X)$.
 \end{proof}
 
+
+\paragraph{Bounded upper witnesses.}
+The finite-age verification below can be shortened by considering a
+single induced forbidden copy rather than every upper vertex of an
+arbitrary age witness.  Indeed, suppose the conclusion fails and
+choose an induced copy $e$ of some $H\in\mathcal F$ in $W$.
+Since the initial socle through $m$ is induced from an admissible
+target and $W\setminus\{m\}$ is $\mathcal F$-free, the copy contains
+$m$ and at least one vertex above $m$.  It uses at most $|H|$
+upper vertices.
+
+Keep the initial target socle and only those upper vertices $e(a)>m$
+in the age calculation.  The other numerical upper positions can be
+filled by vertices carrying the allowed neutral singleton and no
+incident $L$-relation.  This does not create an irreducible forbidden
+configuration: a forbidden copy containing a neutral filler would
+violate irreducibility, and a forbidden singleton cannot be neutral.
+Consequently one may use exactly $n+|H|$ original source positions:
+the first $n$ are mapped to retained coordinates
+$\lambda(0),\ldots,\lambda(n-1)$, while the position $n+a$
+is retained only when $e(a)>m$, in which case it represents $e(a)$.
+The map is increasing on these genuine positions, since $e$ and
+$\lambda$ are increasing and all upper images exceed $m$.
+The corresponding source $L$-structure is an induced pullback of
+$W\setminus\{m\}$ on genuine positions, with neutral non-edges
+elsewhere, and is therefore $\mathcal F$-free.
+
+This bounded construction preserves every required upper--upper
+$L$-atom, including absent relations.  It does not request an
+$E$-expansion of $W$.  Only after the source $L$-structure is obtained
+do we apply the non-edge padding construction, with the one common
+ordinary $E$-socle of the prescribed source types.
+
 \begin{lemma}\label{lem:m2-compatible-age}
 Let $F\in M$, let $n>0$, and suppose that
 $\lambda(n-1)<m=\lambda(n)-1$.  Define $D$ by deleting ordinary
