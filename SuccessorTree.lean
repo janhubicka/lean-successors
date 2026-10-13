@@ -274,3 +274,6 @@ import SuccessorTree.V10.M2BoundedCopyRecords
 
 -- M2: B1/B2 family packaging at the deletion boundary.
 import SuccessorTree.V10.M2BoundaryFamily
+
+-- M2 B3: selected compatible types admit one padded source witness.
+import SuccessorTree.V10.M2SelectedFamilyPadding
