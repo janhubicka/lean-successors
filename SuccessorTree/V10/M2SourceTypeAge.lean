@@ -59,8 +59,8 @@ theorem PartialTypeWithE.ageModel_induced_of_admissible
     (T : PartialTypeWithE n db du dd)
     (hAd : IsAdmissibleRawType family
       (⟨n,T⟩ : RawPartialTypeNode db du dd)) :
-    ∃ W : EnumeratedPartialStructure db du dd,
-      (∀ bad, bad ∈ family → bad.Avoids W.L) ∧
+    Σ W : EnumeratedPartialStructure db du dd,
+      (∀ bad, bad ∈ family → bad.Avoids W.L) ×
       T.ageModel.InducedEmbeddingOnCarrier W.L := by
   obtain ⟨W,w,hw,hAvoid,hRaw⟩ := hAd
   have hCut : n = W.freeLevel w := congrArg Sigma.fst hRaw
