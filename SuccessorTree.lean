@@ -244,3 +244,6 @@ import SuccessorTree.V10.M2SocleCapAxiomAudit
 
 -- M2: finite induced L-age transfer for the non-edge witness.
 import SuccessorTree.V10.M2InducedAgeTransfer
+
+-- M2: finite B3 test reduces to at most maximum forbidden arity upper positions.
+import SuccessorTree.V10.PrescribedB3BoundedCores
