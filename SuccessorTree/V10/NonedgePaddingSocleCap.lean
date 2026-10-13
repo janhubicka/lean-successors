@@ -115,6 +115,41 @@ theorem socleCap_old_E {db du dd : Nat}
     (socleCap A).E u v = A.E u v :=
   prefixReplicaE_old A A.size u v hv
 
+/-- Every old ordinary vertex retains its COMPLETE type over each
+original initial socle, including all directed, unary, diagonal and E
+atoms; this is more precise than mere age preservation. -/
+theorem socleCap_partialTypeAt {db du dd : Nat}
+    (A : EnumeratedPartialStructure db du dd)
+    (n j : Nat) (hn : n ≤ j) (hj : j < A.size) :
+    (socleCap A).partialTypeAt n j = A.partialTypeAt n j := by
+  have hIndex (x : Option (Fin n)) :
+      prefixVertexIndex j x < A.size := by
+    cases x with
+    | none => exact hj
+    | some i =>
+        change i.val < A.size
+        omega
+  apply PartialTypeWithE.eq_of_atoms
+  · apply RelationalPrefixType.eq_of_atoms
+    · intro x y t
+      change (twoNeutralL A).binary
+          (prefixVertexIndex j x) (prefixVertexIndex j y) t =
+        A.L.binary (prefixVertexIndex j x) (prefixVertexIndex j y) t
+      exact twoNeutralL_old_binary A _ _ (hIndex x) (hIndex y) t
+    · intro x t
+      change (twoNeutralL A).unary (prefixVertexIndex j x) t =
+        A.L.unary (prefixVertexIndex j x) t
+      exact twoNeutralL_old_unary A _ (hIndex x) t
+    · intro x t
+      change (twoNeutralL A).diagonal (prefixVertexIndex j x) t =
+        A.L.diagonal (prefixVertexIndex j x) t
+      exact twoNeutralL_old_diagonal A _ (hIndex x) t
+  · intro x y
+    change (socleCap A).E (prefixVertexIndex j x)
+        (prefixVertexIndex j y) =
+      A.E (prefixVertexIndex j x) (prefixVertexIndex j y)
+    exact socleCap_old_E A _ _ (hIndex y)
+
 /-- Both rounds of non-edge padding preserve the normalized
 forbidden-free age, including the allowed-neutral singleton case. -/
 theorem socleCap_avoids {db du dd : Nat}
