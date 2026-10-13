@@ -235,3 +235,6 @@ import SuccessorTree.V10.LevelRemovalSourceSuccessor
 
 -- M2-independent full retained-record recovery and standard-axiom audit.
 import SuccessorTree.V10.M2RecoveryAxiomAudit
+
+-- M2-independent canonical-parameter prefix transport.
+import SuccessorTree.V10.M2ParameterPrefixAxiomAudit
