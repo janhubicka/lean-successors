@@ -40,3 +40,35 @@ Lean theorem is not a GREEN marker for the unqualified manuscript
 proposition. Do not combine old individual TODO patches with the new
 cumulative updater; it already handles the machine-labelled notes
 that it owns.
+
+## M2 non-edge appendix (13 October 2026)
+
+The separate author-requested English proof is tracked in
+[v10-m2-nonedge-appendix.tex](v10-m2-nonedge-appendix.tex).
+It keeps the M2 argument outside the frozen original proof, with labelled
+lemmas for complete-record recovery, simultaneous image transport,
+compatibility, and the finite forbidden-age test. Its conclusion is the
+one-gap M2 factorization using the existing global compatible boring
+extension theorem. **This is an English proof under Lean review, not an
+M2 GREEN validation marker.**
+
+The actual editable main.tex is still external to lean-successors.
+To install the tracked appendix into an editable v10 checkout, run:
+
+    python3 /path/to/lean-successors/manuscript/install-v10-m2-appendix.py \
+      /path/to/v10/main.tex --output /tmp/v10-m2-appendix
+    git -C /path/to/v10 apply --check /tmp/v10-m2-appendix/v10-m2-appendix.patch
+    git -C /path/to/v10 apply /tmp/v10-m2-appendix/v10-m2-appendix.patch
+
+The generated patch adds appendices/v10-m2-nonedge.tex and inserts a
+single \input{appendices/v10-m2-nonedge} before \end{document}.
+It inserts \appendix only if no uncommented appendix switch is present,
+rejects ambiguous insertion points or conflicting appendix content,
+retains all existing author mathematical prose byte-for-byte, and is
+idempotent. This installer can be used after the independent validation
+note updater; do not replace the author main.tex with a reconstructed
+copy or annotate M2 GREEN before the final Lean endpoint is audited.
+The exact original v10 archive is not in this checked repository, so a
+patch against it has not been asserted as applied.
+
+Regression: python3 manuscript/check-v10-m2-appendix.py.
