@@ -1,0 +1,2 @@
+import SuccessorTree.V10.M2JointImageCompatibility
+#print axioms SuccessorTree.V10.shapeMap_compatible_of_joint_ambient
