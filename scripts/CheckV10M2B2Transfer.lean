@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M2B2Transfer
+#print axioms SuccessorTree.V10.sameOrdinaryAtCut_reindex
+#print axioms SuccessorTree.V10.shapeMap_reflects_source_compatibility
+#print axioms SuccessorTree.V10.shapeMap_transfers_ordinary_compatibility

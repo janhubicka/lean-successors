@@ -265,3 +265,6 @@ import SuccessorTree.V10.M2JointImageCompatibility
 
 -- M2: compatibility of complete image socles from a joint nonedge source witness.
 import SuccessorTree.V10.M2TwoTypeImageCompatibility
+
+-- M2 B2: full ordinary L+ compatibility reflection and transfer across shape maps.
+import SuccessorTree.V10.M2B2Transfer
