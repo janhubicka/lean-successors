@@ -39,14 +39,14 @@ with tempfile.TemporaryDirectory() as d:
     assert mod.prepare(main)[3]==''
     mod.run(main,root/'out2')
     assert (root/'out2'/'v10-m2-appendix.patch').read_text()==''
-    already=base.replace('\begin{document}','\begin{document}\n\appendix')
-    assert mod.splice(already).count('\appendix')==1
+    already=base.replace(r'\begin{document}',r'\begin{document}'+'\n'+r'\appendix')
+    assert mod.splice(already).count(r'\appendix')==1
     for broken in [
-        base.replace('\end{document}',''),
-        base.replace('\end{document}','\end{document}\n\end{document}'),
-        base.replace('\end{document}',mod.INPUT_MARK+'\n\end{document}'),
-        base.replace('\end{document}',mod.INPUT_LINE+'\n\end{document}'),
-        base.replace('\end{document}','\appendix\n\appendix\n\end{document}'),
+        base.replace(r'\end{document}',''),
+        base.replace(r'\end{document}',r'\end{document}'+'\n'+r'\end{document'),
+        base.replace(r'\end{document}',mod.INPUT_MARK+'\n'+r'\end{document}'),
+        base.replace(r'\end{document}',mod.INPUT_LINE+'\n'+r'\end{document}'),
+        base.replace(r'\end{document}',r'\appendix'+'\n'+r'\appendix'+'\n'+r'\end{document}'),
     ]:
         try: mod.splice(broken)
         except ValueError: pass
