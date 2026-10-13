@@ -43,7 +43,7 @@ with tempfile.TemporaryDirectory() as d:
     assert mod.splice(already).count(r'\appendix')==1
     for broken in [
         base.replace(r'\end{document}',''),
-        base.replace(r'\end{document}',r'\end{document}'+'\n'+r'\end{document'),
+        base.replace(r'\end{document}',r'\end{document}'+'\n'+r'\end{document}'),
         base.replace(r'\end{document}',mod.INPUT_MARK+'\n'+r'\end{document}'),
         base.replace(r'\end{document}',mod.INPUT_LINE+'\n'+r'\end{document}'),
         base.replace(r'\end{document}',r'\appendix'+'\n'+r'\appendix'+'\n'+r'\end{document}'),
