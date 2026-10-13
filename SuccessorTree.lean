@@ -252,3 +252,5 @@ import SuccessorTree.V10.M2CapTypesAxiomAudit
 
 -- M2: factorization from actual compatible boundary data, with no global extension premise.
 import SuccessorTree.V10.M2CompatibleFactorization
+
+import SuccessorTree.V10.M2JointImageCompatibility
