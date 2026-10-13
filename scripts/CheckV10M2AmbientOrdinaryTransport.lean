@@ -1,0 +1,2 @@
+import SuccessorTree.V10.ShapeMapAmbientOrdinaryTransport
+#print axioms SuccessorTree.V10.shapeMap_transports_ambient_ordinary_type
