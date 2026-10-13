@@ -258,3 +258,6 @@ import SuccessorTree.V10.PrescribedB3BoundedCores
 
 -- M2: each admissible source type has a finite forbidden-free L model.
 import SuccessorTree.V10.M2SourceTypeAge
+
+-- M2: forbidden-free free L amalgamation of two compatible complete source types.
+import SuccessorTree.V10.M2TwoTypeFreeAge
