@@ -260,3 +260,6 @@ import SuccessorTree.V10.M2SparsePullbackAge
 import SuccessorTree.V10.PrescribedB3BoundedCores
 import SuccessorTree.V10.M2SourceTypeAge
 import SuccessorTree.V10.M2NonedgePairAge
+
+-- M2: compatible F-image ordinary socles of two types in one source witness.
+import SuccessorTree.V10.M2JointImageCompatibility
