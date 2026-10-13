@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M2BoundedCopySourceAge
+#print axioms SuccessorTree.V10.boundedCopyAddress_order
+#print axioms SuccessorTree.V10.boundedCopySourceAge_avoids
