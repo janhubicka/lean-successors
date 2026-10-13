@@ -1,5 +1,6 @@
 import SuccessorTree.V10.NonedgePaddingSocleCap
 import SuccessorTree.V10.ShapeMapParameterPrefix
+import SuccessorTree.V10.PrescribedBoringData
 import Mathlib.Tactic
 
 /-!
@@ -32,6 +33,25 @@ theorem EnumeratedPartialStructure.fullSocle_ordinaryType
       cases x <;> rfl
   · intro x y
     cases x <;> cases y <;> rfl
+
+/-- Two ordinary vertices of ONE complete socle induce identical
+ordinary L+ records over every common initial cut. The distinguished
+types may differ; the ordinary binary/unary/diagonal/E data cannot. -/
+theorem PartialTypeWithE.ordinaryTypes_sameSocle {ell n db du dd : Nat}
+    (Q : PartialTypeWithE ell db du dd)
+    (i j : Nat) (hi : i < ell) (hj : j < ell)
+    (hn : n ≤ ell) :
+    SameOrdinaryAtCut (Q.ordinaryType i hi n hn)
+      (Q.ordinaryType j hj n hn) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro x y t
+    rfl
+  · intro x t
+    rfl
+  · intro x t
+    rfl
+  · intro x y
+    rfl
 
 namespace NonedgePadding
 
