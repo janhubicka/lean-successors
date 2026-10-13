@@ -74,7 +74,7 @@ theorem boundedCopyAddress_order
       rw [boundedCopyAddress_upper lambda n r e a,
         boundedCopyAddress_upper lambda n r e b]
       apply hE
-      exact Fin.lt_iff_val_lt_val.mpr (by omega)
+      omega
 
 /-- The piecewise real carrier maps into the target whenever all
 retained initial positions and selected upper copies do. -/
