@@ -281,3 +281,7 @@ import SuccessorTree.V10.M2SelectedFamilyPadding
 -- M2 B3: ordered final copy coordinates and exact atomwise transfer.
 import SuccessorTree.V10.M2CopyImageCoordinates
 import SuccessorTree.V10.M2CopyImageTransfer
+
+-- M2: selected finite-copy L-types recovered from the actual shape map.
+import SuccessorTree.V10.M2SelectedCopyType
+import SuccessorTree.V10.M2SelectedCopyPadded
