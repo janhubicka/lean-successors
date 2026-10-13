@@ -71,8 +71,9 @@ theorem shapeMap_transports_ambient_ordinary_type
   obtain ⟨hAddress,hSocle,hType⟩ :=
     shapeMap_transports_parameter_prefix
       family F hSucc hBelow' q hMem n hnQ
-  rw [hAncestor] at hSocle hType
-  refine ⟨a,hAddress,hSocle,hLevA,?_⟩
-  exact hType
+  -- Substitute the entire ancestor rather than rewriting inside a
+  -- dependent ordinaryType cut, whose proof argument also changes.
+  subst t
+  exact ⟨a,hAddress,hSocle,hLevA,hType⟩
 
 end SuccessorTree.V10
