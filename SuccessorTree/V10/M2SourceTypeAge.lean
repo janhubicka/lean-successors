@@ -89,7 +89,7 @@ theorem PartialTypeWithE.ageModel_induced_of_admissible
   have hnW : n ≤ w := by
     have hBound := W.freeLevel_le w
     omega
-  refine ⟨W,hAvoid,? _⟩
+  refine ⟨W,hAvoid,?_⟩
   exact
     { toFun := phi
       order := by
