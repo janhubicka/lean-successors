@@ -244,3 +244,8 @@ import SuccessorTree.V10.M2SocleCapAxiomAudit
 
 -- M2: finite induced L-age transfer for the non-edge witness.
 import SuccessorTree.V10.M2InducedAgeTransfer
+
+import SuccessorTree.V10.CanonicalPrefixStep
+import SuccessorTree.V10.ContainedCanonicalParameter
+import SuccessorTree.V10.ShapeMapAmbientOrdinaryTransport
+import SuccessorTree.V10.M2CapTypesAxiomAudit
