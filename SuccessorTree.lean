@@ -249,3 +249,6 @@ import SuccessorTree.V10.CanonicalPrefixStep
 import SuccessorTree.V10.ContainedCanonicalParameter
 import SuccessorTree.V10.ShapeMapAmbientOrdinaryTransport
 import SuccessorTree.V10.M2CapTypesAxiomAudit
+
+-- M2: forbidden-free one-point free-amalgamation over ordinary source socles.
+import SuccessorTree.V10.M2NonedgePairAge
