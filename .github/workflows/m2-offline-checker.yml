@@ -1,0 +1,135 @@
+name: M2 offline checker
+
+on:
+  pull_request:
+    paths: ['.github/workflows/m2-offline-checker.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install pinned Lean and dependencies
+        run: |
+          set -euo pipefail
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get
+      - name: Compile the prerequisite proof modules
+        run: lake build SuccessorTree.V10.ShapeMapParameterTransport SuccessorTree.V10.PrescribedCompatibleB3 SuccessorTree.V10.LevelRemovalSkipsOnly
+      - name: Record exact source and portable checker
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p checkpoint runtime-parts
+          git rev-parse HEAD > checkpoint/COMMIT
+          git archive --format=tar.gz -o checkpoint/source.tar.gz HEAD
+          cp lake-manifest.json checkpoint/
+          TOOLCHAIN=$(dirname "$(dirname "$(elan which lean)")")
+          tar --exclude='*.a' --exclude='*.o' --exclude='*.ilean' --exclude='*.c' --exclude='.git' --exclude='*/ir' -C "$TOOLCHAIN" -cf - bin lib | zstd -T2 -6 > checkpoint/toolchain.tar.zst
+          tar --exclude='.git' --exclude='*.a' --exclude='*.o' --exclude='*.c' --exclude='*.ilean' --exclude='*/ir' -cf - .lake lakefile.toml lake-manifest.json lean-toolchain | zstd -T2 -6 > checkpoint/dependencies.tar.zst
+          (cd checkpoint && sha256sum *.tar.* > SHA256SUMS)
+          du -sh checkpoint/*
+          tar -cf - -C checkpoint . | split -b 180M -d - runtime-parts/part-
+          test ! -e runtime-parts/part-12
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-recovery-source
+          path: |
+            checkpoint/source.tar.gz
+            checkpoint/COMMIT
+            checkpoint/lake-manifest.json
+            checkpoint/SHA256SUMS
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-00
+          path: runtime-parts/part-00
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-01
+          path: runtime-parts/part-01
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-02
+          path: runtime-parts/part-02
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-03
+          path: runtime-parts/part-03
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-04
+          path: runtime-parts/part-04
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-05
+          path: runtime-parts/part-05
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-06
+          path: runtime-parts/part-06
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-07
+          path: runtime-parts/part-07
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-08
+          path: runtime-parts/part-08
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-09
+          path: runtime-parts/part-09
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-10
+          path: runtime-parts/part-10
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-checker-11
+          path: runtime-parts/part-11
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: ignore
