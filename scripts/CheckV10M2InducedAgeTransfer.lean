@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M2InducedAgeTransfer
+#print axioms SuccessorTree.V10.AgeTestModel.InducedEmbedding.realizes
+#print axioms SuccessorTree.V10.AgeTestModel.InducedEmbedding.preserves_avoidance
