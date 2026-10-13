@@ -262,3 +262,6 @@ import SuccessorTree.V10.M2SourceTypeAge
 import SuccessorTree.V10.M2NonedgePairAge
 
 import SuccessorTree.V10.M2JointImageCompatibility
+
+-- M2: compatibility of complete image socles from a joint nonedge source witness.
+import SuccessorTree.V10.M2TwoTypeImageCompatibility
