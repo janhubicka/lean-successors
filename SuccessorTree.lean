@@ -260,3 +260,5 @@ import SuccessorTree.V10.M2SparsePullbackAge
 import SuccessorTree.V10.PrescribedB3BoundedCores
 import SuccessorTree.V10.M2SourceTypeAge
 import SuccessorTree.V10.M2NonedgePairAge
+
+import SuccessorTree.V10.M2JointImageCompatibility
