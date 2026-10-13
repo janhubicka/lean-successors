@@ -1,0 +1,5 @@
+import SuccessorTree.V10.ShapeMapOrdinaryPairs
+
+#print axioms SuccessorTree.V10.PartialTypeWithE.ordinaryType_pairAt
+#print axioms SuccessorTree.V10.shapeMap_preserves_type_pair_at_levelMap
+#print axioms SuccessorTree.V10.shapeMap_preserves_ordinary_pair_in_parameter
