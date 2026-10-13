@@ -244,3 +244,6 @@ import SuccessorTree.V10.CanonicalPrefixStep
 
 -- M2: genuine positive parameters of all canonical ambient prefixes.
 import SuccessorTree.V10.ContainedCanonicalParameter
+
+-- M2: image of an actual source ordinary type inside one ambient node.
+import SuccessorTree.V10.ShapeMapAmbientOrdinaryTransport
