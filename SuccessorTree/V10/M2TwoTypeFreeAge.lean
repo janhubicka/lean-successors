@@ -147,6 +147,8 @@ def twoTypeFreeAge_right_embeds {n db du dd : Nat}
   unary := by
     intro x hx t
     change x < n+2 ∧ x ≠ n at hx
+    change (U.ageModel).unary (freePairRightAddress n x) t =
+      (twoTypeFreeAge T U).unary x t
     by_cases hxTop : x = n+1
     · subst x
       simp [twoTypeFreeAge,PartialTypeWithE.ageModel,
@@ -159,6 +161,8 @@ def twoTypeFreeAge_right_embeds {n db du dd : Nat}
   diagonal := by
     intro x hx t
     change x < n+2 ∧ x ≠ n at hx
+    change (U.ageModel).diagonal (freePairRightAddress n x) t =
+      (twoTypeFreeAge T U).diagonal x t
     by_cases hxTop : x = n+1
     · subst x
       simp [twoTypeFreeAge,PartialTypeWithE.ageModel,
