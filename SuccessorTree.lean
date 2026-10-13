@@ -244,3 +244,6 @@ import SuccessorTree.V10.M2SocleCapAxiomAudit
 
 -- M2: finite induced L-age transfer for the non-edge witness.
 import SuccessorTree.V10.M2InducedAgeTransfer
+
+-- M2: neutral completion of sparse finite L-age carriers.
+import SuccessorTree.V10.M2NeutralCarrierFill
