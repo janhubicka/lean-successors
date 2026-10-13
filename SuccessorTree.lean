@@ -255,3 +255,6 @@ import SuccessorTree.V10.M2SparsePullbackAge
 import SuccessorTree.V10.M2BoundedCopySourceAge
 import SuccessorTree.V10.M2BadCopySourceAge
 import SuccessorTree.V10.PrescribedB3BoundedCores
+
+-- M2: each admissible source type has a finite forbidden-free L model.
+import SuccessorTree.V10.M2SourceTypeAge
