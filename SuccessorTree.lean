@@ -241,3 +241,6 @@ import SuccessorTree.V10.M2ParameterPrefixAxiomAudit
 
 -- Single finite padded source witness, closed to a genuine Kpt type.
 import SuccessorTree.V10.M2SocleCapAxiomAudit
+
+-- M2: all non-edge-padded upper types inside one capped Kpt node.
+import SuccessorTree.V10.M2CapTypesAxiomAudit
