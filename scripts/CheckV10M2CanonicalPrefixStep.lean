@@ -1,0 +1,2 @@
+import SuccessorTree.V10.CanonicalPrefixStep
+#print axioms SuccessorTree.V10.exists_canonical_step_from_ambient_prefix
