@@ -1,0 +1,13 @@
+# M2: final induced-copy comparison (review-only)
+
+This note supplements the frozen v10 text. It does not modify its mathematical prose.
+
+Let n be the first affected source level, m the omitted target level and λ the strictly increasing level map of F, with m < λ(n). Let e be the increasing enumeration of an allegedly forbidden induced copy in the finite target L-age witness W; by deletion of m, the copy contains m. For each index a such that e(a)>m, choose a source type T_a from the prescribed compatible family and create source slot n+a; other slots remain neutral.
+
+1. **Source L model.** Pull all L atoms on selected low positions i<n and the selected upper positions n+a from W without coordinate m. Keep upper–upper pair records, including negative and reversed atoms, and fill only unused positions neutrally. The bounded-source-age theorem proves forbidden avoidance.
+2. **Selected source types and E.** Compare the source L-type at each selected upper position with T_a, using full retained type-pair recovery, singleton preservation and the finite age witness's prescribed F(T_a) record. The Lean theorem `compatibleSelectedTypes_joint_padded` then supplies one forbidden-free E-structure realizing all selected T_a. Importantly no type is required at a neutral filler.
+3. **Cap and map.** Cap this entire source witness once with `NonedgePadding.socleCapNode`, then apply F. The actual ambient parameter-prefix theorem transports the complete type F(T_a) of each selected image upper position, including all target old coordinates not in the range of λ. The full ordinary record recovery theorem transports mutual upper–upper L pairs.
+4. **Ordered copy.** Use φ(a)=e(a) for e(a)≤m and φ(a)=λ(address(n,n+a)) otherwise. The Lean lemma `m2ForbiddenCopyImage_strictMono` verifies strict increase and that selected upper images are above m.
+5. **All atoms.** For two low vertices use the prescribed common target socle. For a low and upper vertex (in either direction) use the actual image type F(T_a), including omitted λ-levels. For two upper vertices use the full mapped ordinary–ordinary pair. Check singleton and diagonal atoms separately. The Lean theorem `m2ForbiddenCopy_binary_of_zones` combines the four binary cases, and `m2ForbiddenCopy_realizes_of_atomwise` yields an induced forbidden copy in the L-age of F(cap), contradicting admissibility.
+
+**OPEN, not silently assumed:** Prove in Lean that the bounded sparse source model's actual selected upper L-types equal the corresponding T_a, and discharge every image-zone atom equality from the concrete F, particularly at omitted target coordinates and upper–upper pairs. The order and final copy assembly are proved, but CompatibleB3 and unconditional M2 are not yet verified.
