@@ -30,6 +30,7 @@ theorem twoTypeFreeAge_padded_types
       C.E j.val k.val = T.eRelation (some j) (some k)) :
     ∃ B : EnumeratedPartialStructure db du dd,
       (∀ bad, bad ∈ family → bad.Avoids B.L) ∧
+      B.size = NonedgePadding.size n (n+2) ∧
       B.partialTypeAt n (NonedgePadding.address n n) = T ∧
       B.partialTypeAt n (NonedgePadding.address n (n+1)) = U := by
   let A := twoTypeFreeAge T U
@@ -57,7 +58,7 @@ theorem twoTypeFreeAge_padded_types
     exact NonedgePadding.upper_type_eq_prescribed family C A n (n+2)
       hC hSocle (n+1) (by omega) (by omega) U hU
       (twoTypeFreeAge_second_type T U hComp) hE2
-  exact ⟨B,hAvoidB,hFirst,hSecond⟩
+  exact ⟨B,hAvoidB,rfl,hFirst,hSecond⟩
 
 /-- Two compatible admissible types are jointly realizable in one
 forbidden-free partial structure, after introducing neutral nonedges.
@@ -73,6 +74,7 @@ theorem twoCompatibleTypes_joint_padded
     (hComp : SameOrdinaryAtCut T U) :
     ∃ B : EnumeratedPartialStructure db du dd,
       (∀ bad, bad ∈ family → bad.Avoids B.L) ∧
+      B.size = NonedgePadding.size n (n+2) ∧
       B.partialTypeAt n (NonedgePadding.address n n) = T ∧
       B.partialTypeAt n (NonedgePadding.address n (n+1)) = U := by
   obtain ⟨C,v,hv,hAvoidC,hRaw⟩ := hT
