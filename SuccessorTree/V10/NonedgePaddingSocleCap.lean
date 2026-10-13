@@ -129,14 +129,18 @@ theorem socleCap_old_freeLevel {db du dd : Nat}
       ((socleCap A).E_iff_freeLevel (A.freeLevel j) j).2 h
     have hOld : A.E (A.freeLevel j) j = true :=
       (socleCap_old_E A (A.freeLevel j) j hj).symm.trans hE
-    exact Bool.false_ne_true ((A.freeLevel_firstMissing j).symm.trans hOld)
+    have hNot : A.E (A.freeLevel j) j ≠ true := by
+      simp [A.freeLevel_firstMissing j]
+    exact hNot hOld
   · by_contra hNot
     have h : (socleCap A).freeLevel j < A.freeLevel j := by omega
     have hE : A.E ((socleCap A).freeLevel j) j = true :=
       (A.E_iff_freeLevel ((socleCap A).freeLevel j) j).2 h
     have hNew : (socleCap A).E ((socleCap A).freeLevel j) j = true :=
       (socleCap_old_E A ((socleCap A).freeLevel j) j hj).trans hE
-    exact Bool.false_ne_true (((socleCap A).freeLevel_firstMissing j).symm.trans hNew)
+    have hNot : (socleCap A).E ((socleCap A).freeLevel j) j ≠ true := by
+      simp [(socleCap A).freeLevel_firstMissing j]
+    exact hNot hNew
 
 /-- Every old ordinary vertex retains its COMPLETE type over each
 original initial socle, including all directed, unary, diagonal and E
