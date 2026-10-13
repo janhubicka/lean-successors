@@ -59,8 +59,8 @@ theorem twoTypeFreeAge_no_cross {n db du dd : Nat}
 source type L-model by the identity map on the true carrier. -/
 def twoTypeFreeAge_left_embeds {n db du dd : Nat}
     (T U : PartialTypeWithE n db du dd) :
-    ((twoTypeFreeAge T U).withoutVertex (n+1)).
-      InducedEmbeddingOnCarrier T.ageModel where
+    AgeTestModel.InducedEmbeddingOnCarrier
+      ((twoTypeFreeAge T U).withoutVertex (n+1)) T.ageModel where
   toFun := id
   order := by
     intro x y hx hy hxy
@@ -91,8 +91,8 @@ vertex are copied literally. -/
 def twoTypeFreeAge_right_embeds {n db du dd : Nat}
     (T U : PartialTypeWithE n db du dd)
     (hComp : SameOrdinaryAtCut T U) :
-    ((twoTypeFreeAge T U).withoutVertex n).
-      InducedEmbeddingOnCarrier U.ageModel where
+    AgeTestModel.InducedEmbeddingOnCarrier
+      ((twoTypeFreeAge T U).withoutVertex n) U.ageModel where
   toFun := freePairRightAddress n
   order := by
     intro x y hx hy hxy
