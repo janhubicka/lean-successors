@@ -24,13 +24,15 @@ namespace SuccessorTree.V10
 No old L atom between genuine carrier vertices is changed. Fresh
 carrier points have the allowed neutral singleton and no incident
 binary L atom. -/
-def AgeTestModel.fillNeutralCarrier {db du dd : Nat}
-    (A : AgeTestModel db du dd) (N : Nat) : AgeTestModel db du dd where
-  carrier := {x | x < N}
-  binary := fun x y t =>
-    if x ∈ A.carrier ∧ y ∈ A.carrier then A.binary x y t else false
-  unary := fun x t => if x ∈ A.carrier then A.unary x t else false
-  diagonal := fun x t => if x ∈ A.carrier then A.diagonal x t else false
+noncomputable def AgeTestModel.fillNeutralCarrier {db du dd : Nat}
+    (A : AgeTestModel db du dd) (N : Nat) : AgeTestModel db du dd := by
+  classical
+  exact
+    { carrier := {x | x < N}
+      binary := fun x y t =>
+        if x ∈ A.carrier ∧ y ∈ A.carrier then A.binary x y t else false
+      unary := fun x t => if x ∈ A.carrier then A.unary x t else false
+      diagonal := fun x t => if x ∈ A.carrier then A.diagonal x t else false }
 
 /-- Every real vertex keeps every incident atom to another real
 vertex, together with its singleton and diagonal data. -/
@@ -81,8 +83,10 @@ theorem AgeTestModel.fillNeutralCarrier_realizes_old {r db du dd : Nat}
   · intro a
     exact hReal a
   · intro a b hab t
+    have hBoth : e a ∈ A.carrier ∧ e b ∈ A.carrier :=
+      ⟨hReal a,hReal b⟩
     simpa only [AgeTestModel.fillNeutralCarrier,
-      if_pos ⟨hReal a,hReal b⟩] using hCopy.2.2.1 a b hab t
+      if_pos hBoth] using hCopy.2.2.1 a b hab t
   · intro a t
     simpa only [AgeTestModel.fillNeutralCarrier,
       if_pos (hReal a)] using hCopy.2.2.2.1 a t
