@@ -1,0 +1,9 @@
+import SuccessorTree.V10.PrescribedCompatibleCompletion
+
+#print axioms SuccessorTree.V10.ordinarySocleAt_of_le
+#print axioms SuccessorTree.V10.ordinarySocleAt_of_parameter
+#print axioms SuccessorTree.V10.oneGapBySocle_weak_succ
+#print axioms SuccessorTree.V10.oneGapSocleShapeMap
+#print axioms SuccessorTree.V10.oneGapSocleShapeMap_skipsOnly
+#print axioms SuccessorTree.V10.PrescribedBoringData.restrictToSocle_correctedB3
+#print axioms SuccessorTree.V10.PrescribedBoringData.compatible_boring_extension_exists
