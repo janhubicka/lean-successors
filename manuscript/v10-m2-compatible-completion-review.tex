@@ -1,0 +1,33 @@
+% Review-only companion to the frozen v10 manuscript.
+% Do not replace author proof prose or mark the concrete M2 application green.
+\paragraph{\v{R}eho\v{r}ek: compatible non-edge extension.}
+The finite age argument need only consider prescribed source types with
+one common ordinary $L^+$-socle.  Indeed, an upper vertex belonging to a
+new forbidden irreducible substructure must be related to the inserted
+vertex; by the non-edge rule its actual source type belongs to the
+prescribed domain.  All these source types are extracted from the same
+partial structure.  They therefore agree on their ordinary $L^+$-socle,
+including $E$, although the finite forbidden-age test itself is an
+$L$-test and imposes no $E$-expansion on its numerical layout.
+
+The finite compatibility-restricted age reduction is now Lean-checked
+(PR~325, six transitive standard-axiom endpoints).  The proposed global
+assembly is as follows.  For each ordinary socle $C$ apply the existing
+boring extension to the restriction of the prescribed function to $C$.
+On a node at or above the gap, use the map selected by its ordinary
+initial socle.  A genuine successor and all its parameters at or above
+the gap have that same socle.  Every parameter below the gap is fixed
+by every selected one-gap map.  Thus the whole weak-successor equation
+is verified using a single selected map.  Injectivity follows from the
+already checked weak-successor and strict-level-order criterion, rather
+than from an additional agreement assertion between different socles.
+
+\textbf{Validation status.} The global assembly and its seven named
+axiom endpoints are submitted for Lean checking; do not promote this
+paragraph to a validated marker before exact-head CI succeeds.
+The application to the given map $F$ still requires recovery and
+compatibility for $F$ and the embedding of the non-edge-padded finite
+source witness into an admissible image.  M2 requires the composition
+identity only through the chosen source level $n$, not on the entire
+infinite deleted-image range.  No M2 or new amalgamation axiom is used
+in the proposed assembly.
