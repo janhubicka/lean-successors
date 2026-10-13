@@ -238,3 +238,6 @@ import SuccessorTree.V10.M2RecoveryAxiomAudit
 
 -- M2-independent canonical-parameter prefix transport.
 import SuccessorTree.V10.M2ParameterPrefixAxiomAudit
+
+-- M2: canonical parameter at every shorter ordinary prefix.
+import SuccessorTree.V10.CanonicalPrefixStep
