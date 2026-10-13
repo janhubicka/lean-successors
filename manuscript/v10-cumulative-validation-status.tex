@@ -757,3 +757,20 @@ Do not conflate constructing the first factor with proving (M2).
 Finally, reconcile the I3 signature witnesses with finite
 $L$-structures rather than $E$-partial structures before claiming
 the upper bound.}
+
+% ================================================================
+% 2026-10-13 -- M2 full retained-record recovery checkpoint.
+% Verified locally against pinned Lean v4.35.0-rc3 and mathlib:
+% ShapeMapOrdinaryRecovery.lean, ShapeMapFullRecovery.lean, and
+% M2RecoveryAxiomAudit.lean compile without sorry or new axioms.
+% Their three audited named statements depend only on
+% propext, Classical.choice, Quot.sound.
+% The no-new-tuples branch uses the EXACT induced prefix record,
+% not an invalid rewrite in the newly introduced column.
+% This validates all retained L+ atoms, including absent directed
+% tuples, E, unary, and diagonal data; it does NOT validate M2.
+% Remaining: actual boundary compatible B2/B3 via one padded source,
+% induced embedding of arbitrary finite upper-core age witnesses,
+% and the concrete factorization endpoint; all remain OPEN.
+% The English manuscript proof is in v10-m2-nonedge-appendix.tex
+% and is inserted into author main.tex only by the guarded installer.

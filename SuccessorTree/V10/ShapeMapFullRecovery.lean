@@ -98,42 +98,34 @@ theorem shapeMap_recovers_complete_record {db du dd : Nat}
   apply PartialTypeWithE.eq_of_atoms
   · apply RelationalPrefixType.eq_of_atoms
     · intro x y t
-      cases x with
-      | none =>
-        cases y with
-        | none => exact congrArg
-            (fun P : PartialTypeWithE 0 db du dd => P.lReduct.binary none none t) hSingleton
-        | some j => exact congrArg
-            (fun P : PartialTypeWithE 1 db du dd => P.lReduct.binary none (some 0) t) (hPair j)
-      | some i =>
-        cases y with
-        | none => exact congrArg
-            (fun P : PartialTypeWithE 1 db du dd => P.lReduct.binary (some 0) none t) (hPair i)
-        | some j => exact (hOrdinary i j).1 t
+      cases x <;> cases y
+      · exact congrArg
+          (fun P : PartialTypeWithE 0 db du dd => P.lReduct.binary none none t) hSingleton
+      · exact congrArg
+          (fun P : PartialTypeWithE 1 db du dd => P.lReduct.binary none (some 0) t) (hPair _)
+      · exact congrArg
+          (fun P : PartialTypeWithE 1 db du dd => P.lReduct.binary (some 0) none t) (hPair _)
+      · exact (hOrdinary _ _).1 t
     · intro x t
-      cases x with
-      | none => exact congrArg
+      cases x
+      · exact congrArg
           (fun P : PartialTypeWithE 0 db du dd => P.lReduct.unary none t) hSingleton
-      | some i => exact congrArg
-          (fun P : PartialTypeWithE 1 db du dd => P.lReduct.unary (some 0) t) (hPair i)
+      · exact congrArg
+          (fun P : PartialTypeWithE 1 db du dd => P.lReduct.unary (some 0) t) (hPair _)
     · intro x t
-      cases x with
-      | none => exact congrArg
+      cases x
+      · exact congrArg
           (fun P : PartialTypeWithE 0 db du dd => P.lReduct.diagonal none t) hSingleton
-      | some i => exact congrArg
-          (fun P : PartialTypeWithE 1 db du dd => P.lReduct.diagonal (some 0) t) (hPair i)
+      · exact congrArg
+          (fun P : PartialTypeWithE 1 db du dd => P.lReduct.diagonal (some 0) t) (hPair _)
   · intro x y
-    cases x with
-    | none =>
-      cases y with
-      | none => exact congrArg
-          (fun P : PartialTypeWithE 0 db du dd => P.eRelation none none) hSingleton
-      | some j => exact congrArg
-          (fun P : PartialTypeWithE 1 db du dd => P.eRelation none (some 0)) (hPair j)
-    | some i =>
-      cases y with
-      | none => exact congrArg
-          (fun P : PartialTypeWithE 1 db du dd => P.eRelation (some 0) none) (hPair i)
-      | some j => exact (hOrdinary i j).2
+    cases x <;> cases y
+    · exact congrArg
+        (fun P : PartialTypeWithE 0 db du dd => P.eRelation none none) hSingleton
+    · exact congrArg
+        (fun P : PartialTypeWithE 1 db du dd => P.eRelation none (some 0)) (hPair _)
+    · exact congrArg
+        (fun P : PartialTypeWithE 1 db du dd => P.eRelation (some 0) none) (hPair _)
+    · exact (hOrdinary _ _).2
 
 end SuccessorTree.V10

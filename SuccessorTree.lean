@@ -232,3 +232,6 @@ import SuccessorTree.V10.M3RepresentativeIndependence
 import SuccessorTree.V10.M3CombinedEndpoint
 import SuccessorTree.V10.M3LiteralDuplication
 import SuccessorTree.V10.LevelRemovalSourceSuccessor
+
+-- M2-independent full retained-record recovery and standard-axiom audit.
+import SuccessorTree.V10.M2RecoveryAxiomAudit
