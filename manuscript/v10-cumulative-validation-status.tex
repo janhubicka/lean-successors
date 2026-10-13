@@ -647,6 +647,33 @@ mathematical proof blobs for cumulative integration.
 Order embedding alone neither extends $R$ to all Kpt types nor
 supplies the missing successor and multi-upper age conditions.
 
+
+\textbf{13 October 2026 M2 checkpoint: B2 transport GREEN, B3 OPEN.}
+The joint non-edge-padded source construction for two complete,
+ordinary-compatible admissible types was checked and merged in
+PR~357. Applying a genuine shape-preserving map to this single
+source witness yields compatible complete ordinary image socles.
+Full retained-record recovery also \emph{reflects} compatibility
+through any genuine shape map, including intrinsic deletion.
+The resulting general compatibility transfer theorem
+\texttt{shapeMap\_transfers\_ordinary\_compatibility}
+was checked and merged in PR~358. It includes all directed absent
+atoms, singleton data and the auxiliary E matrix. These GREEN
+statements supply the difficult transport part of boundary (B2),
+but the complete boundary \texttt{PrescribedBoringData} declaration
+still needs construction.
+For the multi-upper (B3) proof one must preserve the \emph{actual}
+upper--upper atoms of a putative forbidden copy, not replace these
+upper pairs by non-edges. The checked sparse pullback and neutral
+completion provide the source finite age. A new explicit
+real-vertex atom interface and the review-only proof analysis are
+staged in \texttt{M2BoundedCopyRecords.lean} and
+\texttt{v10-M2-nonedge-finite-age-appendix-review-20261013.tex};
+until exact-head CI passes, neither is a GREEN marker.
+The remaining genuine gap is the simultaneous source-type recovery
+and induced forbidden-copy comparison inside a single image F(C),
+needed to establish compatible B3 and hence (M2).
+
 This M2 obligation remains OPEN.
 
 \textbf{M3 duplication -- GREEN in the normalized model;
