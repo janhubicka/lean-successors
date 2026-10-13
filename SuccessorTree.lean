@@ -253,3 +253,6 @@ import SuccessorTree.V10.M2SparsePullbackAge
 
 -- M2: reindex a bounded forbidden copy through retained source levels.
 import SuccessorTree.V10.M2BoundedCopySourceAge
+
+-- M2: source L-age from an alleged forbidden target copy.
+import SuccessorTree.V10.M2BadCopySourceAge
