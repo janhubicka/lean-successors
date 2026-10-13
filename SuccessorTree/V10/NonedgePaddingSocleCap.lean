@@ -103,35 +103,40 @@ theorem twoNeutralL_old_diagonal {db du dd : Nat}
     _ = A.L.diagonal x t :=
         model_old_diagonal A.L A.size A.size x hx t
 
-/-- No L relation involves the two fresh vertices. -/
+/-- No L relation involves the two fresh vertices. The outer
+padding isolates the final vertex; inside its old socle, the inner
+padding isolates the penultimate vertex. -/
 theorem twoNeutralL_binary_new {db du dd : Nat}
     (A : EnumeratedPartialStructure db du dd)
     (x y : Nat) (hx : x < A.size+2) (hy : y < A.size+2)
     (hNew : A.size ≤ x ∨ A.size ≤ y) (t : Fin db) :
     (twoNeutralL A).binary x y t = false := by
+  by_cases hxTop : x = A.size+1
+  · subst x
+    exact model_neutral_left (model A.L A.size A.size)
+      (A.size+1) (A.size+1) (A.size+1) y (by simp [Real]) t
+  by_cases hyTop : y = A.size+1
+  · subst y
+    exact model_neutral_right (model A.L A.size A.size)
+      (A.size+1) (A.size+1) x (A.size+1) (by simp [Real]) t
+  have hxOuter : x < A.size+1 := by omega
+  have hyOuter : y < A.size+1 := by omega
+  have hOuter :
+      (twoNeutralL A).binary x y t =
+        (model A.L A.size A.size).binary x y t :=
+    model_old_binary (model A.L A.size A.size)
+      (A.size+1) (A.size+1) x y hxOuter hyOuter t
   rcases hNew with hNew | hNew
-  · have hxCases : x = A.size ∨ x = A.size+1 := by omega
-    rcases hxCases with rfl | rfl
-    · calc
-        (twoNeutralL A).binary A.size y t =
-            (model A.L A.size A.size).binary A.size y t :=
-              model_old_binary (model A.L A.size A.size)
-                (A.size+1) (A.size+1) A.size y (by omega) (by omega) t
-        _ = false :=
-          model_neutral_left A.L A.size A.size A.size y (by simp [Real]) t
-    · exact model_neutral_left (model A.L A.size A.size)
-        (A.size+1) (A.size+1) (A.size+1) y (by simp [Real]) t
-  · have hyCases : y = A.size ∨ y = A.size+1 := by omega
-    rcases hyCases with rfl | rfl
-    · calc
-        (twoNeutralL A).binary x A.size t =
-            (model A.L A.size A.size).binary x A.size t :=
-              model_old_binary (model A.L A.size A.size)
-                (A.size+1) (A.size+1) x A.size (by omega) (by omega) t
-        _ = false :=
-          model_neutral_right A.L A.size A.size x A.size (by simp [Real]) t
-    · exact model_neutral_right (model A.L A.size A.size)
-        (A.size+1) (A.size+1) x (A.size+1) (by simp [Real]) t
+  · have hEq : x = A.size := by omega
+    subst x
+    exact hOuter.trans
+      (model_neutral_left A.L A.size A.size A.size y
+        (by simp [Real]) t)
+  · have hEq : y = A.size := by omega
+    subst y
+    exact hOuter.trans
+      (model_neutral_right A.L A.size A.size x A.size
+        (by simp [Real]) t)
 
 /-- Two neutral fillers followed by the canonical maximal incoming E
 socle: the last vertex has precisely the original free cut. -/
