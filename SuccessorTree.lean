@@ -241,3 +241,6 @@ import SuccessorTree.V10.M2ParameterPrefixAxiomAudit
 
 -- M2: canonical parameter at every shorter ordinary prefix.
 import SuccessorTree.V10.CanonicalPrefixStep
+
+-- M2: genuine positive parameters of all canonical ambient prefixes.
+import SuccessorTree.V10.ContainedCanonicalParameter
