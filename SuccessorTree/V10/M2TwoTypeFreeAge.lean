@@ -74,14 +74,17 @@ def twoTypeFreeAge_left_embeds {n db du dd : Nat}
     intro x y hx hy hne t
     change x < n+2 ∧ x ≠ n+1 at hx
     change y < n+2 ∧ y ≠ n+1 at hy
+    change (T.ageModel).binary x y t = (twoTypeFreeAge T U).binary x y t
     simp [twoTypeFreeAge,PartialTypeWithE.ageModel,hx.2,hy.2]
   unary := by
     intro x hx t
     change x < n+2 ∧ x ≠ n+1 at hx
+    change (T.ageModel).unary x t = (twoTypeFreeAge T U).unary x t
     simp [twoTypeFreeAge,PartialTypeWithE.ageModel,hx.2]
   diagonal := by
     intro x hx t
     change x < n+2 ∧ x ≠ n+1 at hx
+    change (T.ageModel).diagonal x t = (twoTypeFreeAge T U).diagonal x t
     simp [twoTypeFreeAge,PartialTypeWithE.ageModel,hx.2]
 
 /-- Deleting the first distinguished vertex recovers the second
@@ -119,16 +122,21 @@ def twoTypeFreeAge_right_embeds {n db du dd : Nat}
     intro x y hx hy hne t
     change x < n+2 ∧ x ≠ n at hx
     change y < n+2 ∧ y ≠ n at hy
+    change (U.ageModel).binary (freePairRightAddress n x)
+      (freePairRightAddress n y) t = (twoTypeFreeAge T U).binary x y t
     by_cases hxTop : x = n+1
     · subst x
       have hyLow : y < n := by omega
+      have hyNe : y ≠ n := by omega
+      have hyNeTop : y ≠ n+1 := by omega
       simp [twoTypeFreeAge,PartialTypeWithE.ageModel,
-        freePairRightAddress,typeAgeIndex,hyLow]
+        freePairRightAddress,typeAgeIndex,hyLow,hyNe,hyNeTop]
     · by_cases hyTop : y = n+1
       · subst y
         have hxLow : x < n := by omega
+        have hxNe : x ≠ n := by omega
         simp [twoTypeFreeAge,PartialTypeWithE.ageModel,
-          freePairRightAddress,typeAgeIndex,hxLow,hxTop]
+          freePairRightAddress,typeAgeIndex,hxLow,hxTop,hxNe]
       · have hxLow : x < n := by omega
         have hyLow : y < n := by omega
         let i : Fin n := ⟨x,hxLow⟩
