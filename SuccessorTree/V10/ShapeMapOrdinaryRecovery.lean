@@ -17,6 +17,25 @@ lie below the actual image nodes.
 
 namespace SuccessorTree.V10
 
+/-- Extracting a pair from a longer socle and then restricting it is
+exactly the same record as extracting it from the shorter prefix. -/
+theorem PartialTypeWithE.ordinaryPair_restrict {n m db du dd : Nat}
+    (Q : PartialTypeWithE m db du dd) (h : n ≤ m)
+    (i j : Fin n) :
+    (Q.restrict h).ordinaryPair i j =
+      Q.ordinaryPair ⟨i.val, lt_of_lt_of_le i.isLt h⟩
+        ⟨j.val, lt_of_lt_of_le j.isLt h⟩ := by
+  apply PartialTypeWithE.eq_of_atoms
+  · apply RelationalPrefixType.eq_of_atoms
+    · intro x y t
+      cases x <;> cases y <;> rfl
+    · intro x t
+      cases x <;> rfl
+    · intro x t
+      cases x <;> rfl
+  · intro x y
+    cases x <;> cases y <;> rfl
+
 /-- Both directed L-crossings and E-crossings of a two-vertex record
 are absent. Singleton data are deliberately unrestricted. -/
 def EmptyPairCross {db du dd : Nat} (P : PartialTypeWithE 1 db du dd) : Prop :=
@@ -56,20 +75,29 @@ theorem canonicalKptStep_empty_cross_after_parameters
   obtain ⟨hLe, hQ⟩ := hPrefix
   have hiEll : i < ell := by omega
   rw [hALevel]
-  refine ⟨by change i < u.1.1; change ell+1 ≤ u.1.1 at hLe; omega,
-    by change ell < u.1.1; change ell+1 ≤ u.1.1 at hLe; omega, ?_⟩
+  let hI : i < u.1.1 := by change ell+1 ≤ u.1.1 at hLe; omega
+  let hJ : ell < u.1.1 := by change ell+1 ≤ u.1.1 at hLe; omega
+  refine ⟨hI, hJ, ?_⟩
+  have hPair : u.1.2.ordinaryPair ⟨i, hI⟩ ⟨ell, hJ⟩ =
+      Q.ordinaryPair ⟨i, Nat.lt_succ_of_lt hiEll⟩ ⟨ell, Nat.lt_succ_self ell⟩ := by
+    calc
+      u.1.2.ordinaryPair ⟨i, hI⟩ ⟨ell, hJ⟩ =
+          (u.1.2.restrict hLe).ordinaryPair
+            ⟨i, Nat.lt_succ_of_lt hiEll⟩ ⟨ell, Nat.lt_succ_self ell⟩ := by
+        exact (PartialTypeWithE.ordinaryPair_restrict u.1.2 hLe
+          ⟨i, Nat.lt_succ_of_lt hiEll⟩ ⟨ell, Nat.lt_succ_self ell⟩).symm
+      _ = Q.ordinaryPair ⟨i, Nat.lt_succ_of_lt hiEll⟩
+            ⟨ell, Nat.lt_succ_self ell⟩ := by rw [← hQ]
+  rw [hPair]
   refine ⟨?_, ?_, ?_⟩
   · intro t
-    have h := hValid.noNewBinaryBeyondCut ⟨i, hiEll⟩ hCut t
-    rw [hQ] at h
-    exact h
+    exact hValid.noNewBinaryBeyondCut ⟨i, hiEll⟩ hCut t
   · have h := hValid.oldToNewE ⟨i, hiEll⟩
-    rw [hQ] at h
     have hNot : ¬ i < f := by omega
-    simpa only [hNot, decide_false] using h
-  · have h := hValid.newToOldE ⟨i, hiEll⟩
-    rw [hQ] at h
+    have hFalse : decide (i < f) = false := by simp [hNot]
+    rw [hFalse] at h
     exact h
+  · exact hValid.newToOldE ⟨i, hiEll⟩
 
 /-- Empty crossings and equal retained singleton records determine
 all atoms of an ordinary pair, including binary and E diagonals. -/
@@ -85,41 +113,41 @@ theorem ordinaryPair_eq_of_empty_cross
   apply PartialTypeWithE.eq_of_atoms
   · apply RelationalPrefixType.eq_of_atoms
     · intro x y t
-      cases x with
-      | none =>
-        cases y with
-        | none => exact congrArg
-            (fun P : PartialTypeWithE 1 db du dd => P.lReduct.binary (some 0) (some 0) t) hJ
-        | some k => exact (hNew.1 t).2.trans (hOld.1 t).2.symm
-      | some k =>
-        cases y with
-        | none => exact (hNew.1 t).1.trans (hOld.1 t).1.symm
-        | some l => exact congrArg
-            (fun P : PartialTypeWithE 1 db du dd => P.lReduct.binary (some 0) (some 0) t) hI
+      cases x <;> cases y
+      · exact congrArg
+          (fun P : PartialTypeWithE 1 db du dd =>
+            P.lReduct.binary (some 0) (some 0) t) hJ
+      · exact (hNew.1 t).2.trans (hOld.1 t).2.symm
+      · exact (hNew.1 t).1.trans (hOld.1 t).1.symm
+      · exact congrArg
+          (fun P : PartialTypeWithE 1 db du dd =>
+            P.lReduct.binary (some 0) (some 0) t) hI
     · intro x t
-      cases x with
-      | none => exact congrArg
-          (fun P : PartialTypeWithE 1 db du dd => P.lReduct.unary (some 0) t) hJ
-      | some k => exact congrArg
-          (fun P : PartialTypeWithE 1 db du dd => P.lReduct.unary (some 0) t) hI
+      cases x
+      · exact congrArg
+          (fun P : PartialTypeWithE 1 db du dd =>
+            P.lReduct.unary (some 0) t) hJ
+      · exact congrArg
+          (fun P : PartialTypeWithE 1 db du dd =>
+            P.lReduct.unary (some 0) t) hI
     · intro x t
-      cases x with
-      | none => exact congrArg
-          (fun P : PartialTypeWithE 1 db du dd => P.lReduct.diagonal (some 0) t) hJ
-      | some k => exact congrArg
-          (fun P : PartialTypeWithE 1 db du dd => P.lReduct.diagonal (some 0) t) hI
+      cases x
+      · exact congrArg
+          (fun P : PartialTypeWithE 1 db du dd =>
+            P.lReduct.diagonal (some 0) t) hJ
+      · exact congrArg
+          (fun P : PartialTypeWithE 1 db du dd =>
+            P.lReduct.diagonal (some 0) t) hI
   · intro x y
-    cases x with
-    | none =>
-      cases y with
-      | none => exact congrArg
-          (fun P : PartialTypeWithE 1 db du dd => P.eRelation (some 0) (some 0)) hJ
-      | some k => exact hNew.2.2.trans hOld.2.2.symm
-    | some k =>
-      cases y with
-      | none => exact hNew.2.1.trans hOld.2.1.symm
-      | some l => exact congrArg
-          (fun P : PartialTypeWithE 1 db du dd => P.eRelation (some 0) (some 0)) hI
+    cases x <;> cases y
+    · exact congrArg
+        (fun P : PartialTypeWithE 1 db du dd =>
+          P.eRelation (some 0) (some 0)) hJ
+    · exact hNew.2.2.trans hOld.2.2.symm
+    · exact hNew.2.1.trans hOld.2.1.symm
+    · exact congrArg
+        (fun P : PartialTypeWithE 1 db du dd =>
+          P.eRelation (some 0) (some 0)) hI
 
 /-- Arbitrary distinct retained ordinary coordinates preserve their
 entire induced L+ record. In particular F cannot create an L-edge
