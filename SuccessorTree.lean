@@ -268,3 +268,6 @@ import SuccessorTree.V10.M2TwoTypeImageCompatibility
 
 -- M2 B2: full ordinary L+ compatibility reflection and transfer across shape maps.
 import SuccessorTree.V10.M2B2Transfer
+
+-- M2 finite B3: real selected vertices retain full directed L records.
+import SuccessorTree.V10.M2BoundedCopyRecords
