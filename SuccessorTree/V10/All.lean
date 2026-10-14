@@ -342,3 +342,6 @@ import SuccessorTree.V10.I3NoSkipForcesB3
 
 -- I3: construct selected closure crossing and derive corrected B3 failure and R(M).
 import SuccessorTree.V10.I3ClosureSelectedCrossing
+
+-- Algorithm 5.4: actual I3 interesting levels force corrected B3 failure.
+import SuccessorTree.V10.I3AlgorithmInterestingBridge

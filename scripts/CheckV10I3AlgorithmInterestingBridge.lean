@@ -1,0 +1,4 @@
+import SuccessorTree.V10.I3AlgorithmInterestingBridge
+#print axioms SuccessorTree.V10.algorithmI3_implies_nonSkippableClosureCrossing
+#print axioms SuccessorTree.V10.algorithmI3_failsCorrectedB3
+#print axioms SuccessorTree.V10.algorithmI3Levels_card_le_signature_capacity
