@@ -53,6 +53,7 @@ theorem finiteNumericH_positive_freeLevel_odd
   have hfPos : 0 < f := hPos
   by_cases hOdd : f % 2 = 1
   · refine ⟨f / 2, ?_⟩
+    change f = 2 * (f / 2) + 1
     omega
   · have hEvenRem : f % 2 = 0 := by omega
     let a : Nat := f / 2
