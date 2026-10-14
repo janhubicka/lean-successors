@@ -1,0 +1,6 @@
+import SuccessorTree.V10.I3EligibleStagePool
+#print axioms SuccessorTree.V10.eligibleAmbientPoolPrescribedData
+#print axioms SuccessorTree.V10.eligibleAmbientPoolPrescribedData_source_original
+#print axioms SuccessorTree.V10.stagePoolPrescribedData_targets_admissible
+#print axioms SuccessorTree.V10.stagePoolPrescribedData_correctedB3_iff_compatibleB3
+#print axioms SuccessorTree.V10.stagePoolPrescribedData_has_original_pool_representation
