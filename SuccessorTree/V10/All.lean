@@ -342,3 +342,6 @@ import SuccessorTree.V10.I3NoSkipForcesB3
 
 -- Proposition 6.44: higher-generation names alone bound I3 signatures by R(M_r).
 import SuccessorTree.V10.I3HigherSignatureCapacity
+
+-- I3: exact forbidden-pattern signature from B3 witnesses with higher-generation names.
+import SuccessorTree.V10.I3ActualHigherSignature
