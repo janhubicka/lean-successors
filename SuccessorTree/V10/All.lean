@@ -360,3 +360,6 @@ import SuccessorTree.V10.KptStageClosureNormalForm
 import SuccessorTree.V10.HPositiveFreeLevelOdd
 -- Real I1 closure nodes not among seeds are genuine charged original meets.
 import SuccessorTree.V10.I1RealNodeMeetCharge
+
+-- Proposition 6.44: enumerate only high original names with the common M_r budget.
+import SuccessorTree.V10.HHighOriginalNameEnumeration

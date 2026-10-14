@@ -1,0 +1,11 @@
+import SuccessorTree.V10.HHighOriginalNameEnumeration
+#print axioms SuccessorTree.V10.hOriginalName
+#print axioms SuccessorTree.V10.hOriginalName_mem
+#print axioms SuccessorTree.V10.hOriginalName_injective
+#print axioms SuccessorTree.V10.hHighOriginalNameIndices
+#print axioms SuccessorTree.V10.hHighOriginalNameIndices_mem_iff
+#print axioms SuccessorTree.V10.hHighOriginalName
+#print axioms SuccessorTree.V10.hHighOriginalName_surjective_on_high
+#print axioms SuccessorTree.V10.hHighOriginalNameIndices_card_le
+#print axioms SuccessorTree.V10.hHighOriginalNameIndices_card_le_budget
+#print axioms SuccessorTree.V10.hHighOriginalName_covers_real_higher
