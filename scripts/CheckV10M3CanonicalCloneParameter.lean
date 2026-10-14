@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M3CanonicalCloneParameter
+#print axioms SuccessorTree.V10.m3_parameter_copies_lower_pairs
+#print axioms SuccessorTree.V10.m3_valid_no_lower_links_past_cut

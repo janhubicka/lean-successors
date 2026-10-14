@@ -1,0 +1,4 @@
+import SuccessorTree.V10.PrescribedUpperLType
+
+#print axioms SuccessorTree.V10.insertL_upper_predecessor_eq
+#print axioms SuccessorTree.V10.insertL_realizes_prescribed_upper_L_type

@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LevelRemovalCanonicalParameter
+
+#print axioms SuccessorTree.V10.PartialTypeWithE.canonicalParameterRecord_delete_outside
+#print axioms SuccessorTree.V10.PartialTypeWithE.canonicalParameterRecord_delete_inside

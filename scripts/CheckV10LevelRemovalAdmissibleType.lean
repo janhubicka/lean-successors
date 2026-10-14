@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LevelRemovalAdmissibleType
+
+#print axioms SuccessorTree.V10.deleteAt_pred_of_gt
+#print axioms SuccessorTree.V10.deleteAtPartial_rawTypeAtFree_eq
+#print axioms SuccessorTree.V10.admissible_deleted_complete_type

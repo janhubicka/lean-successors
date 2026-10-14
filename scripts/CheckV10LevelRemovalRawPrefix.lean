@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LevelRemovalRawPrefix
+
+#print axioms SuccessorTree.V10.rawPartialTypeDeleteAt_level
+#print axioms SuccessorTree.V10.rawPartialTypeDeleteAt_prefix

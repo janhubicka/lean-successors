@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LevelRemovalWitnessCut
+
+#print axioms SuccessorTree.V10.validNewColumn_ambient_freeCut_eq
+#print axioms SuccessorTree.V10.validNewColumn_any_Kpt_witness_freeCut_eq
+#print axioms SuccessorTree.V10.guarded_column_any_Kpt_witness

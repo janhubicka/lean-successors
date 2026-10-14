@@ -1,0 +1,5 @@
+import SuccessorTree.V10.M2ConcreteCapImageCopy
+import SuccessorTree.V10.M2InitialSocleFromUpper
+#print axioms SuccessorTree.V10.m2ForbiddenCopy_from_padded_cap
+#print axioms SuccessorTree.V10.sameInitialL_of_complete_upper_type
+#print axioms SuccessorTree.V10.m2ForbiddenCopy_from_upper_records

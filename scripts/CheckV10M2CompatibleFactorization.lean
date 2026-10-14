@@ -1,0 +1,2 @@
+import SuccessorTree.V10.M2CompatibleFactorization
+#print axioms SuccessorTree.V10.uniformGapDeletedShapeMap_factorization_of_compatibleB3

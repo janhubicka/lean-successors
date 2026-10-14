@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LevelRemovalPrefixCut
+
+#print axioms SuccessorTree.V10.validNewColumn_rawPrefix_ambient_freeCut_eq
+#print axioms SuccessorTree.V10.validNewColumn_below_Kpt_witness_freeCut_eq
+#print axioms SuccessorTree.V10.guarded_gap_column_below_Kpt_witness

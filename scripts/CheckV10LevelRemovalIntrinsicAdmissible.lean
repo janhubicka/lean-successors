@@ -1,0 +1,3 @@
+import SuccessorTree.V10.LevelRemovalIntrinsicAdmissible
+
+#print axioms SuccessorTree.V10.admissible_deleted_lower_of_guarded_upper

@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M3CanonicalCloneInitial
+
+#print axioms SuccessorTree.V10.m3_initial_clone_of_canonical_records

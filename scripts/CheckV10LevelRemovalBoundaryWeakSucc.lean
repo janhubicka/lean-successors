@@ -1,0 +1,3 @@
+import SuccessorTree.V10.LevelRemovalBoundaryWeakSucc
+
+#print axioms SuccessorTree.V10.weak_image_successor_below_deleted_boundary

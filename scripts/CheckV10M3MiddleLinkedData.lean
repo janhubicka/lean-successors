@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M3MiddleLinkedData
+
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_linkedLData

@@ -1,0 +1,803 @@
+% =====================================================================
+% SUCCESSOR V10 -- cumulative review-only validation and TODO overlay
+% 2026-10-13: the author-requested M2 non-edge proof is tracked separately in
+% manuscript/v10-m2-nonedge-appendix.tex. Installer adds only a fresh appendix
+% input to a real editable v10 main.tex, and never touches frozen proof prose.
+% The full boundary CompatibleB3 argument and global M2 endpoint remain OPEN
+% until the Lean transitive axiom check passes; the appendix is not GREEN.
+% 2026-10-12 M2 checkpoint: PR306, PR310, PR311 and PR312 merged
+% after exact-head successful Lean, v10 axiom and manuscript audits.
+% The intrinsic deletion ShapeMap and its complete weak-successor law
+% are GREEN in normalized Kpt; the complementary one-gap extension
+% (hence global M2), final signature recurrence and language adapter OPEN.
+% New M2-independent one-gap rigidity/boundary criterion is a separate
+% PENDING candidate until its own full CI and named axiom checks pass.
+% Cumulative continuation: common full-prefix implementation and PR219 order transport.
+% Proof-check status is recorded in v10-prescribed-order-transport-checkpoint-20261011.md.
+% No independent/simultaneous prefix implementation is imported into this stack.
+% Green predecessor: PR203 fe1d91e39a954eadf5676dd1863ad424d1aa6106.
+% Full Lean 38087498944 and focused V10 38087498938 passed.
+% PR205 538490affc77c23e3704cc4235d78972bda37757: full and focused GREEN.
+% PR206 4fc409b368a50caf084ef5696203927f2cd59968: focused proof/axiom steps GREEN.
+% Focused runs: 38096247806 and 38096396531; downloaded axiom evidence checked.
+% PR211 55276dc4dc5cb6f0df20d551bcea2d2a97078e67: focused 38100205700 GREEN.
+% PR212 203422b47a71b91c60f9fb1daafe21719e8d6ee8: focused 38100408422 GREEN.
+% All twelve new recovery/representation endpoints have standard axioms only.
+%
+% Apply with update-v10-source.py to the author's current main.tex.
+% This file replaces overlapping machine-labelled notes; do not concatenate
+% all earlier review fragments. The four mathematical repairs are unchanged.
+% Current author-edited main.tex is not present in this continuation.
+% The source updater is tested on its fixture, not on that archive.
+%
+% GREEN: a named finite/model theorem passed Lean and its axiom audit.
+% PARTIAL: a manuscript-facing bridge is still missing.
+% OPEN: the stated manuscript consequence is not yet certified.
+% PR 266 (2d7f26f364b2491a3ef65d4798ad5d302c6d7d03):
+% full Lean 38173146352, focused V10 38173146346 and TeX 38173146351 GREEN.
+% PR 267 (9b62b29ee172f54d7581a275e17772640b9480b1):
+% full Lean 38173035063 and focused V10 38173035018 GREEN.
+% New combined M3/M2 root and note updater are audited in a separate PR.
+%
+% Recorded checked checkpoints:
+% PR 153: 3c269231, full/focused CI and manuscript updater passed;
+% PR 156: 2899b151, full/focused CI and manuscript updater passed;
+% PR 160: 475a955a, full/focused CI passed;
+% PR 161: a0a9163c, full/focused CI passed;
+% PR 162: 95340aa4, full/focused CI and manuscript updater passed.
+% PR 163 integrates the Kpt meet bridge/converse from PR 160 unchanged.
+% PRs 153 and 156 remain separate staged branches.
+% PR 163: 3f8c5eb6, full/focused CI and manuscript updater passed.
+% PR 164 proof checkpoint: d2fad6fcafe9f40f278fc2cff22986af6b3ef2dd.
+% V10 audit 38051214553 passed; all 16 new endpoints have standard axioms only.
+% Detailed scope and downloaded-evidence checks are in v10-original-pool-review.md.
+% PR 165 crossing checkpoint: b44d378e7d19d937669c90bad3e20f407ee540ff.
+% V10 focused build/axiom audit 38056182806 passed.
+% The actual Kpt crossing now supplies the full ambient L-type used by signatures.
+% PR 166 structural proof checkpoint: fc2af03f3b854ec8a14e1356ad82f6074ec91114.
+% Full Lean 38059711091, focused V10 38059711093: success.
+% At PR 166 only the finite insertion/age-test reduction was checked; the ShapeMap was later proved.
+% PR 167 neutral insertion branch: 5a63b009b01ee9bca4d707d97ce2c2a083243a67.
+% Focused V10 audit 38060229228 PASSED at the proof checkpoint.
+% GREEN focused+full: neutral type record/level/prefix/injectivity through PR 176.
+% GREEN focused: terminal letter PR 177, mapped parameters PR 178,
+% canonical inputs PR 179, and crossing weak successor PR 180.
+% Exact-head focused V10 audit GREEN: PR 181 and PR 182.
+% PR 183 all-level witnesses / SkipsOnly proof: 25668dab4644e885b84a7ec3cccdc5e6cfa18f3d.
+% V10 focused build + axiom audit 38075729225: SUCCESS.
+% The global neutral one-gap ShapeMap uses only standard Lean axioms.
+% At PR 183 this prescribed non-neutral map remained open; PR 266 later closed M3.
+% PRs 186--196 prescribed-column/finite-age proofs are included in checked PR203.
+% PR 200 stages author-authorized mathematical B3/proof correction and source-safe patcher.
+% PR 201 corrected-B3-to-finite-insertion implication is included in checked PR203.
+% PR 197: 064bf6201c7d323a0c01090058cfcbd41733fddc.
+% Focused V10 build and transitive axiom audit 38081204866 SUCCESS.
+% B3 source repair supplied separately; it is not a consequence of the spacing theorem.
+% =====================================================================
+
+% Proposed consolidated TODO at obs:env1, retaining the type-forest checkpoint.
+\todo[inline]{\textbf{v10 validation: admissible type forest -- GREEN
+in the normalized finite unary/binary representation.}
+The first missing $E$-coordinate exists uniquely. Restricting an
+admissible partial type to an earlier cut is realised by one
+allowed neutral filler, the copied induced $L$-reduct and the
+prescribed initial $E$-socle. The replica satisfies all three
+partial-structure axioms and avoids the forbidden family,
+including forbidden singleton patterns. See
+\texttt{PrefixReplicaPartial.lean}, \texttt{PrefixReplicaAge.lean}
+and \texttt{AdmissibleKptPrefix.lean}.
+Finiteness of the levels and the genuine predecessor and meet
+operations are checked in \texttt{FiniteKptLevels.lean},
+\texttt{AdmissibleKptMeet.lean} and
+\texttt{AdmissibleKptLevelTree.lean}.
+These type-forest results alone do not establish the successor
+operation or the shape-map monoid axioms.
+
+\textbf{Concrete stage-pool invariant -- GREEN.}
+For a fixed forbidden-free ambient partial structure $\pstr C$, let $U$
+be a set of original vertex addresses representing the initial types and put
+$V_I=U\cup\{i\in C:i\in I,\ \freef C(i)>0\}$.
+In \texttt{ConcreteOriginalPool.lean}, the actual admissible successor
+crossing at $i$ has no parameter if $\freef C(i)=0$; otherwise its only
+parameter is exactly $\typev_\pstr C(i)$, with all $L^+$ data retained.
+This is derived from the successor graph and uniqueness of the actual
+$E$-cut, rather than assumed as a canonical-decomposition interface.
+The prefixes represented by $V_I$ are therefore parameter-closed over $I$
+and meet-closed within each root component. Closure minimality gives
+$\Cl_I(Y)\subseteq\{\type T:\type T\subseteq\typev_\pstr C(v)
+\text{ for some }v\in V_I\}$ whenever $Y$ is represented by $U$.
+The endpoint \texttt{admissibleKpt\_stage\_closure\_subset\_pool}
+holds for every $I$ and does not assume parameter closure. For the
+manuscript's stage pool take $U=\{c\}$ and identify the initial $Y$
+with prefixes of that original. Keep vertex addresses even when their
+types coincide. This checks the stage invariant, not every clause of
+the general arbitrary-$Z$ characterization in the observation.}
+
+% Proposed consolidated TODO at Definition 6.30 / Proposition 6.32
+\todo[inline]{\textbf{v10 validation: the S-tree operation and M1 --
+GREEN for the normalized model; language adapter OPEN.}
+The exact successor is determined by its complete induced
+predecessor, its canonical empty-or-singleton parameter and its
+admissible terminal letter. The parameter has the strict required
+lower level. Existence for every admissible cover and uniqueness
+of the decomposition give the three S-tree axioms in
+\texttt{CanonicalCoverS3.lean},
+\texttt{CanonicalStepUniqueness.lean} and
+\texttt{AdmissibleSigmaSTree.lean}.
+For the family of all shape-preserving maps with
+$\widetilde F(0)=0$, identity, composition and pointwise fusion
+preserve the condition; these maps fix every level-zero node.
+See \texttt{ConcreteKptM1.lean}.
+
+\textbf{M3 duplication -- GREEN in the normalized Kpt S-tree;
+M2 remains OPEN.}
+The finite level-removal construction preserves the forbidden-free
+partial structure under the strict guard $\mathrm{fl}(m+1)<m$
+and computes the transported free cut
+(\texttt{LevelRemovalPartial.lean},
+\texttt{LevelRemovalFreeCut.lean}).
+The checked \texttt{LevelRemovalType.lean} proves that the complete
+$L^+$ type of a retained vertex is precisely the old type
+with coordinate $m$ deleted, including absent directed tuples,
+singleton/diagonal information and every $E$ pair (PR~267).
+The additional \texttt{LevelRemovalAdmissibleType.lean} derives
+the new canonical free level and constructs an actual
+$\mathcal F$-free witness of this coordinate-deleted complete
+Kpt type (PR~269, full Lean 38174237646 and focused named-axiom
+audit 38174237715 both GREEN). These remain \emph{local}
+ingredients: the uniform level-removal shape map and M2
+decomposition have not been proved. In particular, at the
+source boundary level $n$ of the intended global deletion,
+the image has no ordinary coordinate
+$m+1=\widetilde F(n)$ in its socle yet.
+\texttt{LevelRemovalSourceSuccessor.lean} proves from the
+checked universal M3 law that every positive-level Kpt node
+admits a genuine successor, with actual parameters and letter
+(PR~273, full/focused Lean GREEN).
+\texttt{LevelRemovalGapColumn.lean} then shows that when
+$\ell(F(q))+1<\ell(F(a))$ for the preceding source level,
+each parameter of a genuine successor of $a$ maps strictly
+below $m=\ell(F(a))-1$, and the genuine \emph{weak} image
+successor has a valid ordinary E-column with cut $f<m$
+(PR~272, full/focused Lean GREEN).
+The weak successor is below the later image, not necessarily
+equal to that image. The exact free E-cut transfers through
+complete $L^+$ prefixes to \emph{every} actual finite
+representative of an upper image
+(\texttt{LevelRemovalWitnessCut.lean} and
+\texttt{LevelRemovalPrefixCut.lean}, PRs~274, 276, GREEN).
+\texttt{LevelRemovalGapSeparation.lean} and the
+verified source-level comparison (PR~281) show the
+coordinate $m$ is genuinely omitted by $F$.
+The checked uniform image guard and admissible shortened
+prefix were integrated in PR~283, and
+\texttt{LevelRemovalBoundaryAdmissible.lean} proves that
+the \emph{intrinsically specified} deleted complete $L^+$
+image is admissible both at the source boundary and above
+a chosen actual successor (PR~285, GREEN).
+The successor and finite witness are used only to prove
+membership, not to choose the deleted value.
+The full \emph{all-level} admissibility consequence is now
+checked in \texttt{LevelRemovalAllLevelsAdmissible.lean}:
+the deleted complete raw record of $F(x)$ belongs to Kpt
+for every source $x$ at or above the boundary level,
+across every tree component, using one fixed deletion
+coordinate $m$ (PR~287, exact head \texttt{68069ab3},
+full Lean run 38195482771 and focused transitive axiom
+run 38195482724 GREEN). The intrinsically specified total deletion, strict level function
+and full prefix order have been integrated in PR~299, with the
+canonical empty-or-singleton parameter transport integrated in PR~305.
+The checked sharp upper-step safety is recorded in PR~309.
+The four component proofs and sharp guard are integrated in PR~306;
+PR~310 proves the remaining high-base weak successor, and PR~311
+packages the complete intrinsic deletion as a root-preserving Kpt
+ShapeMap, deriving injectivity from weak successors.
+The exact-head full and focused named-axiom runs passed for PR~306
+(38253790327/38253790321), PR~310 (38250692961/38250692981)
+and PR~311 (38252865811/38252865671), each with standard axioms.
+These normalized local facts are GREEN; the complete M2
+factorization remains OPEN.
+
+For M3, the actual gated finite middle-clone insertion satisfies
+the corrected $L$-only age test and yields one ShapeMap in $K_{pt}M$
+skipping only $\ell$ (PRs~253, 258--259).
+\texttt{M3RepresentativeIndependence.lean} proves independence
+of the chosen finite witness, and
+\texttt{M3LiteralDuplication.lean} proves the complete universal
+duplication law for every earlier admissible successor and the
+same parameter list and letter (PR~266).
+All new endpoints passed full builds and named transitive axiom
+audits with standard Lean axioms. The identification with the
+original unary/binary language is a separate OPEN adapter.}
+
+% Proposed consolidated TODO at Definition 6.45 / Observation 6.46
+\todo[inline]{\textbf{v10 validation: exact finite $H^+$ construction --
+GREEN in the normalized language; manuscript identification OPEN.}
+The numerical construction now gives one genuine finite partial structure,
+not separate binary and $E$ models. In \texttt{HFinitePartial.lean},
+\texttt{finiteNumericH} copies every permitted ordered binary tuple, copies
+unary and diagonal data at every real vertex, and gives fake vertices
+the neutral singleton. Its generated $E$-relation satisfies spacing,
+downward closure and the linked-pair axiom. Its complete records therefore
+belong to the same partial-type representation used for the actual meets.
+
+For a base $K$ enumerated on $\omega$, \texttt{HFiniteAge.lean}
+proves that every nontrivial irreducible ordered copy in this finite
+$H$ projects to an ordered induced copy in $K$: all its vertices are
+real, their first indices strictly increase, and all positive and
+negative directed tuples and singleton data are preserved. A forbidden
+non-neutral singleton cannot occur at a fake vertex. Thus avoidance of
+the normalized forbidden family follows from avoidance in $K$; it is
+not a new hypothesis about $H$.
+
+The manuscript still needs the exact-copy interpretation stated
+explicitly. Replace the one-way substructure clause by exact copying
+of permitted ordered binary tuples and real singleton data, absence of
+all other off-diagonal $L$-tuples, neutral fake singletons, and the exact
+generated $E$-relation. Odd fake vertices are $L$-isolated, not
+$L^+$-isolated. This check does not by itself establish equivalence
+with the current underdetermined prose or the full language adapter.}
+
+% Proposed consolidated TODO at Lemma 6.49 / Corollary 6.50
+\todo[inline]{\textbf{v10 validation: actual positive-generation meet
+charge -- GREEN for the exact normalized $H$ construction.}
+The endpoint \texttt{forbiddenFreeH\_prefix\_meet\_charge} in
+\texttt{HFiniteAge.lean} starts with a forbidden-free base $K$ on
+$\omega$, constructs a finite initial segment of the exact $H^+$,
+and considers arbitrary represented prefixes in the genuine admissible
+$K^{\mathcal F}_{pt}$ tree. If their actual meet is distinct from
+both and has level $\iota(p,r)$ with $r>0$, then, after exchanging
+originals, they have the form $\iota(i,n)$ and $\iota(j,m)$ with
+$0<m<n\leq k$, and
+\[
+ r=m,\qquad p=p(i),\qquad p+1<j.
+\]
+Both $E$-socle memberships, the positive generations of the originals,
+and the first complete directed binary disagreement are derived from
+the actual meet. None is supplied as an extra trace or free-cut
+assumption. The shared singleton information follows from the common
+predecessor, so unary, diagonal and auxiliary $E$ data are not omitted.
+The passage from prefixes to originals uses equality of their
+nontrivial meets, not just the observation that a meet is a prefix.
+The tuple determining $p(i)$ includes both orientations of every
+binary relation, including absent atoms.
+
+This discharges the former connection between the numerical
+classification and actual admissible meets in the exact normalized
+model. To identify it literally with Lemma~\ref{lem:meets}, retain
+the explicit-copy correction and the language-normalization TODO.
+The concrete stage-pool invariant is now checked separately in
+\texttt{ConcreteOriginalPool.lean}. The endpoint
+\texttt{forbiddenFreeH\_closure\_meet\_charge} combines it with this
+pairwise theorem: both originals can be chosen inside $V_I$ for every
+nontrivial positive-generation meet in the actual $\Cl_I(Y)$.
+No abstract parameter-closure or charging assumption remains in that
+composition. The generation budget is recorded at
+Corollary~\ref{cor:meet-origins}; the full recurrence still requires
+the selected-level and age-signature arguments.}
+
+% Proposed consolidated TODO at Observation 6.52 / Lemma 6.53
+\todo[inline]{\textbf{v10 validation: signature crossing and splice --
+GREEN once the local-age witness supplies the prescribed actual crossing;
+local-age construction and generation bound PARTIAL.}
+The actual LevelTree ancestor of an admissible type represented by an
+ambient original is now identified with its complete induced $L^+$ prefix
+at the same cut in \texttt{ActualCrossingSignature.lean}. Consequently,
+if an upper age-test vertex realizes the prescribed genuine Kpt crossing
+at $\ell+1$, its complete directed atomic $L$-type through $\ell+1$
+is exactly that of the named ambient original. This derives the former
+full-type hypothesis rather than assuming it.
+Combining this with \texttt{AmbientSignature.lean} and
+\texttt{SignatureCollision.lean} gives the signature-collision
+contradiction from the actual crossings themselves: the splice preserves
+order and every unary, diagonal and directed binary atom, including absent
+atoms. The auxiliary relation $E$ is not used as a forbidden $L$-atom.
+
+The remaining manuscript-facing input to Observation~\ref{obs:signature-unique}
+is now precise: formalize the boring extension lemma strongly enough to
+construct the one-level insertion/shape map and prove that the upper
+vertices of its age-test witness realize those prescribed crossings.
+The lower-generation relocation calculations are separately checked,
+including both orientations and the special top-generation tie, in
+\texttt{RelocationIrreducible.lean} and related modules. The final
+generation estimate still needs to be assembled with the actual
+age-test witness; do not mark Lemma~\ref{lem:signatures} fully GREEN yet.}
+
+% Proposed consolidated TODO at Proposition 6.44 / Theorem 6.26
+\todo[inline]{\textbf{v10 validation: final big-Ramsey upper bound --
+OPEN.}
+The actual positive-generation meet charge is now proved for the
+constructed forbidden-free exact normalized $H^+$ and all represented
+prefixes. The maintained original-pool invariant and the linear budget for
+positive-generation meet levels throughout the actual closure are now
+checked in \texttt{ConcreteOriginalPool.lean} and
+\texttt{HClosureCharge.lean}. The remaining inputs to the recurrence
+are the identification of the algorithm's seed types and selected sets,
+signature uniqueness from the actual crossing/age test, and the complete
+classification of selected levels. The normalized M3 duplication map is now checked; the
+global M2 decomposition and the local-age/signature witness
+arguments remain open. Keep the exact-copy and language-normalization corrections
+separate from these proof obligations. Neither
+Proposition~\ref{prob:upperbound} nor Theorem~\ref{thm:zucker}
+is yet a fully checked consequence.}
+
+% Additional language-coding TODO near the beginning of Section 6.3
+\todo[inline]{\textbf{v10 validation: diagonal/nullary language adapter --
+OPEN.}
+The Boolean representation stores off-diagonal ordered binary
+atoms and singleton diagonal facts separately.
+\texttt{CanonicalBinary.lean} checks that setting the unused
+self-pair entries of the off-diagonal table to false changes
+neither induced embeddings nor the auxiliary $E$-relation.
+Identify the diagonal coordinates with the original binary
+symbols, preserve all unary information, and fix nullary
+interpretations for the whole age before claiming literal
+identity with the manuscript's $K^{\mathcal F}_{pt}$ class.}
+
+% Targeted replacement of the former unresolved iterated-meet TODO.
+% Place at cor:meet-origins, without changing its mathematical statement.
+\todo[inline]{\textbf{v10 validation: iterated-closure meet budget --
+GREEN for the exact normalized $H^+$ model.}
+The endpoint \texttt{forbiddenFreeH\_closure\_meet\_budget} in
+\texttt{HClosureCharge.lean} supplies, for each $0<r\leq k$, a finite
+set containing every nontrivial generation-$r$ meet level of types in the
+actual $\Cl_I(Y)$. Its cardinality is at most the number of eligible
+higher-generation originals in $V_I$: an original $\iota(i,n)$ with
+$n>r$ contributes only $\iota(p(i),r)$, when $p(i)$ exists.
+The uniqueness of $p(i)$ and of the bounded-generation representation
+is checked, so the proof uses a finite image of original addresses,
+not a quadratic enumeration of pairs. The stage-pool parameter closure
+and the actual-meet classification are proved for the same constructed
+$H^+$; neither is supplied as an extra hypothesis. The initial support
+condition is that $Y$ consists of prefixes represented by the seed pool.
+This settles the former iterated-meet/provenance obligation in this
+model. It does not settle levels selected by the age obstruction or the
+whole upper-bound recurrence.}
+
+% Consolidated TODO at Lemma 6.51. Both known TeX labels are supported;
+% the updater rejects ambiguous aliases and changes only managed notes.
+\todo[inline]{\textbf{v10 validation: boring extension -- GREEN in the
+normalized finite unary/binary model; M3 GREEN, M2 and
+language adapter OPEN.}
+The repaired B3 quantifies over finite ordered $L$-structures with the
+ordinary socle of a prescribed $f(S)$ and complete upper $L$-types
+through $\ell+1$ from the reducts of $f[S]$. If deleting $\ell$ leaves an $\mathcal F$-free structure, the whole
+structure must be $\mathcal F$-free. No auxiliary $E$ requirement belongs on these
+age-test witnesses. The former $E$-expanded upper-tail condition cannot
+serve this purpose: spacing excludes the first required upper vertex;
+without a prescribed initial socle the empty upper tail is also invalid.
+The localized mathematical repair was applied to the previously supplied
+V10 source; its provenance is recorded in
+\texttt{v10-b3-author-source-check-20261010.md}.
+This annotation updater does not reapply or alter that repair.
+
+\textbf{Finite prescribed construction -- GREEN in the normalized model.}
+\texttt{PrescribedCorrectedB3.lean} derives the finite common-socle
+age test from the corrected manuscript condition and supplies a genuine
+forbidden-free prescribed insertion. The upper columns and their linkage
+conditions are derived from $f$, not assumed independently.
+All old $L^+$ atoms, including absent directed tuples, are preserved.
+\texttt{PrescribedETransport.lean} checks the new $E$ row, new column,
+old pairs and loop for an arbitrary valid inserted cut; this is not
+restricted to the neutral branch.
+\texttt{PrescribedSourceRecovery.lean} recovers each shorter ordinary
+source type from the complete longer record.
+These statements were checked at the PR~203 checkpoint, including the
+transitive axiom audit. The allowed neutral branch and its full
+\texttt{ShapeMap}, exact skipped level, predecessors, injectivity,
+terminal letters and empty-or-singleton parameters are also checked.
+At the unique edge from $\ell-1$ to $\ell$, use the weak successor
+statement, not equality with the shifted target. The assumption $\ell>0$
+remains essential for the finite $E$ insertion.
+
+\textbf{Prescribed representation independence -- GREEN
+for the finite constructor.}
+\texttt{PrescribedIncidentIndependence.lean} derives the gate
+$\ell\leq\freef A(u)$ from the source atom $E(\ell-1,u)$, and recovers
+shorter source types at ordinary and distinguished coordinates.
+It proves that source compatibility, the selected lower column and
+both gated incident directions are independent of the ambient witness.
+\texttt{PrescribedRecordIndependence.lean} combines these identities
+with exact transport to compare the entire inserted $L^+$ record,
+including every positive and absent binary atom, singleton fact and
+$E$ pair. Its final endpoint compares the actual finite prescribed
+constructors for two ambient realizations and two compatible prescribed
+outputs. Equality of the inserted cuts is derived from their common
+ordinary socle, not added as a hypothesis. The focused builds and
+transitive axiom audits for PRs~205 and~206 passed. All nine new
+endpoints use only standard Lean axioms; the downloaded evidence
+was checked. This is not a global shape-map theorem.
+
+\textbf{Admissible prescribed images and total node map --
+GREEN in the normalized model.}
+\texttt{PrescribedMatchingFinite.lean} now retains the actual
+\texttt{prescribedInsertPartial} constructor and its inserted cut in
+its witness-existence conclusion. The earlier existential theorem is
+only a corollary; its hypotheses are unchanged and the construction
+is not duplicated. \texttt{PrescribedAdmissibleImage.lean} obtains a
+forbidden-free admissible image at level $n+1$ from corrected B3 and
+admissibility of the prescribed targets. Its image relation is proved
+functional for different ambient structures and different compatible
+source representatives. Equality of the cuts and lower columns still
+comes from B2, not an extra compatibility assumption.
+\texttt{PrescribedKptSkip.lean} combines this unique matching image
+with the already checked neutral image, fixing all nodes below $\ell$.
+The compatibility test is made on the node's own complete prefix.
+The resulting candidate is total on the actual admissible node set;
+its level is $n$ for $n<\ell$ and $n+1$ for $n\geq\ell$.
+The branch specifications, omission of level $\ell$, preservation of
+equal levels and strict increase of numerical levels are explicit
+endpoints. These numerical facts are not node injectivity or tree-order
+preservation. The exact-head focused builds and transitive axiom audits
+for PRs~208 and~209 passed. The fifteen new endpoints and the retained
+existential API were checked in downloaded audit artifacts; all use only
+standard Lean axioms. This does not certify the prescribed shape map.
+
+\textbf{Prescribed old-record recovery and injectivity -- GREEN.}
+\texttt{InsertedTypeRecovery.lean} defines deletion of the inserted ordinary
+coordinate on complete raw $L^+$ records. All retained coordinates,
+including the distinguished vertex, keep their positive and absent
+binary atoms, unary and diagonal facts, and every $E$ pair.
+\texttt{PrescribedKptInjective.lean} uses the same deletion for prescribed
+and neutral images and fixes raw nodes below $\ell$. Its left-inverse
+identity recovers the original raw node from the actual total candidate.
+This proves injectivity also for comparisons between prescribed and
+neutral images, without assuming predecessor preservation or equal
+branch choices. No new hypothesis on the total map is added.
+Deletion is defined on raw records; admissibility of its value on an
+arbitrary admissible input is not asserted. On the candidate's image,
+its value is the original admissible node.
+
+\textbf{Computation in any finite representative -- GREEN.}
+\texttt{PrescribedImageRepresentation.lean} identifies any supplied valid
+inserted cut with the cut obtained from finite existence, using the
+uniqueness of the ordinary $E$-column. Thus the literal constructor at
+that cut is forbidden-free; its avoidance is derived rather than added
+as a premise. The selected matching image can consequently be computed
+in any forbidden-free finite representative of its source, using any
+compatible prescribed source and valid inserted cut. This supplies the
+representation adapter for the prefix-replica argument; it is not itself
+a proof of predecessor preservation. The exact-head focused builds and
+transitive axiom audits for PRs~211 and~212 passed. All twelve new
+endpoints use only standard Lean axioms; the downloaded evidence was
+hash-checked and the named-endpoint checker was rerun.
+
+\textbf{All prescribed predecessors -- GREEN.}
+\texttt{PrescribedKptPrefixCases.lean} derives equality of the complete
+level-$\ell$ restrictions along every upper chain, and therefore equality
+of the compatibility decisions. No extra same-branch hypothesis is used.
+\texttt{PrescribedKptPrefixMatching.lean} represents the shorter source
+by the existing one-filler prefix replica. Both selected images can then
+be computed with the same compatible prescribed source and inserted cut;
+full-record independence identifies the shorter image with the appropriate
+prefix of the longer one. The unmatched case uses the neutral theorem.
+\texttt{PrescribedKptFullPrefix.lean} handles crossing the gap using only
+retained old atoms. Its lower-prefix statement also covers the source
+itself at level $\ell$; this is a predecessor statement, not agreement
+with $f$. All source predecessor relations are consequently preserved.
+
+\textbf{Exact predecessor transport and order embedding -- GREEN.}
+\texttt{PrescribedKptOrderEmbedding.lean} identifies the image of the
+actual admissible predecessor at level $n$ with the predecessor of the
+image at level $n$ if $n<\ell$, and at level $n+1$ otherwise.
+This follows from the full predecessor theorem, the level formula and
+uniqueness of a predecessor at a fixed level. Conversely, if two images
+are comparable, take the predecessor of the longer source at the shorter
+source's level. Its image and the shorter image have the same level and
+lie below a common image, hence coincide. Injectivity identifies their
+sources. Thus the concrete map preserves and reflects the prefix order,
+and is packaged as an order embedding. This argument uses admissible
+prefix closure, not admissibility of arbitrary coordinate deletion.
+The four new endpoints and ten inherited prefix endpoints passed the
+focused build and named axiom audit at PR~219. The downloaded artifact,
+exact new source and check-script bytes were verified; all reports use
+only standard Lean axioms. The source tree of the tested synthetic merge
+agrees with the committed proof head.
+
+\textbf{Weak successors below and across the gap -- GREEN.}
+\texttt{PrescribedKptGapSucc.lean} first proves that every source at
+level $\ell$ is a complete predecessor of its prescribed-or-neutral
+image. If a successor base lies below $\ell$, the actual S-tree axiom
+puts all its parameters below the base, so both the base and its
+parameter list are fixed. The old successor then witnesses the weak
+mapped-successor condition: it is fixed if its level is below $\ell$,
+and is a predecessor of its image if its level is exactly $\ell$.
+This includes the boundary from $\ell-1$ to $\ell$ without asserting
+equality with the shifted image. No above-gap parameter or terminal-letter
+identity is assumed in this argument. Both new endpoints passed the
+focused build and named axiom audit at PR~222; the downloaded source,
+check-script bytes and standard-only axiom reports were verified.
+
+\textbf{Suggested clarification of the construction.}
+Choose a finite $\mathcal F$-free partial structure representing the
+source type. Use the prescribed finite construction when its ordinary
+socle is compatible with a prescribed source, and the neutral
+construction otherwise. Take the complete type of the retained
+distinguished vertex at its transported free level. The full
+$L^+$-record independence, rather than just equality of the lower
+column or of the $L$-reduct, makes this definition independent of
+both choices. To see injectivity, delete the inserted ordinary coordinate
+and shift the retained ordinary coordinates back. This recovers the
+complete source type in both branches, while nodes below $\ell$ are fixed.
+For comparable upper sources, their level-$\ell$ restrictions agree.
+In the matching case, compute the shorter image using the one-filler
+prefix replica of the longer representation; record independence gives
+the required predecessor. In the unmatched case use the neutral
+construction. Below the gap only retained old atoms occur. This proves
+all predecessor cases, including crossing the gap.
+
+\textbf{Prescribed source values and finite successor inputs -- GREEN.}
+\texttt{PrescribedSourceFullValue.lean} proves that the selected total
+node map agrees with $f$ on every admissible source in its domain,
+as equality of the COMPLETE $L^+$ type, not merely the $L$-reduct.
+\texttt{PrescribedTerminalLetter.lean} transports every positive and
+absent directed $L$ atom, all singleton data and the $E$ atoms of the
+terminal letter through the actual prescribed insertion.
+\texttt{PrescribedOldParameter.lean} computes the chosen total
+map at each retained old vertex of the prescribed finite model and
+therefore transports the canonical empty-or-singleton parameter list.
+The full Lean and focused named-axiom audits of PRs~218, 223 and 224
+passed independently with unchanged corrected-B3 assumptions.
+
+\textbf{Complete prescribed one-gap ShapeMap -- GREEN
+for the normalized model.}
+\texttt{PrescribedUpperSuccMatching.lean} uses one genuine finite
+prescribed insertion and the checked exact parameter/terminal-letter
+transport to prove successor equality above the gap.
+\texttt{PrescribedUpperSuccUnmatched.lean} identifies the source, target
+and canonical parameter with their neutral images when the common
+ordinary level-$\ell$ socle has no compatible prescribed source.
+\texttt{PrescribedKptShapeMap.lean} combines both upper cases with the
+weak below/crossing successor law, full predecessor and injectivity
+theorems, and root fixing. It constructs the actual
+\texttt{ShapeMap} in $K_{pt}M$, omitting level $\ell$.
+\texttt{PrescribedBoringCompletion.lean} uses the independently verified
+nonempty Kpt levels and the explicit level map to obtain the stronger
+\texttt{SkipsOnly} conclusion. It packages membership in $K_{pt}M$,
+exact omission of $\ell$, and complete $L^+$ agreement with $f$ into
+\texttt{prescribedKpt\_boring\_extension\_exists}.
+The exact-head focused builds and named transitive axiom audits of
+PRs~226 and~227 passed with standard Lean axioms only. The new
+public-root import of this endpoint is staged separately in PR~228
+so ordinary \texttt{lake build} cannot silently omit it.
+No new mathematical hypothesis or abstract successor-preservation
+axiom was introduced. This certifies the normalized-model version of
+Lemma~\ref{lem:boring}, conditional on corrected B3; it does not
+certify the original-language identification or its applications.
+For M2, the former third statement of Lemma~\ref{lem:comp} does not
+imply the strengthened B3: it treats enumerated $E$-partial structures,
+while corrected B3 quantifies over arbitrary finite ordered $L$-age
+witnesses. In particular, adding neutral separators to lift an
+$L$-witness need not put the separators in the original map's image,
+and distinct upper $L$-columns need not have compatible ordinary
+$E$-socles. Formalize either a selected-upper/weak age-transport lemma
+with these two issues resolved, or a direct one-level factorization
+that avoids inferring corrected B3 from the old third statement.
+A staged conditional reduction (\texttt{LevelRemovalM2Criterion.lean},
+PR~312) takes corrected-B3 prescribed insertion data and an exact
+boundary-level agreement with the intrinsic deletion factor, then
+derives the required composition equality at \emph{all} earlier
+source levels: below the boundary the deletion factor is literally
+$F$ and the prescribed map is literally the identity beneath its
+one omitted target level. PR~312 passed exact-head full Lean run 38253923339, focused
+named-axiom audit 38253923143 and manuscript validation.
+It does not construct the prescribed data or establish corrected-B3
+age necessity from $F$.
+The subsequent exact-extension reduction isolates a weaker open task:
+extend the well-defined boundary prescription
+$D(x)\mapsto F(x)$ to an arbitrary one-gap Kpt ShapeMap.
+Lower-level agreement can be derived without corrected B3 or M2,
+provided one first establishes identity below a unique skipped level
+directly from the Kpt level-range formula and weak successors.
+The M2-independent lower-identity and arbitrary one-gap
+boundary-extension equivalence are GREEN in PR~313, which passed
+full Lean 38268558208 and focused transitive axiom audit
+38268558200 and has been merged. No M2 is assumed.
+PR~314 constructs the partial restoration graph on the actual deleted
+boundary image $D[K_{pt}(n)]$: by injectivity of $D$, the prescription
+$D(x)\mapsto F(x)$ is a well-defined function, with input level $m$ and
+output level $m+1$ across all tree components. PR~314 passed full Lean
+38268563188 and focused standard-axiom audit 38268563272 and was merged.
+The remaining task is to extend this partial function to a one-gap
+Kpt ShapeMap; its finite age/compatibility requirements have not
+been proved.
+PR~315 is GREEN: deleting the final ordinary coordinate from a
+complete $L^+$ type equals its full predecessor restriction,
+including all directed, singleton and auxiliary $E$ data, and the
+actual intrinsic boundary deletion is this same predecessor of $F(x)$.
+The exact-head full Lean 38270726577 and focused standard-axiom
+audit 38270726588 passed and the PR was merged. This verifies B1,
+but does not imply B2 or corrected finite $L$-age necessity.
+A direct finite-age alternative is staged in PR~316: if the new
+ordinary vertex is $L$-linked to at most one designated upper vertex
+and the induced $L$-structure on the initial socle plus that vertex
+is forbidden-free, then binary irreducibility rules out every
+forbidden copy involving the inserted coordinate. Copies avoiding
+it project back to the old age. This one-linked-upper age theorem passed exact-head full Lean
+38270821103 and focused standard-axiom audit 38270821068,
+and was merged as PR~316. It does NOT construct the insertion or
+prove the one-link condition for the desired global map.
+In fact, canonical parameter transport may force the inserted
+vertex to be linked to several upper vertices simultaneously;
+thus the one-linked lemma is NOT a substitute for corrected B3
+without an additional compatibility invariant.
+A possible next step for B2 is to free-amalgamate two compatible
+source types over their common ordinary socle, and use an actual
+mapped successor whose canonical parameter is the second type
+to compare their inserted ordinary columns. This is a proposed
+argument only, not yet validated. The finite L-only age test
+with several linked upper vertices remains OPEN.
+PR~317 defines the unique partial restoration $R(D(x))=F(x)$
+on the entire image of $D$, with the exact one-gap level function:
+below $m$ the level is fixed and at or above $m$ it increases by one.
+This stronger partial result passed exact-head full Lean 38271325042,
+focused standard-axiom audit 38271325092 and TeX annotation checks
+on its original branch; the proof is restaged byte-identically here
+for integration testing. It does not give a total ShapeMap outside
+$D[K_{pt}]$, and the multi-upper age and successor conditions remain OPEN.
+
+PR~318 proves that shape-preserving maps also reflect the
+complete predecessor order, using injectivity and uniqueness of
+ancestors. Thus the partial restoration $R$ on $D[K_{pt}]$
+preserves and reflects prefix order and is injective; it is an
+order embedding of its partial domain. This proof passed full Lean
+38272059762, focused standard-axiom audit 38272059862 and TeX
+checks on its original exact head, and is restaged with the same
+mathematical proof blobs for cumulative integration.
+Order embedding alone neither extends $R$ to all Kpt types nor
+supplies the missing successor and multi-upper age conditions.
+
+
+\textbf{13 October 2026 M2 checkpoint: B2 transport GREEN, B3 OPEN.}
+The joint non-edge-padded source construction for two complete,
+ordinary-compatible admissible types was checked and merged in
+PR~357. Applying a genuine shape-preserving map to this single
+source witness yields compatible complete ordinary image socles.
+Full retained-record recovery also \emph{reflects} compatibility
+through any genuine shape map, including intrinsic deletion.
+The resulting general compatibility transfer theorem
+\texttt{shapeMap\_transfers\_ordinary\_compatibility}
+was checked and merged in PR~358. It includes all directed absent
+atoms, singleton data and the auxiliary E matrix. These GREEN
+statements supply the difficult transport part of boundary (B2),
+but the complete boundary \texttt{PrescribedBoringData} declaration
+still needs construction.
+For the multi-upper (B3) proof one must preserve the \emph{actual}
+upper--upper atoms of a putative forbidden copy, not replace these
+upper pairs by non-edges. The checked sparse pullback and neutral
+completion provide the source finite age. A new explicit
+real-vertex atom interface and the review-only proof analysis are
+staged in \texttt{M2BoundedCopyRecords.lean} and
+\texttt{v10-M2-nonedge-finite-age-appendix-review-20261013.tex};
+until exact-head CI passes, neither is a GREEN marker.
+The remaining genuine gap is the simultaneous source-type recovery
+and induced forbidden-copy comparison inside a single image F(C),
+needed to establish compatible B3 and hence (M2).
+
+This M2 obligation remains OPEN.
+
+\textbf{M3 duplication -- GREEN in the normalized model;
+original-language identification OPEN.}
+For every $n<\ell$, the actual $E_3$-gated finite clone produces
+a prescribed $f$ on \emph{all} admissible level-$\ell$ source types.
+The corrected B3 finite $L$-age test follows from the linked-only
+irreducible projection, without requiring $E$ on an arbitrary age
+witness and without imposing one free cut on incompatible sources.
+The one-gap ShapeMap agrees with this prescribed $f$ and skips
+precisely $\ell$.
+\texttt{M3RepresentativeIndependence.lean} identifies the complete
+target $L^+$ type for any two finite representatives of the same
+source, including every $E$-atom.
+\texttt{M3LiteralDuplication.lean} proves the literal universal
+(M3) condition: from any $S(a,\bar p,c)\preceq b$ with $a$ at
+level $n$ and $b$ at level $\ell$, the \emph{same} map satisfies
+$\Phi(b)=S(b,\bar p,c)$. This uses uniqueness of the earlier
+level-$(n+1)$ predecessor and S2 to identify the full parameter
+list and terminal letter; no successor or M3 axiom is added.
+Full Lean, focused named-axiom and source-annotation CI passed
+at PR~266, exact head \texttt{2d7f26f3} (runs 38173146352,
+38173146346, 38173146351). This certifies the complete normalized
+Kpt version of M3, not the unperformed original-language adapter.
+
+The finite guarded type-deletion transport
+\texttt{LevelRemovalType.lean} passed full/focused CI at PR~267,
+exact head \texttt{9b62b29e}. Its successor
+\texttt{LevelRemovalAdmissibleType.lean} proves that deletion
+of coordinate $m$ from the complete type of a genuine
+forbidden-free witness $v$ with $m<\mathrm{fl}_A(v)$ is itself
+an admissible Kpt type, represented by $v-1$ with free level
+$\mathrm{fl}_A(v)-1$ (PR~269, head \texttt{9cfbd5f1},
+full Lean 38174237646, focused audit 38174237715 GREEN).
+At the boundary of a uniform deletion map, however, the
+ordinary coordinate $m+1$ is absent from the level-$n$
+image type. The checked \texttt{LevelRemovalSourceSuccessor.lean}
+(PR~273) uses M3 without M2 to supply a genuine successor
+of each positive-level source type.
+The checked \texttt{LevelRemovalGapColumn.lean} (PR~272)
+derives a valid target successor column with strict E
+free cut $f<\ell(F(a))-1$ from the source gap and S1;
+the output is only required to lie below the source
+successor's image. The transfer of this bound into \emph{every} representative
+of a later image and the admissibility of a shorter
+complete deleted prefix are now proved in PRs~276 and~283,
+respectively. PR~285 verifies admissibility of the
+intrinsically specified deleted image at the boundary and
+above a genuine successor; witnesses certify membership
+but do not choose the output.
+\texttt{LevelRemovalPrefixCommute.lean} (PR~277) and
+\texttt{LevelRemovalRawPrefix.lean} (PR~280) prove
+complete $L^+$ prefix order preservation when both
+cuts exceed the deleted coordinate.
+\texttt{WeakSuccessorInjectivity.lean} (PR~284)
+derives injectivity \emph{conditionally} from strict
+level ordering, root extension and the genuine weak
+successor law; it cannot be invoked before that law
+is proved for the uniform deleted map. Complete cross-gap prefix compatibility is verified in
+\texttt{LevelRemovalCrossGapPrefix.lean}
+(PR~286, exact head \texttt{5172a0f2}, full Lean
+38194440667 and focused 38194440660 GREEN).
+The all-level intrinsic deletion \emph{membership} is
+verified in PR~287. The intrinsic function and strict level/order
+laws have been integrated in PR~299, and the unified canonical
+parameter transport in PR~305. PR~306 assembles the genuine
+low/crossing weak-successor components; PR~310 proves the upper case,
+and PR~311 gives the intrinsic global ShapeMap. All three merged after
+successful exact-head full builds and focused transitive axiom audits.
+The first global M2 deletion factor is GREEN in normalized Kpt.
+\textbf{Genuine crossing weak successor -- GREEN locally.}
+\texttt{LevelRemovalBoundaryWeakSucc.lean} (PR~292,
+full Lean 38196554700 and focused 38196554661 GREEN)
+proves that the actual weak successor at the first gap
+lies below the complete coordinate-deleted upper image,
+without asserting equality across the skipped level.
+\textbf{Complete terminal letter -- GREEN locally.}
+\texttt{LevelRemovalTerminalLetter.lean} (PR~293,
+full Lean 38196947662 and focused 38196947688 GREEN)
+proves that deletion of an earlier ordinary coordinate
+preserves the entire terminal $L^+$ Sigma letter.
+\textbf{Complete canonical predecessor parameter -- GREEN locally.}
+\texttt{LevelRemovalParameter.lean} (PR~295,
+full Lean 38197151180 and focused 38197151194 GREEN)
+shows that the last-ordinary parameter is deleted
+at its own socle if $m<f$, and otherwise is unchanged.
+It includes all positive and absent directed tuples,
+singleton values and auxiliary $E$ atoms.
+The Option-valued empty-or-singleton parameter adapter
+(PR~297) and canonical E-column validity (PR~296) have
+subsequently passed their respective checks and were integrated.
+The local deletion proof no longer needs an auxiliary successor
+axiom: PR~309 derives the sharp $m<k$ or $f<m$ guard
+from the actual mapped upper canonical step. PR~310 assembles
+the missing high-base weak-successor proof from the complete
+deleted record and admissible deleted weak target; PR~311 constructs the intrinsic function as a genuine ShapeMap,
+deriving injectivity from strict levels, root extension and weak
+successors.
+It also records literal agreement below the source gap and
+the recovery of the skipped target level by the deletion factor.
+\textbf{Status: global deletion ShapeMap GREEN (PRs~310--311).}
+The complementary one-gap map, and the existence of an extension
+realizing $F$ at every boundary source type, remain OPEN.
+The corrected-B3 finite $L$-only age necessity is still required
+for the prescribed-extension route, but the exact-extension
+criterion does not assume it.
+Do not conflate constructing the first factor with proving (M2).
+Finally, reconcile the I3 signature witnesses with finite
+$L$-structures rather than $E$-partial structures before claiming
+the upper bound.}
+
+% ================================================================
+% 2026-10-13 -- M2 full retained-record recovery checkpoint.
+% Verified locally against pinned Lean v4.35.0-rc3 and mathlib:
+% ShapeMapOrdinaryRecovery.lean, ShapeMapFullRecovery.lean, and
+% M2RecoveryAxiomAudit.lean compile without sorry or new axioms.
+% Their three audited named statements depend only on
+% propext, Classical.choice, Quot.sound.
+% The no-new-tuples branch uses the EXACT induced prefix record,
+% not an invalid rewrite in the newly introduced column.
+% This validates all retained L+ atoms, including absent directed
+% tuples, E, unary, and diagonal data; it does NOT validate M2.
+% Remaining: actual boundary compatible B2/B3 via one padded source,
+% induced embedding of arbitrary finite upper-core age witnesses,
+% and the concrete factorization endpoint; all remain OPEN.
+% The English manuscript proof is in v10-m2-nonedge-appendix.tex
+% and is inserted into author main.tex only by the guarded installer.

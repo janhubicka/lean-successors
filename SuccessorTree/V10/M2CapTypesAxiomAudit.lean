@@ -1,0 +1,5 @@
+import SuccessorTree.V10.NonedgePaddingCapTypes
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.fullSocle_ordinaryType
+#print axioms SuccessorTree.V10.PartialTypeWithE.ordinaryTypes_sameSocle
+#print axioms SuccessorTree.V10.NonedgePadding.socleCapNode_ordinaryType
+#print axioms SuccessorTree.V10.NonedgePadding.simultaneous_types_in_socleCapNode

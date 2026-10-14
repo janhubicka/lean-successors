@@ -1,0 +1,5 @@
+import SuccessorTree.V10.LevelRemovalGapColumn
+
+#print axioms SuccessorTree.V10.mapped_successor_parameters_below_gap
+#print axioms SuccessorTree.V10.canonical_step_free_cut_below_gap
+#print axioms SuccessorTree.V10.mapped_successor_has_guarded_gap_column

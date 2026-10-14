@@ -1,0 +1,34 @@
+% Successor-v10 / abstract ShapeMap proof review, 12 October 2026.
+% This is a standalone reviewer note, not an edit of the frozen main.tex.
+% New generic Lean theorem is PENDING exact-head full/axiom CI.
+%
+\todo[inline]{\textbf{v10 M2: injectivity from the
+weak-successor axioms -- PENDING Lean.}
+A potential substantial simplification of the level-removal
+map is to prove injectivity \emph{after} its level map,
+root extension and weak-successor clause, rather than
+reconstructing each deleted L/E column individually.
+The proposed generic S-tree theorem
+\texttt{injective\_of\_level\_order\_and\_weak\_successors}
+requires only preservation of equal levels, strict
+preservation of the order of source levels, the literal
+weak successor property, and $a\leq f(a)$ at level zero.
+It uses induction on the source level. Two nodes with
+the same image have equal-level mapped predecessors
+below that common image, hence equal predecessors by
+induction. Their genuine mapped S-step witnesses are
+immediate successors on the same level below the common
+image, and therefore equal. S2 then recovers the mapped
+parameter lists and terminal letters; injectivity at
+strictly smaller levels recovers the original parameters
+and S2 identifies the original successors. At level zero,
+root extension and the forest order already rule out
+collapse of distinct roots.
+
+This generic argument introduces no M2 axiom and would
+make the explicit injectivity check in the eventual
+deleted map a consequence of its other shape axioms.
+It does \emph{not} itself prove level preservation,
+strict level monotonicity or weak successor
+preservation for that map. The latter, particularly
+the crossing edge, remains essential.}

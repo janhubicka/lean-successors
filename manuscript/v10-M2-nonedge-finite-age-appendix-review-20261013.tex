@@ -1,0 +1,129 @@
+% REVIEW-ONLY v10 appendix, 13 October 2026.
+% The author's main manuscript is frozen: this supplement adds no prose
+% changes or unconditional validation marker to the original argument.
+
+\section*{Appendix review: non-edge finite-age argument for (M2)}
+
+\paragraph{The one missing level.}
+Let $F$ be a genuine shape-preserving map and let $q_0\prec a_0$
+be consecutive source nodes across a genuine image gap. Put
+\[
+ n=\ell(a_0),\qquad m=\ell(F(a_0))-1,\qquad
+ \lambda(i)=\widetilde F(i).
+\]
+In particular $\lambda(n-1)<m$. Intrinsic deletion of image
+coordinate $m$ gives a genuine shape-preserving map $D$. The checked
+level formula and injectivity of $D$ give the uniquely defined partial
+restoration $R(D(x))=F(x)$ for every source node $x$.
+
+\paragraph{B1 and B2.}
+At the boundary $\ell(x)=n$ prescribe $f(D(x))=F(x)$.
+This is unambiguous because $D$ is injective. The complete
+last-coordinate deletion identity gives
+\[
+ f(D(x))\restriction_m=D(x),
+\]
+including negative directed, singleton, diagonal and $E$ data.
+For B2 suppose $D(x)$ and $D(y)$ have the same complete ordinary
+$L^+$-socle. Record recovery through $D$ reflects their common
+ordinary source socle. The joint padded non-edge witness for two
+compatible source types shows that $F(x)$ and $F(y)$ have compatible
+ordinary image socles. The distinguished vertices are not required
+to coincide. The latter reflection/transport statements are checked
+in \texttt{M2ShapeMapCompatReflection.lean} and
+\texttt{M2B2Transfer.lean} (merged PRs 357 and 358).
+
+\noindent\textbf{TODO (packaging).} Make the full boundary family and
+the classwise values into one concrete
+\texttt{PrescribedBoringData}; then mark B1/B2 GREEN at the
+unqualified boundary-data level. This data declaration must
+not assume (M2) or corrected B3.
+
+\paragraph{The precise finite B3 age test.}
+Let $W$ be an arbitrary finite ordered $L$-age model, with common
+prescribed socle through $m$, upper types from one complete
+ordinary-compatible prescribed family, and
+$W\setminus\{m\}$ forbidden-free. The age model $W$ carries
+\emph{no} auxiliary $E$ relation.
+If a forbidden irreducible $A$ occurs in $W$, its ordered induced
+copy contains $m$. Enumerate the forbidden copy as
+$e(0)<\cdots<e(r-1)$. It is enough to retain the finitely many
+upper vertices $e(a)>m$.
+
+\paragraph{Step 1: pull back the actual upper graph, and only then pad.}
+Use real source coordinates $i<n$ with target address $\lambda(i)$
+and real upper coordinates $n+a$ with address $e(a)$ whenever
+$e(a)>m$. Pull back \emph{every} $L$ atom from
+$W\setminus\{m\}$ to the selected coordinates. All unused source
+positions are made neutral and $L$-isolated. This sparse pullback
+is order-preserving on its real carrier. It remains
+forbidden-free since a forbidden copy on real vertices embeds
+inducedly into $W\setminus\{m\}$, while a nontrivial irreducible
+forbidden copy cannot meet a fresh isolated filler; normalized
+singletons cannot meet a neutral filler.
+
+A vital distinction: the chosen upper vertices retain their
+\emph{actual mutual} directed edges and non-edges from $W$.
+It would be incorrect to replace all such upper--upper pairs by
+non-edges. Only the newly inserted padding vertices are isolated.
+The dense source model and its forbidden-age proof are checked
+in \texttt{M2SparsePullbackAge.lean} and
+\texttt{M2BoundedCopySourceAge.lean}. The explicit binary
+(ordinary--upper and upper--upper), unary and diagonal real-vertex
+identities are isolated in \texttt{M2BoundedCopyRecords.lean};
+this new module needs exact-head CI and named axiom auditing.
+
+\paragraph{Step 2: attach one compatible source E-socle.}
+For every chosen upper target vertex take an admissible source
+type $T_a$ whose prescribed image has its complete target $L$-type.
+By full retained-record recovery, the old-coordinate $L$-record
+of $T_a$ agrees with the sparse pullback. The common image socle
+and the B2 compatibility reflection supply one source $E$-socle.
+Interleave $L$-isolated spacer vertices and give the real upper
+vertices the maximal permissible auxiliary $E$-columns. The
+non-edge padding constructor preserves the induced $L$-age and
+realizes each whole $T_a$ (including the $E$-record) at its
+designated position. This construction is on the \emph{source}
+and never asserts that the arbitrary test $W$ has an E-expansion.
+
+\paragraph{Step 3: map a single cap, and recover the forbidden copy.}
+Add a fresh neutral distinguished type vertex with a complete
+high E-cut, obtaining one admissible containing node $C$.
+Apply $F$ to this one node. Genuine canonical parameter-prefix
+transport identifies the complete image ordinary type of each
+chosen upper vertex inside $F(C)$ with $F(T_a)$, supplying
+its incoming and outgoing incidences with every target
+coordinate at most $m$. In particular, lower coordinates not
+belonging to $\lambda[\{0,\ldots,n-1\}]$ are supplied by the
+\emph{common complete image socle}; one must not invent
+source preimages for them. Retained ordinary--ordinary pair
+transport inside $C$ gives the complete upper--upper record,
+which equals the record of $W$ by Step 1. Check unary and
+diagonal facts for the selected vertices and coordinate $m$.
+It follows that the ordered forbidden copy in $W$ appears
+inducedly among the corresponding ordinary coordinates in
+the forbidden-free node $F(C)$, a contradiction.
+
+\noindent\textbf{OPEN Lean obligation.} Formalize the simultaneous
+padded witness for \emph{all} selected upper vertices, prove that
+their entire source types are the chosen $T_a$, and derive the
+atomwise ordered induced embedding of the alleged forbidden
+copy into the ordinary socle of $F(C)$. The comparison must
+separately check both directed orientations (including absent
+atoms), all upper--upper pairs, the lower-image gaps, the
+new coordinate $m$, singleton/diagonal records and ordering.
+The already verified two-type witness proves B2, but does
+not automatically supply this simultaneous B3 step.
+
+\paragraph{Factorization once the outstanding step is checked.}
+The compatible-class boring completion gives a genuine global
+one-gap map $G$ skipping only $m$ from B1, B2 and compatible B3.
+The checked theorem
+\texttt{uniformGapDeletedShapeMap\_factorization\_of\_compatibleB3}
+then yields
+\[
+ G(D(x))=F(x)\qquad\text{for every } \ell(x)\le n.
+\]
+Thus the main remaining work is the simultaneous finite-age
+comparison and packaging specified above; neither may be
+hidden in an axiom or replaced by the one-linked-upper lemma.

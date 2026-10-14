@@ -1,0 +1,38 @@
+% v10 structural prefix-closure review, 9 October 2026.
+% Candidate consolidated TODO after Definition 6.29 (tree of partial types).
+% Review only; the author-level four mathematical repairs stay untouched.
+%
+\todo[inline]{\textbf{v10 validation (shortened partial-type realization).}
+The one-filler construction now yields an actual
+enumerated $L^+$-partial structure in the explicit
+finite-unary/binary model: retain the first $d$ vertices,
+insert a neutral filler at $d$, and relocate the type
+vertex to $d+1$. Exact copying of the whole $L$-reduct
+and the prescribed $E$ relation gives all three
+partial-structure axioms, including the condition
+that every nonempty directed $L$-pair has the required
+$E$-incidence. The new ordinary vertex has
+$\operatorname{fl}=d$, and its complete extracted
+$L^+$-partial type agrees with
+$\operatorname{type}_{A^+}^{d}(v)$, including E,
+unary, diagonal, directed binary and negative facts.
+This is formalised by
+\texttt{PrefixReplicaPartial.lean}, with
+\texttt{PrefixReplicaE.lean} and
+\texttt{PrefixReplicaL.lean}.
+To conclude closure of the \emph{admissible}
+$K^\mathcal F_{pt}$ family under prefixes,
+it remains to check that the replica's $L$-reduct
+avoids the forbidden family. Use irreducibility:
+a nontrivial forbidden structure cannot contain
+the isolated filler, while the other vertices
+project back into $A$ as an induced ordered copy;
+a forbidden singleton at the filler is excluded
+by the chosen allowed neutral singleton type.
+Keep the final $K^\mathcal F_{pt}$ and Lemma~6.49
+validation marks pending until this last age proof
+and the actual forbidden-free family adapter.}
+%
+% New endpoint checks (green only on exact CI head):
+%   prefixReplicaPartialStructure_freeLevel
+%   prefixReplicaPartialStructure_type_eq

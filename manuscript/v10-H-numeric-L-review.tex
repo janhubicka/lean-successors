@@ -1,0 +1,29 @@
+% Successor-v10 review fragment, Definition 6.45, 10 October 2026.
+% Accumulate with the existing v10-H-exact-E-review.tex (replace overlapping
+% H-definition TODOs; do not duplicate them). The four v10 mathematical
+% corrections remain untouched. This is NOT an edited original main.tex.
+%
+% Proposed localized TODO near Definition 6.45:
+\todo[inline]{\textbf{v10 exact directed binary $H$-relations.}
+To make the positive-generation meet argument well-defined, replace the
+one-way phrase asserting that each allowed real pair is a substructure
+of the corresponding base pair by an exact-copying biconditional:
+for $i<j$ and $q,m\leq k$, the directed binary atoms between
+$\iota(i,q)$ and $\iota(j,m)$ agree with the corresponding pair in
+$K$ precisely when $q<m$ or $q=m=k$. All non-permitted
+cross-pair binary atoms vanish, in either ordered direction, and
+all binary tuples touching fake odd vertices vanish. The numerical
+generator model \texttt{SuccessorTree/V10/HNumericBinary.lean}
+provides exact atomwise statements, including absent tuples; its
+proposed interpretation has to be checked against the literal
+author-intended construction. Keep unary and diagonal binary
+facts copied from real singleton types and set odd singleton types
+to the chosen permitted neutral type. Fix nullary interpretations
+uniformly. The fake vertices are isolated in the $L$-reduct,
+but \emph{not} in the auxiliary $E$-relation.}
+%
+% Endpoints (green status only at exact successfully audited CI head):
+%   hNumericBinary_true_iff
+%   hNumericBinary_real_forward_iff
+%   hNumericBinary_odd_left_false
+%   hNumericBinary_odd_right_false

@@ -1,0 +1,30 @@
+% Successor-v10 review-only note, 12 October 2026.
+% Author mathematical prose, four repairs, and the nine managed
+% validation annotations remain frozen.
+% This proposed endpoint is PENDING exact-head Lean and axiom audit.
+%
+\todo[inline]{\textbf{v10 M2: canonical empty-or-singleton
+successor parameter after deletion -- PENDING Lean.}
+The successor parameter in Definition 6.30 is \emph{empty}
+at free cut zero and otherwise a singleton full $L^+$ type
+at its positive free cut. For a genuine old successor
+with cut $f$ and an earlier deleted ordinary coordinate $m$:
+if $f\leq m$, deletion leaves the complete canonical
+Option parameter literally unchanged; if $0<m<f$,
+the new canonical parameter at cut $f-1$ is the
+old singleton parameter with coordinate $m$ removed.
+The positive $m$ premise is necessary to prevent the
+special case $m=0$, $f=1$ from incorrectly retaining
+a singleton when the new free cut is zero.
+This is automatically satisfied at a genuine M2 gap
+whose omitted target coordinate is positive.
+
+The proposed \texttt{LevelRemovalCanonicalParameter.lean}
+combines the checked finite last-ordinary parameter
+transport with the intrinsic raw-type deletion function.
+The parameter identities, terminal Sigma-letter identity,
+and valid E-column transport still have to be assembled
+into the \emph{actual} canonical successor graph after deletion,
+then into the upper-branch weak successor proof for the
+candidate uniform map. No global (M2) or corrected
+$L$-only B3 necessity is claimed.}

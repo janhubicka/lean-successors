@@ -103,20 +103,9 @@ theorem shapeOneDimensionalRamsey_viaFatEllentuck
           colour (H.shapeAct n W g) := by
     let rowB : AM H (B.cut n) 1 :=
       FatTree.castRow H hBcut.symm (H.shapeAct n W g)
-    let gB : AM H (B.cut n) 1 :=
-      FatTree.castRow H hBcut.symm g
-    have hoccB :
-        OneBlockOccurs H (B.initialSegment H n) B
-          (tailCoordinateRow H B n gB) :=
-      tailCoordinateRow_oneBlockOccurs H B n gB
-    have hrowEq :
-        rowB = tailCoordinateRow H B n gB := by
-      dsimp [rowB, gB, W]
-      exact cast_shapeAct_tail_eq H B n n hBcut g
     have hrowB :
         OneBlockOccurs H (B.initialSegment H n) B rowB := by
-      rw [hrowEq]
-      exact hoccB
+      exact shapeAct_tail_oneBlockOccurs H B n n hBcut g
 
     let rowA : AM H a.1.terminalCut 1 :=
       FatTree.castRow H hterm rowB

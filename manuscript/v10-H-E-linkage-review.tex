@@ -1,0 +1,27 @@
+% Successor v10, exact H partial-structure E3 review. 9 October 2026.
+% Review-only single TODO at Definition 6.45 / Observation 6.46.
+% Does not alter any mathematical manuscript line or the four repaired proofs.
+% Merge with earlier v10-H-exact-E-review.tex TODO, do NOT duplicate it.
+%
+\todo[inline]{\textbf{v10 validation (the partial-structure axioms for $H^+$).}
+In the explicit exact-copying $H$ model, all three auxiliary
+$E$-axioms of Definition~6.28 now follow without additional
+assumptions.  Spacing and downward closure were established
+from the exact generators; for the remaining clause, take
+two increasing vertices joined by some directed $L$-relation.
+The generation gate forces both to be real, with strictly
+increasing base first indices, and the admissible lower pair
+is among the generators of the higher vertex's $E$-socle.
+This is formalised in
+\texttt{SuccessorTree/V10/HELinkage.lean}.
+The result does not identify the paper's one-way $L$-tuple
+containment condition with the exact-copying interpretation.
+Before marking the manuscript's claim that $H^+$ is a partial
+structure fully verified, specify the $L$-tuples by an exact
+biconditional and check all unary, diagonal and nullary
+symbols, along with the $E$-generation convention.}
+%
+% Conditional Lean endpoints (green only once exact CI head passes):
+%   exactHEBool_of_linked_real_positions
+%   exactHEBool_of_HLinked_increasing
+%   exactH_satisfies_E_axioms

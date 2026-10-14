@@ -1,0 +1,80 @@
+name: Envelope
+
+on:
+  push:
+    paths:
+      - 'SuccessorTree/Envelope*.lean'
+      - 'scripts/CheckEnvelope*.lean'
+      - 'scripts/audit-envelope.sh'
+      - 'scripts/check-axiom-log.py'
+      - 'scripts/check_section5_example.py'
+      - 'tests/test_axiom_audit.py'
+      - '.github/workflows/envelope.yml'
+  pull_request:
+    paths:
+      - 'SuccessorTree/Envelope*.lean'
+      - 'scripts/CheckEnvelope*.lean'
+      - 'scripts/audit-envelope.sh'
+      - 'scripts/check-axiom-log.py'
+      - 'scripts/check_section5_example.py'
+      - 'tests/test_axiom_audit.py'
+      - '.github/workflows/envelope.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: envelope-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  envelope:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Cache Lean toolchain
+        uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - name: Cache Lake workspace
+        uses: actions/cache@v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml') }}-
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Download Mathlib cache
+        run: lake exe cache get
+      - name: Test axiom-audit checker
+        run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
+      - name: Check manuscript E1 necessity example
+        run: python3 scripts/check_section5_example.py
+      - name: Build envelope stack
+        run: |
+          mkdir -p envelope-audit
+          if ! lake build SuccessorTree.EnvelopeTheorem > envelope-audit/build.log 2>&1; then
+            cat envelope-audit/build.log
+            exit 1
+          fi
+      - name: Audit envelope endpoints and pure level-set statements
+        run: bash scripts/audit-envelope.sh envelope-audit
+      - name: Collect focused proof snapshot
+        if: ${{ always() && !cancelled() }}
+        run: |
+          mkdir -p envelope-audit
+          git rev-parse HEAD > envelope-audit/COMMIT
+          cp lean-toolchain lakefile.toml envelope-audit/
+          if test -f lake-manifest.json; then cp lake-manifest.json envelope-audit/; fi
+          git archive --format=tar HEAD SuccessorTree.lean SuccessorTree scripts tests docs .github/workflows lakefile.toml lean-toolchain | gzip -n > envelope-audit/sources.tar.gz
+      - name: Upload focused audit
+        if: ${{ always() && !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: envelope-proof-audit
+          path: envelope-audit/
+          retention-days: 30

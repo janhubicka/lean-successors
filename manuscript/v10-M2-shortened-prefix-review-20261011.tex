@@ -1,0 +1,30 @@
+% Successor v10: local M2 guarded shortening review, 11 Oct 2026.
+% Author mathematical text and all four earlier repairs remain frozen.
+% This is a candidate proof, PENDING exact-head Lean and axiom audit.
+% It is a separate review note; do not insert as a tenth managed TODO.
+%
+\todo[inline]{\textbf{v10 M2: admissibility of a shortened
+boundary type -- PENDING Lean.}
+The finite guarded deletion of ordinary coordinate $m$ preserves
+the induced forbidden-free $L$-age and computes all $E$ cuts.
+For any retained distinguished vertex $v$ and cut
+$m<c\leq\mathrm{fl}_A(v)$, the proposed
+\texttt{admissible\_deleted\_type\_at\_shorter\_cut}
+identifies the complete type at cut $c-1$ after deletion
+with the deletion of coordinate $m$ from
+$\operatorname{type}_A^c(v)$, including all absent directed
+relations, singleton facts and every $E$ pair.
+The new distinguished vertex has canonical free level
+$\mathrm{fl}_A(v)-1$, which may be \emph{larger} than
+the desired cut $c-1$. The proof therefore applies the
+existing admissible-prefix/one-neutral-filler construction
+instead of incorrectly asserting equality of these levels.
+
+This is the finite membership bridge needed when an image
+successor with one extra ordinary coordinate witnesses the
+boundary type of the proposed M2 deletion map. The proof
+still needs the strict guard obtained from that actual image
+successor, independence of successor selection, and the
+global predecessor/weak-successor ShapeMap checks.
+Corrected finite $L$-only B3 necessity and M2 factorization
+remain OPEN.}

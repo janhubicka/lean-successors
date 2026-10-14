@@ -1,0 +1,35 @@
+% Review-only v10 prefix-replica L construction, 9 October 2026.
+% Consolidate with v10-prefix-replica-review.tex, rather than inserting
+% two overlapping TODOs after the definition of Kpt.
+% The four mathematical repairs under author review are untouched.
+%
+\todo[inline]{\textbf{v10 validation (complete shortened type replica).}
+The construction using one neutral filler at position $d$ and
+the relocated type vertex at $d+1$ is now formalised separately
+for its $E$-socle and $L$-reduct. The partial address map fixes
+the first $d$ old vertices, maps $d+1$ back to the original
+vertex $v$, and is undefined at the neutral filler.
+Consequently all unary, diagonal and directed binary $L$
+relations, including negative tuples, in the extracted
+type through $d$ agree \emph{exactly} with
+$\operatorname{type}_{A^+}^{d}(v)$; the filler has an
+empty singleton type and no incident $L$-relation.
+See \texttt{PrefixReplicaL.lean} and
+\texttt{PrefixReplicaE.lean} (after their exact-head CI).
+The remaining proof obligations are to assemble these
+reducts into one partial structure satisfying the
+irreducible-pair $E$ axiom (Definition~6.28(3)),
+verify that its $L$-reduct remains in $K^\mathcal F$
+when the neutral singleton is allowed, and identify the
+resulting type with an actual node of
+$K^\mathcal F_{pt}$.}
+%
+% New code endpoints (green after exact-head CI only):
+%  prefixReplicaAddress_old
+%  prefixReplicaAddress_last
+%  prefixReplicaAddress_filler
+%  prefixReplicaL_old
+%  prefixReplicaL_last_singleton
+%  prefixReplicaL_cross
+%  prefixReplicaL_filler_neutral
+%  prefixReplicaL_type_eq

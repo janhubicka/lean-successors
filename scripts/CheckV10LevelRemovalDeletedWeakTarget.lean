@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LevelRemovalDeletedWeakTarget
+
+#print axioms SuccessorTree.V10.admissible_deleted_raw_predecessor
+#print axioms SuccessorTree.V10.deleted_predecessor_node_of_admissible_upper

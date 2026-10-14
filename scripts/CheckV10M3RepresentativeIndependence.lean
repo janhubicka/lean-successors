@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M3RepresentativeIndependence
+
+#print axioms SuccessorTree.V10.middleCloneInsertPartial_type_independent
+#print axioms SuccessorTree.V10.m3FiniteTarget_eq_of_representation

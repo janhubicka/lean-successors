@@ -1,0 +1,2 @@
+import SuccessorTree.V10.M2SelectedFamilyPadding
+#print axioms SuccessorTree.V10.compatibleSelectedTypes_joint_padded

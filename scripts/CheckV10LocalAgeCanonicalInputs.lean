@@ -1,0 +1,3 @@
+import SuccessorTree.V10.LocalAgeCanonicalInputs
+
+#print axioms SuccessorTree.V10.canonicalKptStep_inputs_of_ambient

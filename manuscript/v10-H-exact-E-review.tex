@@ -1,0 +1,50 @@
+% v10 H E-relation review overlay, 9 October 2026.
+% Review-only: not automatically included in main.tex. Apply after author
+% review to Definition 6.45 / Observation 6.46, replacing overlapping
+% earlier v10 E/free-level TODOs rather than duplicating them.
+% No reconstructed mathematical proof patch is edited here.
+%
+% Proposed TODO at Definition 6.45:
+\todo[inline]{\textbf{v10 validation (exact $E_{H^+}$).}
+For clarity, write the auxiliary relation as the following explicit
+equivalence, using the no-other-tuples clause:
+$E_{H^+}(u,v)$ holds exactly when there are $j,m,i,q$ with
+$v=\iota(j,m)$, $i<j$, $q,m\leq k$,
+$q<m$ or $q=m=k$, and $u\leq\iota(i,q)$.
+In particular, no odd vertex is an \emph{upper} $E$-target, although
+odd vertices can be \emph{lower} coordinates in later real vertices'
+$E$-socles.  This is encoded by
+\texttt{SuccessorTree/V10/HExactE.lean} and checked separately
+from the directed $L$-relations.  Replace the claim that every
+odd vertex is fully isolated by saying it is isolated in the
+$L$-reduct, preserving its generated $E$-incidences.}
+%
+% Proposed TODO at Observation 6.46:
+\todo[inline]{\textbf{v10 validation (exact-model free levels).}
+From the preceding explicit $E$-predicate, the spacing and
+downward-closure axioms of Definition~6.28 follow, real positions
+$\iota(j,m)$ have unique bounded block/generation addresses, and the
+canonical first-missing-$E$ free level agrees with the displayed
+formulas: $\iota(j-1,m-1)+1$ for $0<m<k$, and
+$\iota(j-1,k)+1$ for $m=k$ when $j>0$; initial blocks,
+generation zero, and fake odd vertices have free level zero.
+The corresponding statements are proved for the exact model in
+\texttt{HExactE.lean}, using \texttt{EFreeLevel.lean}.
+They do not by themselves certify the original one-way
+$L$-tuple copying clause, the full partial-type tree, or the
+later meet/age-signature arguments.}
+%
+% Proof endpoints of PR #118, pending its final exact-head CI:
+%   hPosition_injective_bounded
+%   exactHEBool_true_iff
+%   exactHEBool_at_real_iff
+%   exactHEBool_spaced
+%   exactHEBool_downward
+%   exactHEBool_freeLevel_eq_of_column
+%   exactHEBool_nonTop_freeLevel
+%   exactHEBool_top_freeLevel
+%   exactHEBool_initial_freeLevel
+%   hPosition_even
+%   exactHEBool_odd_target_false
+%   exactHEBool_fake_freeLevel
+%   exactHEBool_odd_source_not_isolated

@@ -1,0 +1,23 @@
+% Successor V10 review-only proof note, 11 October 2026.
+% This PR leaves all author mathematical prose and four repairs untouched.
+% New local theorem pending exact-head Lean and transitive axiom CI.
+%
+\todo[inline]{\textbf{v10 M2 boundary prerequisite -- PENDING Lean.}
+Every admissible normalized Kpt node of positive level has a genuine
+successor without postulating pruning or assuming (M2):
+take its level-$(n-1)$ predecessor and the actual S-tree
+decomposition of the incoming edge. Apply the independently proved
+\emph{universal} (M3) duplication at $n-1<n$ to obtain a
+genuine successor at that very node. The resulting
+\texttt{admissibleKpt\_exists\_successor\_step\_of\_level\_pos}
+supplies both a real parameter list and an admissible terminal
+letter, rather than an arbitrary artificial next vertex.
+
+This is needed at the boundary of Lemma 6.34, where the
+ordinary vertex $\widetilde F(n)$ is not yet present in the
+socle of the image of a level-$n$ source type. It permits the
+image of a genuine source successor to be used when deriving
+the strict deletion guard. It does not prove the guard,
+successor-choice independence, the uniform deletion map, or (M2).
+No older E-partial age-necessity claim is promoted to the
+corrected finite L-only B3 premise.}

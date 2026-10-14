@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M2SelectedCopyPadded
+#print axioms SuccessorTree.V10.boundedCopySourceAge_selected_ltype
+#print axioms SuccessorTree.V10.boundedCopySourceAge_selected_type_of_shapeMap
+#print axioms SuccessorTree.V10.boundedCopySourceAge_selected_family_padded

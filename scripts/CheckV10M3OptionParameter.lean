@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M3OptionParameter
+
+#print axioms SuccessorTree.V10.m3_canonical_parameter_list_cut_eq
+#print axioms SuccessorTree.V10.m3_initial_clone_of_canonical_parameter_lists

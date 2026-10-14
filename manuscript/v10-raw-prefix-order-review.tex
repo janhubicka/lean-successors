@@ -1,0 +1,35 @@
+% Review-only validation overlay for v10 Lemma 6.49, 9 October 2026.
+% This note is not automatically injected into the author's main.tex.
+% Merge the wording with existing v10 RawMeet/FirstFullPrefix annotations.
+%
+\todo[inline]{\textbf{v10 validation (the actual partial-type order).}
+For finite complete $L^+$-type records with their socle
+lengths, initial-socle restriction is now a genuine partial
+order, with composition and identity laws, comparable
+predecessors below a common record, and a unique
+predecessor on each smaller level. The proof handles all
+$L$-atoms and the auxiliary $E$-relation and is in
+\texttt{RawPrefixOrder.lean}. Together with the concrete
+greatest common prefix of two types extracted from one
+ambient structure (\texttt{RawTypeMeet.lean}) and the
+first-difference level identification
+(\texttt{RawMeetLevel.lean}), this checks the local
+raw-type meet geometry. To obtain the \emph{actual}
+$K^\mathcal F_{pt}$ forest instance one must still prove
+that the admissible forbidden-free family is closed
+under these induced prefixes, that its levels are finite,
+and that the abstract tree order is represented faithfully.
+Do not infer that every unrestricted raw $L^+$ record
+is an admissible partial type.}
+%
+% Kernel endpoints (only green after exact SHA CI):
+%   PartialTypeWithE.restrict_self
+%   PartialTypeWithE.restrict_trans
+%   rawPartialTypePrefix_refl
+%   rawPartialTypePrefix_trans
+%   rawPartialTypePrefix_antisymm
+%   rawPartialTypePrefix_level_le
+%   rawPartialTypePrefix_eq_of_same_level
+%   rawPartialTypeAncestor_le
+%   rawPartialType_lower_linear
+%   rawPartialType_ancestor_exists
