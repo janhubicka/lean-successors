@@ -88,7 +88,10 @@ theorem kptBelowOriginal_ancestor_raw
     (LevelTree.ancestor_le z n hn).trans hz
   have hRaw := kpt_prefix_raw_eq_ambient
     A family hAvoid v (LevelTree.ancestor z n hn) hBelow
-  simpa only [LevelTree.level_ancestor] using hRaw
+  have hLev : LevelTree.lev (LevelTree.ancestor z n hn) = n :=
+    LevelTree.level_ancestor z n hn
+  rw [hLev] at hRaw
+  exact hRaw
 
 /-- The selected-stage function agrees with ALL crossings of Z.
 The crucial uniqueness step uses the published Algorithm 5.4
@@ -180,13 +183,15 @@ theorem closureSelectedBoringData_covers
     kptBelowOriginal_ancestor_raw
       family A hAvoid (original w) z' hZw (ell+1)
         (Nat.succ_le_iff.mpr hzCut')
+  have hNewF : F.target T = A.partialTypeAt (ell+1) (original w).val :=
+    hNewW
   have hSelectedNext :
       (⟨ell+1,F.target T⟩ : RawPartialTypeNode db du dd) =
         (LevelTree.ancestor z (ell+1) (Nat.succ_le_iff.mpr hzCut)).val := by
     calc
       (⟨ell+1,F.target T⟩ : RawPartialTypeNode db du dd) =
           (⟨ell+1,A.partialTypeAt (ell+1) (original w).val⟩ :
-            RawPartialTypeNode db du dd) := by rw [hNewW]
+            RawPartialTypeNode db du dd) := by rw [hNewF]
       _ = (LevelTree.ancestor z' (ell+1) (Nat.succ_le_iff.mpr hzCut')).val :=
           hNextRaw'.symm
       _ = (LevelTree.ancestor z (ell+1) (Nat.succ_le_iff.mpr hzCut)).val :=
