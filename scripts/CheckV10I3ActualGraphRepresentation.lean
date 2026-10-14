@@ -1,0 +1,6 @@
+import SuccessorTree.V10.I3ActualGraphRepresentation
+#print axioms SuccessorTree.V10.selectedFromActualGraph
+#print axioms SuccessorTree.V10.selectedFromActualGraph_source_iff
+#print axioms SuccessorTree.V10.selectedFromActualGraph_target
+#print axioms SuccessorTree.V10.correctedB3_iff_selectedFromActualGraph
+#print axioms SuccessorTree.V10.actualRepresentedI3_failure_levels_card_le_signature_capacity

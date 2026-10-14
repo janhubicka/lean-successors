@@ -330,3 +330,6 @@ import SuccessorTree.V10.I3ChosenOriginalGeneration
 
 -- Observation 6.52: variable selected sources, real f_ell failures and R(M).
 import SuccessorTree.V10.I3SelectedStageSignature
+
+-- I3: reconstruct variable selected stage names from the actual prescribed graph.
+import SuccessorTree.V10.I3ActualGraphRepresentation
