@@ -318,3 +318,6 @@ import SuccessorTree.V10.I3EligibleStagePool
 
 -- I3: finite failed B3 on cut-filtered pool, actual generation and labels.
 import SuccessorTree.V10.I3EligibleStageWitness
+
+-- Observation 6.52: derive finite R(M) bound for actual failed I3 stage tests.
+import SuccessorTree.V10.I3StageSignatureBound
