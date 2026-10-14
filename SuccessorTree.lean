@@ -285,3 +285,8 @@ import SuccessorTree.V10.M2CopyImageTransfer
 -- M2: selected finite-copy L-types recovered from the actual shape map.
 import SuccessorTree.V10.M2SelectedCopyType
 import SuccessorTree.V10.M2SelectedCopyPadded
+
+-- M2: complete ordinary image types in a single capped padded witness.
+import SuccessorTree.V10.M2AmbientLevelTransport
+import SuccessorTree.V10.M2SelectedCapTransport
+import SuccessorTree.V10.M2ImageOrdinaryZone
