@@ -295,3 +295,9 @@ import SuccessorTree.V10.I3NumericRelocation
 
 -- I3: actual named upper source forces lower-upper full atom relocation.
 import SuccessorTree.V10.I3WitnessCrossRelocation
+
+-- I3: whole lower-zone W age relocation including carrier/singletons.
+import SuccessorTree.V10.I3WitnessLowerRelocation
+
+-- I3: full induced forbidden copy relocation forces generation(last)=rank.
+import SuccessorTree.V10.I3FullForbiddenRelocation
