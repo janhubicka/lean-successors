@@ -1,0 +1,4 @@
+import SuccessorTree.V10.I3ClosureCrossingGraph
+#print axioms SuccessorTree.V10.IsCrossingGraphOf
+#print axioms SuccessorTree.V10.crossingGraph_source_has_ambient_original
+#print axioms SuccessorTree.V10.crossingGraph_failed_levels_card_le_signature_capacity
