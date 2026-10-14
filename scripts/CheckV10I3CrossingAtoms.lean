@@ -1,0 +1,9 @@
+import SuccessorTree.V10.I3CrossingAtoms
+#print axioms SuccessorTree.V10.fullOriginalType_all_incident_atoms
+#print axioms SuccessorTree.V10.chosenAgeSignature_some_incident_atoms
+#print axioms SuccessorTree.V10.i3_linked_lower_pair_numeric_generators
+#print axioms SuccessorTree.V10.i3_named_upper_link_numeric_generators
+#print axioms SuccessorTree.V10.i3_lower_irreducible_numeric_rank
+#print axioms SuccessorTree.V10.i3_forbidden_copy_lower_links
+#print axioms SuccessorTree.V10.i3_forbidden_lower_real_generation_rank
+#print axioms SuccessorTree.V10.i3_named_upper_generation_strict_of_nonTop_tested
