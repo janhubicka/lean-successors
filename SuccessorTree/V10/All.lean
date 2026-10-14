@@ -303,3 +303,6 @@ import SuccessorTree.V10.I3FullForbiddenRelocation
 
 -- I3: unique nonempty proper lower prefix at the tested coordinate.
 import SuccessorTree.V10.I3ForbiddenCutIndex
+
+-- I3: forbidden-free ambient socle forces the copy's nonempty proper lower cut.
+import SuccessorTree.V10.I3ActualProperCut
