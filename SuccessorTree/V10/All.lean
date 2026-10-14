@@ -346,5 +346,29 @@ import SuccessorTree.V10.I3ClosureSelectedCrossing
 -- Algorithm 5.4: actual I3 interesting levels force corrected B3 failure.
 import SuccessorTree.V10.I3AlgorithmInterestingBridge
 
--- Section 6: instantiate actual AlgorithmRun closures and count I3 levels in finite pool.
+-- Proposition 6.44: sharp I3 signatures from names of higher-generation originals.
+import SuccessorTree.V10.I3HigherSignatureCapacity
+
+-- I3: numerical H failed-B3 witnesses have only higher-generation original names.
+import SuccessorTree.V10.I3ActualHigherSignature
+
+-- Proposition 6.44: charged meets use exactly the higher-generation original names.
+import SuccessorTree.V10.HGenerationHighBudget
+-- Actual Section 5 closure: seeds, selected parameters, or meets of originals.
+import SuccessorTree.V10.KptStageClosureNormalForm
+-- Real H levels are even, all positive canonical E-free cuts are odd.
+import SuccessorTree.V10.HPositiveFreeLevelOdd
+-- Real I1 closure nodes not among seeds are genuine charged original meets.
+import SuccessorTree.V10.I1RealNodeMeetCharge
+
+-- Proposition 6.44: enumerate only high original names with the common M_r budget.
+import SuccessorTree.V10.HHighOriginalNameEnumeration
+
+-- Proposition 6.44: top-generation seed prefixes and I1 meet charging.
+import SuccessorTree.V10.HTopGenerationSeeds
+
+-- Proposition 6.44: top-generation seed I1 and I2 events carry original meet charges.
+import SuccessorTree.V10.I1I2RealEventCharge
+
+-- I3: actual run closures share a finite pool of named originals.
 import SuccessorTree.V10.I3AlgorithmRunPool

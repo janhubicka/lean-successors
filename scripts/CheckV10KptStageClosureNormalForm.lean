@@ -1,0 +1,8 @@
+import SuccessorTree.V10.KptStageClosureNormalForm
+#print axioms SuccessorTree.V10.kptStageClosureNormalForm
+#print axioms SuccessorTree.V10.kptStageClosureNormalForm_subset_pool
+#print axioms SuccessorTree.V10.kptStageClosureNormalForm_meetClosed
+#print axioms SuccessorTree.V10.kptStageClosureNormalForm_parameterClosed
+#print axioms SuccessorTree.V10.admissibleKpt_stage_closure_normalForm
+#print axioms SuccessorTree.V10.admissibleKpt_actual_stage_closure_normalForm
+#print axioms SuccessorTree.V10.admissibleKpt_actual_closure_node_original_meet

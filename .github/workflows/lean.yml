@@ -531,7 +531,106 @@ jobs:
             cat proof-audit/i3-algorithm-bridge-axioms.log
             exit 1
           }
-      - name: Check Algorithm 5.4 actual run closure in a fixed finite original pool
+      - name: Check I3 higher-original relabelling and R(M_r) generation budget
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3HigherSignatureCapacity.lean > proof-audit/i3-higher-capacity-axioms.log 2>&1; then
+            cat proof-audit/i3-higher-capacity-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-higher-capacity-axioms.log scripts/CheckV10I3HigherSignatureCapacity.lean || {
+            cat proof-audit/i3-higher-capacity-axioms.log
+            exit 1
+          }
+      - name: Check actual I3 failed B3 witness signatures over higher originals
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3ActualHigherSignature.lean > proof-audit/i3-actual-higher-signature-axioms.log 2>&1; then
+            cat proof-audit/i3-actual-higher-signature-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-actual-higher-signature-axioms.log scripts/CheckV10I3ActualHigherSignature.lean || {
+            cat proof-audit/i3-actual-higher-signature-axioms.log
+            exit 1
+          }
+      - name: Check common higher-generation original budget for H meets
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HGenerationHighBudget.lean > proof-audit/h-high-generation-budget-axioms.log 2>&1; then
+            cat proof-audit/h-high-generation-budget-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-high-generation-budget-axioms.log scripts/CheckV10HGenerationHighBudget.lean || {
+            cat proof-audit/h-high-generation-budget-axioms.log
+            exit 1
+          }
+      - name: Check actual Kpt closure normal form
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10KptStageClosureNormalForm.lean > proof-audit/kpt-stage-closure-normalform-axioms.log 2>&1; then
+            cat proof-audit/kpt-stage-closure-normalform-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/kpt-stage-closure-normalform-axioms.log scripts/CheckV10KptStageClosureNormalForm.lean || {
+            cat proof-audit/kpt-stage-closure-normalform-axioms.log
+            exit 1
+          }
+      - name: Check numerical H positive free levels odd
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HPositiveFreeLevelOdd.lean > proof-audit/h-positive-freelevel-odd-axioms.log 2>&1; then
+            cat proof-audit/h-positive-freelevel-odd-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-positive-freelevel-odd-axioms.log scripts/CheckV10HPositiveFreeLevelOdd.lean || {
+            cat proof-audit/h-positive-freelevel-odd-axioms.log
+            exit 1
+          }
+      - name: Check real I1 nodes have actual original meet charges
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I1RealNodeMeetCharge.lean > proof-audit/i1-real-meet-charge-axioms.log 2>&1; then
+            cat proof-audit/i1-real-meet-charge-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i1-real-meet-charge-axioms.log scripts/CheckV10I1RealNodeMeetCharge.lean || {
+            cat proof-audit/i1-real-meet-charge-axioms.log
+            exit 1
+          }
+      - name: Check high-original-name enumeration and M_r counting
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HHighOriginalNameEnumeration.lean > proof-audit/h-high-name-enumeration-axioms.log 2>&1; then
+            cat proof-audit/h-high-name-enumeration-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-high-name-enumeration-axioms.log scripts/CheckV10HHighOriginalNameEnumeration.lean || {
+            cat proof-audit/h-high-name-enumeration-axioms.log
+            exit 1
+          }
+      - name: Check actual top-generation seed geometry and I1 meet charging
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HTopGenerationSeeds.lean > proof-audit/h-top-seeds-axioms.log 2>&1; then
+            cat proof-audit/h-top-seeds-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-top-seeds-axioms.log scripts/CheckV10HTopGenerationSeeds.lean || {
+            cat proof-audit/h-top-seeds-axioms.log
+            exit 1
+          }
+      - name: Check actual I1 or I2 selected real event has a higher original meet charge
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I1I2RealEventCharge.lean > proof-audit/i1i2-real-event-charge-axioms.log 2>&1; then
+            cat proof-audit/i1i2-real-event-charge-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i1i2-real-event-charge-axioms.log scripts/CheckV10I1I2RealEventCharge.lean || {
+            cat proof-audit/i1i2-real-event-charge-axioms.log
+            exit 1
+          }
+      - name: Check actual Algorithm 5.4 finite original pool and I3 signature bound
         run: |
           set -o pipefail
           if ! lake env lean scripts/CheckV10I3AlgorithmRunPool.lean > proof-audit/i3-algorithm-run-pool-axioms.log 2>&1; then

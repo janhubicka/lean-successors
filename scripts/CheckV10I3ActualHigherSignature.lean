@@ -1,0 +1,4 @@
+import SuccessorTree.V10.I3ActualHigherSignature
+#print axioms SuccessorTree.V10.normalizedForbidden_bounded_signature_cut
+#print axioms SuccessorTree.V10.numericH_failedSelectedB3_higher_signature_witness
+#print axioms SuccessorTree.V10.numericH_selectedB3_generation_levels_card_le_higher_budget

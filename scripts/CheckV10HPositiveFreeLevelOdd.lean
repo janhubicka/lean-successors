@@ -1,0 +1,4 @@
+import SuccessorTree.V10.HPositiveFreeLevelOdd
+#print axioms SuccessorTree.V10.exactHEBool_odd_lower_forces_next_even
+#print axioms SuccessorTree.V10.finiteNumericH_positive_freeLevel_odd
+#print axioms SuccessorTree.V10.finiteNumericH_positive_freeLevel_ne_realPosition
