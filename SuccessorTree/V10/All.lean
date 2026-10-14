@@ -280,3 +280,6 @@ import SuccessorTree.V10.KptRamseyApplications
 -- Section 6: finite I3 failure witnesses and selected original-name signatures.
 import SuccessorTree.V10.I3AgeFailure
 import SuccessorTree.V10.ChosenAgeSignatures
+
+-- I3: actual prescribed-source upper types recover ambient original labels.
+import SuccessorTree.V10.I3PrescribedOriginalWitness
