@@ -169,4 +169,34 @@ theorem numericH_linked_lower_lower_relocation
         (numericH_reverse_eq_base_of_gate B k i j a b t
           hij ha hb (Or.inl hab)).symm
 
+/-- All relocated lower numerical H vertices are strictly
+BELOW the old last lower vertex ell whenever its generation exceeds
+r-1. This is the precise order/carrier step in Lemma 6.53 and does
+not depend on an ambient E structure or a shape-map axiom. -/
+theorem numericH_relocated_lower_before_old_last
+    (k r : Nat) (hr : 0 < r)
+    (first generation : Fin r → Nat)
+    (hFirst : StrictMono first)
+    (hRankBound : ∀ a : Fin r, a.val ≤ k)
+    (hGap : r-1 < generation ⟨r-1, by omega⟩)
+    (a : Fin r) :
+    hPosition k (first a) a.val <
+      hPosition k (first ⟨r-1, by omega⟩)
+        (generation ⟨r-1, by omega⟩) := by
+  let last : Fin r := ⟨r-1, by omega⟩
+  have haLe : a.val ≤ last.val := by
+    dsimp [last]
+    omega
+  rcases lt_or_eq_of_le haLe with hlt | heq
+  · have hFinLt : a < last := Fin.lt_def.mpr hlt
+    exact hPosition_lt_of_block_lt k
+      (first a).val (first last).val a.val
+      (generation last) (hRankBound a)
+      (Fin.lt_def.mp (hFirst hFinLt))
+  · have hae : a = last := Fin.ext heq
+    subst a
+    exact hPosition_lt_of_gen_lt k
+      (first last) (r-1) (generation last) hGap
+
+
 end SuccessorTree.V10
