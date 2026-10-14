@@ -297,3 +297,6 @@ import SuccessorTree.V10.M2CapRetainedAtoms
 -- M2: exact padded L-model, upper-pair and full lower-socle image record.
 import SuccessorTree.V10.M2CapPaddedRecords
 import SuccessorTree.V10.M2ImageLowerSocle
+
+-- M2 B3: exact induced copy from lower/upper pair and singleton zones.
+import SuccessorTree.V10.M2CopyFromCompleteImageTypes
