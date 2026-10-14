@@ -1,0 +1,5 @@
+import SuccessorTree.V10.ArbitraryArityAge
+#print axioms SuccessorTree.V10.ArityAge.InducedEmbeddingOnCarrier.realizes
+#print axioms SuccessorTree.V10.ArityAge.inducedIntoNeutralExtension
+#print axioms SuccessorTree.V10.ArityAge.realizes_in_neutralExtension_of_irreducible
+#print axioms SuccessorTree.V10.ArityAge.realizes_singleton_in_neutralExtension
