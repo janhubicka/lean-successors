@@ -372,3 +372,6 @@ import SuccessorTree.V10.I1I2RealEventCharge
 
 -- I3: actual run closures share a finite pool of named originals.
 import SuccessorTree.V10.I3AlgorithmRunPool
+
+-- Proposition 6.44: selected I3 stages of the actual run obey sharp higher-generation R(M_g).
+import SuccessorTree.V10.I3AlgorithmRunSharp
