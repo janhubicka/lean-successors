@@ -119,11 +119,26 @@ theorem m2ForbiddenCopy_from_padded_cap_of_upper
         (kptShapeLevelMap family F j) hj (LevelTree.lev (F t)) hq).lReduct =
           RelationalPrefixType.ofAgeModel W (LevelTree.lev (F t)) (e a) :=
     (congrArg PartialTypeWithE.lReduct hType).trans (hImage a ha).symm
+  have hSourceAll :
+      ∀ (h : LevelTree.lev (F t) ≤ LevelTree.lev (F u)),
+        ((F u).1.2.ordinaryType
+          (kptShapeLevelMap family F j) hj (LevelTree.lev (F t)) h).lReduct =
+            RelationalPrefixType.ofAgeModel W (LevelTree.lev (F t)) (e a) := by
+    intro h
+    have heq : h = hq := Subsingleton.elim _ _
+    subst h
+    exact hSource
   have hTypeW :
       ((F u).1.2.ordinaryType
         (kptShapeLevelMap family F j) hj (m+1) hq').lReduct =
           RelationalPrefixType.ofAgeModel W (m+1) (e a) := by
-    simpa only [hLevel] using hSource
+    have hNewAll :
+        ∀ (h : m+1 ≤ LevelTree.lev (F u)),
+          ((F u).1.2.ordinaryType
+            (kptShapeLevelMap family F j) hj (m+1) h).lReduct =
+              RelationalPrefixType.ofAgeModel W (m+1) (e a) := by
+      exact hLevel ▸ hSourceAll
+    exact hNewAll hq'
   have hInitial : SameInitialL (F u).1.2.ageModel W m :=
     sameInitialL_of_complete_upper_type (F u).1.2 W m
       (kptShapeLevelMap family F j) (e a) hj hq'
