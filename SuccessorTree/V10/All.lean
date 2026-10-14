@@ -372,3 +372,6 @@ import SuccessorTree.V10.I1I2RealEventCharge
 
 -- Proposition 6.44: neither strict meet nor failed B3 can arise in real top generation.
 import SuccessorTree.V10.HTopGenerationExclusions
+
+-- Proposition 6.44: real top I1/I2 events can occur only at literal seed levels.
+import SuccessorTree.V10.HTopI1I2Seeds

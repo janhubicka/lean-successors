@@ -641,6 +641,17 @@ jobs:
             cat proof-audit/h-top-exclusions-axioms.log
             exit 1
           }
+      - name: Check real top-generation I1 and I2 events arise only at seed levels
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HTopI1I2Seeds.lean > proof-audit/h-top-i1i2-seeds-axioms.log 2>&1; then
+            cat proof-audit/h-top-i1i2-seeds-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-top-i1i2-seeds-axioms.log scripts/CheckV10HTopI1I2Seeds.lean || {
+            cat proof-audit/h-top-i1i2-seeds-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
