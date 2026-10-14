@@ -1,0 +1,8 @@
+import SuccessorTree.V10.HTopGenerationSeeds
+#print axioms SuccessorTree.V10.numericHTopGenerationSeeds
+#print axioms SuccessorTree.V10.numericHTopGenerationSeeds_cases
+#print axioms SuccessorTree.V10.numericHTopGenerationSeeds_subset_rootPool
+#print axioms SuccessorTree.V10.numericHTopLevel_ne_lowerGeneration
+#print axioms SuccessorTree.V10.numericHTopGenerationSeeds_noIntermediateReal
+#print axioms SuccessorTree.V10.numericHTopGenerationSeeds_card_le
+#print axioms SuccessorTree.V10.numericHTopSeeds_realI1_meet_charge
