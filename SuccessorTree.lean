@@ -328,3 +328,6 @@ import SuccessorTree.V10.M2BoundaryUpperSelection
 
 -- M2 B3: all source ordinary L atoms recovered at retained image levels.
 import SuccessorTree.V10.M2BoundaryLowRecords
+
+-- M2 B3: compatibility of actual original source types reflected from D.
+import SuccessorTree.V10.M2BoundaryOriginalCompatibility
