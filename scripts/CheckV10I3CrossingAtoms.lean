@@ -3,3 +3,4 @@ import SuccessorTree.V10.I3CrossingAtoms
 #print axioms SuccessorTree.V10.chosenAgeSignature_some_incident_atoms
 #print axioms SuccessorTree.V10.i3_linked_lower_pair_numeric_generators
 #print axioms SuccessorTree.V10.i3_named_upper_link_numeric_generators
+#print axioms SuccessorTree.V10.i3_lower_irreducible_numeric_rank
