@@ -5,3 +5,4 @@ import SuccessorTree.V10.I3PrescribedOriginalWitness
 #print axioms SuccessorTree.V10.PrescribedBoringData.source_pairwise_compatible_of_ambient
 #print axioms SuccessorTree.V10.PrescribedBoringData.correctedB3_iff_compatibleB3_of_one_socle
 #print axioms SuccessorTree.V10.PrescribedBoringData.failedCorrectedB3_has_ambient_original_witness
+#print axioms SuccessorTree.V10.PrescribedBoringData.failedCorrectedB3_of_actual_original_pool
