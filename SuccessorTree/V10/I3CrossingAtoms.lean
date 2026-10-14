@@ -179,4 +179,95 @@ theorem i3_named_upper_link_numeric_generators
     hOrder hRealLink
 
 
+/-- The lower part of an actual irreducible I3 forbidden copy,
+once it has at least TWO vertices, consists of consistently labelled
+real numerical H vertices. Their first indices are strictly increasing,
+their generations satisfy the exact linked-pair gate, and the a-th
+generation is at least a.
+
+This assembles the *same* real-coordinate representations for every
+pair, using injectivity of the bounded numerical H encoding.
+The linked-pair premise comes from irreducibility of the actual
+induced forbidden configuration; its extraction from that copy is
+a separate straightforward interface. The r=1 case is supplied
+instead by the named-upper crossing lemma above. -/
+theorem i3_lower_irreducible_numeric_rank
+    {db du dd : Nat}
+    (K : AgeTestModel db du dd)
+    (k N ell r : Nat) (hr : 2 ≤ r) (hrk : r ≤ k+1)
+    (W : AgeTestModel db du dd)
+    (hSocle : SameInitialL W (finiteNumericHL K k N) ell)
+    (e : Fin r → Nat) (hOrder : StrictMono e)
+    (hBelow : ∀ a : Fin r, e a ≤ ell)
+    (hLinked : ∀ a b : Fin r, a < b →
+      ∃ t : Fin db,
+        W.binary (e a) (e b) t = true ∨
+        W.binary (e b) (e a) t = true) :
+    ∃ (first generation : Fin r → Nat),
+      (∀ a : Fin r, generation a ≤ k ∧
+        e a = hPosition k (first a) (generation a)) ∧
+      StrictMono first ∧
+      (∀ a : Fin r, a.val ≤ generation a) := by
+  classical
+  have hReal : ∀ a : Fin r,
+      ∃ i q : Nat, q ≤ k ∧ e a = hPosition k i q := by
+    intro a
+    by_cases ha : a.val = 0
+    · let b : Fin r := ⟨1, by omega⟩
+      have hab : a < b := Fin.lt_def.mpr (by dsimp [b]; omega)
+      obtain ⟨i,j,q,m,_hij,hq,_hm,_hgate,hx,_hy⟩ :=
+        i3_linked_lower_pair_numeric_generators K k N ell W
+          hSocle (e a) (e b) (hOrder hab) (hBelow b)
+          (hLinked a b hab)
+      exact ⟨i,q,hq,hx⟩
+    · let b : Fin r := ⟨0, by omega⟩
+      have hba : b < a := Fin.lt_def.mpr (by dsimp [b]; omega)
+      obtain ⟨_i,j,_q,m,_hij,_hq,hm,_hgate,_hx,hy⟩ :=
+        i3_linked_lower_pair_numeric_generators K k N ell W
+          hSocle (e b) (e a) (hOrder hba) (hBelow a)
+          (hLinked b a hba)
+      exact ⟨j,m,hm,hy⟩
+  let first : Fin r → Nat := fun a => Classical.choose (hReal a)
+  let generation : Fin r → Nat :=
+    fun a => Classical.choose (Classical.choose_spec (hReal a))
+  have hRep : ∀ a : Fin r,
+      generation a ≤ k ∧
+      e a = hPosition k (first a) (generation a) := by
+    intro a
+    exact Classical.choose_spec (Classical.choose_spec (hReal a))
+  have hPairs : ∀ a b : Fin r, a < b →
+      first a < first b ∧
+      (generation a < generation b ∨
+        (generation a = k ∧ generation b = k)) := by
+    intro a b hab
+    obtain ⟨i,j,q,m,hij,hq,hm,hgate,hx,hy⟩ :=
+      i3_linked_lower_pair_numeric_generators K k N ell W
+        hSocle (e a) (e b) (hOrder hab) (hBelow b)
+        (hLinked a b hab)
+    have haEq :
+        hPosition k (first a) (generation a) =
+          hPosition k i q :=
+      (hRep a).2.symm.trans hx
+    have hbEq :
+        hPosition k (first b) (generation b) =
+          hPosition k j m :=
+      (hRep b).2.symm.trans hy
+    obtain ⟨hi, hqGen⟩ :=
+      hPosition_injective_bounded k
+        (first a) (generation a) i q (hRep a).1 hq haEq
+    obtain ⟨hj, hmGen⟩ :=
+      hPosition_injective_bounded k
+        (first b) (generation b) j m (hRep b).1 hm hbEq
+    constructor
+    · omega
+    · rcases hgate with hlt | ⟨heq,htop⟩
+      · exact Or.inl (by omega)
+      · exact Or.inr ⟨by omega, by omega⟩
+  refine ⟨first,generation,hRep,?_,?_⟩
+  · intro a b hab
+    exact (hPairs a b hab).1
+  · exact generation_rank_lower_bound k r hrk generation
+      (fun a b hab => (hPairs a b hab).2)
+
+
 end SuccessorTree.V10
