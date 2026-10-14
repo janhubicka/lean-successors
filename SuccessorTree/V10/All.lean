@@ -388,3 +388,6 @@ import SuccessorTree.V10.HTopAlgorithmRunBase
 
 -- Proposition 6.44: actual generation-r selected levels partition and M_r+R(M_r) bound.
 import SuccessorTree.V10.HActualGenerationEventBound
+
+-- Proposition 6.44: higher original addresses bounded by root plus selected higher real levels.
+import SuccessorTree.V10.HHigherPoolCumulativeBound
