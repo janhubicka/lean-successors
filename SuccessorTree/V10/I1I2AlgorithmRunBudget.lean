@@ -156,12 +156,22 @@ theorem numericH_algorithmRun_I1I2_levels_mem_finalCharge
         (finiteNumericH_avoids_family family K hCarrier k N hAvoidK)
         c blocks hWithin)
       top ell hLt R
+  have hUSingleton : (↑U : Set (Fin N)) = ({c} : Set (Fin N)) := by
+    simp [U]
+  have hvStage : v ∈ ambientStagePool (finiteNumericH K k N)
+      (↑U : Set (Fin N)) (R.I (ell+1)) := by
+    rw [hUSingleton]
+    exact hv
+  have hwStage : w ∈ ambientStagePool (finiteNumericH K k N)
+      (↑U : Set (Fin N)) (R.I (ell+1)) := by
+    rw [hUSingleton]
+    exact hw
   have hvV : v ∈ V :=
     numericH_ambientStageOriginal_mem_final
-      K k N U hStageSubset v hv
+      K k N U hStageSubset v hvStage
   have hwV : w ∈ V :=
     numericH_ambientStageOriginal_mem_final
-      K k N U hStageSubset w hw
+      K k N U hStageSubset w hwStage
   have hCharged : hPosition k p g ∈ hPoolChargeLevels K.binary k g V := by
     rcases numericHMeetCharge_higher_original
       K.binary k v.val w.val p g hCharge with hvc | hwc
