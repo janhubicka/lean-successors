@@ -190,13 +190,14 @@ theorem numericH_relocated_lower_before_old_last
   rcases lt_or_eq_of_le haLe with hlt | heq
   · have hFinLt : a < last := Fin.lt_def.mpr hlt
     exact hPosition_lt_of_block_lt k
-      (first a).val (first last).val a.val
+      (first a) (first last) a.val
       (generation last) (hRankBound a)
-      (Fin.lt_def.mp (hFirst hFinLt))
+      (hFirst hFinLt)
   · have hae : a = last := Fin.ext heq
     subst a
-    exact hPosition_lt_of_gen_lt k
-      (first last) (r-1) (generation last) hGap
+    simpa only [last] using
+      (hPosition_lt_of_gen_lt k
+        (first last) (r-1) (generation last) hGap)
 
 
 end SuccessorTree.V10
