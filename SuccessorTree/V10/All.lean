@@ -289,3 +289,6 @@ import SuccessorTree.V10.EnvelopeNumericalRecurrence
 
 -- I3: exact original-valued signatures and cardinal bound R(M).
 import SuccessorTree.V10.I3SignatureCardinality
+
+-- I3 Lemma 6.53: exact numerical H directed relocation gates.
+import SuccessorTree.V10.I3NumericRelocation
