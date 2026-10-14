@@ -1,0 +1,4 @@
+import SuccessorTree.V10.I3SelectedStageSignature
+#print axioms SuccessorTree.V10.selectedStagePool_failedB3_has_signature_witness
+#print axioms SuccessorTree.V10.selectedStagePool_B3_failure_levels_card_le_signature_capacity
+#print axioms SuccessorTree.V10.actualSelectedStage_B3_failure_levels_card_le_signature_capacity
