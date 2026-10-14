@@ -487,6 +487,17 @@ jobs:
             cat proof-audit/i3-actual-graph-axioms.log
             exit 1
           }
+      - name: Check I3 selected closure crossing source-to-original bridge
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3ClosureCrossingGraph.lean > proof-audit/i3-closure-crossing-axioms.log 2>&1; then
+            cat proof-audit/i3-closure-crossing-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-closure-crossing-axioms.log scripts/CheckV10I3ClosureCrossingGraph.lean || {
+            cat proof-audit/i3-closure-crossing-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

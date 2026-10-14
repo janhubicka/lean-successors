@@ -333,3 +333,6 @@ import SuccessorTree.V10.I3SelectedStageSignature
 
 -- I3: reconstruct variable selected stage names from the actual prescribed graph.
 import SuccessorTree.V10.I3ActualGraphRepresentation
+
+-- I3: derive actual source-to-original graph from represented closure prefixes.
+import SuccessorTree.V10.I3ClosureCrossingGraph
