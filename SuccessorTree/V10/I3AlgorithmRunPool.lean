@@ -63,14 +63,16 @@ theorem numericH_algorithmRun_closure_original_in_final_pool
     (R.I (ell+1)) X hX hz
   obtain ⟨o,⟨v,hv,rfl⟩,hPrefix⟩ := hPool
   have hV : v ∈ hStageOriginals K k N U (R.I 0) := by
-    simp only [hStageOriginals, Finset.mem_filter, Finset.mem_univ, true_and,
-      Set.mem_setOf_eq]
-    rcases hv with hu | ⟨hi,hFree⟩
-    · exact Or.inl hu
-    · right
-      have hTail := R.I_eq_final_tail_of_run (ell+1) (by omega)
-      rw [hTail] at hi
-      exact ⟨hi.1,hFree⟩
+    have hFinalPool :
+        v ∈ U ∨
+        (v.val ∈ R.I 0 ∧ 0 < A.freeLevel v.val) := by
+      rcases hv with hu | ⟨hi,hFree⟩
+      · exact Or.inl hu
+      · right
+        have hTail := R.I_eq_final_tail_of_run (ell+1) (by omega)
+        rw [hTail] at hi
+        exact ⟨hi.1,hFree⟩
+    simpa [hStageOriginals] using hFinalPool
   exact ⟨v,hV,hPrefix⟩
 
 /-- The actual finite run's positive I3 levels have the exact
