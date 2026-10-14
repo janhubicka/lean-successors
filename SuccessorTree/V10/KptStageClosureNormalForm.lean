@@ -112,14 +112,9 @@ theorem kptStageClosureNormalForm_meetClosed
     exact ht
   have hRep := kptStageClosureNormalForm_subset_pool
     family A hAvoid I X U V hX hUV hSelected
-  obtain ⟨p,⟨v,hv,rfl⟩,hsp⟩ := hRep hs
-  obtain ⟨q,⟨w,hw,rfl⟩,htq⟩ := hRep ht
   obtain ⟨op,hop,oq,hoq,hOriginalCommon,hMeetEq⟩ :=
     nontrivial_meet_has_originals
-      (V := (A.kptOriginal family hAvoid) '' V)
-      ⟨p,⟨v,hv,rfl⟩,hsp⟩
-      ⟨q,⟨w,hw,rfl⟩,htq⟩
-      hCommon hLeft hRight
+      (hRep hs) (hRep ht) hCommon hLeft hRight
   obtain ⟨v',hv',hOp⟩ := hop
   obtain ⟨w',hw',hOq⟩ := hoq
   subst op
