@@ -361,5 +361,8 @@ import SuccessorTree.V10.HPositiveFreeLevelOdd
 -- Real I1 closure nodes not among seeds are genuine charged original meets.
 import SuccessorTree.V10.I1RealNodeMeetCharge
 
--- Proposition 6.44: top-generation seed prefixes, size q+1, no intermediate real I1 levels.
+-- Proposition 6.44: enumerate only high original names with the common M_r budget.
+import SuccessorTree.V10.HHighOriginalNameEnumeration
+
+-- Proposition 6.44: top-generation seed prefixes and I1 meet charging.
 import SuccessorTree.V10.HTopGenerationSeeds
