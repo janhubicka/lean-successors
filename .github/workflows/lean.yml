@@ -652,6 +652,39 @@ jobs:
             cat proof-audit/i3-algorithm-sharp-axioms.log
             exit 1
           }
+      - name: Check combined Section 6 actual I1/I2 M_g bound
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I1I2AlgorithmRunBudget.lean > proof-audit/CheckV10I1I2AlgorithmRunBudget-axioms.log 2>&1; then
+            cat proof-audit/CheckV10I1I2AlgorithmRunBudget-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10I1I2AlgorithmRunBudget-axioms.log scripts/CheckV10I1I2AlgorithmRunBudget.lean || {
+            cat proof-audit/CheckV10I1I2AlgorithmRunBudget-axioms.log
+            exit 1
+          }
+      - name: Check combined Section 6 no top-generation strict meet or failed B3
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HTopGenerationExclusions.lean > proof-audit/CheckV10HTopGenerationExclusions-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HTopGenerationExclusions-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HTopGenerationExclusions-axioms.log scripts/CheckV10HTopGenerationExclusions.lean || {
+            cat proof-audit/CheckV10HTopGenerationExclusions-axioms.log
+            exit 1
+          }
+      - name: Check combined Section 6 top I1/I2 events are seed levels
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HTopI1I2Seeds.lean > proof-audit/CheckV10HTopI1I2Seeds-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HTopI1I2Seeds-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HTopI1I2Seeds-axioms.log scripts/CheckV10HTopI1I2Seeds.lean || {
+            cat proof-audit/CheckV10HTopI1I2Seeds-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

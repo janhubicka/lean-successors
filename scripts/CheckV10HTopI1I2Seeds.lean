@@ -1,0 +1,3 @@
+import SuccessorTree.V10.HTopI1I2Seeds
+#print axioms SuccessorTree.V10.numericHTopSeeds_real_top_I1_is_seed
+#print axioms SuccessorTree.V10.numericHTopSeeds_real_top_I1I2_is_seed_level

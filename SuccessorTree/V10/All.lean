@@ -375,3 +375,10 @@ import SuccessorTree.V10.I3AlgorithmRunPool
 
 -- Proposition 6.44: selected I3 stages of the actual run obey sharp higher-generation R(M_g).
 import SuccessorTree.V10.I3AlgorithmRunSharp
+
+-- V10 Section 6: actual I1/I2 M_g bound.
+import SuccessorTree.V10.I1I2AlgorithmRunBudget
+-- V10 Section 6: no top-generation strict meet or failed B3.
+import SuccessorTree.V10.HTopGenerationExclusions
+-- V10 Section 6: top I1/I2 events are seed levels.
+import SuccessorTree.V10.HTopI1I2Seeds
