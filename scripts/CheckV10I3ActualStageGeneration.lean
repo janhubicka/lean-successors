@@ -1,0 +1,4 @@
+import SuccessorTree.V10.I3ActualStageGeneration
+#print axioms SuccessorTree.V10.NormalizedForbidden.patternCard
+#print axioms SuccessorTree.V10.normalizedForbidden_bounded_I3_proper_cut
+#print axioms SuccessorTree.V10.finiteNumericH_failedPoolB3_generation
