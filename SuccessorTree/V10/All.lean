@@ -339,3 +339,6 @@ import SuccessorTree.V10.I3ClosureCrossingGraph
 
 -- I3: non-skippable complete closure crossing contradicts one-gap B3 extension.
 import SuccessorTree.V10.I3NoSkipForcesB3
+
+-- I3: construct selected closure crossing and derive corrected B3 failure and R(M).
+import SuccessorTree.V10.I3ClosureSelectedCrossing

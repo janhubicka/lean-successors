@@ -1,0 +1,8 @@
+import SuccessorTree.V10.I3ClosureSelectedCrossing
+#print axioms SuccessorTree.V10.closureSelectedOriginal
+#print axioms SuccessorTree.V10.closureSelectedBoringData
+#print axioms SuccessorTree.V10.kptBelowOriginal_level_le_free
+#print axioms SuccessorTree.V10.kptBelowOriginal_ancestor_raw
+#print axioms SuccessorTree.V10.closureSelectedBoringData_covers
+#print axioms SuccessorTree.V10.closureSelectedBoringData_failedB3_of_nonSkippable
+#print axioms SuccessorTree.V10.representedNonSkippableLevels_card_le_signature_capacity
