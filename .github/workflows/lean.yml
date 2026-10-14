@@ -245,6 +245,17 @@ jobs:
             cat proof-audit/kpt-ramsey-applications-axioms.log
             exit 1
           }
+      - name: Check chosen finite-age signatures and collision theorem
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10ChosenAgeSignatures.lean > proof-audit/chosen-age-signatures-axioms.log 2>&1; then
+            cat proof-audit/chosen-age-signatures-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/chosen-age-signatures-axioms.log scripts/CheckV10ChosenAgeSignatures.lean || {
+            cat proof-audit/chosen-age-signatures-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

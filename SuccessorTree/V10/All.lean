@@ -276,3 +276,7 @@ import SuccessorTree.V10.KptCompleteSMTree
 
 -- Concrete Ramsey consequences of the now-verified normalized Kpt SMTree.
 import SuccessorTree.V10.KptRamseyApplications
+
+-- Section 6: finite I3 failure witnesses and selected original-name signatures.
+import SuccessorTree.V10.I3AgeFailure
+import SuccessorTree.V10.ChosenAgeSignatures
