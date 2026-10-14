@@ -76,8 +76,27 @@ theorem m2Boundary_original_compatible_of_deleted
         SameOrdinaryAtCut (D ux).1.2
           (cast (congrArg (fun k => PartialTypeWithE k db du dd) h.symm)
             (D uy).1.2) := by
-    simpa only [hux,huy] using hDeleted
+    rw [hux, huy]
+    exact hDeleted
   exact shapeMap_reflects_source_compatibility family D Tx Ty hx hy hMapped
+
+/-- Equality of a complete ordinary L-type with a fixed-level
+Kpt record transports through the dependent node index without a
+whole-Sigma rewrite. This does not change any atom. -/
+theorem kptRecordAtLevel_lReduct_ofAgeModel
+    {db du dd : Nat}
+    {family : List (NormalizedForbidden db du dd)}
+    (n : Nat) (x : AdmissibleKptNode family)
+    (hx : LevelTree.lev x = n)
+    (W : AgeTestModel db du dd) (w : Nat)
+    (hType : RelationalPrefixType.ofAgeModel W n w =
+      (kptRecordAtLevel n x hx).lReduct) :
+    RelationalPrefixType.ofAgeModel W (LevelTree.lev x) w =
+      x.1.2.lReduct := by
+  rcases x with ⟨⟨k,Q⟩,hAd⟩
+  change k = n at hx
+  subst k
+  exact hType
 
 /-- Transport a selected upper L-type through the exact dependent
 boundary image index. This includes the omitted target coordinate
@@ -96,7 +115,9 @@ theorem m2Boundary_upper_L_type_of_source_index
         (m2Boundary_targetType family F q₀ a₀ hprev hgap x).lReduct) :
     RelationalPrefixType.ofAgeModel W (LevelTree.lev (F x.1)) w =
       (F x.1).1.2.lReduct := by
-  rw [m2Boundary_target_raw family F q₀ a₀ hprev hgap x]
-  exact hType
+  exact kptRecordAtLevel_lReduct_ofAgeModel
+    ((LevelTree.lev (F a₀)-1)+1) (F x.1)
+    (m2Boundary_target_level family F q₀ a₀ hprev hgap x)
+    W w hType
 
 end SuccessorTree.V10
