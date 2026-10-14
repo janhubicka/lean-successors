@@ -286,3 +286,6 @@ import SuccessorTree.V10.I3PrescribedOriginalWitness
 
 -- I3: actual finite ambient-pool B1/B2 source and named target types.
 import SuccessorTree.V10.I3AmbientPrescribedPool
+
+-- I3: recovered actual ambient socle and forbidden copy at selected level.
+import SuccessorTree.V10.I3AmbientSocleBridge
