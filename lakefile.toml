@@ -10,7 +10,7 @@ rev = "5bd58ac291422a21f412ae354c91e7d172255a2c"
 [[require]]
 name = "ramsey-space-todorcevic"
 git = "https://github.com/janhubicka/lean-ramsey-space-todorcevic"
-rev = "263e11eefa81fefc17896392fb48bf09c8ac6f3e"
+rev = "9e5cc0a58b64f240716566a8c9e88dee382dc34e"
 
 [[lean_lib]]
 name = "SuccessorTree"
