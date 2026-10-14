@@ -327,3 +327,6 @@ import SuccessorTree.V10.I3SelectedStagePool
 
 -- Lemma 6.53: chosen signature original labels themselves have higher generation.
 import SuccessorTree.V10.I3ChosenOriginalGeneration
+
+-- Observation 6.52: variable selected sources, real f_ell failures and R(M).
+import SuccessorTree.V10.I3SelectedStageSignature
