@@ -286,3 +286,6 @@ import SuccessorTree.V10.I3PrescribedOriginalWitness
 
 -- Section 6.44: the manuscript's descending cardinal recurrence.
 import SuccessorTree.V10.EnvelopeNumericalRecurrence
+
+-- I3 Lemma 6.53: complete incident atoms of chosen ambient originals.
+import SuccessorTree.V10.I3CrossingAtoms
