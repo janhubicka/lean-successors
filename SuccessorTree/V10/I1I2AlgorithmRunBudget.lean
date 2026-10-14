@@ -87,7 +87,7 @@ theorem numericH_algorithmRun_I1I2_levels_mem_finalCharge
       hPosition k i k ≤ (finiteNumericH K k N).freeLevel c.val)
     (top ell p g : Nat) (hLt : ell < top)
     (hg : 0 < g) (hgk : g < k)
-    (hPosition : ell = hPosition k p g)
+    (hPos : ell = hPosition k p g)
     (R : SMTree.Envelope.AlgorithmRun
       (normalizedKptSMTree family)
       (numericHTopGenerationSeeds family K k N
@@ -142,7 +142,7 @@ theorem numericH_algorithmRun_I1I2_levels_mem_finalCharge
               c blocks hWithin) ∧
           SMTree.Envelope.SameComponent a b ∧
           LevelTree.lev (LevelTree.meet a b) = hPosition k p g) := by
-    rw [←hPosition]
+    rw [←hPos]
     exact hEvent
   obtain ⟨v,w,hv,hw,hCharge⟩ :=
     numericHTopSeeds_real_I1I2_has_charge
@@ -168,7 +168,7 @@ theorem numericH_algorithmRun_I1I2_levels_mem_finalCharge
         K.binary k g V v hvV p hvc
     · exact hOriginalCharge_level_mem_budget
         K.binary k g V w hwV p hwc
-  rw [hPosition]
+  rw [hPos]
   exact hCharged
 
 /-- Exact linear contribution M_g for ACTUAL AlgorithmRun
