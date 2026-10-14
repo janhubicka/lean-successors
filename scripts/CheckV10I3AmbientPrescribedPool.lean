@@ -1,0 +1,6 @@
+import SuccessorTree.V10.I3AmbientPrescribedPool
+#print axioms SuccessorTree.V10.sameOrdinarySocle_ambient_types
+#print axioms SuccessorTree.V10.partialTypeAt_lReduct_eq_ofAgeModel
+#print axioms SuccessorTree.V10.ambientPoolPrescribedData
+#print axioms SuccessorTree.V10.ambientPoolPrescribedData_source_original
+#print axioms SuccessorTree.V10.ambientPool_failedCorrectedB3_has_original_witness
