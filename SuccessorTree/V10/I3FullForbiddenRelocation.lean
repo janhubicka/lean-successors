@@ -77,10 +77,10 @@ theorem numericI3_forbidden_copy_forces_last_lower_rank
   have hLastAt : e (lo last) = ell := by
     simpa only [lo,last] using hLast
   have hLastBound : r-1 ≤ generation last := by
-    have hh := hRank last
-    dsimp [last] at hh
-    exact hh
+    simpa only [last] using (hRank last)
   by_contra hneq
+  have hneqLast : generation last ≠ r-1 := by
+    simpa only [last] using hneq
   have hGap : r-1 < generation last := by omega
   have hEllCarrier : ell ∈ W.carrier := by
     rw [←hLastAt]
@@ -176,6 +176,9 @@ theorem numericI3_forbidden_copy_forces_last_lower_rank
   have hRelocUpper (b : Fin t) (hb : r ≤ b.val) :
       relocated b = e b := by
     simp only [relocated, dite_eq_right (Nat.not_lt.mpr hb)]
+  have hRelocAtLower (b : Fin t) (hb : b.val < r) :
+      relocated b = young ⟨b.val,hb⟩ := by
+    simp [relocated,hb]
   have hRelocIn (b : Fin t) : relocated b ∈ W.carrier := by
     by_cases hb : b.val < r
     · let a : Fin r := ⟨b.val,hb⟩
@@ -194,7 +197,7 @@ theorem numericI3_forbidden_copy_forces_last_lower_rank
         have hh := hYoungOrder hlt
         simpa only [relocated, dite_eq_left ha, dite_eq_left hb] using hh
       · have hrel : relocated a < ell := by
-          change young ⟨a.val,ha⟩ < ell
+          rw [hRelocAtLower a ha]
           exact (hYoung ⟨a.val,ha⟩).1
         rw [hRelocUpper b (Nat.le_of_not_gt hb)]
         exact lt_trans hrel (hAbove b (Nat.le_of_not_gt hb))
@@ -214,7 +217,9 @@ theorem numericI3_forbidden_copy_forces_last_lower_rank
         let bb : Fin r := ⟨b.val,hb⟩
         have hne' : aa ≠ bb := by
           intro hab
-          exact hne (Fin.ext (congrArg Fin.val hab))
+          have heq : a.val = b.val := congrArg Fin.val hab
+          have hSame : a = b := Fin.ext heq
+          exact hne hSame
         have heq := hLowerBinary aa bb hne' bit
         have hOldA : old aa = e a := by
           have : lo aa = a := Fin.ext rfl
@@ -224,7 +229,8 @@ theorem numericI3_forbidden_copy_forces_last_lower_rank
           simpa only [this] using hOldEq bb
         calc
           W.binary (relocated a) (relocated b) bit =
-              W.binary (young aa) (young bb) bit := rfl
+              W.binary (young aa) (young bb) bit := by
+                rw [hRelocAtLower a ha, hRelocAtLower b hb]
           _ = W.binary (old aa) (old bb) bit := heq.symm
           _ = W.binary (e a) (e b) bit := by rw [hOldA,hOldB]
           _ = P.binary a b bit := hCopy.2.2.1 a b hne bit
@@ -236,8 +242,8 @@ theorem numericI3_forbidden_copy_forces_last_lower_rank
         calc
           W.binary (relocated a) (relocated b) bit =
               W.binary (young aa) (e b) bit := by
-                rw [hRelocUpper b (Nat.le_of_not_gt hb)]
-                rfl
+                rw [hRelocAtLower a ha,
+                  hRelocUpper b (Nat.le_of_not_gt hb)]
           _ = W.binary (old aa) (e b) bit := hEq.symm
           _ = W.binary (e a) (e b) bit := by rw [hOldA]
           _ = P.binary a b bit := hCopy.2.2.1 a b hne bit
@@ -250,8 +256,8 @@ theorem numericI3_forbidden_copy_forces_last_lower_rank
         calc
           W.binary (relocated a) (relocated b) bit =
               W.binary (e a) (young bb) bit := by
-                rw [hRelocUpper a (Nat.le_of_not_gt ha)]
-                rfl
+                rw [hRelocUpper a (Nat.le_of_not_gt ha),
+                  hRelocAtLower b hb]
           _ = W.binary (e a) (old bb) bit := hEq.symm
           _ = W.binary (e a) (e b) bit := by rw [hOldB]
           _ = P.binary a b bit := hCopy.2.2.1 a b hne bit
@@ -267,7 +273,8 @@ theorem numericI3_forbidden_copy_forces_last_lower_rank
         have : lo aa = a := Fin.ext rfl
         simpa only [this] using hOldEq aa
       calc
-        W.unary (relocated a) bit = W.unary (young aa) bit := rfl
+        W.unary (relocated a) bit = W.unary (young aa) bit := by
+          rw [hRelocAtLower a ha]
         _ = W.unary (old aa) bit := (hLowerUnary aa bit).symm
         _ = W.unary (e a) bit := by rw [hOldA]
         _ = P.unary a bit := hCopy.2.2.2.1 a bit
@@ -283,7 +290,8 @@ theorem numericI3_forbidden_copy_forces_last_lower_rank
         simpa only [this] using hOldEq aa
       calc
         W.diagonal (relocated a) bit =
-            W.diagonal (young aa) bit := rfl
+            W.diagonal (young aa) bit := by
+          rw [hRelocAtLower a ha]
         _ = W.diagonal (old aa) bit :=
           (hLowerDiagonal aa bit).symm
         _ = W.diagonal (e a) bit := by rw [hOldA]
@@ -296,10 +304,10 @@ theorem numericI3_forbidden_copy_forces_last_lower_rank
   have hAway : ∀ a : Fin t, relocated a ≠ ell := by
     intro a
     by_cases ha : a.val < r
-    · have hEq : a = lo ⟨a.val,ha⟩ := Fin.ext rfl
-      rw [hEq,hRelocLower]
-      have hlt := (hYoung ⟨a.val,ha⟩).1
-      omega
+    · have hlt : relocated a < ell := by
+        rw [hRelocAtLower a ha]
+        exact (hYoung ⟨a.val,ha⟩).1
+      exact ne_of_lt hlt
     · have hh := hAbove a (Nat.le_of_not_gt ha)
       rw [hRelocUpper a (Nat.le_of_not_gt ha)]
       omega
