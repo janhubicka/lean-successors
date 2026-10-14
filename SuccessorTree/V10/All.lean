@@ -336,3 +336,6 @@ import SuccessorTree.V10.I3ActualGraphRepresentation
 
 -- I3: derive actual source-to-original graph from represented closure prefixes.
 import SuccessorTree.V10.I3ClosureCrossingGraph
+
+-- I3: non-skippable complete closure crossing contradicts one-gap B3 extension.
+import SuccessorTree.V10.I3NoSkipForcesB3
