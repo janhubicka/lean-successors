@@ -306,3 +306,6 @@ import SuccessorTree.V10.I3ForbiddenCutIndex
 
 -- I3: forbidden-free ambient socle forces the copy's nonempty proper lower cut.
 import SuccessorTree.V10.I3ActualProperCut
+
+-- Lemma 6.53: all actual witness rank/generation conclusions, no coordinate hypotheses.
+import SuccessorTree.V10.I3ActualWitnessGeneration
