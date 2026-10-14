@@ -1,0 +1,3 @@
+import SuccessorTree.V10.I3SignatureCardinality
+#print axioms SuccessorTree.V10.I3OriginalSignatureWitness.code_ne_of_lt
+#print axioms SuccessorTree.V10.i3SelectedLevels_card_le_signature_capacity
