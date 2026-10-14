@@ -68,13 +68,13 @@ theorem numericHHighOriginals_subset_root_or_selected
       numericHSelectedHigherAddresses family K k N c X R r := by
   classical
   intro v hv
-  have hV : v ∈ hStageOriginals K k N ({c} : Finset (Fin N)) (R.I 0) :=
-    (Finset.mem_filter.mp hv).2.1
-  have hReal :
-      ∃ p m : Nat, r < m ∧ m ≤ k ∧
-        v.val = hPosition k p m := by
+  have hData :
+      v ∈ hStageOriginals K k N ({c} : Finset (Fin N)) (R.I 0) ∧
+      (∃ p m : Nat, r < m ∧ m ≤ k ∧
+        v.val = hPosition k p m) := by
     simpa only [hGenerationHighOriginals, Finset.mem_filter,
-      Finset.mem_univ, true_and] using hv.2
+      Finset.mem_univ, true_and] using hv
+  obtain ⟨hV,hReal⟩ := hData
   have hStage :
       v = c ∨ (v.val ∈ R.I 0 ∧
         0 < (finiteNumericH K k N).freeLevel v.val) := by
