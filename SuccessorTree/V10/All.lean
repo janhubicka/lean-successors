@@ -369,3 +369,6 @@ import SuccessorTree.V10.HTopGenerationSeeds
 
 -- Proposition 6.44: top-generation seed I1 and I2 events carry original meet charges.
 import SuccessorTree.V10.I1I2RealEventCharge
+
+-- Proposition 6.44: genuine I1/I2 levels charged to higher originals in one final run pool.
+import SuccessorTree.V10.I1I2AlgorithmRunBudget

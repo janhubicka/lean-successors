@@ -630,6 +630,17 @@ jobs:
             cat proof-audit/i1i2-real-event-charge-axioms.log
             exit 1
           }
+      - name: Check genuine AlgorithmRun I1-I2 M_g event bound
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I1I2AlgorithmRunBudget.lean > proof-audit/i1i2-algorithm-run-budget-axioms.log 2>&1; then
+            cat proof-audit/i1i2-algorithm-run-budget-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i1i2-algorithm-run-budget-axioms.log scripts/CheckV10I1I2AlgorithmRunBudget.lean || {
+            cat proof-audit/i1i2-algorithm-run-budget-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
