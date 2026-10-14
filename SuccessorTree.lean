@@ -290,3 +290,6 @@ import SuccessorTree.V10.M2SelectedCopyPadded
 import SuccessorTree.V10.M2AmbientLevelTransport
 import SuccessorTree.V10.M2SelectedCapTransport
 import SuccessorTree.V10.M2ImageOrdinaryZone
+
+-- M2 B3: all selected real L atoms remain exact through padding and one cap.
+import SuccessorTree.V10.M2CapPaddedRecords
