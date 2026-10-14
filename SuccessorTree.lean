@@ -313,3 +313,6 @@ import SuccessorTree.V10.M2B3SelectedContradiction
 
 -- M2 B3: prescribed ordinary socle is forbidden-free by induced age.
 import SuccessorTree.V10.M2B3SocleAge
+
+-- M2: real typed boundary D(x) and F(x), source injectivity, full B1.
+import SuccessorTree.V10.M2BoundaryTypedRecords
