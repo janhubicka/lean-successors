@@ -280,3 +280,6 @@ import SuccessorTree.V10.KptRamseyApplications
 -- Section 6: finite I3 failure witnesses and selected original-name signatures.
 import SuccessorTree.V10.I3AgeFailure
 import SuccessorTree.V10.ChosenAgeSignatures
+
+-- Section 6.44: the manuscript's descending cardinal recurrence.
+import SuccessorTree.V10.EnvelopeNumericalRecurrence
