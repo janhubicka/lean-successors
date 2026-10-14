@@ -1,0 +1,8 @@
+import SuccessorTree.V10.M2CapPaddedRecords
+#print axioms SuccessorTree.V10.compatibleSelectedTypes_joint_padded_with_L
+#print axioms SuccessorTree.V10.boundedCopySourceAge_selected_family_padded_with_L
+#print axioms SuccessorTree.V10.shapeMap_socleCap_all_binary
+#print axioms SuccessorTree.V10.shapeMap_socleCap_all_singletons
+#print axioms SuccessorTree.V10.shapeMap_padded_cap_real_binary
+#print axioms SuccessorTree.V10.shapeMap_padded_cap_real_singletons
+#print axioms SuccessorTree.V10.shapeMap_boundedCopy_cap_upper_pair
