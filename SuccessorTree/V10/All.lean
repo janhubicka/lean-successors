@@ -363,3 +363,6 @@ import SuccessorTree.V10.I1RealNodeMeetCharge
 
 -- Proposition 6.44: top-generation seed prefixes, size q+1, no intermediate real I1 levels.
 import SuccessorTree.V10.HTopGenerationSeeds
+
+-- Proposition 6.44: every actual I1/I2 event at intermediate real H generation is charged.
+import SuccessorTree.V10.I1I2RealEventCharge

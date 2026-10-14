@@ -608,6 +608,17 @@ jobs:
             cat proof-audit/h-top-seeds-axioms.log
             exit 1
           }
+      - name: Check actual I1 or I2 selected real event has a higher original meet charge
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I1I2RealEventCharge.lean > proof-audit/i1i2-real-event-charge-axioms.log 2>&1; then
+            cat proof-audit/i1i2-real-event-charge-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i1i2-real-event-charge-axioms.log scripts/CheckV10I1I2RealEventCharge.lean || {
+            cat proof-audit/i1i2-real-event-charge-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
