@@ -90,6 +90,43 @@ theorem ambientPool_B3_witness_sameAmbientSocle
     exact ambient_partialType_prescribedSocle A ell (original v) hCut
   exact hSame.trans hAmbient
 
+/-- The canonical ambient-pool output really is an admissible
+Kpt next-cut type, provided the named original vertices are in the
+forbidden-free ambient structure and their genuine free cuts reach
+the inserted level. The guard is essential: a merely numerical
+`partialTypeAt (ell+1)` need not be an admissible Kpt node when the
+original's free cut is shorter. -/
+theorem ambientPoolPrescribedData_targets_admissible
+    {db du dd M : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (A : EnumeratedPartialStructure db du dd)
+    (hAvoid : ∀ bad, bad ∈ family → bad.Avoids A.L)
+    (ell : Nat) (original : Fin M → Nat)
+    (hIn : ∀ v : Fin M, original v < A.size)
+    (hCut : ∀ v : Fin M, ell + 1 ≤ A.freeLevel (original v)) :
+    ∀ T, T ∈ (ambientPoolPrescribedData A ell original).source →
+      IsAdmissibleRawType family
+        (⟨ell + 1,
+          (ambientPoolPrescribedData A ell original).target T⟩ :
+          RawPartialTypeNode db du dd) := by
+  intro T hT
+  obtain ⟨v,hTarget⟩ :=
+    ambientPoolPrescribedData_target_original A ell original T hT
+  rw [hTarget]
+  have hRawAd : IsAdmissibleRawType family
+      (A.rawTypeAtFree (original v)) :=
+    ⟨A,original v,hIn v,hAvoid,rfl⟩
+  have hPrefix :=
+    admissibleRawType_closed_under_prefix family
+      hRawAd (ell+1) (hCut v)
+  change IsAdmissibleRawType family
+    (⟨ell+1, (A.partialTypeAt
+      (A.freeLevel (original v)) (original v)).restrict (hCut v)⟩ :
+      RawPartialTypeNode db du dd) at hPrefix
+  rw [A.partialTypeAt_restrict
+    (ell+1) (A.freeLevel (original v)) (original v) (hCut v)] at hPrefix
+  exact hPrefix
+
 /-- Failure of the actual finite ambient-pool corrected B3 supplies
 an age witness with the manuscript's common AMBIENT socle, complete
 original names on all upper vertices, and a concrete forbidden
