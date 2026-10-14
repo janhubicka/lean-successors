@@ -375,3 +375,16 @@ import SuccessorTree.V10.I3AlgorithmRunPool
 
 -- Proposition 6.44: selected I3 stages of the actual run obey sharp higher-generation R(M_g).
 import SuccessorTree.V10.I3AlgorithmRunSharp
+
+-- V10 Section 6: validated scope of I1I2AlgorithmRunBudget.
+import SuccessorTree.V10.I1I2AlgorithmRunBudget
+-- V10 Section 6: validated scope of HTopGenerationExclusions.
+import SuccessorTree.V10.HTopGenerationExclusions
+-- V10 Section 6: validated scope of HTopI1I2Seeds.
+import SuccessorTree.V10.HTopI1I2Seeds
+-- V10 Section 6: validated scope of HTopAlgorithmRunBase.
+import SuccessorTree.V10.HTopAlgorithmRunBase
+-- V10 Section 6: validated scope of HActualGenerationEventBound.
+import SuccessorTree.V10.HActualGenerationEventBound
+-- V10 Section 6: validated scope of HHigherPoolCumulativeBound.
+import SuccessorTree.V10.HHigherPoolCumulativeBound

@@ -1,0 +1,3 @@
+import SuccessorTree.V10.HTopGenerationExclusions
+#print axioms SuccessorTree.V10.numericH_no_strict_closure_meet_at_top_generation
+#print axioms SuccessorTree.V10.numericH_top_generation_selectedB3_holds
