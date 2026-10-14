@@ -324,3 +324,6 @@ import SuccessorTree.V10.I3StageSignatureBound
 
 -- I3: selected closure pool and exact f_ell source/graph identification criterion.
 import SuccessorTree.V10.I3SelectedStagePool
+
+-- Lemma 6.53: chosen signature original labels themselves have higher generation.
+import SuccessorTree.V10.I3ChosenOriginalGeneration
