@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M2B3SocleAge
+#print axioms SuccessorTree.V10.prescribedOrdinarySocle_induced
+#print axioms SuccessorTree.V10.prescribedOrdinarySocle_avoids_of_admissible
+#print axioms SuccessorTree.V10.m2B3_nontrivial_copy_has_upper

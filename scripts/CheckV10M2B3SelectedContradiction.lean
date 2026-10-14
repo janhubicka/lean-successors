@@ -1,0 +1,2 @@
+import SuccessorTree.V10.M2B3SelectedContradiction
+#print axioms SuccessorTree.V10.m2B3_selected_upper_forbidden_contradiction

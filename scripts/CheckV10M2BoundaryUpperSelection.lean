@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M2BoundaryUpperSelection
+#print axioms SuccessorTree.V10.m2Boundary_upper_vertex_has_source_index
+#print axioms SuccessorTree.V10.m2Boundary_base_has_source_index
