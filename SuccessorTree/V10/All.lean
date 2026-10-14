@@ -295,3 +295,6 @@ import SuccessorTree.V10.I3NumericRelocation
 
 -- I3: actual named upper source forces lower-upper full atom relocation.
 import SuccessorTree.V10.I3WitnessCrossRelocation
+
+-- I3: whole lower-zone W age relocation including carrier/singletons.
+import SuccessorTree.V10.I3WitnessLowerRelocation
