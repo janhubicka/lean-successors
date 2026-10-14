@@ -1,0 +1,3 @@
+import SuccessorTree.V10.I3CrossingAtoms
+#print axioms SuccessorTree.V10.fullOriginalType_all_incident_atoms
+#print axioms SuccessorTree.V10.chosenAgeSignature_some_incident_atoms
