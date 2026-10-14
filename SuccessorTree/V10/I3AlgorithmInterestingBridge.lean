@@ -44,7 +44,7 @@ theorem algorithmI3_implies_nonSkippableClosureCrossing
         (normalizedKptSMTree family) Z ell) :
     NonSkippableClosureCrossing family Z ell := by
   have hNoMMap :
-      ¬ ∃ D : SuccessorTree.MMap (normalizedKptSMTree family),
+      ¬ ∃ D : SuccessorTree.SMTree.MMap (normalizedKptSMTree family),
         D.map.SkipsOnly ell ∧
         ∀ z : AdmissibleKptNode family, z ∈ Z →
           ∀ (hz : ell < LevelTree.lev z),
@@ -57,7 +57,7 @@ theorem algorithmI3_implies_nonSkippableClosureCrossing
       · exact hI3
   intro hPossible
   obtain ⟨Φ,hMem,hSkip,hAgree⟩ := hPossible
-  let D : SuccessorTree.MMap (normalizedKptSMTree family) :=
+  let D : SuccessorTree.SMTree.MMap (normalizedKptSMTree family) :=
     ⟨Φ,hMem⟩
   apply hNoMMap
   refine ⟨D,hSkip,?_⟩
