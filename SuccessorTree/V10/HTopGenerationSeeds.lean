@@ -41,7 +41,7 @@ noncomputable def numericHTopGenerationSeeds
   classical
   let root : AdmissibleKptNode family :=
     (finiteNumericH K k N).kptOriginal family hAvoidH c
-  let prefix : {i : Nat // i ∈ blocks} → AdmissibleKptNode family :=
+  let prefix : Subtype (fun i : Nat => i ∈ blocks) → AdmissibleKptNode family :=
     fun i => LevelTree.ancestor root (hPosition k i.val k) (by
       change hPosition k i.val k ≤
         (finiteNumericH K k N).freeLevel c.val
@@ -63,7 +63,7 @@ theorem numericHTopGenerationSeeds_cases
     (hz : z ∈ numericHTopGenerationSeeds
       family K k N hAvoidH c blocks hWithin) :
     z = (finiteNumericH K k N).kptOriginal family hAvoidH c ∨
-      ∃ i : {i : Nat // i ∈ blocks},
+      ∃ i : Subtype (fun i : Nat => i ∈ blocks),
         z = LevelTree.ancestor
           ((finiteNumericH K k N).kptOriginal family hAvoidH c)
           (hPosition k i.val k) (hWithin i.val i.property) := by
@@ -71,7 +71,7 @@ theorem numericHTopGenerationSeeds_cases
   unfold numericHTopGenerationSeeds at hz
   change z ∈ insert
     ((finiteNumericH K k N).kptOriginal family hAvoidH c)
-    (blocks.attach.image (fun i : {i : Nat // i ∈ blocks} =>
+    (blocks.attach.image (fun i : Subtype (fun i : Nat => i ∈ blocks) =>
       LevelTree.ancestor
         ((finiteNumericH K k N).kptOriginal family hAvoidH c)
         (hPosition k i.val k) (hWithin i.val i.property))) at hz
@@ -97,13 +97,14 @@ theorem numericHTopGenerationSeeds_subset_rootPool
         ambientPrefixPool family (finiteNumericH K k N)
           hAvoidH ({c} : Set (Fin N)) := by
   intro z hz
+  have hSingleton : c ∈ ({c} : Set (Fin N)) := by simp
   obtain hRoot | ⟨i,hPrefix⟩ :=
     numericHTopGenerationSeeds_cases
       family K k N hAvoidH c blocks hWithin z hz
   · rw [hRoot]
-    exact ⟨_,⟨c,by simp,rfl⟩,le_rfl⟩
+    exact ⟨_,⟨c,hSingleton,rfl⟩,le_rfl⟩
   · rw [hPrefix]
-    exact ⟨_,⟨c,by simp,rfl⟩,
+    exact ⟨_,⟨c,hSingleton,rfl⟩,
       LevelTree.ancestor_le _ _ _⟩
 
 /-- Top-generation real coordinates cannot coincide with real
@@ -148,7 +149,13 @@ theorem numericHTopGenerationSeeds_noIntermediateReal
       exact finiteNumericH_positive_freeLevel_ne_realPosition
         K k N c.val p r c.isLt hPos
   · rw [hPrefix]
-    rw [LevelTree.level_ancestor]
+    have hLev :
+        LevelTree.lev (LevelTree.ancestor
+          ((finiteNumericH K k N).kptOriginal family hAvoidH c)
+          (hPosition k i.val k) (hWithin i.val i.property)) =
+          hPosition k i.val k :=
+      LevelTree.level_ancestor _ _ _
+    rw [hLev]
     exact numericHTopLevel_ne_lowerGeneration k i.val p r hrk
 
 /-- At most q+1 seed nodes are introduced from q top-generation
@@ -169,7 +176,7 @@ theorem numericHTopGenerationSeeds_card_le
   let root : AdmissibleKptNode family :=
     (finiteNumericH K k N).kptOriginal family hAvoidH c
   let S : Finset (AdmissibleKptNode family) :=
-    blocks.attach.image (fun i : {i : Nat // i ∈ blocks} =>
+    blocks.attach.image (fun i : Subtype (fun i : Nat => i ∈ blocks) =>
       LevelTree.ancestor root (hPosition k i.val k) (hWithin i.val i.property))
   change (insert root S).card ≤ blocks.card + 1
   have hImage : S.card ≤ blocks.card := by
