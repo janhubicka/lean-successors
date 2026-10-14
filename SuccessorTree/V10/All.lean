@@ -306,3 +306,6 @@ import SuccessorTree.V10.I3ForbiddenCutIndex
 
 -- I3: forbidden-free ambient socle forces the copy's nonempty proper lower cut.
 import SuccessorTree.V10.I3ActualProperCut
+
+-- I3: level-filtered source of the fixed original pool; B1/B2 and full Kpt admissibility.
+import SuccessorTree.V10.I3EligibleStagePool
