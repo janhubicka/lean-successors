@@ -63,10 +63,7 @@ theorem numericH_algorithmRun_closure_original_in_final_pool
     (R.I (ell+1)) X hX hz
   obtain ⟨o,⟨v,hv,rfl⟩,hPrefix⟩ := hPool
   have hV : v ∈ hStageOriginals K k N U (R.I 0) := by
-    change v ∈ (Finset.univ.filter (fun v : Fin N =>
-      v ∈ U ∨ (v.val ∈ R.I 0 ∧ 0 < A.freeLevel v.val)))
-    apply Finset.mem_filter.mpr
-    refine ⟨Finset.mem_univ _,?_⟩
+    simp only [hStageOriginals, Finset.mem_filter, Finset.mem_univ, true_and]
     rcases hv with hu | ⟨hi,hFree⟩
     · exact Or.inl hu
     · right
