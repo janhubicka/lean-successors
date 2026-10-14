@@ -181,12 +181,13 @@ theorem i3_lower_numeric_rank_of_irreducible_copy
         dsimp [lo,last]
         have ha := a.isLt
         omega)
-      have h := hCopy.1.monotone hle
-      change e lo ≤ e last at h
-      have hLast' : e last = ell := hLast
-      omega
+      change e lo ≤ ell
+      calc
+        e lo ≤ e last := hCopy.1.monotone hle
+        _ = ell := hLast
     exact i3_forbidden_lower_real_generation_rank
-      K k N ell r hTwo (by omega) W hSocle
+      K k N ell r hTwo (Nat.le_of_lt hrt)
+      (by omega : r ≤ k+1) W hSocle
       P hIrred e hCopy hBelow
 
 /-- This is the geometric generation conclusion of Lemma 6.53,
