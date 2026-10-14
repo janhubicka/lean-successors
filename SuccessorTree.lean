@@ -362,3 +362,6 @@ import SuccessorTree.FreeAncestralM2InnerShape
 import SuccessorTree.FreeAncestralM2
 import SuccessorTree.FreeAncestralSMTree
 import SuccessorTree.FreeAncestralFiniteRamsey
+
+-- Concrete Ramsey consequences of the now-verified normalized Kpt SMTree.
+import SuccessorTree.V10.KptRamseyApplications

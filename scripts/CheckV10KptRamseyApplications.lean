@@ -1,0 +1,5 @@
+import SuccessorTree.V10.KptRamseyApplications
+#print axioms SuccessorTree.V10.normalizedKpt_shapeRamsey
+#print axioms SuccessorTree.V10.normalizedKpt_shapeRamsey_viaFatEllentuck
+#print axioms SuccessorTree.V10.normalizedKpt_shapeRamsey_bounded
+#print axioms SuccessorTree.V10.normalizedKpt_shapeRamsey_exact
