@@ -322,6 +322,72 @@ jobs:
             cat proof-audit/i3-crossing-atoms-axioms.log
             exit 1
           }
+      - name: Check I3 numerical H relation relocation axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3NumericRelocation.lean > proof-audit/i3-numeric-relocation-axioms.log 2>&1; then
+            cat proof-audit/i3-numeric-relocation-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-numeric-relocation-axioms.log scripts/CheckV10I3NumericRelocation.lean || {
+            cat proof-audit/i3-numeric-relocation-axioms.log
+            exit 1
+          }
+      - name: Check actual I3 witness cross-relocation axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3WitnessCrossRelocation.lean > proof-audit/i3-witness-cross-relocation-axioms.log 2>&1; then
+            cat proof-audit/i3-witness-cross-relocation-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-witness-cross-relocation-axioms.log scripts/CheckV10I3WitnessCrossRelocation.lean || {
+            cat proof-audit/i3-witness-cross-relocation-axioms.log
+            exit 1
+          }
+      - name: Check actual I3 witness lower-zone relocation
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3WitnessLowerRelocation.lean > proof-audit/i3-lower-zone-axioms.log 2>&1; then
+            cat proof-audit/i3-lower-zone-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-lower-zone-axioms.log scripts/CheckV10I3WitnessLowerRelocation.lean || {
+            cat proof-audit/i3-lower-zone-axioms.log
+            exit 1
+          }
+      - name: Check full I3 forbidden-copy relocation axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3FullForbiddenRelocation.lean > proof-audit/i3-full-relocation-axioms.log 2>&1; then
+            cat proof-audit/i3-full-relocation-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-full-relocation-axioms.log scripts/CheckV10I3FullForbiddenRelocation.lean || {
+            cat proof-audit/i3-full-relocation-axioms.log
+            exit 1
+          }
+      - name: Check I3 ordered forbidden-copy exact cut
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3ForbiddenCutIndex.lean > proof-audit/i3-forbidden-cut-axioms.log 2>&1; then
+            cat proof-audit/i3-forbidden-cut-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-forbidden-cut-axioms.log scripts/CheckV10I3ForbiddenCutIndex.lean || {
+            cat proof-audit/i3-forbidden-cut-axioms.log
+            exit 1
+          }
+      - name: Check I3 proper forbidden-copy cut without upper premise
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3ActualProperCut.lean > proof-audit/i3-proper-cut-axioms.log 2>&1; then
+            cat proof-audit/i3-proper-cut-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-proper-cut-axioms.log scripts/CheckV10I3ActualProperCut.lean || {
+            cat proof-audit/i3-proper-cut-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
