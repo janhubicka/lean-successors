@@ -1,3 +1,4 @@
+import SuccessorTree.V10.HFinitePartial
 import SuccessorTree.V10.RelationalTypeReduct
 import SuccessorTree.V10.ChosenAgeSignatures
 import Mathlib.Tactic
@@ -94,5 +95,88 @@ theorem chosenAgeSignature_some_incident_atoms
   simpa only [Nat.lt_succ_iff] using
     fullOriginalType_all_incident_atoms
       W C (ell + 1) (e a) (original v) hType
+
+/-- A positive directed relation between two LOWER vertices of
+an actual I3 finite L-only witness forces both vertices to be real
+numerical H vertices. Their first indices are strictly increasing,
+and their generations satisfy precisely the existing H gate.
+
+This is derived from literal agreement of the initial L-socle with
+the finite H construction; no abstract real-vertex/linked-pair
+assumption enters this statement. -/
+theorem i3_linked_lower_pair_numeric_generators
+    {db du dd : Nat}
+    (K : AgeTestModel db du dd)
+    (k N ell : Nat)
+    (W : AgeTestModel db du dd)
+    (hSocle : SameInitialL W (finiteNumericHL K k N) ell)
+    (x y : Nat) (hxy : x < y) (hy : y ≤ ell)
+    (hLink : ∃ t : Fin db,
+      W.binary x y t = true ∨ W.binary y x t = true) :
+    ∃ i j q m : Nat,
+      i < j ∧ q ≤ k ∧ m ≤ k ∧
+      (q < m ∨ (q = m ∧ m = k)) ∧
+      x = hPosition k i q ∧ y = hPosition k j m := by
+  have hx : x ≤ ell := Nat.le_trans (Nat.le_of_lt hxy) hy
+  have hCopyXY : ∀ t : Fin db,
+      W.binary x y t = hNumericBinary K.binary k x y t := by
+    intro t
+    exact hSocle.2.1 x y hx hy t
+  have hCopyYX : ∀ t : Fin db,
+      W.binary y x t = hNumericBinary K.binary k y x t := by
+    intro t
+    exact hSocle.2.1 y x hy hx t
+  obtain ⟨t,ht⟩ := hLink
+  have hRealLink : ∃ t : Fin db,
+      hNumericBinary K.binary k x y t = true ∨
+      hNumericBinary K.binary k y x t = true := by
+    refine ⟨t,?_⟩
+    rcases ht with ht | ht
+    · exact Or.inl ((hCopyXY t).symm.trans ht)
+    · exact Or.inr ((hCopyYX t).symm.trans ht)
+  exact hNumericBinary_linked_generators K.binary k x y
+    hxy hRealLink
+
+/-- If the I3 witness has a positive relation between its TESTED
+coordinate ell and a named upper original, then the complete upper
+type identifies ell and that original as linked, real H vertices,
+with ordered base first indices and the permitted generation gate.
+
+The hypothesis ell < original is the genuine crossing guard; it
+will follow from the manuscript's free-level cut for the actual
+chosen original pool. In contrast, it need not hold for an
+arbitrary unguarded source list. -/
+theorem i3_named_upper_link_numeric_generators
+    {db du dd : Nat}
+    (K : AgeTestModel db du dd)
+    (k N ell : Nat)
+    (W : AgeTestModel db du dd)
+    (w original : Nat) (hOrder : ell < original)
+    (hType :
+      RelationalPrefixType.ofAgeModel W (ell+1) w =
+        RelationalPrefixType.ofAgeModel
+          (finiteNumericHL K k N) (ell+1) original)
+    (hLink : ∃ t : Fin db,
+      W.binary ell w t = true ∨ W.binary w ell t = true) :
+    ∃ i j q m : Nat,
+      i < j ∧ q ≤ k ∧ m ≤ k ∧
+      (q < m ∨ (q = m ∧ m = k)) ∧
+      ell = hPosition k i q ∧
+      original = hPosition k j m := by
+  have hCross :=
+    (fullOriginalType_all_incident_atoms W
+      (finiteNumericHL K k N) (ell+1) w original hType).1
+      ell (Nat.lt_succ_self ell)
+  obtain ⟨t,ht⟩ := hLink
+  have hRealLink : ∃ t : Fin db,
+      hNumericBinary K.binary k ell original t = true ∨
+      hNumericBinary K.binary k original ell t = true := by
+    refine ⟨t,?_⟩
+    rcases ht with ht | ht
+    · exact Or.inl ((hCross t).1.symm.trans ht)
+    · exact Or.inr ((hCross t).2.symm.trans ht)
+  exact hNumericBinary_linked_generators K.binary k ell original
+    hOrder hRealLink
+
 
 end SuccessorTree.V10
