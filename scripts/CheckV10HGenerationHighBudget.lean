@@ -1,0 +1,8 @@
+import SuccessorTree.V10.HGenerationHighBudget
+#print axioms SuccessorTree.V10.hGenerationHighOriginals
+#print axioms SuccessorTree.V10.hOriginalCharge_mem_generationHigh
+#print axioms SuccessorTree.V10.hHigherOriginals_subset_generationHigh
+#print axioms SuccessorTree.V10.hPoolChargeLevels_card_le_generationHigh
+#print axioms SuccessorTree.V10.hGenerationHighOriginals_mono
+#print axioms SuccessorTree.V10.hStageOriginals_mono
+#print axioms SuccessorTree.V10.forbiddenFreeH_closure_meet_budget_high

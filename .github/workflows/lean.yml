@@ -553,6 +553,50 @@ jobs:
             cat proof-audit/i3-actual-higher-signature-axioms.log
             exit 1
           }
+      - name: Check common higher-generation original budget for H meets
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HGenerationHighBudget.lean > proof-audit/h-high-generation-budget-axioms.log 2>&1; then
+            cat proof-audit/h-high-generation-budget-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-high-generation-budget-axioms.log scripts/CheckV10HGenerationHighBudget.lean || {
+            cat proof-audit/h-high-generation-budget-axioms.log
+            exit 1
+          }
+      - name: Check actual Kpt closure normal form
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10KptStageClosureNormalForm.lean > proof-audit/kpt-stage-closure-normalform-axioms.log 2>&1; then
+            cat proof-audit/kpt-stage-closure-normalform-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/kpt-stage-closure-normalform-axioms.log scripts/CheckV10KptStageClosureNormalForm.lean || {
+            cat proof-audit/kpt-stage-closure-normalform-axioms.log
+            exit 1
+          }
+      - name: Check numerical H positive free levels odd
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HPositiveFreeLevelOdd.lean > proof-audit/h-positive-freelevel-odd-axioms.log 2>&1; then
+            cat proof-audit/h-positive-freelevel-odd-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-positive-freelevel-odd-axioms.log scripts/CheckV10HPositiveFreeLevelOdd.lean || {
+            cat proof-audit/h-positive-freelevel-odd-axioms.log
+            exit 1
+          }
+      - name: Check real I1 nodes have actual original meet charges
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I1RealNodeMeetCharge.lean > proof-audit/i1-real-meet-charge-axioms.log 2>&1; then
+            cat proof-audit/i1-real-meet-charge-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i1-real-meet-charge-axioms.log scripts/CheckV10I1RealNodeMeetCharge.lean || {
+            cat proof-audit/i1-real-meet-charge-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
