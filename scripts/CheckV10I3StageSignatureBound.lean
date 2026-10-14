@@ -1,0 +1,6 @@
+import SuccessorTree.V10.I3StageSignatureBound
+#print axioms SuccessorTree.V10.NormalizedForbidden.signaturePattern
+#print axioms SuccessorTree.V10.NormalizedForbidden.signaturePattern_avoids_iff
+#print axioms SuccessorTree.V10.NormalizedForbidden.signaturePattern_copy_of_violation
+#print axioms SuccessorTree.V10.stagePool_failedB3_has_signature_witness
+#print axioms SuccessorTree.V10.stagePool_B3_failure_levels_card_le_signature_capacity
