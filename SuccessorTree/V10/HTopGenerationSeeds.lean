@@ -41,12 +41,12 @@ noncomputable def numericHTopGenerationSeeds
   classical
   let root : AdmissibleKptNode family :=
     (finiteNumericH K k N).kptOriginal family hAvoidH c
-  let prefix : Subtype (fun i : Nat => i ∈ blocks) → AdmissibleKptNode family :=
+  let mkPrefix : Subtype (fun i : Nat => i ∈ blocks) → AdmissibleKptNode family :=
     fun i => LevelTree.ancestor root (hPosition k i.val k) (by
       change hPosition k i.val k ≤
         (finiteNumericH K k N).freeLevel c.val
       exact hWithin i.val i.property)
-  exact insert root (blocks.attach.image prefix)
+  exact insert root (blocks.attach.image mkPrefix)
 
 /-- Every seed has one of the two literal source forms; none is an
 arbitrary same-type representative chosen elsewhere in the ambient. -/
