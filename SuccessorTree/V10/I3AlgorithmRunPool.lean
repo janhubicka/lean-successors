@@ -62,27 +62,23 @@ theorem numericH_algorithmRun_closure_original_in_final_pool
     family A hAvoidA (U : Set (Fin N))
     (R.I (ell+1)) X hX hz
   obtain ⟨o,⟨v,hv,rfl⟩,hPrefix⟩ := hPool
-  have hV : v ∈ hStageOriginals K k N U (R.I 0) := by
+  -- Keep the Finset membership calculation at the exact type Fin N,
+  -- rather than at the dependent but definitionally equal Fin A.size.
+  let vN : Fin N := v
+  have hV : vN ∈ hStageOriginals K k N U (R.I 0) := by
     have hFinalPool :
-        v ∈ U ∨
-        (v.val ∈ R.I 0 ∧
-          0 < (finiteNumericH K k N).freeLevel v.val) := by
+        vN ∈ U ∨
+        (vN.val ∈ R.I 0 ∧
+          0 < (finiteNumericH K k N).freeLevel vN.val) := by
       rcases hv with hu | ⟨hi,hFree⟩
-      · exact Or.inl hu
+      · exact Or.inl (by simpa [vN] using hu)
       · right
         have hTail := R.I_eq_final_tail_of_run (ell+1) (by omega)
         rw [hTail] at hi
         exact ⟨hi.1,hFree⟩
-    have hFilter :
-        v ∈ hStageOriginals K k N U (R.I 0) ↔
-        (v ∈ U ∨
-          (v.val ∈ R.I 0 ∧
-            0 < (finiteNumericH K k N).freeLevel v.val)) := by
-      classical
-      simp only [hStageOriginals, Finset.mem_filter, Finset.mem_univ, true_and]
-      rfl
-    exact hFilter.mpr hFinalPool
-  exact ⟨v,hV,hPrefix⟩
+    simpa only [hStageOriginals, Finset.mem_filter,
+      Finset.mem_univ, true_and, Set.mem_setOf_eq] using hFinalPool
+  exact ⟨vN,hV,hPrefix⟩
 
 /-- The actual finite run's positive I3 levels have the exact
 signature bound by the final maintained original pool V. No
