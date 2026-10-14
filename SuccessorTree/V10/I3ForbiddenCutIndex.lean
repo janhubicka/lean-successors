@@ -28,7 +28,7 @@ theorem ordered_I3_copy_has_exact_lower_cut
     (ell : Nat)
     (hAt : ∃ a : Fin t, e a = ell)
     (hUpper : ∃ b : Fin t, ell < e b) :
-    ∃ r : Nat, 0 < r ∧ r < t ∧
+    ∃ (r : Nat) (_hr : 0 < r) (_hrt : r < t),
       e (⟨r-1, by omega⟩ : Fin t) = ell ∧
       (∀ a : Fin t, a.val < r ↔ e a ≤ ell) ∧
       (∀ a : Fin t, r ≤ a.val ↔ ell < e a) := by
@@ -48,8 +48,7 @@ theorem ordered_I3_copy_has_exact_lower_cut
     omega
   have hLast : e (⟨r-1, by omega⟩ : Fin t) = ell := by
     have heq : (⟨r-1, by omega⟩ : Fin t) = a := Fin.ext (by
-      dsimp [r]
-      omega)
+      simp [r])
     rw [heq]
     exact ha
   have hLow : ∀ c : Fin t, c.val < r ↔ e c ≤ ell := by
@@ -95,7 +94,7 @@ theorem i3_forbidden_age_copy_lower_cut
     (ell : Nat)
     (hAt : ∃ a : Fin t, e a = ell)
     (hUpper : ∃ b : Fin t, ell < e b) :
-    ∃ r : Nat, 0 < r ∧ r < t ∧
+    ∃ (r : Nat) (_hr : 0 < r) (_hrt : r < t),
       e (⟨r-1, by omega⟩ : Fin t) = ell ∧
       (∀ a : Fin t, a.val < r ↔ e a ≤ ell) ∧
       (∀ a : Fin t, r ≤ a.val ↔ ell < e a) :=
