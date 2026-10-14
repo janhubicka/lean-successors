@@ -267,6 +267,17 @@ jobs:
             cat proof-audit/i3-prescribed-original-axioms.log
             exit 1
           }
+      - name: Check numerical generation recurrence and envelope cardinality
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10EnvelopeNumericalRecurrence.lean > proof-audit/numerical-generation-axioms.log 2>&1; then
+            cat proof-audit/numerical-generation-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/numerical-generation-axioms.log scripts/CheckV10EnvelopeNumericalRecurrence.lean || {
+            cat proof-audit/numerical-generation-axioms.log
+            exit 1
+          }
       - name: Check finite ambient original-pool I3 B1/B2 map
         run: |
           set -o pipefail

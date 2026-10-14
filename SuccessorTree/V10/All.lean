@@ -284,5 +284,8 @@ import SuccessorTree.V10.ChosenAgeSignatures
 -- I3: actual prescribed-source upper types recover ambient original labels.
 import SuccessorTree.V10.I3PrescribedOriginalWitness
 
+-- Section 6.44: the manuscript's descending cardinal recurrence.
+import SuccessorTree.V10.EnvelopeNumericalRecurrence
+
 -- I3: actual finite ambient-pool B1/B2 source and named target types.
 import SuccessorTree.V10.I3AmbientPrescribedPool
