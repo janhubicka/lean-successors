@@ -49,6 +49,20 @@ theorem partialTypeAt_lReduct_eq_ofAgeModel
     (A.partialTypeAt cut v).lReduct =
       RelationalPrefixType.ofAgeModel A.L cut v := rfl
 
+/-- Choose a representative of a finite ambient type if one is
+available. The output outside the source range is arbitrary; the
+manuscript requires the prescribed map only on its source domain. -/
+noncomputable def ambientPoolTarget
+    {db du dd M : Nat}
+    (A : EnumeratedPartialStructure db du dd)
+    (ell : Nat) (original : Fin M → Nat)
+    (T : PartialTypeWithE ell db du dd) :
+    PartialTypeWithE (ell+1) db du dd := by
+  classical
+  exact if h : ∃ v : Fin M, A.partialTypeAt ell (original v) = T then
+    A.partialTypeAt (ell+1) (original (Classical.choose h))
+  else A.partialTypeAt (ell+1) 0
+
 /-- The actual finite-pool B1/B2 prescription. Domain membership is
 literal equality with an old ambient source type. The arbitrary
 output outside the source is used only to make the record total;
@@ -63,33 +77,26 @@ noncomputable def ambientPoolPrescribedData
     (ell : Nat) (original : Fin M → Nat) :
     PrescribedBoringData ell db du dd where
   source := Set.range (fun v : Fin M => A.partialTypeAt ell (original v))
-  target := fun T =>
-    if h : ∃ v : Fin M, A.partialTypeAt ell (original v) = T then
-      A.partialTypeAt (ell+1) (original (Classical.choose h))
-    else A.partialTypeAt (ell+1) 0
+  target := ambientPoolTarget A ell original
   extendsSource := by
+    classical
     intro T hT
     change ∃ v : Fin M, A.partialTypeAt ell (original v) = T at hT
-    change
-      (if h : ∃ v : Fin M, A.partialTypeAt ell (original v) = T then
-        A.partialTypeAt (ell+1) (original (Classical.choose h))
-       else A.partialTypeAt (ell+1) 0).restrict (Nat.le_succ ell) = T
-    rw [dif_pos hT]
+    change (ambientPoolTarget A ell original T).restrict
+      (Nat.le_succ ell) = T
+    simp only [ambientPoolTarget, dite_eq_left hT]
     exact (A.partialTypeAt_restrict ell (ell+1)
       (original (Classical.choose hT)) (Nat.le_succ ell)).trans
         (Classical.choose_spec hT)
   preservesCompatibility := by
+    classical
     intro T U hT hU _hComp
     change ∃ v : Fin M, A.partialTypeAt ell (original v) = T at hT
     change ∃ v : Fin M, A.partialTypeAt ell (original v) = U at hU
     change SameOrdinarySocle
-      (if h : ∃ v : Fin M, A.partialTypeAt ell (original v) = T then
-        A.partialTypeAt (ell+1) (original (Classical.choose h))
-       else A.partialTypeAt (ell+1) 0)
-      (if h : ∃ v : Fin M, A.partialTypeAt ell (original v) = U then
-        A.partialTypeAt (ell+1) (original (Classical.choose h))
-       else A.partialTypeAt (ell+1) 0)
-    rw [dif_pos hT, dif_pos hU]
+      (ambientPoolTarget A ell original T)
+      (ambientPoolTarget A ell original U)
+    simp only [ambientPoolTarget, dite_eq_left hT, dite_eq_left hU]
     exact sameOrdinarySocle_ambient_types A ell
       (original (Classical.choose hT))
       (original (Classical.choose hU))
@@ -113,12 +120,9 @@ theorem ambientPoolPrescribedData_source_original
   have hv : A.partialTypeAt ell (original v) = T :=
     Classical.choose_spec hT
   refine ⟨v,hv.symm,?_⟩
-  change
-    (if h : ∃ w : Fin M, A.partialTypeAt ell (original w) = T then
-      A.partialTypeAt (ell+1) (original (Classical.choose h))
-     else A.partialTypeAt (ell+1) 0).lReduct =
-       RelationalPrefixType.ofAgeModel A.L (ell+1) (original v)
-  rw [dif_pos hT]
+  change (ambientPoolTarget A ell original T).lReduct =
+    RelationalPrefixType.ofAgeModel A.L (ell+1) (original v)
+  simp only [ambientPoolTarget, dite_eq_left hT]
   exact partialTypeAt_lReduct_eq_ofAgeModel A (ell+1) (original v)
 
 /-- The actual ambient-pool construction and a failed manuscript B3
@@ -145,10 +149,9 @@ theorem ambientPool_failedCorrectedB3_has_original_witness
             RelationalPrefixType.ofAgeModel W (ell+1) x =
               RelationalPrefixType.ofAgeModel A.L (ell+1) (original v)) ∧
         ∃ bad, bad ∈ family ∧ ¬ bad.Avoids W := by
-  exact (ambientPoolPrescribedData A ell original).
-    failedCorrectedB3_of_actual_original_pool
-      family A original
-      (ambientPoolPrescribedData_source_original A ell original)
-      hFailure
+  exact PrescribedBoringData.failedCorrectedB3_of_actual_original_pool
+    (ambientPoolPrescribedData A ell original) family A original
+    (ambientPoolPrescribedData_source_original A ell original)
+    hFailure
 
 end SuccessorTree.V10
