@@ -183,11 +183,15 @@ theorem numericHTopGenerationSeeds_card_le
     calc
       S.card ≤ blocks.attach.card := Finset.card_image_le
       _ = blocks.card := by simp
-  by_cases hRoot : root ∈ S
-  · simp [Finset.card_insert_of_mem hRoot]
-    omega
-  · simp [Finset.card_insert_of_not_mem hRoot]
-    omega
+  have hUnion : (insert root S).card ≤ 1 + S.card := by
+    have h := Finset.card_union_le
+      ({root} : Finset (AdmissibleKptNode family)) S
+    have hEq :
+        ({root} : Finset (AdmissibleKptNode family)) ∪ S =
+          insert root S := by simp
+    rw [hEq] at h
+    simpa using h
+  omega
 
 /-- The promised I1 conclusion for the ACTUAL finite top-generation
 seed family, with no remaining hand-supplied no-intermediate-seeds
