@@ -187,6 +187,21 @@ theorem m2Boundary_source_injective
   apply D.injective'
   exact Subtype.ext hRaw
 
+/-- Express the full L+ predecessor of a sigma-indexed type at a
+certified successor level. The dependent type-index cast is handled
+at the raw-node level, avoiding rewrites through its proof fields. -/
+theorem rawPartialTypeAncestor_at_succ_level
+    {db du dd : Nat}
+    (N : RawPartialTypeNode db du dd) (m : Nat)
+    (h : N.1 = m+1) :
+    rawPartialTypeAncestor N m (by omega) =
+      (⟨m,(h ▸ N.2).restrict (Nat.le_succ m)⟩ :
+        RawPartialTypeNode db du dd) := by
+  rcases N with ⟨k,Q⟩
+  change k = m+1 at h
+  subst k
+  rfl
+
 /-- Actual M2 boundary B1: the complete target record extends its
 deleted input by precisely its final ordinary L+ coordinate. -/
 theorem m2Boundary_B1
@@ -224,12 +239,11 @@ theorem m2Boundary_B1
            have hLevel : m + 1 = (F x.1).1.1 :=
              (m2Boundary_target_level family F q₀ a₀ hprev hgap x).symm
            exact le_trans (Nat.le_succ m) (Nat.le_of_eq hLevel)) := hRaw
-      _ = rawPartialTypeAncestor
-           (⟨m+1,m2Boundary_targetType family F q₀ a₀ hprev hgap x⟩ :
-              RawPartialTypeNode db du dd) m (Nat.le_succ m) := by
-        rw [m2Boundary_target_raw family F q₀ a₀ hprev hgap x]
       _ = (⟨m,(m2Boundary_targetType family F q₀ a₀ hprev hgap x).restrict
-              (Nat.le_succ m)⟩ : RawPartialTypeNode db du dd) := rfl
+              (Nat.le_succ m)⟩ : RawPartialTypeNode db du dd) := by
+        exact rawPartialTypeAncestor_at_succ_level
+          (F x.1).1 m
+          (m2Boundary_target_level family F q₀ a₀ hprev hgap x)
   exact (eq_of_heq (Sigma.mk.inj_iff.mp hEq).2).symm
 
 end SuccessorTree.V10
