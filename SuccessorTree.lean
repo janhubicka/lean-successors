@@ -310,3 +310,6 @@ import SuccessorTree.V10.M2B3CopyCases
 
 -- M2 B3: full selected source witness yields forbidden-copy contradiction.
 import SuccessorTree.V10.M2B3SelectedContradiction
+
+-- M2 B3: prescribed ordinary socle is forbidden-free by induced age.
+import SuccessorTree.V10.M2B3SocleAge
