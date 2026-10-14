@@ -1,0 +1,3 @@
+import SuccessorTree.V10.I3ForbiddenCutIndex
+#print axioms SuccessorTree.V10.ordered_I3_copy_has_exact_lower_cut
+#print axioms SuccessorTree.V10.i3_forbidden_age_copy_lower_cut
