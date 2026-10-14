@@ -369,3 +369,6 @@ import SuccessorTree.V10.HTopGenerationSeeds
 
 -- Proposition 6.44: top-generation seed I1 and I2 events carry original meet charges.
 import SuccessorTree.V10.I1I2RealEventCharge
+
+-- Proposition 6.44: neither strict meet nor failed B3 can arise in real top generation.
+import SuccessorTree.V10.HTopGenerationExclusions
