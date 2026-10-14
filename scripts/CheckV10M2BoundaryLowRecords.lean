@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M2BoundaryLowRecords
+#print axioms SuccessorTree.V10.shapeMap_retained_ordinary_binary
+#print axioms SuccessorTree.V10.m2Boundary_initial_binary_of_sameSocle

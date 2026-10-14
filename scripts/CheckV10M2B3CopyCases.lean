@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M2B3CopyCases
+#print axioms SuccessorTree.V10.sameInitialL_realizes_below
+#print axioms SuccessorTree.V10.forbiddenCopy_has_upper_of_sameInitialL
+#print axioms SuccessorTree.V10.m2ForbiddenCopy_from_padded_cap_of_upper
