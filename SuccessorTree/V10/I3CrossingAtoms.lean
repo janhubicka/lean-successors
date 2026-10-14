@@ -271,4 +271,75 @@ theorem i3_lower_irreducible_numeric_rank
       (fun a b hab => (hPairs a b hab).2)
 
 
+/-- Restrict one ACTUAL ordered induced forbidden copy to its
+first r vertices. Pairwise irreducibility supplies the positive
+directed link between every two distinct lower vertices, not an
+extra assumption about the hypothetical age witness. -/
+theorem i3_forbidden_copy_lower_links
+    {t r db du dd : Nat}
+    (P : ForbiddenAtomicPattern t db du dd) (hIrred : P.Irreducible)
+    (W : AgeTestModel db du dd)
+    (e : Fin t → Nat) (hCopy : W.Realizes P e)
+    (hr : r ≤ t)
+    (a b : Fin r) (hab : a < b) :
+    ∃ u : Fin db,
+      W.binary (e ⟨a.val, lt_of_lt_of_le a.isLt hr⟩)
+          (e ⟨b.val, lt_of_lt_of_le b.isLt hr⟩) u = true ∨
+      W.binary (e ⟨b.val, lt_of_lt_of_le b.isLt hr⟩)
+          (e ⟨a.val, lt_of_lt_of_le a.isLt hr⟩) u = true := by
+  let aa : Fin t := ⟨a.val, lt_of_lt_of_le a.isLt hr⟩
+  let bb : Fin t := ⟨b.val, lt_of_lt_of_le b.isLt hr⟩
+  have hne : aa ≠ bb := by
+    intro h
+    have hv := congrArg Fin.val h
+    exact (Nat.ne_of_lt (Fin.lt_def.mp hab)) hv
+  obtain ⟨u,hLink⟩ := hIrred aa bb hne
+  refine ⟨u,?_⟩
+  rcases hLink with hAB | hBA
+  · exact Or.inl ((hCopy.2.2.1 aa bb hne u).trans hAB)
+  · exact Or.inr ((hCopy.2.2.1 bb aa hne.symm u).trans hBA)
+
+/-- For an actual irreducible induced forbidden copy, the initial
+r≥2 vertices lying in the exact H socle admit coherent real
+coordinates with increasing original first indices and generation
+at least their ordinal rank.
+
+This is the first half of Lemma 6.53 without assuming an
+abstract linked configuration. The remaining cases are r=1
+(using the tested-level/upper-original relation), and the
+relocation-to-forbidden-age contradiction that forces the final
+lower generation to equal r-1. -/
+theorem i3_forbidden_lower_real_generation_rank
+    {db du dd t : Nat}
+    (K : AgeTestModel db du dd)
+    (k N ell r : Nat) (hr : 2 ≤ r)
+    (hrt : r ≤ t) (hrk : r ≤ k+1)
+    (W : AgeTestModel db du dd)
+    (hSocle : SameInitialL W (finiteNumericHL K k N) ell)
+    (P : ForbiddenAtomicPattern t db du dd)
+    (hIrred : P.Irreducible)
+    (e : Fin t → Nat) (hCopy : W.Realizes P e)
+    (hBelow : ∀ a : Fin r,
+      e ⟨a.val, lt_of_lt_of_le a.isLt hrt⟩ ≤ ell) :
+    ∃ (first generation : Fin r → Nat),
+      (∀ a : Fin r, generation a ≤ k ∧
+        e ⟨a.val, lt_of_lt_of_le a.isLt hrt⟩ =
+          hPosition k (first a) (generation a)) ∧
+      StrictMono first ∧
+      (∀ a : Fin r, a.val ≤ generation a) := by
+  let eLower : Fin r → Nat := fun a =>
+    e ⟨a.val, lt_of_lt_of_le a.isLt hrt⟩
+  have hOrder : StrictMono eLower := by
+    intro a b hab
+    exact hCopy.1 (Fin.lt_def.mpr (Fin.lt_def.mp hab))
+  have hLinked : ∀ a b : Fin r, a < b →
+      ∃ u : Fin db,
+        W.binary (eLower a) (eLower b) u = true ∨
+        W.binary (eLower b) (eLower a) u = true := by
+    intro a b hab
+    exact i3_forbidden_copy_lower_links P hIrred W e hCopy hrt a b hab
+  exact i3_lower_irreducible_numeric_rank
+    K k N ell r hr hrk W hSocle eLower hOrder hBelow hLinked
+
+
 end SuccessorTree.V10
