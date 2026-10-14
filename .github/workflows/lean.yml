@@ -531,6 +531,17 @@ jobs:
             cat proof-audit/i3-algorithm-bridge-axioms.log
             exit 1
           }
+      - name: Check common higher-generation original budget for H meets
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HGenerationHighBudget.lean > proof-audit/h-high-generation-budget-axioms.log 2>&1; then
+            cat proof-audit/h-high-generation-budget-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-high-generation-budget-axioms.log scripts/CheckV10HGenerationHighBudget.lean || {
+            cat proof-audit/h-high-generation-budget-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
