@@ -1,0 +1,3 @@
+import SuccessorTree.V10.I3ChosenOriginalGeneration
+#print axioms SuccessorTree.V10.numericI3_selected_named_originals_have_higher_generation
+#print axioms SuccessorTree.V10.finiteNumericH_failedSelectedStageB3_originals_higher
