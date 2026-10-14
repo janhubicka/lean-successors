@@ -1,0 +1,2 @@
+import SuccessorTree.V10.I1I2RealEventCharge
+#print axioms SuccessorTree.V10.numericHTopSeeds_real_I1I2_has_charge

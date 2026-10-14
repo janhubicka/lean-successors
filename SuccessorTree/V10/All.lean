@@ -366,3 +366,6 @@ import SuccessorTree.V10.HHighOriginalNameEnumeration
 
 -- Proposition 6.44: top-generation seed prefixes and I1 meet charging.
 import SuccessorTree.V10.HTopGenerationSeeds
+
+-- Proposition 6.44: top-generation seed I1 and I2 events carry original meet charges.
+import SuccessorTree.V10.I1I2RealEventCharge
