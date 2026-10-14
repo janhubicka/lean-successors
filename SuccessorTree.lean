@@ -337,3 +337,6 @@ import SuccessorTree.V10.M2BoundaryCompatibleB3Closure
 
 -- M2: exact normalized monoid axiom from actual finite-age factorization.
 import SuccessorTree.V10.M2FullAxiom
+
+-- Full normalized Kpt successor tree with M1, M2 and literal M3.
+import SuccessorTree.V10.KptCompleteSMTree
