@@ -79,7 +79,8 @@ theorem numericH_algorithmRun_closure_original_in_final_pool
           (v.val ∈ R.I 0 ∧
             0 < (finiteNumericH K k N).freeLevel v.val)) := by
       classical
-      simp [hStageOriginals]
+      simp only [hStageOriginals, Finset.mem_filter, Finset.mem_univ, true_and]
+      rfl
     exact hFilter.mpr hFinalPool
   exact ⟨v,hV,hPrefix⟩
 
