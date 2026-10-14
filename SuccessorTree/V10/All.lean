@@ -292,3 +292,6 @@ import SuccessorTree.V10.I3SignatureCardinality
 
 -- I3 Lemma 6.53: exact numerical H directed relocation gates.
 import SuccessorTree.V10.I3NumericRelocation
+
+-- I3: actual named upper source forces lower-upper full atom relocation.
+import SuccessorTree.V10.I3WitnessCrossRelocation
