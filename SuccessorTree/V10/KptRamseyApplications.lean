@@ -33,9 +33,9 @@ theorem normalizedKpt_shapeRamsey
     {db du dd : Nat} {κ : Type w} [Fintype κ]
     (family : List (NormalizedForbidden db du dd))
     (n k : Nat)
-    (colour : SuccessorTree.AM (normalizedKptSMTree family) n k → κ) :
-    ∃ W : SuccessorTree.ShapeSubspace (normalizedKptSMTree family) n,
-      ∀ a b : SuccessorTree.AM (normalizedKptSMTree family) n k,
+    (colour : SuccessorTree.SMTree.AM (normalizedKptSMTree family) n k → κ) :
+    ∃ W : SuccessorTree.SMTree.ShapeSubspace (normalizedKptSMTree family) n,
+      ∀ a b : SuccessorTree.SMTree.AM (normalizedKptSMTree family) n k,
         colour ((normalizedKptSMTree family).shapeActK n k W a) =
           colour ((normalizedKptSMTree family).shapeActK n k W b) := by
   exact (normalizedKptSMTree family).shapePreservingRamsey n k colour
@@ -46,9 +46,9 @@ theorem normalizedKpt_shapeRamsey_viaFatEllentuck
     {db du dd : Nat} {κ : Type w} [Fintype κ]
     (family : List (NormalizedForbidden db du dd))
     (n k : Nat)
-    (colour : SuccessorTree.AM (normalizedKptSMTree family) n k → κ) :
-    ∃ W : SuccessorTree.ShapeSubspace (normalizedKptSMTree family) n,
-      ∀ a b : SuccessorTree.AM (normalizedKptSMTree family) n k,
+    (colour : SuccessorTree.SMTree.AM (normalizedKptSMTree family) n k → κ) :
+    ∃ W : SuccessorTree.SMTree.ShapeSubspace (normalizedKptSMTree family) n,
+      ∀ a b : SuccessorTree.SMTree.AM (normalizedKptSMTree family) n k,
         colour ((normalizedKptSMTree family).shapeActK n k W a) =
           colour ((normalizedKptSMTree family).shapeActK n k W b) := by
   exact (normalizedKptSMTree family).shapePreservingRamsey_viaFatEllentuck
