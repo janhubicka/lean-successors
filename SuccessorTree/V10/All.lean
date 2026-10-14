@@ -315,3 +315,6 @@ import SuccessorTree.V10.I3ActualStageGeneration
 
 -- I3: level-filtered originals of the fixed pool (complete B1/B2 and admissibility).
 import SuccessorTree.V10.I3EligibleStagePool
+
+-- I3: finite failed B3 on cut-filtered pool, actual generation and labels.
+import SuccessorTree.V10.I3EligibleStageWitness
