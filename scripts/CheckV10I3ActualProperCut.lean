@@ -1,0 +1,3 @@
+import SuccessorTree.V10.I3ActualProperCut
+#print axioms SuccessorTree.V10.normalizedForbidden_I3_proper_lower_cut
+#print axioms SuccessorTree.V10.ambientPool_failedB3_has_proper_I3_cut
