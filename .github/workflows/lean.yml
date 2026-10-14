@@ -201,6 +201,39 @@ jobs:
             cat proof-audit/m2-original-compat-axioms.log
             exit 1
           }
+      - name: Check unconditional normalized M2 B3 and gap factorization axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryCompatibleB3Closure.lean > proof-audit/m2-b3-closure-axioms.log 2>&1; then
+            cat proof-audit/m2-b3-closure-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-b3-closure-axioms.log 2 || {
+            cat proof-audit/m2-b3-closure-axioms.log
+            exit 1
+          }
+      - name: Check literal normalized Kpt M2 axiom
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2FullAxiom.lean > proof-audit/m2-full-axiom.log 2>&1; then
+            cat proof-audit/m2-full-axiom.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-full-axiom.log 2 || {
+            cat proof-audit/m2-full-axiom.log
+            exit 1
+          }
+      - name: Check full normalized Kpt SMTree axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10KptCompleteSMTree.lean > proof-audit/kpt-smtree-axioms.log 2>&1; then
+            cat proof-audit/kpt-smtree-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/kpt-smtree-axioms.log scripts/CheckV10KptCompleteSMTree.lean || {
+            cat proof-audit/kpt-smtree-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
