@@ -348,3 +348,6 @@ import SuccessorTree.V10.I3AlgorithmInterestingBridge
 
 -- Proposition 6.44: sharp I3 signatures from names of higher-generation originals.
 import SuccessorTree.V10.I3HigherSignatureCapacity
+
+-- I3: numerical H failed-B3 witnesses have only higher-generation original names.
+import SuccessorTree.V10.I3ActualHigherSignature
