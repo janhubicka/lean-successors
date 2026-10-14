@@ -202,4 +202,47 @@ theorem PrescribedBoringData.failedCorrectedB3_has_ambient_original_witness
     family A.L original hRepresented hFailureCompatible
 
 
+
+/-- In the author's construction the SAME ambient original supplies
+both the old source type at ell and its prescribed new L-type at ell+1.
+This one source-to-pool assertion suffices for the entire failed-B3
+original-labelled witness; no per-witness choice premise is added. -/
+theorem PrescribedBoringData.failedCorrectedB3_of_actual_original_pool
+    {ell db du dd M : Nat}
+    (F : PrescribedBoringData ell db du dd)
+    (family : List (NormalizedForbidden db du dd))
+    (A : EnumeratedPartialStructure db du dd)
+    (original : Fin M → Nat)
+    (hPool : ∀ T, T ∈ F.source →
+      ∃ v : Fin M,
+        T = A.partialTypeAt ell (original v) ∧
+        (F.target T).lReduct =
+          RelationalPrefixType.ofAgeModel A.L (ell + 1) (original v))
+    (hFailure : ¬ F.CorrectedB3 family) :
+    ∃ S0 : PartialTypeWithE ell db du dd,
+      S0 ∈ F.source ∧
+      ∃ W : AgeTestModel db du dd,
+        W.BoundedCarrier ∧
+        SameInitialL W (prescribedOrdinarySocle (F.target S0)) ell ∧
+        (∀ bad, bad ∈ family → bad.Avoids (W.withoutVertex ell)) ∧
+        (∀ x, x ∈ W.carrier → ell < x →
+          ∃ v : Fin M,
+            RelationalPrefixType.ofAgeModel W (ell + 1) x =
+              RelationalPrefixType.ofAgeModel A.L (ell + 1) (original v)) ∧
+        ∃ bad, bad ∈ family ∧ ¬ bad.Avoids W := by
+  have hSource : ∀ T, T ∈ F.source →
+      ∃ v : Nat, T = A.partialTypeAt ell v := by
+    intro T hT
+    obtain ⟨v,hOld,_⟩ := hPool T hT
+    exact ⟨original v,hOld⟩
+  have hTargets : ∀ T, T ∈ F.source →
+      ∃ v : Fin M,
+        (F.target T).lReduct =
+          RelationalPrefixType.ofAgeModel A.L (ell + 1) (original v) := by
+    intro T hT
+    obtain ⟨v,_hOld,hNew⟩ := hPool T hT
+    exact ⟨v,hNew⟩
+  exact F.failedCorrectedB3_has_ambient_original_witness
+    family A original hSource hTargets hFailure
+
 end SuccessorTree.V10
