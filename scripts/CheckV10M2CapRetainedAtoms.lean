@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M2CapRetainedAtoms
+#print axioms SuccessorTree.V10.shapeMap_socleCap_all_binary
+#print axioms SuccessorTree.V10.shapeMap_socleCap_all_singletons
