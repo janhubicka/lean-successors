@@ -176,9 +176,11 @@ theorem finiteNumericH_failedPoolB3_generation
     have hAbove : ell < e b := (hHigh b).1 hb
     obtain ⟨v,hType⟩ := hUpper (e b) (hCopy.2.1 b) hAbove
     have hAfter : ell < original v := by
-      have hcut := hFreeCut v
-      have haddress := A.freeLevel_le (original v)
-      omega
+      have hcut : ell+1 ≤ A.freeLevel (original v) := hFreeCut v
+      have haddress : A.freeLevel (original v) ≤ original v :=
+        A.freeLevel_le (original v)
+      exact lt_of_lt_of_le (Nat.lt_succ_self ell)
+        (hcut.trans haddress)
     exact ⟨original v,hAfter,hType⟩
   obtain ⟨i,hEllGeneration,hStrictUpper⟩ :=
     numericI3_actual_witness_generation_conclusions
