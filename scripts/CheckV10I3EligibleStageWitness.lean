@@ -1,0 +1,3 @@
+import SuccessorTree.V10.I3EligibleStageWitness
+#print axioms SuccessorTree.V10.stagePool_failedCorrectedB3_has_eligible_original_witness
+#print axioms SuccessorTree.V10.finiteNumericH_failedStagePoolB3_generation
