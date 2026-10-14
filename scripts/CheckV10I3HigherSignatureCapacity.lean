@@ -1,0 +1,5 @@
+import SuccessorTree.V10.I3HigherSignatureCapacity
+#print axioms SuccessorTree.V10.I3OriginalSignatureWitness.relabelOriginals
+#print axioms SuccessorTree.V10.I3OriginalSignatureWitness.relabelHigherOriginals
+#print axioms SuccessorTree.V10.i3SelectedLevels_card_le_higherOriginalCapacity
+#print axioms SuccessorTree.V10.i3SelectedLevels_card_le_higherGenerationBudget
