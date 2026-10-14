@@ -362,3 +362,6 @@ import SuccessorTree.FreeAncestralM2InnerShape
 import SuccessorTree.FreeAncestralM2
 import SuccessorTree.FreeAncestralSMTree
 import SuccessorTree.FreeAncestralFiniteRamsey
+
+-- General relational-language adapter: arbitrary-arity induced atoms and neutral age.
+import SuccessorTree.V10.ArbitraryArityAge
