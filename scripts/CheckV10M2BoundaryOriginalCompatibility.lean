@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M2BoundaryOriginalCompatibility
+#print axioms SuccessorTree.V10.m2Boundary_original_admissible
+#print axioms SuccessorTree.V10.m2Boundary_original_compatible_of_deleted
+#print axioms SuccessorTree.V10.m2Boundary_upper_L_type_of_source_index

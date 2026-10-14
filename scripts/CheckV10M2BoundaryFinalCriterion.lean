@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M2BoundaryFinalCriterion
+#print axioms SuccessorTree.V10.m2Boundary_prescribed_targets_admissible
+#print axioms SuccessorTree.V10.m2Boundary_prescribed_covers_all
+#print axioms SuccessorTree.V10.m2_factorization_of_actual_boundary_compatibleB3
