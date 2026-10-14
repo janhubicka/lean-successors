@@ -293,3 +293,7 @@ import SuccessorTree.V10.M2ImageOrdinaryZone
 
 -- M2: complete ordinary pair and singleton retention inside one capped image.
 import SuccessorTree.V10.M2CapRetainedAtoms
+
+-- M2: exact padded L-model, upper-pair and full lower-socle image record.
+import SuccessorTree.V10.M2CapPaddedRecords
+import SuccessorTree.V10.M2ImageLowerSocle
