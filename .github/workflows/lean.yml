@@ -542,6 +542,17 @@ jobs:
             cat proof-audit/i3-higher-capacity-axioms.log
             exit 1
           }
+      - name: Check exact H positive E-free levels are odd
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HPositiveFreeLevelOdd.lean > proof-audit/h-positive-freelevel-odd-axioms.log 2>&1; then
+            cat proof-audit/h-positive-freelevel-odd-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-positive-freelevel-odd-axioms.log scripts/CheckV10HPositiveFreeLevelOdd.lean || {
+            cat proof-audit/h-positive-freelevel-odd-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

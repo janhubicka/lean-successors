@@ -348,3 +348,6 @@ import SuccessorTree.V10.I3AlgorithmInterestingBridge
 
 -- Proposition 6.44: sharp I3 signatures from names of higher-generation originals.
 import SuccessorTree.V10.I3HigherSignatureCapacity
+
+-- Proposition 6.44: exact numerical H has no positive E-free cut at a real even level.
+import SuccessorTree.V10.HPositiveFreeLevelOdd
