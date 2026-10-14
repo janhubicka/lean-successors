@@ -66,8 +66,9 @@ theorem m2B3_selected_upper_forbidden_contradiction
       ∀ i, i < n → lambda i ∈ (W.withoutVertex m).carrier := by
     intro i hi
     change lambda i ∈ W.carrier ∧ lambda i ≠ m
-    exact ⟨hCarrier (lambda i) (by have := hBelow i hi; omega),
-      by have := hBelow i hi; omega⟩
+    have hSmall : lambda i < m := hBelow i hi
+    exact ⟨hCarrier (lambda i) (Nat.le_of_lt hSmall),
+      Nat.ne_of_lt hSmall⟩
   have hUpperInside :
       ∀ a : Fin r, m < e a → e a ∈ (W.withoutVertex m).carrier := by
     intro a ha
