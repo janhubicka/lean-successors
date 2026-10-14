@@ -1,4 +1,4 @@
-/-!
+/-
 # Successor v10 complete proof-build aggregation
 
 All source modules of the frozen v10 validation are imported explicitly,
