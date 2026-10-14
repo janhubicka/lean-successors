@@ -325,3 +325,6 @@ import SuccessorTree.V10.M2BoundaryFinalCriterion
 
 -- M2 B3: every compatible upper finite-age type has a genuine F-source label.
 import SuccessorTree.V10.M2BoundaryUpperSelection
+
+-- M2 B3: all source ordinary L atoms recovered at retained image levels.
+import SuccessorTree.V10.M2BoundaryLowRecords
