@@ -1,0 +1,4 @@
+import SuccessorTree.V10.I3ActualWitnessGeneration
+#print axioms SuccessorTree.V10.i3_upper_originals_are_numeric_of_irreducible
+#print axioms SuccessorTree.V10.i3_lower_numeric_rank_of_irreducible_copy
+#print axioms SuccessorTree.V10.numericI3_actual_witness_generation_conclusions
