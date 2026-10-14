@@ -1,0 +1,4 @@
+import SuccessorTree.V10.ChosenAgeSignatures
+#print axioms SuccessorTree.V10.chosenAgeSignature_none_iff
+#print axioms SuccessorTree.V10.chosenAgeSignature_some_type
+#print axioms SuccessorTree.V10.chosenAgeSignature_distinct_of_ambient_age_witnesses
