@@ -291,3 +291,6 @@ import SuccessorTree.V10.EnvelopeNumericalRecurrence
 import SuccessorTree.V10.I3SignatureCardinality
 import SuccessorTree.V10.I3AmbientPrescribedPool
 import SuccessorTree.V10.I3AmbientSocleBridge
+
+-- I3: recover numeric H generators and upper original gates from actual age copies.
+import SuccessorTree.V10.I3CrossingAtoms
