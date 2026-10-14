@@ -71,9 +71,9 @@ theorem numericH_algorithmRun_closure_original_in_final_pool
         (vN.val ∈ R.I 0 ∧
           0 < (finiteNumericH K k N).freeLevel vN.val) := by
       rcases hv with hu | ⟨hi,hFree⟩
-      · have huN : vN ∈ (U : Set (Fin N)) := by
-          simpa only [vN] using hu
-        exact Or.inl (Finset.mem_coe.mp huN)
+      · have huN : vN ∈ U := by
+          simpa only [Finset.mem_coe, vN] using hu
+        exact Or.inl huN
       · right
         have hTail := R.I_eq_final_tail_of_run (ell+1) (by omega)
         rw [hTail] at hi
