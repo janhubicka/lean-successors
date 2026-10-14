@@ -90,7 +90,7 @@ theorem numericI3_lower_zone_relocation
     exact (hSocle.1 (relocated a)
       (Nat.le_of_lt (hNewBelow a))).2 (by
         change relocated a < N
-        omega)
+        exact lt_trans (hNewBelow a) hEllN)
   have hNewOrder : StrictMono relocated := by
     intro a b hab
     exact hPosition_lt_of_block_lt k
