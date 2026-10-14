@@ -309,3 +309,6 @@ import SuccessorTree.V10.I3ActualProperCut
 
 -- Lemma 6.53: all actual witness rank/generation conclusions, no coordinate hypotheses.
 import SuccessorTree.V10.I3ActualWitnessGeneration
+
+-- Lemma 6.53: actual H ambient pool failed B3 forces proper-cut and generation bounds.
+import SuccessorTree.V10.I3ActualStageGeneration
