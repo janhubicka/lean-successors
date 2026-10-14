@@ -1,4 +1,5 @@
 import SuccessorTree.V10.HFinitePartial
+import SuccessorTree.V10.HGenerationRank
 import SuccessorTree.V10.RelationalTypeReduct
 import SuccessorTree.V10.ChosenAgeSignatures
 import Mathlib.Tactic
