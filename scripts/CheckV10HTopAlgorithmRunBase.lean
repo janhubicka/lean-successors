@@ -1,0 +1,5 @@
+import SuccessorTree.V10.HTopAlgorithmRunBase
+#print axioms SuccessorTree.V10.numericHTopSeed_real_level_from_block
+#print axioms SuccessorTree.V10.numericHTopSeeds_actualRun_top_selected_is_seed_level
+#print axioms SuccessorTree.V10.numericHTopSeeds_actualRun_top_level_from_block
+#print axioms SuccessorTree.V10.numericHTopSeeds_actualRun_top_generation_card_le_blocks

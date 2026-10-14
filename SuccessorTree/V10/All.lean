@@ -382,3 +382,6 @@ import SuccessorTree.V10.I1I2AlgorithmRunBudget
 import SuccessorTree.V10.HTopGenerationExclusions
 -- V10 Section 6: top I1/I2 events are seed levels.
 import SuccessorTree.V10.HTopI1I2Seeds
+
+-- Proposition 6.44: real top selected levels of Algorithm 5.4 are only top seed prefixes.
+import SuccessorTree.V10.HTopAlgorithmRunBase
