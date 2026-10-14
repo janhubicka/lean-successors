@@ -113,6 +113,17 @@ jobs:
             cat proof-audit/m2-b3-copy-cases-axioms.log
             exit 1
           }
+      - name: Check M2 B3 selected-source contradiction axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2B3SelectedContradiction.lean > proof-audit/m2-b3-selected-axioms.log 2>&1; then
+            cat proof-audit/m2-b3-selected-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-b3-selected-axioms.log 1 || {
+            cat proof-audit/m2-b3-selected-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
