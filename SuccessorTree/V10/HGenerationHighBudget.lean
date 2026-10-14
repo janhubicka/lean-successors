@@ -142,7 +142,8 @@ theorem forbiddenFreeH_closure_meet_budget_high
       family K hCarrier k N hk hAvoid U I X hX r hr hrk
   refine ⟨D,?_,hCovered⟩
   exact hD.trans
-    (hPoolChargeLevels_card_le_generationHigh
-      K.binary k r (hStageOriginals K k N U I))
+    (Finset.card_le_card
+      (hHigherOriginals_subset_generationHigh
+        K.binary k r (hStageOriginals K k N U I)))
 
 end SuccessorTree.V10
