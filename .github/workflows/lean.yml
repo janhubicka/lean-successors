@@ -388,6 +388,17 @@ jobs:
             cat proof-audit/i3-proper-cut-axioms.log
             exit 1
           }
+      - name: Check finite I3 stage-eligible original-pool source
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3EligibleStagePool.lean > proof-audit/i3-eligible-pool-axioms.log 2>&1; then
+            cat proof-audit/i3-eligible-pool-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-eligible-pool-axioms.log scripts/CheckV10I3EligibleStagePool.lean || {
+            cat proof-audit/i3-eligible-pool-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
