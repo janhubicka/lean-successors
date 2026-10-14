@@ -204,10 +204,9 @@ theorem m2Boundary_B1
   let D := uniformGapDeletedShapeMap family F q₀ a₀ hprev hgap
   have hRaw : (D x.1).1 =
       rawPartialTypeAncestor (F x.1).1 m (by
-        have hLevel : (F x.1).1.1 = (F a₀).1.1 :=
-          F.level_eq_of_level_eq x.2
-        dsimp [m]
-        omega) :=
+        have hLevel : m + 1 = (F x.1).1.1 :=
+          (m2Boundary_target_level family F q₀ a₀ hprev hgap x).symm
+        exact le_trans (Nat.le_succ m) (Nat.le_of_eq hLevel)) :=
     uniformGapDeletedShapeMap_boundary_raw_ancestor
       family F q₀ a₀ hprev hgap x.1 x.2
   have hEq :
@@ -222,10 +221,9 @@ theorem m2Boundary_B1
          (D x.1).1 :=
         (m2Boundary_source_raw family F q₀ a₀ hprev hgap x).symm
       _ = rawPartialTypeAncestor (F x.1).1 m (by
-           have hLevel : (F x.1).1.1 = (F a₀).1.1 :=
-             F.level_eq_of_level_eq x.2
-           dsimp [m]
-           omega) := hRaw
+           have hLevel : m + 1 = (F x.1).1.1 :=
+             (m2Boundary_target_level family F q₀ a₀ hprev hgap x).symm
+           exact le_trans (Nat.le_succ m) (Nat.le_of_eq hLevel)) := hRaw
       _ = rawPartialTypeAncestor
            (⟨m+1,m2Boundary_targetType family F q₀ a₀ hprev hgap x⟩ :
               RawPartialTypeNode db du dd) m (Nat.le_succ m) := by
