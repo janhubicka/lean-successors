@@ -316,3 +316,6 @@ import SuccessorTree.V10.M2B3SocleAge
 
 -- M2: real typed boundary D(x) and F(x), source injectivity, full B1.
 import SuccessorTree.V10.M2BoundaryTypedRecords
+
+-- M2: actual B1/B2 prescribed data covering the entire deleted boundary.
+import SuccessorTree.V10.M2BoundaryPrescribedB2
