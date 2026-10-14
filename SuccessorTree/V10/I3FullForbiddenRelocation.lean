@@ -217,8 +217,10 @@ theorem numericI3_forbidden_copy_forces_last_lower_rank
         let bb : Fin r := ⟨b.val,hb⟩
         have hne' : aa ≠ bb := by
           intro hab
-          have heq : a.val = b.val := congrArg Fin.val hab
-          have hSame : a = b := Fin.ext heq
+          have heq : aa.val = bb.val :=
+            congrArg (fun z : Fin r => z.val) hab
+          have hSame : a = b := Fin.ext (by
+            exact heq)
           exact hne hSame
         have heq := hLowerBinary aa bb hne' bit
         have hOldA : old aa = e a := by
