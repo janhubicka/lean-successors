@@ -1,0 +1,5 @@
+import SuccessorTree.V10.ActualCrossingSignature
+
+#print axioms SuccessorTree.V10.admissibleKpt_original_ancestor_value
+#print axioms SuccessorTree.V10.actualKpt_crossing_implies_fullAtomic
+#print axioms SuccessorTree.V10.signature_collision_impossible_of_actual_kpt_crossings

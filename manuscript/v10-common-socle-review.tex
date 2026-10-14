@@ -1,0 +1,33 @@
+% v10 common-socle, full-record vs binary trace bridge; 9 October 2026.
+% Candidate replacement of the prior Lemma 6.49 TODO in the cumulative
+% author-reviewed v10 source. Do not insert duplicates or edit the
+% author's four reconstructed mathematical proof replacements.
+%
+\todo[inline]{\textbf{v10 validation (first complete type difference).}
+For two partial types extracted from the same ambient $C^+$,
+assume the level-zero types agree and restrict both below their
+free levels. Then the entire induced $L^+$-types coincide through
+$d$ if and only if both directed binary relation vectors between
+their distinguished type vertices and every common socle coordinate
+below $d$ coincide. The ambient socle supplies the old
+$L^+$-relations, equality of the roots supplies the singleton and
+diagonal data (including loops), and the free-level cut determines
+every auxiliary $E$-pair incident with the type vertex. The
+implication in both directions, and the passage from the first
+binary disagreement at $d$ to equality of the complete predecessors
+through $d$ but not $d+1$, are proved in
+\texttt{SuccessorTree/V10/CommonSocleType.lean}, conditional on the
+two restrictions being defined, notably $d+1\leq\min
+\{\mathrm{fl}_{C^+}(v),\mathrm{fl}_{C^+}(w)\}$.
+For Lemma~6.49 still show that the proposed positive-generation
+coordinate satisfies this cut restriction (using the sharp
+$p+1<j$ condition where applicable) and identify these complete
+prefix records with the actual $K^\mathcal F_{pt}$ tree
+ancestors before invoking the checked generic
+\texttt{RecordBridge.lean} meet result.}
+%
+% Endpoints, subject to the exact SHA's successful CI:
+%   sameAmbient_partialType_eq_of_cross
+%   sameAmbient_cross_of_partialType_eq
+%   sameAmbient_partialType_eq_iff_cross
+%   sameAmbient_first_fullType_difference

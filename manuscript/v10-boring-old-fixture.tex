@@ -1,0 +1,32 @@
+% MINIMAL old lemma fixture: NOT an author's current source checkout
+\begin{lemma}[Boring extension lemma]
+\label{lem:boring}
+Let $\ell>0$ and assume:
+\begin{enumerate}[label=(B\arabic*)]
+\item\label{item:boringB1} Original B1.
+\item\label{item:boringB2} Original B2.
+\item\label{item:boringage} \emph{No age change:} For every partial structure $\pstr{A}$
+such that for every $i\geq \ell+1$ we have $\typev^{\ell+1}_\pstr{A}(i)\in f[S]$
+it holds that whenever there is an ordered forbidden copy using $\ell$,
+there is one avoiding $\ell$.
+\end{enumerate}
+Conclusion.
+\end{lemma}
+\begin{proof}
+Fix the parameters.
+$$\typev_\type{Q}^\ell(i+1)=F(\type{S}).$$
+Notice that we now have $\typev_\type{Q}(i+1)=F(\type{S}).$
+By \ref{item:boringage} we have $\type{Q}\in\KFpt$: Assume
+the copy uses the deleted vertex. As $\type{Q}\ominus m$ is $\type{T}$,
+apply B3 and conclude.
+Similarly, for every $\type{T}\in \KFpt(\ell)$ we have the extension.
+$\S(F(\type{T}), F(\bar p), \type{C})$ agrees exactly.
+\end{proof}
+The following lemma shows that the assumptions of Lemma~\ref{lem:boring} can not be relaxed.
+\begin{lemma}
+\label{lem:comp}
+Another lemma should remain unchanged.
+\end{lemma}
+Since conditions~\ref{item:boringB2} and \ref{item:boringage} follow by Lemma~\ref{lem:comp}, we can apply Lemma~\ref{lem:boring} to obtain the desired function $F_2$.
+An application of Lemma~\ref{lem:boring} yields the desired function $F_m^n$.
+% SENTINEL: never change this unrelated source

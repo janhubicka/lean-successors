@@ -1,0 +1,8 @@
+import SuccessorTree.V10.PrescribedIncidentIndependence
+
+#print axioms SuccessorTree.V10.freeLevel_gate_iff_of_partialType_eq
+#print axioms SuccessorTree.V10.partialTypeAt_coordinate_eq_of_fullType_eq
+#print axioms SuccessorTree.V10.PrescribedBoringData.hasCompatibleSource_iff_of_sameOrdinary
+#print axioms SuccessorTree.V10.PrescribedBoringData.selectedLowerColumn_eq_of_sameOrdinary
+#print axioms SuccessorTree.V10.PrescribedBoringData.upper_bits_eq_of_partialType_eq
+#print axioms SuccessorTree.V10.PrescribedBoringData.insertedLData_coordinate_eq

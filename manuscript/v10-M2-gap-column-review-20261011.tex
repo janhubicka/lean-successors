@@ -1,0 +1,36 @@
+% Successor v10 -- M2 image-successor gap guard checkpoint (11 Oct 2026).
+% REVIEW ONLY: mathematical author text and four prior repairs are frozen.
+% Local Lean candidate is PENDING full build and transitive named-axiom audit.
+% Do not replace the existing nine managed TODO groups until verified.
+%
+% Suggested managed TODO by the level-removal lemma 6.34:
+\todo[inline]{\textbf{v10 validation: gap-column guard --
+PENDING exact-head Lean.}
+Let $F$ be an actual shape-preserving Kpt map and let $a$ be a
+source type immediately above a previous-level type $q$.
+Suppose $\ell(F(q))+1<\ell(F(a))$ and let
+$m=\ell(F(a))-1$. If $S(a,\bar p,c)=b$, then each
+parameter $x\in\bar p$ satisfies
+$\ell(F(x))<m$, using (S1), the previous-level comparison,
+and strict preservation of levels by $F$.
+The genuinely defined weak image successor
+$S(F(a),F(\bar p),c)=d\preceq F(b)$ therefore has canonical
+ordinary E free cut $f<m$: if its parameter is empty then
+$f=0$; otherwise the unique parameter has level $f$ and
+belongs to $F(\bar p)$. The new
+\texttt{mapped\_successor\_has\_guarded\_gap\_column}
+in \texttt{LevelRemovalGapColumn.lean} records a real
+admissible canonical $L^+$ step, both complete predecessor and
+new-record data, its valid new E column, and the strict bound.
+The proof does not use M2, or impose a condition on arbitrary
+finite L-only B3 witnesses.
+
+This specifically supplies the guard \emph{via an actual image
+successor}, not an arbitrary finite representative of $F(a)$
+at the boundary source level. To obtain the uniform deletion
+map of Lemma 6.34, use this successor to construct a guarded
+representative, prove that the deleted complete type is independent
+of the chosen successor, and then check the whole shape map,
+including the weak crossing-edge case.
+The local statement alone is not M2 decomposition or the
+corrected B3 age-transfer lemma.}

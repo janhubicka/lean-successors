@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M3StepGraphB3
+
+#print axioms SuccessorTree.V10.canonicalKptStep_hasCanonicalRecordInputs
+#print axioms SuccessorTree.V10.PrescribedBoringData.correctedB3_of_repeated_Kpt_steps

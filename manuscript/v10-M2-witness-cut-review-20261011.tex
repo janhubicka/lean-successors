@@ -1,0 +1,33 @@
+% Successor v10 -- M2 new-column witness-independence (11 October 2026).
+% Review-only. Mathematical author prose and four manuscript repairs
+% remain byte-frozen. Exact-head Lean and named-axiom CI PENDING.
+%
+\todo[inline]{\textbf{v10 M2 validation: canonical free-cut
+independence -- PENDING Lean.}
+Let $Q$ be an admissible normalized complete $L^+$ type
+at level $\ell+1$, and suppose its last ordinary E-column
+has a valid free cut $f\leq\ell$. For \emph{any} finite
+enumerated partial structure $A$ representing $Q$ by a
+distinguished vertex $v$, its actual old ordinary vertex
+$\ell$ has canonical free cut $\mathrm{fl}_A(\ell)=f$.
+This follows by extracting the exact complete type in $A$,
+using the actual E-column of $\ell$, and invoking the
+proved uniqueness of valid new-ordinary free cuts.
+
+Consequently a record-level bound $f<m$ implies the
+literal finite deletion guard $\mathrm{fl}_A(\ell)<m$
+independently of the representing structure. The new
+\texttt{LevelRemovalWitnessCut.lean} records both the full
+cut equality and its strict-guard consequence. Neither
+part adds a forbidden-age hypothesis or a new E
+requirement on the corrected B3 L-only witnesses.
+
+Combined with the separate image-successor argument
+in \texttt{LevelRemovalGapColumn.lean}, this is intended
+to prove that every genuine weak image-successor witness
+admits guarded deletion at the target gap. Uniform
+deletion of all level-$n$ image types still requires
+choosing source successors and showing their deleted
+types are independent, then checking predecessor and
+weak-successor preservation. M2 and the corrected
+L-only B3 necessity remain OPEN.}

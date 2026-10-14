@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LevelRemovalPrefixCommute
+
+#print axioms SuccessorTree.V10.deleteTypeCoordinate_lift
+#print axioms SuccessorTree.V10.PartialTypeWithE.deleteOrdinary_restrict

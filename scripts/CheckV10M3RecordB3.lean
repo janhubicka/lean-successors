@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M3RecordB3
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.correctedB3_of_canonical_M3_records

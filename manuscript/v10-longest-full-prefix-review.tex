@@ -1,0 +1,32 @@
+% Review-only v10 cumulative TODO overlay, 9 October 2026.
+% To be consolidated with the previous Lemma 6.49 review note, NOT
+% simultaneously inserted as a second duplicate note.
+% The author's four separate reconstructed mathematical repairs are untouched.
+%
+% Suggested precise replacement at Lemma 6.49:
+\todo[inline]{\textbf{v10 validation (actual first full type difference).}
+The common-ambient argument now includes the complete finite
+$L^+$-prefix records, not just the directed binary trace.
+For two vertices of $C^+$ having the same root type, the
+unique largest common induced partial-type prefix below any
+finite bound can be selected canonically. If this bound is
+below both $E$-free levels and the common prefix ends before
+the bound, the next coordinate must exhibit a genuine
+difference in one orientation of a directed binary $L$-relation.
+All unary, diagonal and auxiliary $E$-coordinates have
+been accounted for. See \texttt{FirstFullPrefix.lean} and
+\texttt{CommonSocleType.lean} (after checking the exact commit).
+To identify the resulting coordinate with the tree meet,
+one must still identify induced restrictions from a common
+ambient $C^+$ with the predecessors in the *actual*
+$K^\mathcal F_{pt}$ tree and verify the proposed charged
+coordinate lies below both free levels. In the positive
+non-top mixed-generation case, the required guard is the
+strict $p+1<j$, not merely $p<j$.}
+%
+% Proof endpoints, conditional on green exact-head CI:
+%   fullPartialType_eq_at_smaller
+%   exists_maximal_common_fullPrefix
+%   maximal_common_fullPrefix_unique
+%   binary_witness_of_first_fullPrefix_difference
+%   exists_maximal_common_fullPrefix_with_binary_witness

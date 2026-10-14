@@ -1,0 +1,7 @@
+import SuccessorTree.V10.PrescribedCorrectedB3
+
+#print axioms SuccessorTree.V10.prescribedOrdinarySocle
+#print axioms SuccessorTree.V10.SameInitialL.trans
+#print axioms SuccessorTree.V10.prescribedOrdinarySocle_matches_witness
+#print axioms SuccessorTree.V10.PrescribedBoringData.correctedB3_to_witness_test
+#print axioms SuccessorTree.V10.PrescribedBoringData.matching_insertion_of_correctedB3

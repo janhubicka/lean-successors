@@ -1,0 +1,25 @@
+% Successor-v10 M2 checkpoint: level-gap separation, review-only.
+% Author mathematical prose/four previous repairs remain frozen.
+% New Lean statement pending full/focused CI.
+%
+\todo[inline]{\textbf{v10 M2: globally omitted level of a
+shape-preserving map -- PENDING Lean.}
+Let $q$ and $a$ be any types on consecutive source levels
+and suppose
+$\ell(F(q))+1<\ell(F(a))$. Put
+$m=\ell(F(a))-1$. Strict order preservation of the
+source levels by $F$ implies that every source node
+strictly below the level of $a$ has image level $<m$,
+while every source node at or above that level has
+image level $>m$. Thus $m$ is \emph{absent from the
+entire range} of $F$; the proposed
+\texttt{shapeMap\_skips\_last\_target\_gap} makes this
+deduction directly, without applying or assuming M2.
+
+This proves the missing-level premise for the desired
+decomposition, NOT existence of a shape map skipping
+\emph{only} $m$. The global level-removal map still
+needs admissibility for every deleted type, injectivity
+and full weak-successor preservation. In particular, the
+repaired B3 argument must quantify over arbitrary finite
+ordered $L$-witnesses, with no extra $E$ hypothesis.}

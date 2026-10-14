@@ -1,0 +1,5 @@
+import SuccessorTree.V10.M2BoundaryPrescribedB2
+#print axioms SuccessorTree.V10.kptRecordAtLevel_sameOrdinary_iff
+#print axioms SuccessorTree.V10.m2Boundary_B2
+#print axioms SuccessorTree.V10.m2Boundary_prescribed_source
+#print axioms SuccessorTree.V10.m2Boundary_prescribed_target

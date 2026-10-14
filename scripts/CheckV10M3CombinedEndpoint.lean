@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M3CombinedEndpoint
+
+#print axioms SuccessorTree.V10.m3OneGapShapeMap_repeats_old_step

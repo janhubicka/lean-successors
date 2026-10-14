@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LevelRemovalUniformParameter
+
+#print axioms SuccessorTree.V10.uniformGapDeletedKpt_raw_if_above
+#print axioms SuccessorTree.V10.uniformGapDeletedKpt_raw_parameter_list

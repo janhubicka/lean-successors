@@ -1,0 +1,23 @@
+% Successor-v10 review-only note: both oriented H cross-atom traces.
+% Keep separate from the four mathematical repairs. Accumulate this
+% note at Lemma 6.49 (not at the original literal proof) and consolidate
+% with v10-H-numeric-L-review.tex when editing the actual source.
+%
+\todo[inline]{\textbf{v10 validation (bidirectional H trace adapter).}
+The exact numerical $H$ construction satisfies the claimed
+binary-generation gate in \emph{both} ordered directions:
+for every base pair $u<i$ and generations $q,n\leq k$,
+the tuples $H(\iota(u,q),\iota(i,n))$ are exactly the
+bundled relation trace of the ordered base pair $(u,i)$,
+and the reversed tuples are exactly the trace of the
+transposed base relation $(i,u)$. Both equalities include
+negative binary atoms and the exceptional $q=n=k$ case,
+as formalized in \texttt{V10/HDirectedTraces.lean}.
+To apply the first-positive-disagreement classifier to
+\emph{irreducible} ordered pairs, combine these two
+directed traces into one complete finite relation vector
+and check that the first nonempty base-neighbour for this
+vector agrees with the manuscript's $p(i)$.
+Also verify the condition that the candidate coordinate
+lies before both originals' free levels, and that odd
+fake vertices contribute only zero binary bits.}

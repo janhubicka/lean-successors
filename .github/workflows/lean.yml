@@ -1,7 +1,6 @@
 name: Lean
 
 on:
-  # Feature branches are checked once via pull_request, not again via push.
   push:
     branches: [main]
     paths:
@@ -45,13 +44,11 @@ jobs:
         with:
           path: ~/.elan/toolchains
           key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
-      - name: Restore shared pinned Lake workspace
+      - name: Restore pinned Lake workspace
         id: lake-cache
         uses: actions/cache/restore@v5
         with:
           path: .lake
-          # One reusable cache per toolchain and locked dependency set, not
-          # one large cache upload for every branch/commit.
           key: lake-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
           restore-keys: |
             lake-v2-${{ runner.os }}-${{ runner.arch }}-
@@ -59,9 +56,7 @@ jobs:
         run: |
           curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Resolve Lake dependencies
-        # lake-manifest.json is intentionally NOT committed in this repo.
-        # Generate it only when absent; retain a checked-in lock if added.
+      - name: Resolve dependencies
         run: |
           if test -s lake-manifest.json; then
             echo 'Using existing pinned Lake manifest'
@@ -96,6 +91,153 @@ jobs:
             cat proof-audit/axioms.log
             exit 1
           }
+      - name: Check independent shape proof routes and finite corollaries
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckShapeProofRoutes.lean > proof-audit/shape-proof-routes.log 2>&1; then
+            cat proof-audit/shape-proof-routes.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/shape-proof-routes.log 10 || {
+            cat proof-audit/shape-proof-routes.log
+            exit 1
+          }
+      - name: Check M2 B3 forbidden-copy case axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2B3CopyCases.lean > proof-audit/m2-b3-copy-cases-axioms.log 2>&1; then
+            cat proof-audit/m2-b3-copy-cases-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-b3-copy-cases-axioms.log 3 || {
+            cat proof-audit/m2-b3-copy-cases-axioms.log
+            exit 1
+          }
+      - name: Check M2 B3 selected-source contradiction axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2B3SelectedContradiction.lean > proof-audit/m2-b3-selected-axioms.log 2>&1; then
+            cat proof-audit/m2-b3-selected-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-b3-selected-axioms.log 1 || {
+            cat proof-audit/m2-b3-selected-axioms.log
+            exit 1
+          }
+      - name: Check M2 B3 prescribed socle age axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2B3SocleAge.lean > proof-audit/m2-b3-socle-age-axioms.log 2>&1; then
+            cat proof-audit/m2-b3-socle-age-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-b3-socle-age-axioms.log 3 || {
+            cat proof-audit/m2-b3-socle-age-axioms.log
+            exit 1
+          }
+      - name: Check M2 typed boundary records and B1 axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryTypedRecords.lean > proof-audit/m2-boundary-records-axioms.log 2>&1; then
+            cat proof-audit/m2-boundary-records-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-boundary-records-axioms.log 3 || {
+            cat proof-audit/m2-boundary-records-axioms.log
+            exit 1
+          }
+      - name: Check M2 full boundary B2 and prescription axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryPrescribedB2.lean > proof-audit/m2-boundary-b2-axioms.log 2>&1; then
+            cat proof-audit/m2-boundary-b2-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-boundary-b2-axioms.log 4 || {
+            cat proof-audit/m2-boundary-b2-axioms.log
+            exit 1
+          }
+      - name: Check actual M2 boundary factorization criterion axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryFinalCriterion.lean > proof-audit/m2-boundary-final-axioms.log 2>&1; then
+            cat proof-audit/m2-boundary-final-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-boundary-final-axioms.log 3 || {
+            cat proof-audit/m2-boundary-final-axioms.log
+            exit 1
+          }
+      - name: Check M2 B3 actual upper source selection axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryUpperSelection.lean > proof-audit/m2-upper-selection-axioms.log 2>&1; then
+            cat proof-audit/m2-upper-selection-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-upper-selection-axioms.log 2 || {
+            cat proof-audit/m2-upper-selection-axioms.log
+            exit 1
+          }
+      - name: Check M2 retained low L records axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryLowRecords.lean > proof-audit/m2-low-records-axioms.log 2>&1; then
+            cat proof-audit/m2-low-records-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-low-records-axioms.log 2 || {
+            cat proof-audit/m2-low-records-axioms.log
+            exit 1
+          }
+      - name: Check M2 genuine original source compatibility axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryOriginalCompatibility.lean > proof-audit/m2-original-compat-axioms.log 2>&1; then
+            cat proof-audit/m2-original-compat-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-original-compat-axioms.log 3 || {
+            cat proof-audit/m2-original-compat-axioms.log
+            exit 1
+          }
+      - name: Check unconditional normalized M2 B3 and gap factorization axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryCompatibleB3Closure.lean > proof-audit/m2-b3-closure-axioms.log 2>&1; then
+            cat proof-audit/m2-b3-closure-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-b3-closure-axioms.log 2 || {
+            cat proof-audit/m2-b3-closure-axioms.log
+            exit 1
+          }
+      - name: Check literal normalized Kpt M2 axiom
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2FullAxiom.lean > proof-audit/m2-full-axiom.log 2>&1; then
+            cat proof-audit/m2-full-axiom.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-full-axiom.log 2 || {
+            cat proof-audit/m2-full-axiom.log
+            exit 1
+          }
+      - name: Check full normalized Kpt SMTree axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10KptCompleteSMTree.lean > proof-audit/kpt-smtree-axioms.log 2>&1; then
+            cat proof-audit/kpt-smtree-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/kpt-smtree-axioms.log scripts/CheckV10KptCompleteSMTree.lean || {
+            cat proof-audit/kpt-smtree-axioms.log
+            exit 1
+          }
+      - name: Test axiom-audit checker
+        run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
+      - name: Check envelope section statements and axioms
+        run: bash scripts/audit-envelope.sh proof-audit
       - name: Check concrete free ancestral M2/M3 and Ramsey axioms
         run: |
           set -o pipefail
@@ -108,7 +250,7 @@ jobs:
             exit 1
           }
       - name: Check fat-tree A1 sequencing axioms
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           mkdir -p proof-audit
@@ -121,7 +263,7 @@ jobs:
             exit 1
           }
       - name: Check fat-tree structural statements and axioms
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           if ! lake env lean scripts/CheckFatTree.lean > proof-audit/fat-tree-axioms.log 2>&1; then
@@ -133,7 +275,7 @@ jobs:
             exit 1
           }
       - name: Check fat-tree A3 splice statements and axioms
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           if ! lake env lean scripts/CheckFatTreeA3.lean > proof-audit/fat-tree-a3-axioms.log 2>&1; then
@@ -145,7 +287,7 @@ jobs:
             exit 1
           }
       - name: Check fat-tree A4 bridge axioms
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           if ! lake env lean scripts/CheckFatTreeA4.lean > proof-audit/fat-tree-a4-axioms.log 2>&1; then
@@ -156,8 +298,20 @@ jobs:
             cat proof-audit/fat-tree-a4-axioms.log
             exit 1
           }
+      - name: Check unconditional fat-tree A4 and Ellentuck endpoints
+        if: ${{ always() && !cancelled() }}
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckFatTreeReviewA4.lean > proof-audit/fat-tree-review-a4-axioms.log 2>&1; then
+            cat proof-audit/fat-tree-review-a4-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/fat-tree-review-a4-axioms.log 64 || {
+            cat proof-audit/fat-tree-review-a4-axioms.log
+            exit 1
+          }
       - name: Check intermediate fat-tree replay axioms
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           mapfile -t targets < <(sed -n 's/^import //p' scripts/CheckFatTreeReplay.lean)
@@ -174,7 +328,7 @@ jobs:
             exit 1
           }
       - name: Check coverage and conditional assembly interface
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           if ! lake env lean scripts/CheckFatTreeFirstApplication.lean > proof-audit/fat-tree-first-application.log 2>&1; then
@@ -187,15 +341,13 @@ jobs:
           }
           echo 'A4Assembly is deliberately conditional; A4ReviewComplete discharges FixedStemPigeonhole unconditionally.'
       - name: Check localized manuscript patches
-        if: always()
+        if: ${{ always() && !cancelled() }}
         run: |
           set -o pipefail
           python3 manuscript/make-validation-patches.py --reference \
             --output proof-audit/manuscript-patches | tee proof-audit/manuscript-patches.log
-      - name: Seed shared Lake cache on main only
-        # PR builds reuse the default-branch cache but never upload
-        # hundreds of large per-commit caches.
-        if: ${{ github.ref == 'refs/heads/main' && steps.lake-cache.outputs.cache-hit != 'true' && !cancelled() }}
+      - name: Seed shared pinned Lake cache only from a trusted branch run
+        if: ${{ (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && startsWith(github.ref, 'refs/heads/formalize-v10-'))) && steps.lake-cache.outputs.cache-hit != 'true' && success() }}
         uses: actions/cache/save@v5
         with:
           path: .lake
@@ -217,7 +369,7 @@ jobs:
           if test -f docs/shape-ramsey-audit.md; then cp docs/shape-ramsey-audit.md proof-audit/; fi
           (cd proof-audit && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
       - name: Upload proof audit and patches
-        if: always()
+        if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
           name: shape-ramsey-proof-audit

@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M2CopyImageCoordinates
+#print axioms SuccessorTree.V10.m2ForbiddenCopyImage_upper_gt
+#print axioms SuccessorTree.V10.m2ForbiddenCopyImage_strictMono

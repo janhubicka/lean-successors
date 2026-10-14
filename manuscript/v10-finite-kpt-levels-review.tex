@@ -1,0 +1,29 @@
+% successor-v10 finite levels review, 9 October 2026.
+% Candidate replacement/extension at Proposition 6.32 and Definition 6.29;
+% not applied to the author's v10 main.tex. Merge with existing TODOs
+% and preserve the four mathematical v10 repairs without editorial changes.
+%
+\todo[inline]{\textbf{v10 validation (finite levels of the partial-type tree).}
+A complete $L^+$-type over $d$ socle vertices has only
+finitely many values in the finite unary/binary signature:
+it is determined by all directed binary, unary and diagonal
+$L$-bits, together with its full auxiliary $E$-matrix.
+Thus the raw tree of complete induced partial types has finite
+levels, and the admissible family of forbidden-free
+partial types inherits finite levels. The corresponding
+statements are formalised in
+\texttt{SuccessorTree/V10/FiniteKptLevels.lean}
+(pending the exact-head Lean audit), without assuming
+finiteness as a new axiom or treating arbitrary raw
+types as admissible. To finish the literal (finite-level)
+$K^\mathcal F_{pt}$ tree representation and its
+\texttt{LevelTree} instance, combine this result with
+the checked prefix closure and prove that the greatest
+common raw prefix of any two admissible types with a
+common root is itself admissible. The concrete
+successor-operation axioms and $M$-monoid then remain
+a separate application obligation.}
+%
+% Expected Lean endpoints:
+%   rawPartialTypeLevel_finite
+%   admissibleRawTypeLevel_finite

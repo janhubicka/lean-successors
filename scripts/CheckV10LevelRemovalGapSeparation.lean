@@ -1,0 +1,6 @@
+import SuccessorTree.V10.LevelRemovalGapSeparation
+
+#print axioms SuccessorTree.V10.shapeMap_level_le_of_level_le
+#print axioms SuccessorTree.V10.shapeMap_image_below_target_gap
+#print axioms SuccessorTree.V10.shapeMap_image_above_target_gap
+#print axioms SuccessorTree.V10.shapeMap_skips_last_target_gap

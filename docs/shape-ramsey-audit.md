@@ -1,5 +1,9 @@
 # Shape-preserving Ramsey theorem: completion audit
 
+This is the historical audit of the first direct proof. For the current two
+proof routes, finite corollaries and regression checks, see
+[shape-proof-routes.md](shape-proof-routes.md).
+
 ## Verified snapshot
 
 The proof snapshot is `1856f22fa1c94a27b3b282945da7d0f962903cc6`.

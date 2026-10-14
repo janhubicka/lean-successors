@@ -1,0 +1,4 @@
+import SuccessorTree.V10.M3OrdinaryCoherence
+
+#print axioms SuccessorTree.V10.sameOrdinaryAtCut_oldFreeLevel_eq
+#print axioms SuccessorTree.V10.middleCloneInsertedLData_lower_eq_of_ordinaryCompatibility

@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LevelRemovalAllLevelsAdmissible
+
+#print axioms SuccessorTree.V10.gap_of_equal_source_levels
+#print axioms SuccessorTree.V10.admissible_deleted_image_at_all_upper_source_levels

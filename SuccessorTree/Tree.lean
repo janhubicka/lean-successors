@@ -45,8 +45,9 @@ class LevelTree (T : Type u) [PartialOrder T] where
 
 /-- A levelled tree is pruned when every node has an immediate successor.
 This is not implied by M1--M3: M3 forces every level to be inhabited, but
-side branches may still terminate.  The fat-tree A4 last-block factorization
-uses pruning, while the structural A1--A3 development does not. -/
+isolated roots may still have no successor. Some auxiliary last-block lemmas
+use pruning. The unconditional fat-tree A4 proof instead uses a one-level
+letter at its fixed source cut and handles the no-letter root case separately. -/
 class PrunedTree (T : Type u) [PartialOrder T] [LevelTree T] : Prop where
   exists_covBy : ∀ a : T, ∃ b : T, a ⋖ b
 

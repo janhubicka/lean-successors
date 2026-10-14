@@ -1,0 +1,7 @@
+import SuccessorTree.V10.LevelRemovalBoundaryRestoration
+
+#print axioms SuccessorTree.V10.uniformDeletedBoundaryImage_level
+#print axioms SuccessorTree.V10.uniformDeletedBoundaryRestoration
+#print axioms SuccessorTree.V10.uniformDeletedBoundaryRestoration_spec
+#print axioms SuccessorTree.V10.uniformDeletedBoundaryRestoration_level
+#print axioms SuccessorTree.V10.uniformDeletedBoundaryRestoration_factorization_if_extends

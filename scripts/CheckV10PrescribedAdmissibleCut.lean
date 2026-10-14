@@ -1,0 +1,6 @@
+import SuccessorTree.V10.PrescribedAdmissibleCut
+
+#print axioms SuccessorTree.V10.admissiblePrescribedCut_exists
+#print axioms SuccessorTree.V10.admissiblePrescribedCut_unique
+#print axioms SuccessorTree.V10.admissiblePrescribedCut_spec
+#print axioms SuccessorTree.V10.admissiblePrescribed_lower_data_unique

@@ -1,0 +1,27 @@
+% Successor v10 M2, 12 October 2026, review-only proposed annotation.
+% Author mathematical prose and the four controlled repairs are frozen.
+% New finite formalization is PENDING exact-head full Lean and axiom CI.
+%
+\todo[inline]{\textbf{v10 M2: terminal $L^+$ successor letter
+under guarded deletion -- PENDING.}
+Let $Q$ be a complete partial type with last ordinary socle
+vertex $\ell+1$, and delete an earlier ordinary vertex
+$m<\ell+1$. The proposed
+\texttt{PartialTypeWithE.deleteOrdinary\_terminalLetter}
+in \texttt{LevelRemovalTerminalLetter.lean} proves that
+the full two-vertex terminal $\Sigma$ letter is unchanged:
+both orientations and absences of binary tuples, unary/diagonal
+data, and every $E$ bit on the terminal pair agree exactly.
+The auxiliary coordinate identity selects the old last
+vertex after renumbering. The corresponding extracted-type
+lemma \texttt{deleteAtPartial\_terminalLetter\_eq} applies
+this equality to a real guarded finite partial-structure
+deletion and a retained distinguished vertex.
+
+This is part of the required \emph{above-gap} weak successor
+transport for M2, but does not prove it by itself: the
+canonical empty-or-singleton parameter must also be transported
+through the deletion, the source/target predecessor equation
+rechecked, and genuine successor admissibility preserved.
+No M2 axiom, new finite $E$-age hypothesis or corrected-B3
+necessity is introduced here.}

@@ -1,0 +1,3 @@
+import SuccessorTree.WeakSuccessorInjectivity
+
+#print axioms SuccessorTree.injective_of_level_order_and_weak_successors

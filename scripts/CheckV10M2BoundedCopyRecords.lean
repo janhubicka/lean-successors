@@ -1,0 +1,7 @@
+import SuccessorTree.V10.M2BoundedCopyRecords
+#print axioms SuccessorTree.V10.boundedCopySourceAge_real_binary
+#print axioms SuccessorTree.V10.boundedCopySourceAge_real_unary
+#print axioms SuccessorTree.V10.boundedCopySourceAge_real_diagonal
+#print axioms SuccessorTree.V10.boundedCopySourceAge_upper_pair
+#print axioms SuccessorTree.V10.boundedCopySourceAge_low_upper
+#print axioms SuccessorTree.V10.boundedCopySourceAge_upper_singletons

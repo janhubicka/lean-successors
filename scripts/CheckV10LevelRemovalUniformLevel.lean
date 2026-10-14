@@ -1,0 +1,4 @@
+import SuccessorTree.V10.LevelRemovalUniformLevel
+
+#print axioms SuccessorTree.V10.shapeMap_level_le_of_level_le
+#print axioms SuccessorTree.V10.uniformGapDeletedKpt_level_strictMono

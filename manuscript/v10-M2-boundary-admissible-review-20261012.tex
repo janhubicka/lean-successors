@@ -1,0 +1,34 @@
+% Successor v10 M2 intrinsic boundary membership: review-only candidate.
+% The author's main mathematical TeX and four repairs remain frozen.
+% Exact-head Lean and transitive named-axiom checks are PENDING.
+%
+\todo[inline]{\textbf{v10 M2: deleted boundary and upper image types
+-- PENDING Lean.}
+The image gap between consecutive source levels supplies a
+genuine source successor $b=S(a,\bar p,c)$ with an admissible
+weak image successor $d=S(F(a),F(\bar p),c)\preceq F(b)$.
+The canonical column at level $\ell(F(a))$ has strict free
+cut $f<m$, with $m=\ell(F(a))-1$; this cut persists in
+every actual finite representative of $F(b)$ and of any
+higher image $F(z)$ with $b\preceq z$.
+The local shorter-cut theorem proves that deleting $m$
+from the fixed complete record of $F(a)$ gives an
+admissible type of level $\ell(F(a))-1$. In particular,
+although a genuine \emph{upper} witness is selected to
+certify admissibility, the output raw type is defined
+only from $F(a)$ and $m$.
+The analogous statement for any $F(z)$ above $F(b)$
+uses its own arbitrary finite witness and the exact
+inherited E-column guard. The proposed new theorems
+\texttt{boundary\_deleted\_image\_type\_admissible}
+and \texttt{upper\_deleted\_image\_type\_admissible}
+formalize these two claims without assuming (M2).
+
+The source-wide uniform deletion map is still to be
+assembled using ancestors at source level $n$ and
+the choice-independent raw definition. It then needs
+its full level map, strict monotonicity, weak successor
+preservation including the crossing edge, and the
+corrected finite $L$-only B3 necessity/decomposition.
+No global M2 certification follows merely from these
+local membership results.}

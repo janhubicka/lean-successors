@@ -26,33 +26,6 @@ theorem fixesBelow_zero (H : SMTree S) (F : MMap H) :
   intro x hx
   omega
 
-theorem levelMap_comp
-    (H : SMTree S) (F G : MMap H) (n : Nat) :
-    H.levelMap (MMap.comp H F G).map n =
-      H.levelMap F.map (H.levelMap G.map n) := by
-  obtain ⟨x, hx⟩ := H.level_nonempty n
-  calc
-    H.levelMap (MMap.comp H F G).map n =
-        LevelTree.lev (F (G x)) := by
-      simpa [hx] using
-        H.levelMap_eq (MMap.comp H F G).map (a := x)
-    _ = H.levelMap F.map (LevelTree.lev (G x)) := by
-      exact (H.levelMap_eq F.map (a := G x)).symm
-    _ = H.levelMap F.map (H.levelMap G.map n) := by
-      have hG := H.levelMap_eq G.map (a := x)
-      rw [hx] at hG
-      rw [hG]
-
-theorem levelMap_id (H : SMTree S) (n : Nat) :
-    H.levelMap (MMap.id H).map n = n := by
-  obtain ⟨x, hx⟩ := H.level_nonempty n
-  calc
-    H.levelMap (MMap.id H).map n =
-        LevelTree.lev ((MMap.id H) x) := by
-      simpa [hx] using H.levelMap_eq (MMap.id H).map (a := x)
-    _ = LevelTree.lev x := rfl
-    _ = n := hx
-
 end MMap
 
 namespace FatTree
@@ -640,6 +613,14 @@ theorem intervalMap_snoc (U : FatTree H) :
             (intervalMap H U (i + 1) steps (U.rowExtension H i x))
       rfl
 
+/-- Interval products beginning at zero are the initial partial products. -/
+theorem intervalMap_zero_start (U : FatTree H) (i : Nat) :
+    intervalMap H U 0 i = partialMap H U i := by
+  induction i with
+  | zero => rfl
+  | succ i ih =>
+      rw [intervalMap_snoc, Nat.zero_add, ih, partialMap_succ]
+
 /-- After a nonempty interval, the last active source level lands one level
 below the terminal cut. -/
 theorem intervalMap_level_last (U : FatTree H) (i steps : Nat) :
@@ -782,6 +763,20 @@ theorem tailMap_apply_at_level
   rw [if_pos hle]
   have hcount : U.cut n + k - U.cut n + 1 = k + 1 := by omega
   rw [hcount]
+
+/-- The two constructions of the paper's F_U agree. -/
+theorem tailMap_zero_eq_associatedMap (U : FatTree H) :
+    tailMap H U 0 = associatedMap H U := by
+  apply MMap.ext_apply
+  intro x
+  rw [tailMap_apply_at_level H U 0 (LevelTree.lev x) x
+    (by simp [U.cut_zero]), intervalMap_zero_start, associatedMap_apply]
+
+/-- Widening followed by F_U^0 gives back the original shape map, exactly
+as in the manuscript's convention F_U = F_U^0. -/
+theorem tailMap_ofShapeMap (K : MMap H) :
+    tailMap H (ofShapeMap H K) 0 = K := by
+  rw [tailMap_zero_eq_associatedMap, associatedMap_ofShapeMap]
 
 /-- The tail map fixes every level below its starting cut. -/
 theorem tailMap_fixesBelow

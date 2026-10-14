@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M2SparsePullbackAge
+#print axioms SuccessorTree.V10.AgeTestModel.InducedEmbeddingOnCarrier.preserves_avoidance
+#print axioms SuccessorTree.V10.AgeTestModel.sparsePullback_fill_avoids

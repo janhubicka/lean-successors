@@ -1,0 +1,28 @@
+% Successor V10 — M2 canonical parameter deletion note, 12 October 2026.
+% REVIEW ONLY: no author prose, four authorized repairs, or managed
+% validation blocks have been altered.
+% All new Lean results are PENDING exact-head builds and axiom checks.
+%
+\todo[inline]{\textbf{v10 M2: full canonical successor parameter
+under earlier ordinary-coordinate deletion -- PENDING Lean audit.}
+For a complete $L^+$ successor record $Q$ at cut $\ell+2$,
+let $f\leq\ell+1$ be the new ordinary vertex's old free cut and
+delete an ordinary coordinate $m<\ell+1$. Two cases are necessary.
+If $m<f$, the parameter socle itself loses that coordinate and
+the new last-ordinary parameter at free cut $f-1$ should equal
+the old complete parameter with coordinate $m$ deleted.
+If $f\leq m$, the parameter socle is untouched and the
+complete parameter should remain literally unchanged.
+Both directions of every binary atom, singleton data,
+negative tuples, and all auxiliary $E$ pairs must be
+transported, including the parameter type vertex.
+
+The proposed \texttt{LevelRemovalParameter.lean} proves the
+two coordinate-map identities and two complete-record identities.
+These are finite identities only; before the global deletion
+ShapeMap's above-gap successor clause one must also transport
+the validity of the new E-column and verify that the mapped
+parameter list is precisely the appropriate case.
+The terminal Sigma-letter is handled in a separate proof.
+No unproved M2 or repaired $L$-age necessity premise
+is introduced.}

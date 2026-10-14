@@ -1,0 +1,11 @@
+import SuccessorTree.V10.ShapeMapFullRecovery
+
+#print axioms SuccessorTree.V10.PartialTypeWithE.ordinaryType_pairAt
+#print axioms SuccessorTree.V10.shapeMap_preserves_type_pair_at_levelMap
+#print axioms SuccessorTree.V10.shapeMap_preserves_ordinary_pair_in_parameter
+#print axioms SuccessorTree.V10.canonicalKptStep_empty_cross_after_parameters
+#print axioms SuccessorTree.V10.ordinaryPair_eq_of_empty_cross
+#print axioms SuccessorTree.V10.shapeMap_preserves_ordinary_pair
+#print axioms SuccessorTree.V10.rawPrefix_preserves_type_singleton
+#print axioms SuccessorTree.V10.shapeMap_preserves_type_singleton
+#print axioms SuccessorTree.V10.shapeMap_recovers_complete_record

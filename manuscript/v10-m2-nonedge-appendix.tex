@@ -1,0 +1,301 @@
+% V10 successor manuscript: supplementary M2 argument.
+% This appendix is intentionally separate from the frozen author proof.
+% Validation status: mathematical argument under Lean review; do not mark
+% the concrete M2 endpoint GREEN until its transitive axiom audit passes.
+% To include, place \input{appendices/v10-m2-nonedge} in the appendix area.
+
+\section{The non-edge proof of (M2)}\label{app:m2-nonedge}
+
+We give the one-level factorisation argument in the partial-type
+representation of Section~6.3.  The only property of the forbidden
+family used in the construction is that its non-singleton members are
+irreducible; as usual, the empty unary and diagonal record is assumed
+not to be forbidden.  In particular, adjoining a vertex carrying this
+record and having no $L$-relations to the old vertices does not create
+an induced forbidden copy.  The auxiliary relation $E$ is used to
+record free levels; it does not belong to the forbidden language $L$.
+
+Write $L^+=L\cup\{E\}$.  A type of level $k$ has ordinary vertices
+$0,\ldots,k-1$ and one distinguished type vertex.  Two types of the
+same level will be called \emph{compatible} if their restrictions to
+ordinary vertices are identical as complete $L^+$-structures.  We
+keep both positive and negative atoms throughout.  For a partial
+structure $A$, let $\operatorname{tp}^k_A(v)$ denote the complete
+$L^+$-type of $v$ over its first $k$ ordinary vertices, provided
+$k\leq\operatorname{fl}_A(v)$.
+
+\begin{lemma}\label{lem:m2-retained-record}
+Let $F\in M$ and put $\lambda=\widetilde F$.  For every admissible
+type $T$ of level $k$, the restriction of $F(T)$ to ordinary
+coordinates $\lambda(i)$, $i<k$, and the distinguished type vertex,
+transported back along $i\mapsto\lambda(i)$, is exactly $T$ as a
+complete $L^+$-type.
+\end{lemma}
+\begin{proof}
+The distinguished singleton record is fixed by the root-extension
+property.  The complete record between the type vertex and ordinary
+coordinate $i$ is the terminal letter of the canonical successor
+which introduces $i$.  This letter occurs unchanged in the weak
+image successor, which is an initial segment of $F(T)$.
+
+For ordinary coordinates $i<j<k$, use the canonical successor
+introducing $j$ and let $f_j$ be the free cut of its parameter.  If
+$i<f_j$, the pair record occurs in the actual parameter, so the weak
+successor law transports it to $\lambda(i),\lambda(j)$.  If
+$i\geq f_j$, the no-new-tuples clause forces both directed
+$L$-relations and both $E$-relations across this pair to be absent.
+Strict monotonicity of $\lambda$ puts $\lambda(i)$ beyond the mapped
+parameter cut, so these crossing relations are also absent in the
+image.  The singleton and diagonal records have already been
+transported.  This proves equality of all atoms, including the
+negative ones.
+\end{proof}
+
+\begin{lemma}\label{lem:m2-simultaneous-image}
+Let $A$ be a finite admissible partial structure and let
+$v_1,\ldots,v_r$ be ordinary vertices whose free levels are at least
+$n>0$.  Put $T_j=\operatorname{tp}^n_A(v_j)$.  There exists an
+admissible type $X$ with $A$ in its ordinary socle such that, for
+every $j$,
+\[
+  \operatorname{tp}^{\lambda(n)}_{F(X)}\bigl(\lambda(v_j)\bigr)
+       =F(T_j).
+\]
+Moreover, all $L^+$-relations among the retained ordinary vertices
+of $A$ occur unchanged among the corresponding coordinates of $F(X)$.
+\end{lemma}
+\begin{proof}
+Extend $A$ by a neutral ordinary buffer vertex and then by a
+neutral distinguished vertex, using an incoming $E$-column whose free
+cut is beyond the whole ordinary socle.  The added vertices have no
+$L$-relations to old vertices, and may be spaced so that the $E$
+axioms hold.  Irreducibility, including the allowed-neutral-singleton
+condition, shows that the extension is admissible.  Let $X$ be its
+complete type.
+
+For $v_j$, let $f_j\geq n$ be its actual free cut.  As $f_j>0$, the
+step introducing $v_j$ has the nonempty canonical parameter
+$P_j=\operatorname{tp}^{f_j}_A(v_j)$, and
+$T_j=P_j\restriction n$.  The weak successor law for $F$ puts the
+complete image parameter $F(P_j)$ at ordinary coordinate
+$\lambda(v_j)$, below the image of the entire containing type $X$.
+Its restriction through $\lambda(n)$ is $F(T_j)$ by prefix
+preservation.  This proves the displayed identity simultaneously for
+all $j$.  The remaining assertion is
+Lemma~\ref{lem:m2-retained-record} applied to $X$.
+\end{proof}
+
+\begin{lemma}\label{lem:m2-compatibility}
+If $T$ and $U$ are compatible admissible types of the same positive
+level, then $F(T)$ and $F(U)$ are compatible.
+\end{lemma}
+\begin{proof}
+Realise their common ordinary $L^+$-socle once, and add two vertices
+realising respectively the distinguished-vertex types of $T$ and
+$U$.  Put no $L$-relations between these two new vertices.  If
+necessary insert neutral padding between them and the preceding
+vertices to obtain valid $E$-columns and free cuts at least the
+common level.  Any nontrivial irreducible forbidden copy uses at most
+one of the two new vertices and hence is already excluded by the
+admissibility of $T$ or $U$; a forbidden singleton is excluded as
+well.  By Lemma~\ref{lem:m2-simultaneous-image}, $F(T)$ and $F(U)$
+are both the complete types of ordinary vertices above one and the
+same initial $L^+$-socle in $F(X)$.
+\end{proof}
+
+
+\paragraph{Bounded upper witnesses.}
+The finite-age verification below can be shortened by considering a
+single induced forbidden copy rather than every upper vertex of an
+arbitrary age witness.  Indeed, suppose the conclusion fails and
+choose an induced copy $e$ of some $H\in\mathcal F$ in $W$.
+Since the initial socle through $m$ is induced from an admissible
+target and $W\setminus\{m\}$ is $\mathcal F$-free, the copy contains
+$m$ and at least one vertex above $m$.  It uses at most $|H|$
+upper vertices.
+
+Keep the initial target socle and only those upper vertices $e(a)>m$
+in the age calculation.  The other numerical upper positions can be
+filled by vertices carrying the allowed neutral singleton and no
+incident $L$-relation.  This does not create an irreducible forbidden
+configuration: a forbidden copy containing a neutral filler would
+violate irreducibility, and a forbidden singleton cannot be neutral.
+Consequently one may use exactly $n+|H|$ original source positions:
+the first $n$ are mapped to retained coordinates
+$\lambda(0),\ldots,\lambda(n-1)$, while the position $n+a$
+is retained only when $e(a)>m$, in which case it represents $e(a)$.
+The map is increasing on these genuine positions, since $e$ and
+$\lambda$ are increasing and all upper images exceed $m$.
+The corresponding source $L$-structure is an induced pullback of
+$W\setminus\{m\}$ on genuine positions, with neutral non-edges
+elsewhere, and is therefore $\mathcal F$-free.
+
+This bounded construction preserves every required upper--upper
+$L$-atom, including absent relations.  It does not request an
+$E$-expansion of $W$.  Only after the source $L$-structure is obtained
+do we apply the non-edge padding construction, with the one common
+ordinary $E$-socle of the prescribed source types.
+
+\begin{lemma}\label{lem:m2-compatible-age}
+Let $F\in M$, let $n>0$, and suppose that
+$\lambda(n-1)<m=\lambda(n)-1$.  Define $D$ by deleting ordinary
+coordinate $m$ from $F(T)$ for $\ell(T)\geq n$ and leaving $F(T)$
+unchanged below level $n$.  Put
+$\mathcal S=D[\mathcal T(n)]$ and prescribe
+$f(D(T))=F(T)$ for $T\in\mathcal T(n)$.
+
+Fix a compatibility class of $\mathcal S$, represented by $S_0$.
+Let $W$ be a finite ordered $L$-structure on an initial segment
+whose first $m+1$ vertices induce the ordinary $L$-socle of $f(S_0)$.
+Suppose that every upper vertex $x>m$ has its complete $L$-type over
+$0,\ldots,m$ equal to the $L$-reduct of some $f(S_x)$, where
+$S_x\in\mathcal S$ is compatible with $S_0$.  If
+$W\setminus\{m\}$ avoids the forbidden family, then so does $W$.
+\end{lemma}
+\begin{proof}
+If $W$ has no upper vertex, it is the ordinary socle of an
+admissible type.  Otherwise enumerate the upper vertices of $W$ as
+$x_1<\cdots<x_r$ and choose source types $T_j$ with
+$S_{x_j}=D(T_j)$.  The same $T_j$ may occur more than once.  By
+compatibility and Lemma~\ref{lem:m2-retained-record}, the types
+$T_j$ share one complete ordinary $L^+$-socle of level $n$; the
+$L$-type of each distinguished vertex over the first $n$ source
+coordinates is the pullback of the given type of $x_j$ over the
+retained target coordinates $\lambda(i)$, $i<n$.
+
+Form an ordered $L$-structure $A$ whose initial vertices are
+$0,\ldots,n-1$ and which has an upper vertex $v_j$ corresponding to
+$x_j$.  Copy every $L$-atom, in both directions, from the induced
+substructure of $W\setminus\{m\}$ on the coordinates
+\[
+  \{\lambda(i):i<n\}\cup\{x_1,\ldots,x_r\}.
+\]
+Thus $A$ avoids the forbidden family, its initial $L$-socle is the
+common initial $L$-socle of the $T_j$, and its upper vertices have
+the required complete $L$-types over that socle.  In particular,
+\emph{all relations between distinct upper vertices are retained}.
+
+Pad $A$ by keeping its first $n$ vertices fixed and moving each
+upper vertex $v_j$ to
+\[
+       a_j=n+1+2(j-1).
+\]
+Every new position receives the allowed neutral singleton and no
+$L$-relations.  The padded $L$-structure still avoids the forbidden
+family: a nontrivial irreducible forbidden copy cannot contain a
+padding vertex, and its induced copy on the old vertices would
+project to $A$.
+
+Equip the first $n$ positions with the common prescribed ordinary
+$E$-socle of the $T_j$.  Give each real upper vertex $a_j$ the
+maximal spaced incoming $E$-column, namely
+\[
+       E(u,a_j)\quad\Longleftrightarrow\quad u+1<a_j,
+\]
+and give each padding vertex an empty incoming column.  This is a
+valid partial structure.  In particular the complete type of the
+real vertex $a_j$ over the first $n$ vertices is exactly $T_j$:
+the $L$-record was copied, the ordinary $E$-socle was fixed, and all
+$E$-incidences of the distinguished vertex are forced by the cut
+$n$.  Notice that the padding vertices are $L$-isolated, not
+necessarily $E$-isolated.
+
+Apply Lemma~\ref{lem:m2-simultaneous-image} to this single padded
+structure.  We obtain an admissible type $X$ such that
+\[
+  \operatorname{tp}^{\lambda(n)}_{F(X)}(\lambda(a_j))=F(T_j)
+     \qquad(1\leq j\leq r).
+\]
+Define a map from the vertices of $W$ to ordinary vertices of $F(X)$
+by
+\[
+  e(z)=\begin{cases}
+       z,&z\leq m,\\
+       \lambda(a_j),&z=x_j.
+       \end{cases}
+\]
+This map is increasing and injective.  Indeed,
+$\lambda(a_j)>\lambda(n)=m+1$ and the $a_j$ are strictly increasing.
+We check that it is an induced $L$-embedding.
+
+On the initial $m+1$ vertices, the displayed type identity gives
+exactly the ordinary socle of $F(T_1)$, which agrees with that of
+$F(T_j)$ for every $j$ by Lemma~\ref{lem:m2-compatibility}.
+Between an initial vertex and $x_j$, the same type identity gives
+both directed relations and their complements, including the skipped
+coordinate $m$.  Between two upper vertices, use
+Lemma~\ref{lem:m2-retained-record} for $X$: the relation between
+$\lambda(a_i)$ and $\lambda(a_j)$ is precisely the relation between
+$a_i$ and $a_j$, and therefore between $x_i$ and $x_j$.  Singleton
+and diagonal records are treated identically.  Thus $W$ is an
+induced substructure of the ordinary $L$-socle of $F(X)$.  This
+socle avoids the forbidden family; hence so does $W$.
+\end{proof}
+
+\begin{proof}[Proof of (M2)]
+Let $F\in M$, choose the first source level $n$ relevant to the
+desired factorisation and put $\lambda=\widetilde F$.  Suppose
+$\lambda(n-1)<\lambda(n)-1$ and set $m=\lambda(n)-1$.
+Since $\lambda(0)=0$, we have $n>0$ and $m>0$.
+
+First define $D$ by removing coordinate $m$ from the image types
+above level $n$, as in Lemma~\ref{lem:m2-compatible-age}.  This is a
+shape-preserving map with level map
+\[
+ \widetilde D(k)=\begin{cases}
+       \lambda(k),&k<n,\\
+       \lambda(k)-1,&k\geq n.
+       \end{cases}
+\]
+Deletion preserves the forbidden-free $L$-age and commutes with
+initial-socle restriction.  At the crossing level, the image of the
+source successor has parameter cut strictly below the deleted
+coordinate, so removing that coordinate neither creates an
+$E$-crossing nor changes its terminal successor letter.  At all
+other levels the weak successor law follows from the corresponding
+image successor by deletion.  The level map is strictly increasing,
+root extensions are unchanged, and injectivity follows by recovering
+the retained source coordinates.  Consequently $D\in M$.
+
+At level $n$ the removed coordinate is the last ordinary vertex,
+so $D(T)=F(T)\restriction m$.  Since $D$ is injective, the
+prescription
+\[
+       f(D(T))=F(T)\qquad (T\in\mathcal T(n))
+\]
+is well defined and satisfies the predecessor condition (B1).
+It also satisfies (B2): if two deleted images have identical ordinary
+$L^+$-socles, Lemma~\ref{lem:m2-retained-record} recovers the
+corresponding source socles, and
+Lemma~\ref{lem:m2-compatibility} shows that the full target socles
+are identical.  The targets are admissible, being genuine images
+under $F$.
+
+Lemma~\ref{lem:m2-compatible-age} verifies the finite age test in
+every common ordinary $L^+$-compatibility class of prescribed source
+types.  This is the compatibility-restricted form of (B3) required
+by the boring-extension construction: every upper source type
+arising at an insertion stage belongs to one such class because it
+is read from one ambient partial structure.  Therefore that
+construction supplies a single $G\in M$ which skips precisely $m$
+and satisfies
+\[
+       G(D(T))=F(T)\qquad (\ell(T)=n).
+\]
+For $\ell(T)<n$, $D(T)=F(T)$ and
+$\ell(F(T))\leq\lambda(n-1)<m$.  A shape-preserving map which skips
+only $m$ fixes all nodes below level $m$ (by the root-extension and
+successor properties), hence $G(D(T))=F(T)$ at these levels as well.
+Thus
+\[
+       (G\circ D)(T)=F(T)\qquad (\ell(T)\leq n).
+\]
+Taking $F_1=D$ and $F_2=G$ establishes (M2).
+\end{proof}
+
+% \todo[inline]{\textbf{Řehořek: M2 validation OPEN.} The source padding,
+% parameter transport, partial inverse and conditional global extension
+% have independent Lean implementations. The missing end-to-end checks
+% are compatibility for the actual boundary data, the finite induced
+% embedding in Lemma~\ref{lem:m2-compatible-age}, and the final
+% concrete M2 endpoint with a transitive standard-axiom audit.}

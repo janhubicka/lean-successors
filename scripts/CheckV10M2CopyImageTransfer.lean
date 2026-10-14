@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M2CopyImageTransfer
+#print axioms SuccessorTree.V10.m2ForbiddenCopy_realizes_of_atomwise
+#print axioms SuccessorTree.V10.m2ForbiddenCopy_binary_of_zones

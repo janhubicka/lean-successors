@@ -1,0 +1,32 @@
+name: M2 source checkpoint
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/m2-source-checkpoint.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Record exact sources
+        run: |
+          set -euo pipefail
+          mkdir checkpoint
+          git rev-parse HEAD > checkpoint/COMMIT
+          git archive --format=tar.gz -o checkpoint/source.tar.gz HEAD
+          git diff --check
+          (cd checkpoint && sha256sum source.tar.gz > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m2-source-checkpoint
+          path: checkpoint/
+          retention-days: 7

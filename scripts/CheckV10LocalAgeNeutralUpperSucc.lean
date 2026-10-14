@@ -1,0 +1,3 @@
+import SuccessorTree.V10.LocalAgeNeutralUpperSucc
+
+#print axioms SuccessorTree.V10.neutralKptSkip_weak_succ_above_gap

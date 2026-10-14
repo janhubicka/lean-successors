@@ -1,0 +1,3 @@
+import SuccessorTree.V10.M2BoundaryCompatibleB3Closure
+#print axioms SuccessorTree.V10.m2Boundary_actual_compatibleB3
+#print axioms SuccessorTree.V10.m2_actual_first_gap_factorization

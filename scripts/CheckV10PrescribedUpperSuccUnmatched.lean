@@ -1,0 +1,6 @@
+import SuccessorTree.V10.PrescribedUpperSuccUnmatched
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_eq_neutral_of_no_match
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_eq_neutral_below
+#print axioms SuccessorTree.V10.PrescribedBoringData.no_match_same_ambient
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_neutral_on_ambient
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_succ_unmatched_above

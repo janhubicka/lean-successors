@@ -1,0 +1,8 @@
+import SuccessorTree.V10.LocalAgeNeutral
+
+#print axioms SuccessorTree.V10.neutralInsert_binary_from_inserted
+#print axioms SuccessorTree.V10.neutralInsert_binary_to_inserted
+#print axioms SuccessorTree.V10.neutralInsert_isLInsertion
+#print axioms SuccessorTree.V10.neutralInsert_forbidden_singleton_not_at_inserted
+#print axioms SuccessorTree.V10.neutralInsert_irreducible_copy_avoids_inserted
+#print axioms SuccessorTree.V10.neutralInsert_preserves_avoidance

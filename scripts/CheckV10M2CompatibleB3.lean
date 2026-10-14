@@ -1,0 +1,8 @@
+import SuccessorTree.V10.PrescribedCompatibleB3
+
+#print axioms SuccessorTree.V10.PrescribedBoringData.correctedB3_implies_compatibleB3
+#print axioms SuccessorTree.V10.PrescribedBoringData.compatibleB3_iff_restricted_correctedB3
+#print axioms SuccessorTree.V10.PrescribedBoringData.insertL_linked_upper_is_compatible
+#print axioms SuccessorTree.V10.PrescribedBoringData.compatibleB3_to_witness_test
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedInsertion_avoids_of_compatible_witness
+#print axioms SuccessorTree.V10.PrescribedBoringData.compatible_class_boring_extension_exists

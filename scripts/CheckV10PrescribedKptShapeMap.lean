@@ -1,0 +1,5 @@
+import SuccessorTree.V10.PrescribedKptShapeMap
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptSkip_weak_succ
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptShapeMap
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptShapeMap_mem_KptM
+#print axioms SuccessorTree.V10.PrescribedBoringData.prescribedKptShapeMap_skips
