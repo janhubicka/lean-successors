@@ -331,3 +331,6 @@ import SuccessorTree.V10.M2BoundaryLowRecords
 
 -- M2 B3: compatibility of actual original source types reflected from D.
 import SuccessorTree.V10.M2BoundaryOriginalCompatibility
+
+-- M2: unconditional compatible finite L-age B3 and first-gap factorization.
+import SuccessorTree.V10.M2BoundaryCompatibleB3Closure
