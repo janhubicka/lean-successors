@@ -33,8 +33,7 @@ theorem m2Boundary_upper_vertex_has_source_index
     (S0 : PartialTypeWithE (LevelTree.lev (F a₀)-1) db du dd)
     (W : AgeTestModel db du dd)
     (hUpper : UpperTypesPrescribed W (LevelTree.lev (F a₀)-1)
-      ((m2Boundary_prescribedData family F q₀ a₀ hprev hgap).
-         CompatibleUpperLType S0))
+      ((m2Boundary_prescribedData family F q₀ a₀ hprev hgap).CompatibleUpperLType S0))
     (w : Nat)
     (hw : w ∈ W.carrier)
     (hmw : LevelTree.lev (F a₀)-1 < w) :
