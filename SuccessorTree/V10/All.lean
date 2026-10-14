@@ -369,3 +369,6 @@ import SuccessorTree.V10.HTopGenerationSeeds
 
 -- Proposition 6.44: top-generation seed I1 and I2 events carry original meet charges.
 import SuccessorTree.V10.I1I2RealEventCharge
+
+-- I3: actual run closures share a finite pool of named originals.
+import SuccessorTree.V10.I3AlgorithmRunPool
