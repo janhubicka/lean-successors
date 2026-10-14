@@ -1,0 +1,5 @@
+import SuccessorTree.V10.M2SelectedCapTransport
+import SuccessorTree.V10.M2ImageOrdinaryZone
+#print axioms SuccessorTree.V10.shapeMap_transports_ambient_ordinary_type_at_levelMap
+#print axioms SuccessorTree.V10.shapeMap_transports_padded_selected_type
+#print axioms SuccessorTree.V10.image_ordinary_type_all_low_upper_atoms
