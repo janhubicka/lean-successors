@@ -19,7 +19,7 @@ realized *simultaneously*, with all mutual L atoms preserved. The age
 hypothesis is only forbidden avoidance of the target with its gap vertex
 removed. Auxiliary E is introduced in the padded source witness rather
 than on the target. -/
-theorem boundedCopySourceAge_selected_family_padded
+theorem boundedCopySourceAge_selected_family_padded_with_L
     {n m r db du dd : Nat}
     (family : List (NormalizedForbidden db du dd))
     (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
@@ -48,6 +48,8 @@ theorem boundedCopySourceAge_selected_family_padded
     ∃ B : EnumeratedPartialStructure db du dd,
       (∀ bad, bad ∈ family → bad.Avoids B.L) ∧
       B.size = NonedgePadding.size n (n+r) ∧
+      B.L = NonedgePadding.model
+        (boundedCopySourceAge V (kptShapeLevelMap family F) n m r e) n (n+r) ∧
       ∀ a : Fin r, ∀ ha : m < e a,
         B.partialTypeAt n (NonedgePadding.address n (n+a.val)) = T a := by
   classical
@@ -100,14 +102,53 @@ theorem boundedCopySourceAge_selected_family_padded
       family F u V m r e a ha (hImage a ha)
     change RelationalPrefixType.ofAgeModel A n (n+a.val) = (T a).lReduct at h
     exact h
-  obtain ⟨B,hAvoidB,hSize,hSelected⟩ :=
-    compatibleSelectedTypes_joint_padded family anchor hAnchor A (n+r)
+  obtain ⟨B,hAvoidB,hSize,hL,hSelected⟩ :=
+    compatibleSelectedTypes_joint_padded_with_L family anchor hAnchor A (n+r)
       (by omega) hCarrier hAvoidA hInitialA selected types
       hAdSelected hCompSelected hTypeSelected
-  refine ⟨B,hAvoidB,hSize,?_⟩
+  refine ⟨B,hAvoidB,hSize,hL,?_⟩
   intro a ha
   have hSel : selected (n+a.val) := ⟨a,rfl,ha⟩
   simpa only [hTypes a] using hSelected (n+a.val)
     (by omega) (by omega) hSel
+
+
+/-- Backwards-compatible selected-family interface. The stronger theorem
+also supplies literal equality of the padded L-reduct, needed for M2 B3. -/
+theorem boundedCopySourceAge_selected_family_padded
+    {n m r db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (anchor : PartialTypeWithE n db du dd)
+    (hAnchor : IsAdmissibleRawType family
+      (⟨n,anchor⟩ : RawPartialTypeNode db du dd))
+    (V : AgeTestModel db du dd) (e : Fin r → Nat)
+    (hE : StrictMono e)
+    (hBelow : ∀ i, i < n → kptShapeLevelMap family F i < m)
+    (hLow : ∀ i, i < n → kptShapeLevelMap family F i ∈ V.carrier)
+    (hUpper : ∀ a : Fin r, m < e a → e a ∈ V.carrier)
+    (hAvoid : ∀ bad, bad ∈ family → bad.Avoids V)
+    (T : Fin r → PartialTypeWithE n db du dd)
+    (hAd : ∀ a : Fin r, m < e a →
+      IsAdmissibleRawType family
+        (⟨n,T a⟩ : RawPartialTypeNode db du dd))
+    (hComp : ∀ a : Fin r, m < e a → SameOrdinaryAtCut anchor (T a))
+    (hInitial : ∀ (x y : Nat) (hx : x < n) (hy : y < n) (t : Fin db),
+      V.binary (kptShapeLevelMap family F x)
+        (kptShapeLevelMap family F y) t =
+          anchor.lReduct.binary (some ⟨x,hx⟩) (some ⟨y,hy⟩) t)
+    (hImage : ∀ (a : Fin r) (ha : m < e a),
+      let u : AdmissibleKptNode family := ⟨⟨n,T a⟩,hAd a ha⟩
+      RelationalPrefixType.ofAgeModel V (LevelTree.lev (F u)) (e a) =
+        (F u).1.2.lReduct) :
+    ∃ B : EnumeratedPartialStructure db du dd,
+      (∀ bad, bad ∈ family → bad.Avoids B.L) ∧
+      B.size = NonedgePadding.size n (n+r) ∧
+      ∀ a : Fin r, ∀ ha : m < e a,
+        B.partialTypeAt n (NonedgePadding.address n (n+a.val)) = T a := by
+  obtain ⟨B,hAvoidB,hSize,_hL,hSelected⟩ :=
+    boundedCopySourceAge_selected_family_padded_with_L family F anchor
+      hAnchor V e hE hBelow hLow hUpper hAvoid T hAd hComp hInitial hImage
+  exact ⟨B,hAvoidB,hSize,hSelected⟩
 
 end SuccessorTree.V10
