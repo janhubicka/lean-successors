@@ -65,9 +65,26 @@ theorem shapeMap_retained_ordinary_binary
       rw [hii,hjj]
     _ = u.1.2.lReduct.binary (some i) (some j) t := hRec
 
+/-- An atom of a Kpt record can be transported through its
+explicit-level cast without rewriting the dependent Sigma index. -/
+theorem kptRecordAtLevel_binary_cast
+    {db du dd : Nat}
+    {family : List (NormalizedForbidden db du dd)}
+    (n : Nat) (x : AdmissibleKptNode family)
+    (hx : LevelTree.lev x = n)
+    (i j : Fin n) (t : Fin db) :
+    x.1.2.lReduct.binary
+      (some (Fin.cast hx.symm i))
+      (some (Fin.cast hx.symm j)) t =
+    (kptRecordAtLevel n x hx).lReduct.binary (some i) (some j) t := by
+  rcases x with ⟨⟨k,Q⟩,hAd⟩
+  change k = n at hx
+  subst k
+  rfl
+
 /-- The genuine original source boundary record typed at its uniform
 source cut n. This is NOT the deleted target type at level m. -/
-def m2Boundary_originalType
+noncomputable def m2Boundary_originalType
     {db du dd : Nat}
     (family : List (NormalizedForbidden db du dd))
     (a₀ : AdmissibleKptNode family)
@@ -120,11 +137,20 @@ theorem m2Boundary_initial_binary_of_sameSocle
       (prescribedOrdinarySocle
         (m2Boundary_targetType family F q₀ a₀ hprev hgap x0)).binary ti tj t =
         (F x0.1).1.2.ageModel.binary ti tj t := by
-    rw [hFType]
-    have hti : ti < m+1 := by omega
-    have htj : tj < m+1 := by omega
-    simp [prescribedOrdinarySocle, PartialTypeWithE.ageModel,
-      typeAgeIndex, ti, tj, m, hi, hj, hti, htj]
+    have hiLe : ti ≤ m := Nat.le_of_lt hi
+    have hjLe : tj ≤ m := Nat.le_of_lt hj
+    have hiLt : ti < m+1 := by omega
+    have hjLt : tj < m+1 := by omega
+    have hDecode :
+        (prescribedOrdinarySocle
+          (m2Boundary_targetType family F q₀ a₀ hprev hgap x0)).binary ti tj t =
+          (m2Boundary_targetType family F q₀ a₀ hprev hgap x0).ageModel.binary ti tj t := by
+      simp [prescribedOrdinarySocle, PartialTypeWithE.ageModel,
+        typeAgeIndex, hiLe, hjLe, hiLt, hjLt]
+    have hAtoms := congrArg
+      (fun N : RawPartialTypeNode db du dd =>
+        N.2.ageModel.binary ti tj t) hFType
+    exact hDecode.trans hAtoms.symm
   have hOldIndexI : i.val < LevelTree.lev x0.1 := by
     rw [x0.2]
     exact i.isLt
@@ -138,8 +164,10 @@ theorem m2Boundary_initial_binary_of_sameSocle
       x0.1.1.2.lReduct.binary (some ii) (some jj) t =
         (m2Boundary_originalType family a₀ x0).lReduct.binary
           (some i) (some j) t := by
-    rw [m2Boundary_original_raw family a₀ x0]
-    rfl
+    have hii : ii = Fin.cast x0.2.symm i := Fin.ext rfl
+    have hjj : jj = Fin.cast x0.2.symm j := Fin.ext rfl
+    rw [hii, hjj]
+    exact kptRecordAtLevel_binary_cast (LevelTree.lev a₀) x0.1 x0.2 i j t
   exact hBin.trans (hFTarget.trans (hOld.trans hSource))
 
 end SuccessorTree.V10
