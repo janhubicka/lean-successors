@@ -53,6 +53,7 @@ theorem numericH_algorithmRun_closure_original_in_final_pool
         v ∈ hStageOriginals K k N U (R.I 0) ∧
         z ≤ (finiteNumericH K k N).kptOriginal family
           (finiteNumericH_avoids_family family K hCarrier k N hAvoidK) v := by
+  classical
   intro z hz
   let A := finiteNumericH K k N
   have hAvoidA : ∀ bad, bad ∈ family → bad.Avoids A.L :=
