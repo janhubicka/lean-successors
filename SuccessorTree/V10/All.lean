@@ -346,5 +346,8 @@ import SuccessorTree.V10.I3ClosureSelectedCrossing
 -- Algorithm 5.4: actual I3 interesting levels force corrected B3 failure.
 import SuccessorTree.V10.I3AlgorithmInterestingBridge
 
+-- Proposition 6.44: sharp I3 signatures from names of higher-generation originals.
+import SuccessorTree.V10.I3HigherSignatureCapacity
+
 -- Proposition 6.44: common higher-original budget for charged H meets and I3.
 import SuccessorTree.V10.HGenerationHighBudget
