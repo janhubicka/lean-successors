@@ -137,16 +137,14 @@ theorem m2Boundary_initial_binary_of_sameSocle
       (prescribedOrdinarySocle
         (m2Boundary_targetType family F q₀ a₀ hprev hgap x0)).binary ti tj t =
         (F x0.1).1.2.ageModel.binary ti tj t := by
-    have hiLe : ti ≤ m := Nat.le_of_lt hi
-    have hjLe : tj ≤ m := Nat.le_of_lt hj
-    have hiLt : ti < m+1 := by omega
-    have hjLt : tj < m+1 := by omega
+    have hiCut : ti ≤ LevelTree.lev (F a₀)-1 := Nat.le_of_lt hi
+    have hjCut : tj ≤ LevelTree.lev (F a₀)-1 := Nat.le_of_lt hj
     have hDecode :
         (prescribedOrdinarySocle
           (m2Boundary_targetType family F q₀ a₀ hprev hgap x0)).binary ti tj t =
           (m2Boundary_targetType family F q₀ a₀ hprev hgap x0).ageModel.binary ti tj t := by
       simp [prescribedOrdinarySocle, PartialTypeWithE.ageModel,
-        typeAgeIndex, hiLe, hjLe, hiLt, hjLt]
+        typeAgeIndex, hiCut, hjCut]
     have hAtoms := congrArg
       (fun N : RawPartialTypeNode db du dd =>
         N.2.ageModel.binary ti tj t) hFType
