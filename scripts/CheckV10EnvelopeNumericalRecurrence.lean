@@ -1,0 +1,6 @@
+import SuccessorTree.V10.EnvelopeNumericalRecurrence
+#print axioms SuccessorTree.V10.ageSignatureCapacity_mono
+#print axioms SuccessorTree.V10.descendingCumulativeBudget_eq_sum
+#print axioms SuccessorTree.V10.descendingGenerationCardinalityInduction
+#print axioms SuccessorTree.V10.descendingGenerationCardinalityInduction_signature
+#print axioms SuccessorTree.V10.finalEnvelopeLevelBound
