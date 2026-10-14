@@ -241,7 +241,7 @@ def run(input_path: Path, output: Path):
         "idempotence":"passed",
         "anchors":found,
         "changed":changed!=raw,
-        "boundary":"Normalized Kpt/H, universal M3 duplication and local guarded M2 type transport/admissibility checked; global M2, original-language adapter, I3 and final upper bound open. Four author repairs untouched."}
+        "boundary":"Normalized Kpt M1--M3 and corrected finite L-age M2 verified by Lean and transitive axiom checks; the actual age-signature recurrence and final big-Ramsey bound remain open. General-language adapter deferred; four author repairs untouched."}
     (output/"MANIFEST.json").write_text(json.dumps(manifest,indent=2)+"\n")
     print(json.dumps(manifest,indent=2))
 
