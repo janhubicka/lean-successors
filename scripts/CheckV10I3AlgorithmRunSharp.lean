@@ -1,0 +1,3 @@
+import SuccessorTree.V10.I3AlgorithmRunSharp
+#print axioms SuccessorTree.V10.numericH_algorithmRun_I3_stage_failedB3
+#print axioms SuccessorTree.V10.numericH_algorithmRun_I3_generation_card_le_high_pool

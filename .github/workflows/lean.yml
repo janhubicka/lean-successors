@@ -641,6 +641,17 @@ jobs:
             cat proof-audit/i3-algorithm-run-pool-axioms.log
             exit 1
           }
+      - name: Check sharp actual I3 AlgorithmRun R(M_g) bound
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3AlgorithmRunSharp.lean > proof-audit/i3-algorithm-sharp-axioms.log 2>&1; then
+            cat proof-audit/i3-algorithm-sharp-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-algorithm-sharp-axioms.log scripts/CheckV10I3AlgorithmRunSharp.lean || {
+            cat proof-audit/i3-algorithm-sharp-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
