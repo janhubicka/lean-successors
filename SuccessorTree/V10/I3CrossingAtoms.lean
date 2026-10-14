@@ -342,4 +342,50 @@ theorem i3_forbidden_lower_real_generation_rank
     K k N ell r hr hrk W hSocle eLower hOrder hBelow hLinked
 
 
+/-- Once Lemma 6.53 establishes that the tested real lower
+vertex has generation q<k, ANY linked upper witness vertex whose
+complete L-prefix comes from a named ambient original must have
+an original of strictly higher generation.
+
+The exceptional H gate (q=m=k) is excluded by q<k. Both the
+identity of the tested vertex and that of its named original are
+checked using injectivity of the numeric H encoding, rather than
+assuming the gate between them. -/
+theorem i3_named_upper_generation_strict_of_nonTop_tested
+    {db du dd : Nat}
+    (K : AgeTestModel db du dd)
+    (k N ell : Nat)
+    (W : AgeTestModel db du dd)
+    (w original : Nat) (hOrder : ell < original)
+    (hType :
+      RelationalPrefixType.ofAgeModel W (ell+1) w =
+        RelationalPrefixType.ofAgeModel
+          (finiteNumericHL K k N) (ell+1) original)
+    (hLink : ∃ t : Fin db,
+      W.binary ell w t = true ∨ W.binary w ell t = true)
+    (i j q m : Nat)
+    (hEll : ell = hPosition k i q)
+    (hOriginal : original = hPosition k j m)
+    (hqNonTop : q < k) (hm : m ≤ k) :
+    q < m := by
+  obtain ⟨i',j',q',m',_hij,hq',hm',hgate,hEll',hOriginal'⟩ :=
+    i3_named_upper_link_numeric_generators
+      K k N ell W w original hOrder hType hLink
+  have hEllEq :
+      hPosition k i q = hPosition k i' q' :=
+    hEll.symm.trans hEll'
+  have hOriginalEq :
+      hPosition k j m = hPosition k j' m' :=
+    hOriginal.symm.trans hOriginal'
+  obtain ⟨_hi,hqEq⟩ :=
+    hPosition_injective_bounded k i q i' q'
+      (Nat.le_of_lt hqNonTop) hq' hEllEq
+  obtain ⟨_hj,hmEq⟩ :=
+    hPosition_injective_bounded k j m j' m'
+      hm hm' hOriginalEq
+  rcases hgate with hlt | ⟨heq,htop⟩
+  · omega
+  · omega
+
+
 end SuccessorTree.V10
