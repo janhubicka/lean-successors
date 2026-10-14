@@ -801,3 +801,56 @@ the upper bound.}
 % and the concrete factorization endpoint; all remain OPEN.
 % The English manuscript proof is in v10-m2-nonedge-appendix.tex
 % and is inserted into author main.tex only by the guarded installer.
+
+
+% ================================================================
+% 2026-10-14 -- FINAL NORMALIZED Kpt M2/M1--M3 checkpoint.
+% Supersedes the chronological OPEN notes above for the normalized
+% unary/directed-binary/diagonal Boolean-record implementation only.
+%
+% \textbf{Normalized M2 -- GREEN.}
+% The complete finite $L$-age non-edge proof of CompatibleB3 is
+% formalised by \texttt{m2Boundary\_actual\_compatibleB3} in
+% \texttt{SuccessorTree/V10/M2BoundaryCompatibleB3Closure.lean}.
+% The age-test witness is an arbitrary finite ordered $L$-model;
+% no auxiliary $E$-expansion or ambient age-preservation axiom is
+% assumed. The finite sparse source retains every real upper--upper
+% atom and places neutral fillers only at unused addresses.
+% All compatible source $L^+$ types are represented simultaneously
+% in one padded admissible source, capped once, and transported by
+% the genuine ShapeMap $F$ with complete crossing information even
+% at the omitted target coordinate. This yields an induced forbidden
+% copy in the admissible image, proving the corrected finite age test.
+%
+% The intrinsic deletion first factor, global boundary B1/B2
+% prescription, target admissibility and literal boundary agreement
+% are proved in the \texttt{LevelRemoval*} and
+% \texttt{M2Boundary*} modules. The final one-gap factorisation is
+% \texttt{m2\_actual\_first\_gap\_factorization};
+% \texttt{SuccessorTree/V10/M2FullAxiom.lean} obtains precisely the
+% \texttt{SMTree.m2} quantifier order and skipped-level condition.
+% The proof uses no pre-existing \texttt{SMTree.m2} instance.
+%
+% \textbf{Normalized M1--M3 structure -- GREEN.}
+% \texttt{SuccessorTree/V10/KptCompleteSMTree.lean} constructs
+% \texttt{normalizedKptSMTree} from independently formalised
+% M1 (identity, composition, fusion), the above M2, and the
+% literal universally quantified M3 duplication theorem.
+% Exact-head PR~381 full Lean (38564272092), V10 counting
+% (38564272911) and source snapshot (38564272435) succeeded.
+% The named transitive axiom checks admit only propext,
+% Classical.choice and Quot.sound. All component PRs 369--381
+% were consolidated with the identical verified Git tree
+% d2fb86513b51e9720e56c8585dafe60b16fc9732.
+%
+% \textbf{Remaining formalisation boundary -- OPEN.}
+% This verifies the normalized finite unary/binary/diagonal language,
+% with no forbidden empty structure and an allowed neutral singleton;
+% it does NOT yet identify the implementation with the manuscript's
+% general finite relational language (arbitrary relation arities,
+% nullary convention, interpretation of irreducibility). Prove
+% that adapter and check later applications before claiming that
+% the entire original Section 6.3 or the full paper is verified.
+% PR~382 is a new clean integration into main which also preserves
+% existing free-ancestral developments; its combined CI is separate
+% and must succeed before merging PR~382.
