@@ -321,3 +321,6 @@ import SuccessorTree.V10.I3EligibleStageWitness
 
 -- Observation 6.52: derive finite R(M) bound for actual failed I3 stage tests.
 import SuccessorTree.V10.I3StageSignatureBound
+
+-- I3: selected closure pool and exact f_ell source/graph identification criterion.
+import SuccessorTree.V10.I3SelectedStagePool
