@@ -304,3 +304,6 @@ import SuccessorTree.V10.M2CopyFromCompleteImageTypes
 -- M2 B3: concrete padded witness and recovery of the initial socle.
 import SuccessorTree.V10.M2ConcreteCapImageCopy
 import SuccessorTree.V10.M2InitialSocleFromUpper
+
+-- M2 B3: separate the zero-upper case and recover the cap socle from an upper record.
+import SuccessorTree.V10.M2B3CopyCases
