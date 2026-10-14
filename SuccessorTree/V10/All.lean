@@ -291,3 +291,6 @@ import SuccessorTree.V10.EnvelopeNumericalRecurrence
 import SuccessorTree.V10.I3SignatureCardinality
 import SuccessorTree.V10.I3AmbientPrescribedPool
 import SuccessorTree.V10.I3AmbientSocleBridge
+
+-- I3: exact nonempty proper lower cut of ordered forbidden age copy.
+import SuccessorTree.V10.I3ForbiddenCutIndex
