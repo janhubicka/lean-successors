@@ -345,3 +345,6 @@ import SuccessorTree.V10.I3ClosureSelectedCrossing
 
 -- Algorithm 5.4: actual I3 interesting levels force corrected B3 failure.
 import SuccessorTree.V10.I3AlgorithmInterestingBridge
+
+-- Section 6: instantiate actual AlgorithmRun closures and count I3 levels in finite pool.
+import SuccessorTree.V10.I3AlgorithmRunPool

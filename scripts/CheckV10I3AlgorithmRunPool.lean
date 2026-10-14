@@ -1,0 +1,3 @@
+import SuccessorTree.V10.I3AlgorithmRunPool
+#print axioms SuccessorTree.V10.numericH_algorithmRun_closure_original_in_final_pool
+#print axioms SuccessorTree.V10.numericH_algorithmRun_I3_card_le_finalPoolCapacity
