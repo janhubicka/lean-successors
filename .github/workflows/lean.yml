@@ -135,6 +135,17 @@ jobs:
             cat proof-audit/m2-b3-socle-age-axioms.log
             exit 1
           }
+      - name: Check M2 typed boundary records and B1 axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryTypedRecords.lean > proof-audit/m2-boundary-records-axioms.log 2>&1; then
+            cat proof-audit/m2-boundary-records-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-boundary-records-axioms.log 3 || {
+            cat proof-audit/m2-boundary-records-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
