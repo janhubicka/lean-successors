@@ -145,6 +145,31 @@ theorem stagePoolPrescribedData_source_original
     (fun v => ell+1 ≤ A.freeLevel (original v).val)
     T hT
 
+/-- The cut-filtered pool has the exact original-name
+representation needed by the manuscript's finite I3 age-signature
+witness lemma, while keeping the original-name set of size M fixed
+across different tested levels.
+
+The source and its output both come from one eligible original, so
+the full L-reduct through ell+1 agrees, including absent tuples. -/
+theorem stagePoolPrescribedData_has_original_pool_representation
+    {db du dd M : Nat}
+    (A : EnumeratedPartialStructure db du dd)
+    (ell : Nat) (original : Fin M → Fin A.size) :
+    ∀ T, T ∈ (stagePoolPrescribedData A ell original).source →
+      ∃ v : Fin M,
+        T = A.partialTypeAt ell (original v).val ∧
+        ((stagePoolPrescribedData A ell original).target T).lReduct =
+          RelationalPrefixType.ofAgeModel A.L (ell+1)
+            (original v).val := by
+  intro T hT
+  obtain ⟨v,_hCut,hOld,hTarget⟩ :=
+    stagePoolPrescribedData_source_original A ell original T hT
+  refine ⟨v,hOld,?_⟩
+  rw [hTarget]
+  exact partialTypeAt_lReduct_eq_ofAgeModel A (ell+1)
+    (original v).val
+
 /-- Every actual stage target satisfies the admissible Kpt
 predicate, with the membership and free-cut witnesses extracted
 from its SAME named original in the fixed pool. -/
