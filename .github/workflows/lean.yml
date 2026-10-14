@@ -146,6 +146,17 @@ jobs:
             cat proof-audit/m2-boundary-records-axioms.log
             exit 1
           }
+      - name: Check M2 full boundary B2 and prescription axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryPrescribedB2.lean > proof-audit/m2-boundary-b2-axioms.log 2>&1; then
+            cat proof-audit/m2-boundary-b2-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-boundary-b2-axioms.log 4 || {
+            cat proof-audit/m2-boundary-b2-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
