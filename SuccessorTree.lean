@@ -300,3 +300,7 @@ import SuccessorTree.V10.M2ImageLowerSocle
 
 -- M2 B3: exact induced copy from lower/upper pair and singleton zones.
 import SuccessorTree.V10.M2CopyFromCompleteImageTypes
+
+-- M2 B3: concrete padded witness and recovery of the initial socle.
+import SuccessorTree.V10.M2ConcreteCapImageCopy
+import SuccessorTree.V10.M2InitialSocleFromUpper
