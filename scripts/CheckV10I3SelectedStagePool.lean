@@ -1,0 +1,8 @@
+import SuccessorTree.V10.I3SelectedStagePool
+#print axioms SuccessorTree.V10.selectedStagePoolPrescribedData
+#print axioms SuccessorTree.V10.selectedStagePoolPrescribedData_source_original
+#print axioms SuccessorTree.V10.selectedStagePoolPrescribedData_targets_admissible
+#print axioms SuccessorTree.V10.selectedStagePoolPrescribedData_correctedB3_iff_compatibleB3
+#print axioms SuccessorTree.V10.selectedStagePool_failedCorrectedB3_has_selected_original_witness
+#print axioms SuccessorTree.V10.PrescribedBoringData.correctedB3_iff_of_source_target
+#print axioms SuccessorTree.V10.selectedStagePool_B3_iff_of_source_and_graph
