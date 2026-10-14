@@ -1,0 +1,2 @@
+import SuccessorTree.V10.I3FullForbiddenRelocation
+#print axioms SuccessorTree.V10.numericI3_forbidden_copy_forces_last_lower_rank

@@ -294,3 +294,12 @@ import SuccessorTree.V10.I3AmbientSocleBridge
 
 -- I3: recover numeric H generators and upper original gates from actual age copies.
 import SuccessorTree.V10.I3CrossingAtoms
+
+-- I3 Lemma 6.53: complete as-written numerical H relation relocation.
+import SuccessorTree.V10.I3NumericRelocation
+import SuccessorTree.V10.I3WitnessCrossRelocation
+import SuccessorTree.V10.I3WitnessLowerRelocation
+import SuccessorTree.V10.I3FullForbiddenRelocation
+
+-- I3: unique nonempty proper lower prefix at the tested coordinate.
+import SuccessorTree.V10.I3ForbiddenCutIndex

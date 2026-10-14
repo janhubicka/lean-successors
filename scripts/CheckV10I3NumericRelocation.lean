@@ -1,0 +1,6 @@
+import SuccessorTree.V10.I3NumericRelocation
+#print axioms SuccessorTree.V10.numericH_forward_eq_base_of_gate
+#print axioms SuccessorTree.V10.numericH_reverse_eq_base_of_gate
+#print axioms SuccessorTree.V10.numericH_linked_lower_upper_relocation
+#print axioms SuccessorTree.V10.numericH_linked_lower_lower_relocation
+#print axioms SuccessorTree.V10.numericH_relocated_lower_before_old_last

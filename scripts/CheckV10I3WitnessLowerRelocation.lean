@@ -1,0 +1,2 @@
+import SuccessorTree.V10.I3WitnessLowerRelocation
+#print axioms SuccessorTree.V10.numericI3_lower_zone_relocation
