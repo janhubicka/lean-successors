@@ -110,6 +110,7 @@ theorem eligibleAmbientPoolPrescribedData_source_original
   change eligibleAmbientPoolTarget A ell original Eligible T =
     A.partialTypeAt (ell+1) (original v)
   simp only [eligibleAmbientPoolTarget, dite_eq_left hT]
+  rfl
 
 /-- The finite stage pool consists of actual ambient vertices.
 Eligibility at ell means the original's real free E-cut reaches
