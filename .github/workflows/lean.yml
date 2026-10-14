@@ -289,6 +289,28 @@ jobs:
             cat proof-audit/i3-signature-cardinality-axioms.log
             exit 1
           }
+      - name: Check finite ambient original-pool I3 B1/B2 map
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3AmbientPrescribedPool.lean > proof-audit/i3-ambient-map-axioms.log 2>&1; then
+            cat proof-audit/i3-ambient-map-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-ambient-map-axioms.log scripts/CheckV10I3AmbientPrescribedPool.lean || {
+            cat proof-audit/i3-ambient-map-axioms.log
+            exit 1
+          }
+      - name: Check I3 ambient age socle and forbidden witness
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I3AmbientSocleBridge.lean > proof-audit/i3-ambient-socle-axioms.log 2>&1; then
+            cat proof-audit/i3-ambient-socle-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/i3-ambient-socle-axioms.log scripts/CheckV10I3AmbientSocleBridge.lean || {
+            cat proof-audit/i3-ambient-socle-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

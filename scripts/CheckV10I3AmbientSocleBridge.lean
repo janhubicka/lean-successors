@@ -1,0 +1,6 @@
+import SuccessorTree.V10.I3AmbientSocleBridge
+#print axioms SuccessorTree.V10.ambientPoolPrescribedData_target_original
+#print axioms SuccessorTree.V10.ambient_partialType_prescribedSocle
+#print axioms SuccessorTree.V10.ambientPool_B3_witness_sameAmbientSocle
+#print axioms SuccessorTree.V10.ambientPool_failedCorrectedB3_full_I3_witness
+#print axioms SuccessorTree.V10.ambientPoolPrescribedData_targets_admissible
