@@ -339,3 +339,6 @@ import SuccessorTree.V10.I3ClosureCrossingGraph
 
 -- I3: non-skippable complete closure crossing contradicts one-gap B3 extension.
 import SuccessorTree.V10.I3NoSkipForcesB3
+
+-- Proposition 6.44: higher-generation names alone bound I3 signatures by R(M_r).
+import SuccessorTree.V10.I3HigherSignatureCapacity
