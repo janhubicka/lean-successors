@@ -1,0 +1,4 @@
+import SuccessorTree.V10.I3NoSkipForcesB3
+#print axioms SuccessorTree.V10.CoversClosureCrossing
+#print axioms SuccessorTree.V10.NonSkippableClosureCrossing
+#print axioms SuccessorTree.V10.nonSkippableClosureCrossing_implies_failedCorrectedB3
