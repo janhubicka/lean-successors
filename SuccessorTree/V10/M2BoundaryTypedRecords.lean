@@ -81,6 +81,7 @@ theorem m2Boundary_deleted_level
       (uniformGapDeletedShapeMap family F q₀ a₀ hprev hgap x.1) =
       LevelTree.lev (F a₀) - 1 := by
   have hNotLow : ¬ LevelTree.lev x.1 < LevelTree.lev a₀ := by
+    have hxLevel : LevelTree.lev x.1 = LevelTree.lev a₀ := x.2
     omega
   have hExpr :=
     uniformGapDeletedShapeMap_level family F q₀ a₀ hprev hgap x.1
@@ -203,7 +204,8 @@ theorem m2Boundary_B1
   let D := uniformGapDeletedShapeMap family F q₀ a₀ hprev hgap
   have hRaw : (D x.1).1 =
       rawPartialTypeAncestor (F x.1).1 m (by
-        have hLevel := F.level_eq_of_level_eq x.2
+        have hLevel : (F x.1).1.1 = (F a₀).1.1 :=
+          F.level_eq_of_level_eq x.2
         dsimp [m]
         omega) :=
     uniformGapDeletedShapeMap_boundary_raw_ancestor
@@ -220,7 +222,8 @@ theorem m2Boundary_B1
          (D x.1).1 :=
         (m2Boundary_source_raw family F q₀ a₀ hprev hgap x).symm
       _ = rawPartialTypeAncestor (F x.1).1 m (by
-           have hLevel := F.level_eq_of_level_eq x.2
+           have hLevel : (F x.1).1.1 = (F a₀).1.1 :=
+             F.level_eq_of_level_eq x.2
            dsimp [m]
            omega) := hRaw
       _ = rawPartialTypeAncestor
