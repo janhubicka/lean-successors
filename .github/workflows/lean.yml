@@ -157,6 +157,83 @@ jobs:
             cat proof-audit/m2-boundary-b2-axioms.log
             exit 1
           }
+      - name: Check actual M2 boundary factorization criterion axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryFinalCriterion.lean > proof-audit/m2-boundary-final-axioms.log 2>&1; then
+            cat proof-audit/m2-boundary-final-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-boundary-final-axioms.log 3 || {
+            cat proof-audit/m2-boundary-final-axioms.log
+            exit 1
+          }
+      - name: Check M2 B3 actual upper source selection axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryUpperSelection.lean > proof-audit/m2-upper-selection-axioms.log 2>&1; then
+            cat proof-audit/m2-upper-selection-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-upper-selection-axioms.log 2 || {
+            cat proof-audit/m2-upper-selection-axioms.log
+            exit 1
+          }
+      - name: Check M2 retained low L records axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryLowRecords.lean > proof-audit/m2-low-records-axioms.log 2>&1; then
+            cat proof-audit/m2-low-records-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-low-records-axioms.log 2 || {
+            cat proof-audit/m2-low-records-axioms.log
+            exit 1
+          }
+      - name: Check M2 genuine original source compatibility axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryOriginalCompatibility.lean > proof-audit/m2-original-compat-axioms.log 2>&1; then
+            cat proof-audit/m2-original-compat-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-original-compat-axioms.log 3 || {
+            cat proof-audit/m2-original-compat-axioms.log
+            exit 1
+          }
+      - name: Check unconditional normalized M2 B3 and gap factorization axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2BoundaryCompatibleB3Closure.lean > proof-audit/m2-b3-closure-axioms.log 2>&1; then
+            cat proof-audit/m2-b3-closure-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-b3-closure-axioms.log 2 || {
+            cat proof-audit/m2-b3-closure-axioms.log
+            exit 1
+          }
+      - name: Check literal normalized Kpt M2 axiom
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10M2FullAxiom.lean > proof-audit/m2-full-axiom.log 2>&1; then
+            cat proof-audit/m2-full-axiom.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/m2-full-axiom.log 2 || {
+            cat proof-audit/m2-full-axiom.log
+            exit 1
+          }
+      - name: Check full normalized Kpt SMTree axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10KptCompleteSMTree.lean > proof-audit/kpt-smtree-axioms.log 2>&1; then
+            cat proof-audit/kpt-smtree-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/kpt-smtree-axioms.log scripts/CheckV10KptCompleteSMTree.lean || {
+            cat proof-audit/kpt-smtree-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
