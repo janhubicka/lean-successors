@@ -1,0 +1,4 @@
+import SuccessorTree.V10.I3PrescribedOriginalWitness
+#print axioms SuccessorTree.V10.PrescribedBoringData.compatibleUpper_has_ambient_original
+#print axioms SuccessorTree.V10.PrescribedBoringData.failedCompatibleB3_has_ambient_original_witness
+#print axioms SuccessorTree.V10.normalizedForbidden_bad_copy_meets_tested_coordinate
