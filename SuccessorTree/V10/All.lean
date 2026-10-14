@@ -385,3 +385,6 @@ import SuccessorTree.V10.HTopI1I2Seeds
 
 -- Proposition 6.44: real top selected levels of Algorithm 5.4 are only top seed prefixes.
 import SuccessorTree.V10.HTopAlgorithmRunBase
+
+-- Proposition 6.44: actual generation-r selected levels partition and M_r+R(M_r) bound.
+import SuccessorTree.V10.HActualGenerationEventBound
