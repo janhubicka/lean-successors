@@ -78,9 +78,15 @@
     \leanpartial{#1}{#2}%
   \endgroup
 }
-% Fat-tree A4 exact-trace snapshot. Actions run 37197761609 checked
-% the finite bridge, exact trace recursion, and bidirectional exact-trace
-% update separately; profile persistence/fusion is still unfinished.
+% Historical PARTIAL fat-tree A4 exact-trace checkpoint: Actions run
+% 37197761609 checked the finite bridge and bidirectional trace recursion.
+% Its source snapshot is retained for pre-completion orange annotations.
+% The complete A4 and Ellentuck endpoints have since been checked
+% unconditionally in FatTree/A4ReviewComplete.lean, including the
+% all-trace fusion and fixed-stem pigeonhole proof. In integration PR 382,
+% main-tree full Lean and transitive axiom audits passed at the exact source.
+% A3(2) in Lean proves the necessary neighbourhood inclusion, not the
+% stronger equality stated in the manuscript; keep that prose TODO OPEN.
 \newcommand{\successorfatafourpartial}[2]{%
   \begingroup
     \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
@@ -88,5 +94,17 @@
     \leanpartial{#1}{#2}%
   \endgroup
 }
+
+% Completed typed fat-tree A4 and fat-tree Ellentuck: use this wrapper
+% ONLY for the exact matching typed statements and not the stronger
+% embedding-space Ellentuck/EA or unsupported A3 neighbourhood equality.
+\newcommand{\successorfatafourverified}[2]{%
+  \begingroup
+    \renewcommand{\leanrepo}{https://github.com/janhubicka/lean-successors}%
+    \renewcommand{\leancommit}{ed333be7745bd9077fcbc693e3fc313e09dc0a2b}%
+    \leanverified{#1}{#2}%
+  \endgroup
+}
+
 % All new inline review notes are enclosed by \ifshowvalidation ... \fi.
 % Use \showvalidationfalse after loading this overlay for a circulation copy.
