@@ -6,3 +6,4 @@ import SuccessorTree.V10.I3CrossingAtoms
 #print axioms SuccessorTree.V10.i3_lower_irreducible_numeric_rank
 #print axioms SuccessorTree.V10.i3_forbidden_copy_lower_links
 #print axioms SuccessorTree.V10.i3_forbidden_lower_real_generation_rank
+#print axioms SuccessorTree.V10.i3_named_upper_generation_strict_of_nonTop_tested
