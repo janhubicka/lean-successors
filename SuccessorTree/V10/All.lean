@@ -363,3 +363,6 @@ import SuccessorTree.V10.I1RealNodeMeetCharge
 
 -- Proposition 6.44: enumerate only high original names with the common M_r budget.
 import SuccessorTree.V10.HHighOriginalNameEnumeration
+
+-- Proposition 6.44: top-generation seed prefixes and I1 meet charging.
+import SuccessorTree.V10.HTopGenerationSeeds

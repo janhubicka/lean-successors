@@ -608,6 +608,17 @@ jobs:
             cat proof-audit/h-high-name-enumeration-axioms.log
             exit 1
           }
+      - name: Check actual top-generation seed geometry and I1 meet charging
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HTopGenerationSeeds.lean > proof-audit/h-top-seeds-axioms.log 2>&1; then
+            cat proof-audit/h-top-seeds-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-top-seeds-axioms.log scripts/CheckV10HTopGenerationSeeds.lean || {
+            cat proof-audit/h-top-seeds-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
