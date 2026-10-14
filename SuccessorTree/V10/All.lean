@@ -351,3 +351,12 @@ import SuccessorTree.V10.I3HigherSignatureCapacity
 
 -- I3: numerical H failed-B3 witnesses have only higher-generation original names.
 import SuccessorTree.V10.I3ActualHigherSignature
+
+// Proposition 6.44: charged meets use exactly the higher-generation original names.
+import SuccessorTree.V10.HGenerationHighBudget
+// Actual Section 5 closure: seeds, selected parameters, or meets of originals.
+import SuccessorTree.V10.KptStageClosureNormalForm
+// Real H levels are even, all positive canonical E-free cuts are odd.
+import SuccessorTree.V10.HPositiveFreeLevelOdd
+// Real I1 closure nodes not among seeds are genuine charged original meets.
+import SuccessorTree.V10.I1RealNodeMeetCharge
