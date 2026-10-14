@@ -312,3 +312,6 @@ import SuccessorTree.V10.I3ActualWitnessGeneration
 
 -- Lemma 6.53: actual H ambient pool failed B3 forces proper-cut and generation bounds.
 import SuccessorTree.V10.I3ActualStageGeneration
+
+-- I3: level-filtered originals of the fixed pool (complete B1/B2 and admissibility).
+import SuccessorTree.V10.I3EligibleStagePool
