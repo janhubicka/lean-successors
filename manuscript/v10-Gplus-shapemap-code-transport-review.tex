@@ -1,0 +1,16 @@
+% Review-only continuation for Observation 6.42; author proof prose unchanged.
+% Candidate pending exact-head Lean build and transitive standard-axiom CI.
+\todo[inline]{\textbf{v10 validation: ShapeMap transport of full ordinary codes -- candidate.}
+\texttt{GPlusShapeMapCodeTransport.lean} applies the already established
+\texttt{shapeMap\_preserves\_source\_compatibility} theorem to genuine
+admissible Kpt nodes with the same complete ordinary finite code.
+It transports equality of directed binary atoms (including absence),
+unary and diagonal information, and ordinary $E$ relations to their
+full ShapeMap image records. The same equality is then restricted to
+any common smaller cut, including the manuscript's
+$\lambda(\ell(S))+1$.  The restriction step uses equality-congruence
+for dependent finite tables, not an illicit dependent rewrite.
+This is not yet the well-defined $G^+$ action of Observation~6.42:
+comparison with arbitrary representing pairs, injectivity/reflection,
+all induced atom identities and composition remain separate obligations.
+Do not mark Theorem~6.26 validated from this local result.}
