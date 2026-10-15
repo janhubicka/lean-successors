@@ -56,7 +56,9 @@ theorem finiteGPlus_irreducible_copy_pairwise_comparable
       finiteGPlusBinary_true_implies_comparable
         (f b) (f a) bit
         (by rw [hBinary b a hab.symm bit]; exact hBA)
-    exact hCmp.symm
+    rcases hCmp with hBA | hAB
+    · exact Or.inr hBA
+    · exact Or.inl hAB
 
 /-- When an enumeration respects strictly increasing sizes,
 the irreducible forbidden-copy indices follow strictly
