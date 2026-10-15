@@ -828,6 +828,17 @@ jobs:
             cat proof-audit/gplus-finite-code-axioms.log
             exit 1
           }
+      - name: Check canonical finite G+ tree restriction and prefix uniqueness
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10GPlusFinitePrefix.lean > proof-audit/gplus-finite-prefix-axioms.log 2>&1; then
+            cat proof-audit/gplus-finite-prefix-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/gplus-finite-prefix-axioms.log scripts/CheckV10GPlusFinitePrefix.lean || {
+            cat proof-audit/gplus-finite-prefix-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

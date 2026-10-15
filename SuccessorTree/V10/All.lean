@@ -413,3 +413,6 @@ import SuccessorTree.V10.HInfiniteBaseEmbedding
 
 -- Definition 6.40: canonical countable finite-coordinate G+ vertex codes.
 import SuccessorTree.V10.GPlusFiniteCode
+
+-- Definition 6.40: canonical G+ finite-code prefix tree order.
+import SuccessorTree.V10.GPlusFinitePrefix
