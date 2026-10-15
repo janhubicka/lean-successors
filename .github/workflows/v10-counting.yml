@@ -9,6 +9,7 @@ on:
       - 'scripts/check_v10_*.py'
       - 'scripts/select-v10-checks.py'
       - 'scripts/run-v10-checks.py'
+      - 'scripts/audit-import-graph.py'
       - 'scripts/check-axiom-log.py'
       - 'lean-toolchain'
       - 'lakefile.toml'
@@ -22,6 +23,7 @@ on:
       - 'scripts/check_v10_*.py'
       - 'scripts/select-v10-checks.py'
       - 'scripts/run-v10-checks.py'
+      - 'scripts/audit-import-graph.py'
       - 'scripts/check-axiom-log.py'
       - 'lean-toolchain'
       - 'lakefile.toml'
@@ -80,6 +82,8 @@ jobs:
         run: |
           set -euo pipefail
           python3 scripts/select-v10-checks.py --output-file "$GITHUB_OUTPUT"
+      - name: Inventory library imports and potential dead proof branches
+        run: python3 scripts/audit-import-graph.py --output successor-import-audit.json
       - name: Exhaustive H-block meet diagnostic
         if: ${{ steps.scope.outputs.h == 'true' }}
         run: python3 scripts/check_v10_meet_blocks.py
@@ -142,6 +146,8 @@ jobs:
             v10-build.log
             v10-selected-checks.txt
             v10-check-timings.json
+            successor-import-audit.json
+            scripts/audit-import-graph.py
             scripts/run-v10-checks.py
             scripts/select-v10-checks.py
             v10-actual-meet-regression.json
