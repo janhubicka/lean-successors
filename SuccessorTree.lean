@@ -79,8 +79,8 @@ import SuccessorTree.ShapeFiniteCorollaries
 import SuccessorTree.EnvelopeTheorem
 -- Explicit complete V10 proof-build aggregation; preserve all V10 regression coverage.
 import SuccessorTree.V10.All
--- G+ induced age and the canonical countable H+ prefix-code embedding.
-import SuccessorTree.V10.CountableGPlusEmbedding
+-- Exhaustive size-nondecreasing G-omega enumeration and ordered H embedding.
+import SuccessorTree.V10.GPlusOrderedEmbedding
 
 -- Preserve the additional free-ancestral proof modules on main.
 import SuccessorTree.ShapeEvents
