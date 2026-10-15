@@ -69,8 +69,12 @@ theorem sameOrdinaryAtCut_restrict
     (hm : m ≤ n) (h : SameOrdinaryAtCut T U) :
     SameOrdinaryAtCut (T.restrict hm) (U.restrict hm) := by
   have hCode := ordinaryCode_eq_of_sameOrdinary T U h
-  have hRestricted := congrArg
-    (fun C : FinitePartialCode db du dd => C.restrict m hm) hCode
+  have hRestricted :
+      (RawPartialTypeNode.ordinaryCode
+        (⟨n,T⟩ : RawPartialTypeNode db du dd)).restrict m hm =
+      (RawPartialTypeNode.ordinaryCode
+        (⟨n,U⟩ : RawPartialTypeNode db du dd)).restrict m hm := by
+    rw [hCode]
   have hT := RawPartialTypeNode.ordinaryCode_ancestor
     (⟨n,T⟩ : RawPartialTypeNode db du dd) m hm
   have hU := RawPartialTypeNode.ordinaryCode_ancestor
