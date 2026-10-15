@@ -817,6 +817,28 @@ jobs:
             cat proof-audit/h-infinite-base-axioms.log
             exit 1
           }
+      - name: Check v10 true top-root E-free-cut geometry
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HTopRootFreeCut.lean > proof-audit/h-top-root-freecut-axioms.log 2>&1; then
+            cat proof-audit/h-top-root-freecut-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-top-root-freecut-axioms.log scripts/CheckV10HTopRootFreeCut.lean || {
+            cat proof-audit/h-top-root-freecut-axioms.log
+            exit 1
+          }
+      - name: Check v10 original unary/binary induced-copy normalization
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10BinaryUnaryAgeAdapter.lean > proof-audit/binary-unary-age-adapter-axioms.log 2>&1; then
+            cat proof-audit/binary-unary-age-adapter-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/binary-unary-age-adapter-axioms.log scripts/CheckV10BinaryUnaryAgeAdapter.lean || {
+            cat proof-audit/binary-unary-age-adapter-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
