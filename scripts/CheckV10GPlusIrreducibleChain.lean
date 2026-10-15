@@ -16,6 +16,7 @@ import SuccessorTree.V10.GPlusFiniteColourNaturality
 import SuccessorTree.V10.GPlusPaletteRamseyStabilization
 import SuccessorTree.V10.GPlusFiniteBigRamseyTransfer
 import SuccessorTree.V10.GPlusActualSeedTupleColourBound
+import SuccessorTree.V10.KptE1PaddedFreeCutProfile
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -279,3 +280,13 @@ import SuccessorTree.V10.GPlusActualSeedTupleColourBound
 #print axioms SuccessorTree.V10.normalizedKpt_GPlus_finite_colour_bound_of_cover
 #print axioms SuccessorTree.V10.numericKptAlgorithmRun_seed_tuples_finiteApprox_cover
 #print axioms SuccessorTree.V10.numericKptAlgorithmRun_seed_tuples_finiteColour_bound
+#print axioms SuccessorTree.V10.paddedE1FreeCutProfile
+#print axioms SuccessorTree.V10.paddedE1FreeCutProfile_old
+#print axioms SuccessorTree.V10.paddedE1FreeCutProfile_new
+#print axioms SuccessorTree.V10.paddedE1FreeCutProfile_spacer
+#print axioms SuccessorTree.V10.paddedE1FreeCutProfile_type
+#print axioms SuccessorTree.V10.paddedE1FreeCutProfile_spaced
+#print axioms SuccessorTree.V10.paddedE1PartialStructure
+#print axioms SuccessorTree.V10.paddedE1PartialStructure_L
+#print axioms SuccessorTree.V10.paddedE1PartialStructure_freeLevel
+#print axioms SuccessorTree.V10.paddedE1PartialStructure_type_freeLevel
