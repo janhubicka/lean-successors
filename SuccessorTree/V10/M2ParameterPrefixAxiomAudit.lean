@@ -1,4 +1,0 @@
-import SuccessorTree.V10.ShapeMapParameterPrefix
-
-#print axioms SuccessorTree.V10.PartialTypeWithE.ordinaryType_restrict_cut
-#print axioms SuccessorTree.V10.shapeMap_transports_parameter_prefix
