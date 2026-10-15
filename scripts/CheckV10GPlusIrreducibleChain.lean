@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusOrdinaryPrefix
+import SuccessorTree.V10.GPlusShapeMapCodeTransport
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -121,3 +121,6 @@ import SuccessorTree.V10.GPlusOrdinaryPrefix
 #print axioms SuccessorTree.V10.RawPartialTypeNode.ordinaryCode_isPrefix
 #print axioms SuccessorTree.V10.admissibleKpt_toGPlus_isPrefix
 #print axioms SuccessorTree.V10.sameOrdinaryAtCut_restrict
+
+#print axioms SuccessorTree.V10.shapeMap_preserves_equal_ordinaryCode
+#print axioms SuccessorTree.V10.shapeMap_preserves_equal_ordinaryCode_restrict
