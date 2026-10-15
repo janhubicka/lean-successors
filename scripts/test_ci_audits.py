@@ -76,9 +76,9 @@ class SelectorTests(unittest.TestCase):
         self.assertEqual(diff.call_args.args[0][-2:], ["HEAD^1", "HEAD"])
 
     def test_affected_checker_selected_transitively(self):
-        changed = {"SuccessorTree/V10/GPlusFiniteCode.lean"}
+        changed = {"SuccessorTree/V10/HUniformEnvelopeBound.lean"}
         checks = selector.select(changed, False)
-        self.assertTrue(any("GPlus" in c.name for c in checks),
+        self.assertTrue(any("HUniformEnvelopeBound" in c.name for c in checks),
                         "a concrete modified theorem must select its consumers")
 
 
