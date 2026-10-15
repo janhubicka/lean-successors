@@ -1,4 +1,5 @@
 import SuccessorTree.V10.GPlusInducedAction
+import SuccessorTree.V10.GPlusBoundedPalette
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -200,3 +201,9 @@ import SuccessorTree.V10.GPlusInducedAction
 #print axioms SuccessorTree.V10.gPlusShapeImage_preserves_unary
 #print axioms SuccessorTree.V10.gPlusShapeImage_preserves_diagonal
 #print axioms SuccessorTree.V10.gPlusShapeImage_induced_LPlus
+
+#print axioms SuccessorTree.V10.boundedGPlusRepresentingPairFintype
+#print axioms SuccessorTree.V10.boundedRepresentableGPlusVertices
+#print axioms SuccessorTree.V10.boundedRepresentableGPlusVertices_finite
+#print axioms SuccessorTree.V10.boundedGPlusTuplePalette
+#print axioms SuccessorTree.V10.boundedGPlusTuplePalette_finite
