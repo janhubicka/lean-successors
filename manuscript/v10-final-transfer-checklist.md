@@ -40,6 +40,16 @@ compatibility theorem. Review note:
 `manuscript/v10-Gplus-ordinary-compatibility-review.tex`.
 This remains pending exact-head kernel and transitive-axiom verification.
 
+PR 468, candidate branch `v10-Gplus-representing-pairs-20261015`,
+constructs the literal manuscript representation v(S,T) from two genuine
+admissible Kpt nodes S<T: cut T at level(S)+1 and take its genuine
+ordinary G+ code. It proves the image of a strict pair under a ShapeMap
+is strict and has cut lambda(level(S))+1. It also constructs the
+canonical neutral-cap pair for every finite code A with cut size |A|.
+The equality v(canonical(A))=A requires the cap's ordinary-code identity
+and is NOT asserted; nor is representative independence. Candidate note:
+`manuscript/v10-Gplus-representing-pairs-review.tex`.
+
 None of these certificates yet proves the full well-defined induced
 ShapeMap action, envelope representation or final Ramsey transfer.
 
