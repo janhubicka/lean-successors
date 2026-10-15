@@ -1,0 +1,25 @@
+% Review-only successor v10 validation; original manuscript proof prose frozen.
+% Candidate until exact-head full Lean and transitive standard-axiom/counting CI.
+\todo[inline]{\textbf{v10 Theorem~6.26: exact simultaneous stabilization
+of all bounded $G^+$ palette colours -- candidate.}
+The genuine bounded Kpt pair palette supplies a finite type
+of $q$-tuples of $G^+$ vertices. For every such tuple $e$, the
+previously verified finite approximation naturality gives the
+literal colouring $\chi_e''(a)=\chi'(\Phi_a(e(A)))$ on
+$AM_0^{b+1}$. Applying the already Lean-checked concrete Kpt
+successor Ramsey theorem ONCE to the finite product colouring
+gives a single ShapeSubspace $W$ making every component
+monochromatic. The new
+\texttt{GPlusPaletteRamseyStabilization.lean} translates this
+back by the naturality theorem into equality of the actual
+$\chi'(\Phi_W(\Phi_a(e(A))))$ values, for ALL bounded palette
+indices and all finite approximations $a$ and $c$.
+This does not invent a Ramsey axiom and is independent of
+the still-explicit E1 premise in the envelope construction.
+The remaining unverified endpoint is to turn the bounded
+numerical $H^+$ seed representation and its actual Algorithm~5.4
+envelope into the uniform palette bound for every requested
+copy of $A$, and compose the final ordered universal embedding
+$K\to G^\omega\to K$ with the homogeneous map. Theorem~6.26
+must remain unmarked until that assembly, including the concrete
+E1 dependency or an E1-free replacement, is checked.}
