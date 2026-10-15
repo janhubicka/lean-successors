@@ -1,0 +1,24 @@
+% Review-only insertion at Lemma 6.41. No author prose is replaced.
+% Proof checkpoint: 436c35e5ead3cb3999caa9c5c1898dc9bd849dc8 (PR 462).
+% Full Lean/transitive axiom run 38685814575: SUCCESS.
+% V10 counting/axiom run 38685814634: SUCCESS.
+% PR 462 merged in d6bccacd95e6642fee60a79cd983534ff5b871c4.
+% Valid-prefix PR 459 also passed at e72952f94b63535676f14d36c59897337969a929
+% (runs 38685965935 and 38685965942) and merged in e154c274d08fb50c5a853d1728061717180a8ec1.
+% This fragment is versioned, but not automatically inserted in author main.tex.
+\todo[inline]{\textbf{v10 validation: the induced forbidden-age transfer
+for $G^+$ -- GREEN in the normalized finite unary/binary language.}
+In \texttt{GPlusInducedAgeTransfer.lean}, irreducibility forces the
+vertices of a candidate forbidden copy onto one prefix chain. The map
+$A^+\mapsto |A^+|-1$ transports the whole induced copy into its
+largest finite partial structure, retaining both orientations and
+absence of binary relations, unary predicates and diagonal atoms.
+The singleton case is checked separately. A size-nondecreasing
+enumeration suffices: strict increase along the candidate follows
+from irreducibility, rather than being assumed of the entire enumeration.
+\texttt{GPlusEnumeratedAge.lean} then proves forbidden-age avoidance
+for every such enumeration. The complete Lean build and transitive
+standard-axiom audit passed at the recorded PR~462 checkpoint.
+This does not yet construct an exhaustive enumeration of all $G^+$
+vertices or certify the final $H^+$-to-$G^+$ and Ramsey transfers.
+Do not infer complete validation of Theorem~6.26 from this local certificate.}
