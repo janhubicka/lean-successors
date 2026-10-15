@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusEnumeratedAge
+import SuccessorTree.V10.CountableGPlusEmbedding
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -18,3 +18,20 @@ import SuccessorTree.V10.GPlusEnumeratedAge
 #print axioms SuccessorTree.V10.finiteGPlus_excludes_singleton
 #print axioms SuccessorTree.V10.finiteGPlusEnumeratedL
 #print axioms SuccessorTree.V10.finiteGPlusEnumeratedL_avoids_family
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.prefixCode
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.ofEnumerated_finitePrefix
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.prefixCode_restrict
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.realizes_of_finitePrefix
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.finitePrefix_avoids_family
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_size
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_properPrefix
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_strictMono_size
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_injective
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_binary
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_unary
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_diagonal
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_E
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_induced
+#print axioms SuccessorTree.V10.infiniteNumericHPlusToGPlus
+#print axioms SuccessorTree.V10.infiniteNumericHPlusToGPlus_induced
