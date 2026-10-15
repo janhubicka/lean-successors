@@ -357,3 +357,8 @@ import SuccessorTree.V10.KptE1ReindexPrefix
 #print axioms SuccessorTree.V10.kptShapeReindex_restrict_last
 #print axioms SuccessorTree.V10.PartialTypeWithE.reindexOrdinary_terminalLetter
 #print axioms SuccessorTree.V10.kptShapeReindex_terminalLetter
+#print axioms SuccessorTree.V10.kptShapeLastIndexAtNode
+#print axioms SuccessorTree.V10.kptShapeLastIndexAtNode_compatible
+#print axioms SuccessorTree.V10.kptShapeLastIndexAtNode_last
+#print axioms SuccessorTree.V10.kptShapeReindex_recovers_old_predecessor
+#print axioms SuccessorTree.V10.kptShapeReindex_terminalLetter_atNode
