@@ -1,0 +1,18 @@
+% Review-only v10 note; no edits to the author's proof prose.
+% Candidate pending full Lean and transitive axiom/counting CI.
+\todo[inline]{\textbf{v10 validation: G$^+$ prefix reflection under genuine
+Kpt ShapeMaps -- candidate.}
+\texttt{GPlusShapeImagePrefix.lean} uses the genuine canonical-cap
+prefix relation to show that $\Phi_F$ preserves the entire finite-code
+prefix order. For the converse, if $\Phi_F(A)$ is a prefix of
+$\Phi_F(B)$, strict growth of $\lambda$ first gives $|A|\le |B|$.
+The actual valid prefix $C=B\restriction_{|A|}$ then has an image
+which is another prefix of $\Phi_F(B)$ at exactly the same length
+as $\Phi_F(A)$. Uniqueness of equal-length prefixes and previously
+verified injectivity give $A=C$. Thus the image reflects prefixes,
+proper prefixes and incomparability, without assuming an inverse
+ShapeMap or introducing new relations between incomparable branches.
+Comparable-pair directed binary and E atom recovery, envelope
+coverage and the final Ramsey assembly remain distinct obligations.
+Do not mark Observation~6.42 or Theorem~6.26 completely verified
+before these remaining proofs and the exact-head CI checks.}
