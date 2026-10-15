@@ -130,3 +130,60 @@ The enumeration orders every smaller size before every larger size, with arbitra
 ## Editorial and scope constraints
 
 Stay with the existing v10 finite unary/binary/diagonal representation, no higher arity and no relaxation of the successor axioms. Do not attach artificial E to L-only age witnesses. Keep review notes and accurately scoped validation markers in Git. The available PDF is a reviewed snapshot with historical validation notes, not permission to replace the author's current editable source. Theorem 6.26 remains open as a formalization endpoint until all the listed bridges and the final bound are checked.
+
+## Post-well-definedness verification route (15 October continuation)
+
+PR 474, candidate `v10-Gplus-shapemap-action-laws-20261015`, extracts
+identity and composition of the G+ image construction directly from
+`ShapeMap.id`, `ShapeMap.comp`, canonical representing pairs and
+PR 473's forward well-definedness lemma. A candidate review-only TeX note
+is in `manuscript/v10-Gplus-shapemap-action-laws-review.tex`. Require
+exact-head full Lean and transitive standard-axiom CI. This does not
+certify injectivity or the induced relational action.
+
+The remaining **reflection** part of Observation 6.42 should NOT use
+`shapeMap_reflects_source_compatibility` directly on the full image
+partial types: equality of two G+ output vertices supplies only equality
+of the prefixes at cut d=lambda(n-1)+1, whereas the full image cap
+has level lambda(n), which may be larger. The correct bridge is the
+full **retained-coordinate recovery** lemma already verified in
+`ShapeMapFullRecovery.lean`.
+
+Concretely, for any genuine G+ vertex A of size n>0 and genuine
+ShapeMap F, let lambda be the strictly increasing Kpt level map and
+d=lambda(n-1)+1. The output vertex Phi_F(A) has size d and its full
+finite code is the prefix of the image cap at d (PR 472).
+For each old coordinate i<n, lambda(i) <= lambda(n-1)<d.
+Thus the map
+  rho_A : Fin n -> Fin d, i |-> lambda(i)
+is well defined and strictly increasing.
+
+Prove the retained-code identity, with literal equality of all four
+finite atom tables:
+  reindex(Phi_F(A), rho_A) = A.
+It follows from `shapeMap_recovers_complete_record` on the genuine
+canonical cap of A together with `canonicalCap_ordinaryCode` and
+the image-prefix-code equality. The proof must compare both binary
+directions and negative atoms, unary, diagonal and E; no weak
+homomorphism suffices.
+
+If Phi_F(A)=Phi_F(B), equality of output sizes first gives
+lambda(|A|-1)=lambda(|B|-1), and strict monotonicity of lambda gives
+|A|=|B|. The reindex functions rho_A and rho_B are then identical,
+so applying the retained-code identity to their equal output tables
+gives A=B. This proves injectivity and the reverse implication of
+Observation 6.42 without any additional axioms.
+
+To prove the induced relational identities for comparable A<B, use a
+single genuine cap of B, recover its two last-coordinate atoms at
+lambda(|A|-1),lambda(|B|-1), and use the prefix coherence/representation
+lemmas to identify Phi_F(A) and Phi_F(B) with the corresponding
+image vertices. For incomparable A,B, equality reflection of
+prefix comparisons is needed to show their images remain incomparable,
+so no new binary or E tuples arise. Record all absences as well as
+positive facts.
+
+This is a precise English proof route, not a completed Lean certificate.
+After it is checked, continue with the envelope/finite-palette/colour
+assembly of Theorem 6.26, reusing the already validated uniform
+Algorithm 5.4 envelope bound.
