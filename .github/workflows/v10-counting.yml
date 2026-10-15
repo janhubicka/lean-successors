@@ -8,7 +8,6 @@ on:
       - 'scripts/CheckV10*.lean'
       - 'scripts/check_v10_*.py'
       - 'scripts/select-v10-checks.py'
-      - 'scripts/run-v10-checks.py'
       - 'scripts/run-v10-batches.py'
       - 'scripts/test_v10_batches.py'
       - 'scripts/audit-import-graph.py'
@@ -25,7 +24,6 @@ on:
       - 'scripts/CheckV10*.lean'
       - 'scripts/check_v10_*.py'
       - 'scripts/select-v10-checks.py'
-      - 'scripts/run-v10-checks.py'
       - 'scripts/run-v10-batches.py'
       - 'scripts/test_v10_batches.py'
       - 'scripts/audit-import-graph.py'
@@ -159,7 +157,6 @@ jobs:
             successor-import-audit.json
             scripts/audit-import-graph.py
             scripts/test_ci_audits.py
-            scripts/run-v10-checks.py
             scripts/run-v10-batches.py
             scripts/test_v10_batches.py
             scripts/v10_batches_generated/*.lean
