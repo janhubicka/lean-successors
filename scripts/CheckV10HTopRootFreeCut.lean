@@ -1,0 +1,4 @@
+import SuccessorTree.V10.HTopRootFreeCut
+#print axioms SuccessorTree.V10.finiteNumericH_top_real_freeLevel
+#print axioms SuccessorTree.V10.finiteNumericH_top_prior_inside_freeCut
+#print axioms SuccessorTree.V10.finiteNumericH_top_root_for_earlier_blocks

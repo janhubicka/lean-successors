@@ -410,3 +410,8 @@ import SuccessorTree.V10.HTopInducedEmbedding
 
 -- V10: countable numerical H embeds K in its top generation and preserves forbidden age.
 import SuccessorTree.V10.HInfiniteBaseEmbedding
+
+-- Original v10 transfer: canonical free cut of genuine top root.
+import SuccessorTree.V10.HTopRootFreeCut
+-- Original finite unary/directed-binary language and induced copies.
+import SuccessorTree.V10.BinaryUnaryAgeAdapter
