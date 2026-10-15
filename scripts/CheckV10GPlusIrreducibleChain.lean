@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusNeutralCapType
+import SuccessorTree.V10.GPlusBoundedPalette
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -168,3 +168,9 @@ import SuccessorTree.V10.GPlusNeutralCapType
 #print axioms SuccessorTree.V10.NonedgePadding.socleCap_neutral_diagonal
 #print axioms SuccessorTree.V10.NonedgePadding.socleCapNode_neutralCapType
 #print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap_neutralCapType
+
+#print axioms SuccessorTree.V10.boundedGPlusRepresentingPairFintype
+#print axioms SuccessorTree.V10.boundedRepresentableGPlusVertices
+#print axioms SuccessorTree.V10.boundedRepresentableGPlusVertices_finite
+#print axioms SuccessorTree.V10.boundedGPlusTuplePalette
+#print axioms SuccessorTree.V10.boundedGPlusTuplePalette_finite
