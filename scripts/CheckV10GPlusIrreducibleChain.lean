@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusCanonicalRepresentatives
+import SuccessorTree.V10.GPlusOrdinaryPrefix
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -116,3 +116,8 @@ import SuccessorTree.V10.GPlusCanonicalRepresentatives
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.canonical_representedNode
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.canonical_vertex
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.vertex_surjective
+
+#print axioms SuccessorTree.V10.RawPartialTypeNode.ordinaryCode_ancestor
+#print axioms SuccessorTree.V10.RawPartialTypeNode.ordinaryCode_isPrefix
+#print axioms SuccessorTree.V10.admissibleKpt_toGPlus_isPrefix
+#print axioms SuccessorTree.V10.sameOrdinaryAtCut_restrict
