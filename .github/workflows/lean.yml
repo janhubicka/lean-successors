@@ -652,6 +652,72 @@ jobs:
             cat proof-audit/i3-algorithm-sharp-axioms.log
             exit 1
           }
+      - name: Verify v10 I1I2AlgorithmRunBudget and transitive axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10I1I2AlgorithmRunBudget.lean > proof-audit/CheckV10I1I2AlgorithmRunBudget-axioms.log 2>&1; then
+            cat proof-audit/CheckV10I1I2AlgorithmRunBudget-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10I1I2AlgorithmRunBudget-axioms.log scripts/CheckV10I1I2AlgorithmRunBudget.lean || {
+            cat proof-audit/CheckV10I1I2AlgorithmRunBudget-axioms.log
+            exit 1
+          }
+      - name: Verify v10 HTopGenerationExclusions and transitive axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HTopGenerationExclusions.lean > proof-audit/CheckV10HTopGenerationExclusions-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HTopGenerationExclusions-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HTopGenerationExclusions-axioms.log scripts/CheckV10HTopGenerationExclusions.lean || {
+            cat proof-audit/CheckV10HTopGenerationExclusions-axioms.log
+            exit 1
+          }
+      - name: Verify v10 HTopI1I2Seeds and transitive axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HTopI1I2Seeds.lean > proof-audit/CheckV10HTopI1I2Seeds-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HTopI1I2Seeds-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HTopI1I2Seeds-axioms.log scripts/CheckV10HTopI1I2Seeds.lean || {
+            cat proof-audit/CheckV10HTopI1I2Seeds-axioms.log
+            exit 1
+          }
+      - name: Verify v10 HTopAlgorithmRunBase and transitive axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HTopAlgorithmRunBase.lean > proof-audit/CheckV10HTopAlgorithmRunBase-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HTopAlgorithmRunBase-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HTopAlgorithmRunBase-axioms.log scripts/CheckV10HTopAlgorithmRunBase.lean || {
+            cat proof-audit/CheckV10HTopAlgorithmRunBase-axioms.log
+            exit 1
+          }
+      - name: Verify v10 HActualGenerationEventBound and transitive axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HActualGenerationEventBound.lean > proof-audit/CheckV10HActualGenerationEventBound-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HActualGenerationEventBound-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HActualGenerationEventBound-axioms.log scripts/CheckV10HActualGenerationEventBound.lean || {
+            cat proof-audit/CheckV10HActualGenerationEventBound-axioms.log
+            exit 1
+          }
+      - name: Verify v10 HHigherPoolCumulativeBound and transitive axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HHigherPoolCumulativeBound.lean > proof-audit/CheckV10HHigherPoolCumulativeBound-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HHigherPoolCumulativeBound-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HHigherPoolCumulativeBound-axioms.log scripts/CheckV10HHigherPoolCumulativeBound.lean || {
+            cat proof-audit/CheckV10HHigherPoolCumulativeBound-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
