@@ -81,6 +81,7 @@ import SuccessorTree.EnvelopeTheorem
 import SuccessorTree.V10.All
 -- Exhaustive size-nondecreasing G-omega enumeration and ordered H embedding.
 import SuccessorTree.V10.GPlusCanonicalCapPrefix
+import SuccessorTree.V10.GPlusEnvelopePairLift
 
 -- Preserve the additional free-ancestral proof modules on main.
 import SuccessorTree.ShapeEvents
