@@ -25,6 +25,7 @@ import SuccessorTree.V10.KptSimultaneousFinitePalette
 import SuccessorTree.V10.KptE1FreeCutRealization
 import SuccessorTree.V10.GPlusFiniteApproxAction
 import SuccessorTree.V10.GPlusFiniteColourNaturality
+import SuccessorTree.V10.GPlusPaletteRamseyStabilization
 import SuccessorTree.V10.GPlusIrreducibleChain
 
 /-!
