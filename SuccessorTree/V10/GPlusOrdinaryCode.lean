@@ -112,8 +112,10 @@ theorem admissibleKpt_toGPlus_eq_of_sameOrdinary
     (hU : IsAdmissibleRawType family
       (⟨n,U⟩ : RawPartialTypeNode db du dd))
     (hComp : SameOrdinaryAtCut T U) :
-    (⟨⟨n,T⟩,hT⟩ : AdmissibleKptNode family).toGPlus hn =
-    (⟨⟨n,U⟩,hU⟩ : AdmissibleKptNode family).toGPlus hn := by
+    AdmissibleKptNode.toGPlus
+      (⟨⟨n,T⟩,hT⟩ : AdmissibleKptNode family) hn =
+    AdmissibleKptNode.toGPlus
+      (⟨⟨n,U⟩,hU⟩ : AdmissibleKptNode family) hn := by
   apply Subtype.ext
   calc
     (AdmissibleKptNode.toGPlus (⟨⟨n,T⟩,hT⟩ : AdmissibleKptNode family) hn).val =
