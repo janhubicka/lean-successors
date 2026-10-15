@@ -26,6 +26,7 @@ ALWAYS_RECHECK = {
     "lean-toolchain", "lake-manifest.json", "lakefile.toml",
     "scripts/check-axiom-log.py", "scripts/select-v10-checks.py",
     "scripts/run-v10-checks.py",
+    "scripts/run-v10-batches.py", "scripts/test_v10_batches.py",
     ".github/workflows/v10-counting.yml", "SuccessorTree.lean",
     "SuccessorTree/V10/All.lean",
 }
