@@ -105,8 +105,8 @@ theorem numericHTopSeeds_finalRun_selected_card_le_sharp
   let Xfin : Finset (AdmissibleKptNode family) :=
     numericHTopGenerationSeeds family K k N hAvoidA c blocks hWithin
   let X : Set (AdmissibleKptNode family) := Xfin
-  let U : Finset (Fin A.size) := {c}
-  let V : Finset (Fin A.size) :=
+  let U : Finset (Fin N) := {c}
+  let V : Finset (Fin N) :=
     hStageOriginals K k N ({c} : Finset (Fin N)) (R.I 0)
   let top : Nat := A.freeLevel c.val
   let S : Finset Nat :=
@@ -140,16 +140,13 @@ theorem numericHTopSeeds_finalRun_selected_card_le_sharp
       family K k N hAvoidA c blocks hWithin
   have hUV : U ⊆ V := by
     intro i hi
-    have hiEq : i = c := by
-      simpa only [U, Finset.mem_singleton] using hi
-    have hName : i ∈ ({c} : Finset (Fin N)) :=
-      Finset.mem_singleton.mpr hiEq
+    have hName : i ∈ ({c} : Finset (Fin N)) := by
+      change i ∈ ({c} : Finset (Fin N)) at hi
+      exact hi
     have hMem :
         i ∈ hStageOriginals K k N
           ({c} : Finset (Fin N)) (R.I 0) := by
-      simp only [hStageOriginals, Finset.mem_filter,
-        Finset.mem_univ, true_and]
-      exact Or.inl hName
+      simp [hStageOriginals, hName]
     exact hMem
   have hParams : ∀ i : Fin A.size, i.val ∈ R.I 0 →
       0 < A.freeLevel i.val → i ∈ V := by
@@ -157,9 +154,7 @@ theorem numericHTopSeeds_finalRun_selected_card_le_sharp
     have hMem :
         i ∈ hStageOriginals K k N
           ({c} : Finset (Fin N)) (R.I 0) := by
-      simp only [hStageOriginals, Finset.mem_filter,
-        Finset.mem_univ, true_and]
-      exact Or.inr ⟨hi,hFree⟩
+      simp [hStageOriginals, hi, hFree]
     exact hMem
   have hForest :
       SMTree.Envelope.closure (admissibleKptSTree family)
