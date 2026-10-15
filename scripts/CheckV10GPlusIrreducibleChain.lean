@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusInducedAgeTransfer
+import SuccessorTree.V10.GPlusEnumeratedAge
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -16,3 +16,5 @@ import SuccessorTree.V10.GPlusInducedAgeTransfer
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_realizes_top
 #print axioms SuccessorTree.V10.finiteGPlus_excludes_nontrivial
 #print axioms SuccessorTree.V10.finiteGPlus_excludes_singleton
+#print axioms SuccessorTree.V10.finiteGPlusEnumeratedL
+#print axioms SuccessorTree.V10.finiteGPlusEnumeratedL_avoids_family
