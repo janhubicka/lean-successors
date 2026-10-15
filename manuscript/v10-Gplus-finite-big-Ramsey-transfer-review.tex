@@ -1,0 +1,33 @@
+% Review-only successor v10 mathematical validation note; author proof prose is frozen.
+% CANDIDATE until exact-head full Lean and transitive V10 axioms pass.
+\todo[inline]{\textbf{v10 Theorem~6.26: explicit finite colour bound
+from genuine bounded $G^+$ palette coverage -- candidate.}
+The separate verified successor Ramsey theorem and finite
+bounded-palette action are assembled in
+\texttt{GPlusFiniteBigRamseyTransfer.lean}.
+Suppose a specified set of target ordered $q$-tuples in the true
+$G^+$ structure has the exact finite-approximation coverage
+property: each tuple is $\Phi_a(e)$ for some actual
+$e\in OEmb(A,G\restriction_{Kpt}(\le b))$ (here initially the
+coarser finite palette of all represented $q$-tuples) and some
+$a\in AM_0^{b+1}$. Then a single genuine Kpt
+ShapeSubspace $W$ makes the number of colours on the entire
+induced image of the target tuple family at most the cardinality
+of the finite bounded palette. The proof picks the colour
+associated with each finite palette index at a fixed identity
+approximation and uses the previously verified simultaneous
+colouring stabilisation to show that ALL other finite
+approximations have the same image colour under $W$.
+The quantified output is an explicit finite colour Finset,
+not merely a finite-colour existence assertion.
+This is the final *colour-counting implication* of the
+manuscript, conditional on the exact bounded-palette coverage
+property. The remaining mathematical obligations are to derive
+that coverage for every $A$-copy of the numerical
+$H^+$ embedding using Algorithm~5.4 with a uniform
+interesting-level bound, discharge the Section~5 (E1)
+pullback hypothesis for the concrete Kpt monoid or give
+an E1-free envelope proof, and finally compose the ordered
+universal embeddings $K\to G^\omega\to K$.
+Thus the unconditional Theorem~6.26 is NOT claimed verified
+from this conditional implication alone.}
