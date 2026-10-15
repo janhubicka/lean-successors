@@ -718,6 +718,39 @@ jobs:
             cat proof-audit/CheckV10HHigherPoolCumulativeBound-axioms.log
             exit 1
           }
+      - name: Verify v10 sharp generic forest 2N
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10ForestMeetLinear.lean > proof-audit/CheckV10ForestMeetLinear-axioms.log 2>&1; then
+            cat proof-audit/CheckV10ForestMeetLinear-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10ForestMeetLinear-axioms.log scripts/CheckV10ForestMeetLinear.lean || {
+            cat proof-audit/CheckV10ForestMeetLinear-axioms.log
+            exit 1
+          }
+      - name: Verify v10 actual Kpt finite closure under meets
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10KptForestMeetBound.lean > proof-audit/CheckV10KptForestMeetBound-axioms.log 2>&1; then
+            cat proof-audit/CheckV10KptForestMeetBound-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10KptForestMeetBound-axioms.log scripts/CheckV10KptForestMeetBound.lean || {
+            cat proof-audit/CheckV10KptForestMeetBound-axioms.log
+            exit 1
+          }
+      - name: Verify v10 actual envelope bound 2(q+1+V)+R(V)+1
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HFinalEnvelopeBound.lean > proof-audit/CheckV10HFinalEnvelopeBound-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HFinalEnvelopeBound-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HFinalEnvelopeBound-axioms.log scripts/CheckV10HFinalEnvelopeBound.lean || {
+            cat proof-audit/CheckV10HFinalEnvelopeBound-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

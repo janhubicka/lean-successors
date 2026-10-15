@@ -388,3 +388,10 @@ import SuccessorTree.V10.HTopAlgorithmRunBase
 import SuccessorTree.V10.HActualGenerationEventBound
 -- V10 Section 6: validated scope of HHigherPoolCumulativeBound.
 import SuccessorTree.V10.HHigherPoolCumulativeBound
+
+-- Successor v10 Section 6: sharp generic forest 2N.
+import SuccessorTree.V10.ForestMeetLinear
+-- Successor v10 Section 6: actual Kpt finite closure under meets.
+import SuccessorTree.V10.KptForestMeetBound
+-- Successor v10 Section 6: actual envelope bound 2(q+1+V)+R(V)+1.
+import SuccessorTree.V10.HFinalEnvelopeBound
