@@ -1,0 +1,20 @@
+% Review-only successor v10 note; preserve the author's proof prose.
+% Candidate until exact-head full Lean and transitive standard-axiom/counting CI.
+\todo[inline]{\textbf{v10 Algorithm~5.4: the literal numerical HTop
+seed family satisfies its required initial-height bound -- candidate.}
+The actual \texttt{numericHTopGenerationSeeds} consist of one
+genuine admissible original Kpt root $U_c$ at its canonical E
+free level $\ell=\mathrm{fl}_{H^+}(c)$, together with the selected
+ancestors of $U_c$ at top-generation coordinates below $\ell$.
+\texttt{HTopAlgorithmSeedHeight.lean} proves directly from the
+seed constructor and its existing \texttt{hWithin} condition that
+the entire finite seed set $X$ satisfies
+$X\subseteq\mathrm{levelLe}(\ell)$.
+Thus the finite seed-height premise used by the verified
+\texttt{AlgorithmRun.fullInvariant} can be discharged for the
+actual numerical HTop construction, without a new arbitrary
+bound. This result does not establish the separate one-level
+pullback (E1) premise of Section~5, nor identify every required
+G$^+$ pair endpoint and finite approximation domain. Those
+remain explicit before the final finite colouring transfer and
+Theorem~6.26 can be certified.}

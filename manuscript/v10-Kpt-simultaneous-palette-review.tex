@@ -1,0 +1,22 @@
+% Review-only successor v10 note; author manuscript prose remains frozen.
+% Candidate until exact-head full Lean and transitive standard-axiom CI succeed.
+\todo[inline]{\textbf{v10 Theorem~6.26: simultaneous finite-palette
+Kpt colour stabilization -- candidate.}
+The original proof applies the finite successor Ramsey theorem
+repeatedly, once for each finite envelope representation pattern.
+\texttt{KptSimultaneousFinitePalette.lean} replaces these repeated
+steps with one product colouring, whose target is the finite
+function space from palette indices to colours. The already
+Lean-verified \texttt{normalizedKpt\_shapeRamsey} theorem makes
+every component colouring homogeneous simultaneously.
+The coarse index set is the actual finite set of $q$-tuples
+represented by bounded genuine Kpt pairs; it is a finite type
+by the already checked \texttt{boundedGPlusTuplePalette\_finite}.
+No stronger Ramsey theorem or additional monoid axiom is used.
+It remains to identify the actual finite-approximation colouring
+$\chi_e''(f)=\chi'(f\circ e(A))$ with these indices, prove that
+its evaluation is well defined on the exact finite source
+prefix (via Observation~6.42), connect the numerical envelope
+height $b(A)$ to the bounded pair representations, and compose
+the final ordered $K\to H^+\to G^+\to K$ embeddings. Theorem~6.26
+is NOT marked complete by this local palette lemma alone.}

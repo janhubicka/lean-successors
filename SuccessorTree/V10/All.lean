@@ -15,6 +15,10 @@ import SuccessorTree.V10.SingletonNormalization
 import SuccessorTree.V10.HCountablePartialTower
 import SuccessorTree.V10.GPlusAlgorithmRunCoverage
 import SuccessorTree.V10.GPlusIrreducibleChain
+import SuccessorTree.V10.GPlusHPrefixCommonUpper
+import SuccessorTree.V10.GPlusHTopAlgorithmCoverage
+import SuccessorTree.V10.KptSimultaneousFinitePalette
+import SuccessorTree.V10.GPlusAlgorithmFinitePalette
 
 /-!
 # Complete V10 proof-assembly import frontier
