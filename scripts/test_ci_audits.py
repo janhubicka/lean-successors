@@ -69,11 +69,19 @@ class SelectorTests(unittest.TestCase):
     def test_pr_uses_synthetic_merge_base(self):
         with patch.dict(os.environ, {"GITHUB_EVENT_NAME": "pull_request"}), \
              patch.object(selector.subprocess, "check_output",
-                          return_value="scripts/CheckV10GPlusFiniteCode.lean\n") as diff:
+                          return_value="scripts/CheckV10HUniformEnvelopeBound.lean\n") as diff:
             changed, full = selector.changed_paths()
         self.assertFalse(full)
-        self.assertEqual(changed, {"scripts/CheckV10GPlusFiniteCode.lean"})
+        self.assertEqual(changed, {"scripts/CheckV10HUniformEnvelopeBound.lean"})
         self.assertEqual(diff.call_args.args[0][-2:], ["HEAD^1", "HEAD"])
+
+    def test_deleted_lean_module_forces_exhaustive_audit(self):
+        with patch.dict(os.environ, {"GITHUB_EVENT_NAME": "pull_request"}), \
+             patch.object(selector.subprocess, "check_output",
+                          return_value="SuccessorTree/V10/RemovedOldExperiment.lean\n"):
+            changed, full = selector.changed_paths()
+        self.assertTrue(full)
+        self.assertIn("SuccessorTree/V10/RemovedOldExperiment.lean", changed)
 
     def test_affected_checker_selected_transitively(self):
         changed = {"SuccessorTree/V10/HUniformEnvelopeBound.lean"}
