@@ -115,12 +115,38 @@ theorem FinitePartialCode.ofEnumerated_initialSegment
     (n : Nat) (hn : n ≤ A.size) :
     (FinitePartialCode.ofEnumerated A).restrict n hn =
       FinitePartialCode.ofEnumerated (A.initialSegment n hn) := by
-  classical
-  -- Both sides have literal finite size n and identical on-carrier
-  -- atomic records; at each j : Fin n the E target guard is true.
-  simp [FinitePartialCode.ofEnumerated, FinitePartialCode.restrict,
-    EnumeratedPartialStructure.initialSegment,
-    AgeTestModel.restrictCarrier]
+  -- Compare the four literal on-carrier tables. Every index of the
+  -- smaller code satisfies j.val<n, so clipping the E target does
+  -- not alter a single on-carrier E bit.
+  change
+    (FinitePartialCode.mk n
+      (fun i j a => A.L.binary i.val j.val a)
+      (fun i a => A.L.unary i.val a)
+      (fun i a => A.L.diagonal i.val a)
+      (fun i j => A.E i.val j.val)) =
+    (FinitePartialCode.mk n
+      (fun i j a => A.L.binary i.val j.val a)
+      (fun i a => A.L.unary i.val a)
+      (fun i a => A.L.diagonal i.val a)
+      (fun i j => if j.val < n then A.E i.val j.val else false))
+  have hE :
+      (fun i j : Fin n => A.E i.val j.val) =
+      (fun i j : Fin n =>
+        if j.val < n then A.E i.val j.val else false) := by
+    funext i j
+    simp only [if_pos j.isLt]
+  rw [← hE]
+
+/-- Congruence of finite-code restriction even though its length
+bound has a proof-dependent source. -/
+private theorem finiteCode_restrict_eq_of_eq
+    {db du dd : Nat}
+    {C D : FinitePartialCode db du dd}
+    (h : C = D) (n : Nat)
+    (hC : n ≤ C.size) (hD : n ≤ D.size) :
+    C.restrict n hC = D.restrict n hD := by
+  cases h
+  rfl
 
 /-- Positive-length prefixes remain canonical forbidden-free
 G+ vertices, not merely arbitrary finite table records. -/
@@ -140,9 +166,8 @@ noncomputable def FiniteGPlusVertex.restrict
     A.initialSegment n hnA
   have hCodeB :
       C.val.restrict n hn = FinitePartialCode.ofEnumerated B := by
-    have hCodeRestr := FinitePartialCode.ofEnumerated_initialSegment A n hnA
-    rw [hCode]
-    exact hCodeRestr
+    exact (finiteCode_restrict_eq_of_eq hCode n hn hnA).trans
+      (FinitePartialCode.ofEnumerated_initialSegment A n hnA)
   exact ⟨C.val.restrict n hn,
     ⟨B,hCodeB,hPos,A.initialSegment_avoids family hAvoid n hnA⟩⟩
 
