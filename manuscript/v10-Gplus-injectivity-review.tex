@@ -1,0 +1,19 @@
+% Review-only v10 note. Candidate pending exact-head CI; author prose unchanged.
+\todo[inline]{\textbf{v10 validation: equality reflection and
+injectivity of the induced $G^+$ ShapeMap image -- candidate.}
+\texttt{GPlusShapeImageInjective.lean} uses the genuine image cut
+$|\Phi_F(A)|=\lambda(|A|-1)+1$ and strict monotonicity of $\lambda$
+to recover the source code size from its image size. Equality
+of image finite tables then yields equality of their pullbacks
+along the same numerical retained map $i\mapsto\lambda(i)$.
+The already checked complete code-recovery identity should
+identify those pullbacks with $A$ and $B$, proving
+$\Phi_F(A)=\Phi_F(B)\Rightarrow A=B$.
+With the representative-independence theorem this supplies
+the reverse direction of Observation~6.42:
+$v(F(S),F(T))=v(F(Q),F(O))$ if and only if
+$v(S,T)=v(Q,O)$. The full induced relational action on all
+comparable and incomparable $G^+$ pairs, envelope coverage and
+the final colouring transfer remain separate tasks.
+Promote these statements only after exact-head full Lean and
+transitive axiom/counting audits complete.}
