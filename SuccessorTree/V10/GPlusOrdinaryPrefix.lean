@@ -68,19 +68,18 @@ theorem sameOrdinaryAtCut_restrict
     {n m : Nat} (T U : PartialTypeWithE n db du dd)
     (hm : m ≤ n) (h : SameOrdinaryAtCut T U) :
     SameOrdinaryAtCut (T.restrict hm) (U.restrict hm) := by
-  have hCode := ordinaryCode_eq_of_sameOrdinary T U h
-  have hRestricted :
-      (RawPartialTypeNode.ordinaryCode
-        (⟨n,T⟩ : RawPartialTypeNode db du dd)).restrict m hm =
-      (RawPartialTypeNode.ordinaryCode
-        (⟨n,U⟩ : RawPartialTypeNode db du dd)).restrict m hm := by
-    rw [hCode]
-  have hT := RawPartialTypeNode.ordinaryCode_ancestor
-    (⟨n,T⟩ : RawPartialTypeNode db du dd) m hm
-  have hU := RawPartialTypeNode.ordinaryCode_ancestor
-    (⟨n,U⟩ : RawPartialTypeNode db du dd) m hm
-  rw [←hT, ←hU] at hRestricted
-  exact sameOrdinary_of_ordinaryCode_eq
-    (T.restrict hm) (U.restrict hm) hRestricted
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro i j t
+    exact h.1
+      ⟨i.val, lt_of_lt_of_le i.isLt hm⟩
+      ⟨j.val, lt_of_lt_of_le j.isLt hm⟩ t
+  · intro i t
+    exact h.2.1 ⟨i.val, lt_of_lt_of_le i.isLt hm⟩ t
+  · intro i t
+    exact h.2.2.1 ⟨i.val, lt_of_lt_of_le i.isLt hm⟩ t
+  · intro i j
+    exact h.2.2.2
+      ⟨i.val, lt_of_lt_of_le i.isLt hm⟩
+      ⟨j.val, lt_of_lt_of_le j.isLt hm⟩
 
 end SuccessorTree.V10
