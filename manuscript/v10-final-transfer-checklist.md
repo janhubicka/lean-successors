@@ -21,8 +21,9 @@ PR 465, candidate head `b77e3ee98e7e8208761e42cf8e519cd8960bc3e0`,
 adds the genuine image-cut foundation of Observation 6.42. It defines the
 cut lambda(|A|-1)+1, proves it is inside the image of the canonical neutral
 cap, takes an actual admissible ancestor and constructs a genuine valid
-G+ vertex by its finite ordinary socle. Its full Lean run 38738911691 passed;
-the focused V10 run 38738911810 must be checked before marking GREEN.
+G+ vertex by its finite ordinary socle. Its full Lean run 38738911691 AND focused V10 counting/axiom run
+38738911810 both PASSED on this exact head. The local image-cut
+foundation is GREEN; this does not make the full action GREEN.
 The review note is `manuscript/v10-Gplus-shape-action-review.tex`.
 
 PR 466, candidate head `9ca7377d4241e3baa1a1c0945b1fa53ff85616e6`,
@@ -31,6 +32,14 @@ Kpt partial-type record, comparison with any chosen admissibility witness,
 and equality of genuine G+ vertices under `SameOrdinaryAtCut`.
 These bridge results are pending exact-head Lean and transitive-axiom CI.
 Its review note is `manuscript/v10-Gplus-ordinary-code-review.tex`.
+PR 467, candidate branch `v10-Gplus-ordinary-compatibility-20261015`,
+builds on the intrinsic ordinary-code result to derive the converse:
+code equality iff SameOrdinaryAtCut. This is then used to transport equal
+source ordinary codes through the already checked Kpt shape-map
+compatibility theorem. Review note:
+`manuscript/v10-Gplus-ordinary-compatibility-review.tex`.
+This remains pending exact-head kernel and transitive-axiom verification.
+
 None of these certificates yet proves the full well-defined induced
 ShapeMap action, envelope representation or final Ramsey transfer.
 
