@@ -41,7 +41,7 @@ theorem EnumeratedPartialStructure.initialSegment_code_eq_ordinaryCode
     (B : EnumeratedPartialStructure db du dd)
     (n v : Nat) (hn : n ≤ B.size) :
     FinitePartialCode.ofEnumerated (B.initialSegment n hn) =
-      (⟨n,B.partialTypeAt n v⟩ : RawPartialTypeNode db du dd).ordinaryCode := by
+      RawPartialTypeNode.ordinaryCode (⟨n,B.partialTypeAt n v⟩ : RawPartialTypeNode db du dd) := by
   calc
     FinitePartialCode.ofEnumerated (B.initialSegment n hn) =
         (FinitePartialCode.ofEnumerated B).restrict n hn :=
@@ -53,7 +53,7 @@ theorem EnumeratedPartialStructure.initialSegment_code_eq_ordinaryCode
 exactly its intrinsic ordinary table, not a witness-dependent code. -/
 theorem AdmissibleKptNode.toGPlus_code
     (N : AdmissibleKptNode family) (hPos : 0 < N.1.1) :
-    (N.toGPlus hPos).val = N.1.ordinaryCode := by
+    (N.toGPlus hPos).val = RawPartialTypeNode.ordinaryCode N.1 := by
   let B := N.witnessStructure
   let v := N.witnessVertex
   have hRaw : N.1 = B.rawTypeAtFree v := (N.witness_spec).2.2
@@ -69,22 +69,21 @@ theorem AdmissibleKptNode.toGPlus_code
         rw [←hCut]
   change FinitePartialCode.ofEnumerated
     (B.initialSegment N.1.1 N.level_le_witness_size) =
-      N.1.ordinaryCode
+      RawPartialTypeNode.ordinaryCode N.1
   calc
     FinitePartialCode.ofEnumerated
         (B.initialSegment N.1.1 N.level_le_witness_size) =
-      (⟨N.1.1,B.partialTypeAt N.1.1 v⟩ :
-        RawPartialTypeNode db du dd).ordinaryCode :=
+      RawPartialTypeNode.ordinaryCode (⟨N.1.1,B.partialTypeAt N.1.1 v⟩ : RawPartialTypeNode db du dd) :=
           B.initialSegment_code_eq_ordinaryCode _ _ _
-    _ = N.1.ordinaryCode := by rw [hTyped]
+    _ = RawPartialTypeNode.ordinaryCode N.1 := by rw [hTyped]
 
 /-- Equality of ordinary L+ socles, including all absent and E atoms,
 is exactly strong enough to imply equality of their intrinsic codes. -/
 theorem ordinaryCode_eq_of_sameOrdinary
     {n : Nat} (T U : PartialTypeWithE n db du dd)
     (h : SameOrdinaryAtCut T U) :
-    (⟨n,T⟩ : RawPartialTypeNode db du dd).ordinaryCode =
-    (⟨n,U⟩ : RawPartialTypeNode db du dd).ordinaryCode := by
+    RawPartialTypeNode.ordinaryCode (⟨n,T⟩ : RawPartialTypeNode db du dd) =
+    RawPartialTypeNode.ordinaryCode (⟨n,U⟩ : RawPartialTypeNode db du dd) := by
   have hB : (fun i j t => T.lReduct.binary (some i) (some j) t) =
       (fun i j t => U.lReduct.binary (some i) (some j) t) := by
     funext i j t
@@ -117,12 +116,12 @@ theorem admissibleKpt_toGPlus_eq_of_sameOrdinary
     (⟨⟨n,U⟩,hU⟩ : AdmissibleKptNode family).toGPlus hn := by
   apply Subtype.ext
   calc
-    ((⟨⟨n,T⟩,hT⟩ : AdmissibleKptNode family).toGPlus hn).val =
-        (⟨n,T⟩ : RawPartialTypeNode db du dd).ordinaryCode :=
+    (AdmissibleKptNode.toGPlus (⟨⟨n,T⟩,hT⟩ : AdmissibleKptNode family) hn).val =
+        RawPartialTypeNode.ordinaryCode (⟨n,T⟩ : RawPartialTypeNode db du dd) :=
       AdmissibleKptNode.toGPlus_code _ _
-    _ = (⟨n,U⟩ : RawPartialTypeNode db du dd).ordinaryCode :=
+    _ = RawPartialTypeNode.ordinaryCode (⟨n,U⟩ : RawPartialTypeNode db du dd) :=
       ordinaryCode_eq_of_sameOrdinary T U hComp
-    _ = ((⟨⟨n,U⟩,hU⟩ : AdmissibleKptNode family).toGPlus hn).val :=
+    _ = (AdmissibleKptNode.toGPlus (⟨⟨n,U⟩,hU⟩ : AdmissibleKptNode family) hn).val :=
       (AdmissibleKptNode.toGPlus_code _ _).symm
 
 end SuccessorTree.V10
