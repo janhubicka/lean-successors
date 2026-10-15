@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusShapeImageInjective
+import SuccessorTree.V10.GPlusShapeImageSingletonAtoms
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -161,3 +161,9 @@ import SuccessorTree.V10.GPlusShapeImageInjective
 #print axioms SuccessorTree.V10.shapeImageRetainedCode_eq_of_image_eq
 #print axioms SuccessorTree.V10.gPlusShapeImage_injective
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.image_vertex_eq_iff_vertex_eq
+
+#print axioms SuccessorTree.V10.FinitePartialCode.unary_eq_of_eq
+#print axioms SuccessorTree.V10.FinitePartialCode.diagonal_eq_of_eq
+#print axioms SuccessorTree.V10.shapeImageRetainedLast_eq_last
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_unary
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_diagonal
