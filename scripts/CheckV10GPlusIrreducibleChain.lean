@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusImagePairRestriction
+import SuccessorTree.V10.GPlusRepresentativeIndependence
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -129,3 +129,8 @@ import SuccessorTree.V10.GPlusImagePairRestriction
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.image_representedNode_le_fullImage
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.image_vertex_code_of_fullImage
 #print axioms SuccessorTree.V10.gPlusShapeImage_code_of_fullCap
+
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.image_cut_eq_shapeImageCut
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.representedNode_code_eq_cap
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.image_vertex_eq_canonicalShapeImage
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.image_vertex_eq_of_vertex_eq
