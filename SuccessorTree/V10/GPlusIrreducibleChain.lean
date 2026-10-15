@@ -111,9 +111,14 @@ theorem finiteGPlus_irreducible_copy_prefix_top
   · rw [ha]
     exact FinitePartialCode.isPrefix_refl _
   · have hlt : a < last := by
+      have haBound : a.val < r := a.isLt
+      have haNe : a.val ≠ r-1 := by
+        intro hEq
+        apply ha
+        apply Fin.ext
+        exact hEq
       apply Fin.lt_def.mpr
-      dsimp [last]
-      have haBound := a.isLt
+      change a.val < r-1
       omega
     exact (finiteGPlus_irreducible_copy_prefix_mono
       F hIrred f hSize hBinary a last hlt).1
