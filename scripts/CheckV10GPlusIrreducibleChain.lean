@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusComparableAtoms
+import SuccessorTree.V10.GPlusInducedAction
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -193,3 +193,10 @@ import SuccessorTree.V10.GPlusComparableAtoms
 #print axioms SuccessorTree.V10.gPlusShapeImage_E_reverse
 #print axioms SuccessorTree.V10.gPlusShapeImage_preserves_binary
 #print axioms SuccessorTree.V10.gPlusShapeImage_preserves_E
+
+#print axioms SuccessorTree.V10.FinitePartialCode.unary_eq_of_eq
+#print axioms SuccessorTree.V10.FinitePartialCode.diagonal_eq_of_eq
+#print axioms SuccessorTree.V10.shapeImageRetainedLast_eq_last
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_unary
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_diagonal
+#print axioms SuccessorTree.V10.gPlusShapeImage_induced_LPlus
