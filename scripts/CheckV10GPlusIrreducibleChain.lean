@@ -24,6 +24,7 @@ import SuccessorTree.V10.KptE1CompleteERecord
 import SuccessorTree.V10.KptE1FiniteAgePullback
 import SuccessorTree.V10.KptE1ReindexedNewColumn
 import SuccessorTree.V10.KptE1ShapeLevelCut
+import SuccessorTree.V10.KptE1TargetParameterCut
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -335,3 +336,7 @@ import SuccessorTree.V10.KptE1ShapeLevelCut
 #print axioms SuccessorTree.V10.kptShapeLastRetainedIndex_last
 #print axioms SuccessorTree.V10.kptShapeLastRetainedIndex_cut_iff
 #print axioms SuccessorTree.V10.kptShapeLastRetainedIndex_validNewColumn
+#print axioms SuccessorTree.V10.kptImageParameter_empty_iff_cut_zero
+#print axioms SuccessorTree.V10.kptImageParameter_singleton_cut
+#print axioms SuccessorTree.V10.kptImageParameter_singleton_source_positive
+#print axioms SuccessorTree.V10.actualKptTargetStep_imageParameterCut
