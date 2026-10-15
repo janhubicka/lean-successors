@@ -8,6 +8,8 @@ on:
       - 'SuccessorTree.lean'
       - 'scripts/*.lean'
       - 'scripts/check-axiom-log.py'
+      - 'scripts/check-successor-proof-integrity.py'
+      - 'scripts/test-successor-proof-integrity.py'
       - 'scripts/check-ci-audit-ownership.py'
       - 'scripts/check-umbrella-closure.py'
       - 'scripts/audit-envelope.sh'
@@ -22,6 +24,8 @@ on:
       - 'SuccessorTree.lean'
       - 'scripts/*.lean'
       - 'scripts/check-axiom-log.py'
+      - 'scripts/check-successor-proof-integrity.py'
+      - 'scripts/test-successor-proof-integrity.py'
       - 'scripts/check-ci-audit-ownership.py'
       - 'scripts/check-umbrella-closure.py'
       - 'scripts/audit-envelope.sh'
@@ -47,6 +51,10 @@ jobs:
         run: python3 scripts/check-umbrella-closure.py
       - name: Verify V10 checks are owned by counting workflow
         run: python3 scripts/check-ci-audit-ownership.py
+      - name: Reject admissions and unverified axioms in all Lean source
+        run: |
+          python3 scripts/test-successor-proof-integrity.py
+          python3 scripts/check-successor-proof-integrity.py
       - name: Cache Lean toolchain
         uses: actions/cache@v5
         with:
