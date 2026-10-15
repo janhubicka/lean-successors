@@ -120,4 +120,68 @@ theorem kptShapeReindex_restrict_last
     (kptShapeLastRetainedIndex family F n)
     (kptShapeRetainedIndices_compatible family F n)
 
+
+/-- The terminal Sigma letter is literally unchanged by an
+ordinary-coordinate reindexing fixing the new last coordinate.
+This includes the last-to-type and type-to-last binary/E atoms,
+unary/diagonal bits, and all negative atomic facts. -/
+theorem PartialTypeWithE.reindexOrdinary_terminalLetter
+    {n ell db du dd : Nat}
+    (Q : PartialTypeWithE (ell + 1) db du dd)
+    (rho : Fin (n + 1) → Fin (ell + 1))
+    (hLast : rho (Fin.last n) = Fin.last ell) :
+    (Q.reindexOrdinary rho).terminalLetter = Q.terminalLetter := by
+  have hCoordinate (x : Option (Fin 1)) :
+      (terminalCoordinate n x).map rho = terminalCoordinate ell x := by
+    cases x with
+    | none => rfl
+    | some i =>
+        change some (rho (Fin.last n)) = some (Fin.last ell)
+        exact congrArg some hLast
+  apply PartialTypeWithE.eq_of_atoms
+  · apply RelationalPrefixType.eq_of_atoms
+    · intro x y r
+      change Q.lReduct.binary
+          ((terminalCoordinate n x).map rho)
+          ((terminalCoordinate n y).map rho) r =
+        Q.lReduct.binary
+          (terminalCoordinate ell x)
+          (terminalCoordinate ell y) r
+      rw [hCoordinate x, hCoordinate y]
+    · intro x r
+      change Q.lReduct.unary
+          ((terminalCoordinate n x).map rho) r =
+        Q.lReduct.unary (terminalCoordinate ell x) r
+      rw [hCoordinate x]
+    · intro x r
+      change Q.lReduct.diagonal
+          ((terminalCoordinate n x).map rho) r =
+        Q.lReduct.diagonal (terminalCoordinate ell x) r
+      rw [hCoordinate x]
+  · intro x y
+    change Q.eRelation
+        ((terminalCoordinate n x).map rho)
+        ((terminalCoordinate n y).map rho) =
+      Q.eRelation
+        (terminalCoordinate ell x)
+        (terminalCoordinate ell y)
+    rw [hCoordinate x, hCoordinate y]
+
+/-- The actual strict Kpt shape-level map automatically fixes the
+last ordinary vertex, so pulling back a genuine target successor
+does NOT change its admissible terminal Sigma letter. -/
+theorem kptShapeReindex_terminalLetter
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (n : Nat)
+    (Q : PartialTypeWithE
+      (kptShapeLevelMap family F n + 1) db du dd) :
+    (Q.reindexOrdinary
+      (kptShapeLastRetainedIndex family F n)).terminalLetter =
+      Q.terminalLetter := by
+  exact Q.reindexOrdinary_terminalLetter
+    (kptShapeLastRetainedIndex family F n)
+    (kptShapeLastRetainedIndex_last family F n)
+
 end SuccessorTree.V10
