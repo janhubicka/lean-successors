@@ -1,0 +1,16 @@
+% Review-only continuation; original manuscript prose unchanged.
+% Candidate until exact-head full Lean and transitive standard-axiom audits pass.
+\todo[inline]{\textbf{v10 validation: identity and composition of the $G^+$
+ShapeMap action -- candidate.}
+The code in \texttt{GPlusShapeActionLaws.lean} uses the previously
+constructed canonical representing pair for each $G^+$ vertex and
+the well-definedness equation
+$v(F(S),F(T))=\Phi_F(v(S,T))$.
+The identity map follows from the actual Kpt
+\texttt{ShapeMap.id}; composition follows from the actual
+\texttt{ShapeMap.comp} applied twice to a representing pair.
+No new age or atomic compatibility assumption is introduced.
+The full induced embedding, reflection/injectivity, finite-approximation
+domains, envelope representation and final colouring argument remain
+independent obligations. Do not mark Observation~6.42 or
+Theorem~6.26 fully verified from these action laws alone.}

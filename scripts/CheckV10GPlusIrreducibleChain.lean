@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusRepresentativeIndependence
+import SuccessorTree.V10.GPlusShapeActionLaws
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -134,3 +134,7 @@ import SuccessorTree.V10.GPlusRepresentativeIndependence
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.representedNode_code_eq_cap
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.image_vertex_eq_canonicalShapeImage
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.image_vertex_eq_of_vertex_eq
+
+#print axioms SuccessorTree.V10.gPlusShapeImage_eq_canonicalPairImage
+#print axioms SuccessorTree.V10.gPlusShapeImage_id
+#print axioms SuccessorTree.V10.gPlusShapeImage_comp
