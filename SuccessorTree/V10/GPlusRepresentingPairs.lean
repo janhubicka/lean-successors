@@ -78,7 +78,7 @@ noncomputable def vertex (P : GPlusRepresentingPair family) :
 /-- The vertex's entire induced finite L+ record is the ordinary
 record of T at the exact cut, not of an arbitrary witness. -/
 theorem vertex_code (P : GPlusRepresentingPair family) :
-    P.vertex.val = P.representedNode.1.ordinaryCode := by
+    P.vertex.val = RawPartialTypeNode.ordinaryCode P.representedNode.1 := by
   exact AdmissibleKptNode.toGPlus_code P.representedNode
     (by change 0 < P.cut; exact P.cut_pos)
 
@@ -107,7 +107,7 @@ def image
     (F : SuccessorTree.ShapeMap (admissibleKptSTree family)) :
     (P.image F).vertex.val.size =
       kptShapeLevelMap family F (LevelTree.lev P.lower)+1 := by
-  rw [P.image.vertex_size, P.image_cut F]
+  rw [GPlusRepresentingPair.vertex_size (P.image F), P.image_cut F]
 
 /-- Every valid finite G+ vertex has a genuine candidate representing
 pair: the neutral cap above A and its immediate shorter ancestor.
