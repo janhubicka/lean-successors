@@ -391,3 +391,6 @@ import SuccessorTree.V10.HHigherPoolCumulativeBound
 
 -- V10 Proposition 6.44: exact descending cumulative generation induction, root counted once.
 import SuccessorTree.V10.HBackwardNumericalInduction
+
+-- Proposition 6.44: the true AlgorithmRun discharges the descending generation recurrence.
+import SuccessorTree.V10.HActualRunDescendingBudget
