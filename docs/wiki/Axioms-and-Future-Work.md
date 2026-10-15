@@ -1,5 +1,9 @@
 # Assumptions, extensibility and future axiom relaxation
 
+For a source-level map of the current M1–M3 axiom use sites, the
+nonempty-level and replay requirements, and an extensibility plan, see
+[M1–M3 dependency map](M1-M3-Dependency-Map.md).
+
 ## Current contract
 
 The formalized abstract theorem is proved for the current `LevelTree` / `STree` / `SMTree` hierarchy with distinguished monoid satisfying **M1, M2 and M3**. The public Ramsey theorem must remain unchanged while validating successor v10. The conditional proof layers should not assume fat-tree A4, a global pruning principle, or a concrete `V10` finite-age extension lemma as extra axioms.
