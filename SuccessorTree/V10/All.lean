@@ -16,6 +16,7 @@ import SuccessorTree.V10.HCountablePartialTower
 import SuccessorTree.V10.GPlusAlgorithmRunCoverage
 import SuccessorTree.V10.GPlusCommonUpperRepresentation
 import SuccessorTree.V10.GPlusHPrefixCommonUpper
+import SuccessorTree.V10.HTopRootStrictPrefix
 import SuccessorTree.V10.GPlusIrreducibleChain
 
 /-!

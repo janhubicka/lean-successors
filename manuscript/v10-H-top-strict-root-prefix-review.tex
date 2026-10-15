@@ -1,0 +1,21 @@
+% Review-only successor v10 note; keep author mathematical proof prose untouched.
+% Candidate until exact-head full Lean and transitive standard-axiom/counting CI.
+\todo[inline]{\textbf{v10 Definition~6.43: strict top-generation $H^+$
+prefixes below the numerical root's E free cut -- candidate.}
+The checked finite numerical $H^+$ constructor satisfies
+$\mathrm{fl}_{H^+}(\iota(j,k))=\iota(j-1,k)+1$ for $j,k>0$.
+The earlier exported inequality only placed each top-generation
+coordinate $\iota(i,k)$ with $i<j$ at or below this free cut;
+\texttt{HTopRootStrictPrefix.lean} supplies the essential
+one-coordinate slack
+$\iota(i,k)+1\le \mathrm{fl}_{H^+}(\iota(j,k))$.
+It also chooses one genuine numerical top-root $c$ for any
+finite earlier block set, with this strict bound at every selected
+coordinate. This verifies the missing finite-size precondition
+for representing the $G^+$ prefix of size $\iota(i,k)+1$ by a
+STRICT Kpt pair $(S,T)$ below the actual root original.
+No new E or neutral witness is added. The next step must
+identify those explicit pairs with the selected Algorithm~5.4
+seed nodes and apply the checked G^+$ range-coverage transfer.
+The final finite-approximation and Ramsey colouring assembly,
+and thus Theorem~6.26, remain open.}
