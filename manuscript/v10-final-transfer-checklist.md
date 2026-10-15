@@ -187,3 +187,56 @@ This is a precise English proof route, not a completed Lean certificate.
 After it is checked, continue with the envelope/finite-palette/colour
 assembly of Theorem 6.26, reusing the already validated uniform
 Algorithm 5.4 envelope bound.
+
+## Exact-head validation progress: retained recovery and neutral caps (15 October 2026)
+
+These stages extend Observation 6.42 but DO NOT by themselves certify its complete
+induced relational action or Theorem 6.26.
+
+- PR #475, exact head `4da64744c56fc3d359d37c07f901dae22fd22da4`:
+  complete retained-coordinate index and four-table reindexing construction,
+  GREEN full Lean and V10 counting/transitive-axiom workflows.
+- PR #476, exact head `ff80754c9212951c6467f875c3a0486e7d193870`:
+  `shapeMap_recovers_ordinaryCode` from the already checked
+  `shapeMap_recovers_complete_record`, including after a short image
+  prefix containing all retained coordinates. GREEN full Lean run
+  38755792644 and V10 run 38755792740.
+- PR #477, exact head `b197c26ff738890f05df5d08eb5607cf10dd121c`:
+  canonical cap specialization, including literal
+  `shapeImageRetainedCode F A = A.val`, GREEN full Lean run
+  38756498434 and V10 run 38756497923.
+- PR #478, exact head `20aad24d1d9d890ab061791d198f563367fbf0fa`:
+  injective `gPlusShapeImage` and the full iff of equality of
+  arbitrary genuine representing pairs under F. GREEN full Lean
+  38756953609 and V10 counting/transitive-axiom 38756953677.
+  This closes BOTH logical directions of equality in Observation 6.42,
+  but NOT the induced L+ relation identities.
+
+New candidates, pending exact-head full builds and axiom audits:
+
+- PR #479, `GPlusNeutralCapType.lean`: an explicit complete neutral
+  terminal Kpt type determined by the four ordinary source tables,
+  commuting with initial prefix restriction. A first build detected only
+  two socle-index arithmetic proof failures; their source bounds are now
+  exposed explicitly in corrected branch head
+  `86a6d9f8af899db194a02292beb3919145d043cb`.
+- PR #480, `GPlusCanonicalCapPrefix.lean`: literal equality between
+  the actual chosen-witness cap and the deterministic full neutral Kpt
+  node of a finite G+ code, and preservation of genuine cap prefixes.
+  Current branch integrates the neutral-cap bound repair.
+- PR #481, `GPlusShapeImagePrefix.lean`: source code sizes determine
+  image sizes strictly; prefix preservation from cap prefixes; reflection
+  from same-length prefix uniqueness plus PR #478 injectivity.
+  If checked, this also reflects incomparability, so no new binary or
+  E relations can be created on unrelated G+ branches.
+
+The next substantive theorem after the cap-prefix stages is exact
+preservation of both directed binary and E atoms on comparable
+G+ pairs. Use one genuine larger canonical cap, the already proved
+shape-map retained-coordinate recovery, and the prefix coherence
+above. Unary and diagonal atoms are similarly read at the retained
+last coordinate. Only once these are checked does Observation 6.42
+supply the induced action used by the finite-colouring pullback.
+
+Keep review-only TeX notes in Git. Do not change author proof prose,
+weaken axioms, add higher arity or manufacture E on L-only witnesses.
