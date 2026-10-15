@@ -177,16 +177,17 @@ theorem numericH_algorithmRun_generation_event_bound
   let E : Finset Nat := S.filter Event
   let T : Finset Nat := S.filter (fun ell => ¬ Event ell)
   have hX : X ⊆ ambientPrefixPool family A hAvoidA
-      (U : Set (Fin N)) :=
-    numericHTopGenerationSeeds_subset_rootPool
-      family K k N hAvoidA c blocks hWithin
+      (U : Set (Fin N)) := by
+    simpa [X, A, U] using
+      (numericHTopGenerationSeeds_subset_rootPool
+        family K k N hAvoidA c blocks hWithin)
   have hTop : ∃ x ∈ X, LevelTree.lev x = top := by
     refine ⟨A.kptOriginal family hAvoidA c,?_,?_⟩
     · change A.kptOriginal family hAvoidA c ∈
         numericHTopGenerationSeeds family K k N hAvoidA
           c blocks hWithin
       unfold numericHTopGenerationSeeds
-      simp
+      exact Finset.mem_insert.mpr (Or.inl (by dsimp [A]))
     · rfl
   have hProps : ∀ ell, ell ∈ S →
       0 < ell ∧ ell < top ∧ ell < N ∧
