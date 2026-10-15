@@ -161,7 +161,7 @@ noncomputable def FiniteGPlusVertex.restrict
     Classical.choose C.property
   obtain ⟨hCode,hAPos,hAvoid⟩ := Classical.choose_spec C.property
   have hnA : n ≤ A.size := by
-    simpa [hCode] using hn
+    exact (congrArg FinitePartialCode.size hCode) ▸ hn
   let B : EnumeratedPartialStructure db du dd :=
     A.initialSegment n hnA
   have hCodeB :
