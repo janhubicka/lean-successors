@@ -15,7 +15,8 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 HOLES = re.compile(r"\b(?:sorryAx|sorry|admit)\b")
 DECLARATIONS = re.compile(
-    r"(?m)^\s*(?:(?:private|protected|scoped|noncomputable|unsafe)\s+)*"
+    r"(?m)^\s*(?:@\[[^\]\n]*\]\s*)*"
+    r"(?:(?:private|protected|scoped|noncomputable|unsafe)\s+)*"
     r"(?:axiom|constant)\b"
 )
 
