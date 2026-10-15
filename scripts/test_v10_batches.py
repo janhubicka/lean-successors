@@ -24,7 +24,7 @@ class BatchValidation(unittest.TestCase):
         checks = sorted(p.relative_to(ROOT).as_posix()
                         for p in (ROOT / "scripts").glob("CheckV10*.lean"))
         self.assertGreater(len(checks), 200)
-        jobs = batch.partition(checks, 8, 64, ROOT / "scripts/.v10_batches")
+        jobs = batch.partition(checks, 8, 64, ROOT / "scripts/v10_batches_generated")
         self.assertEqual(Counter(x for job in jobs for x in job.scripts),
                          Counter(checks))
         self.assertTrue(any(j.batched and len(j.scripts) > 1 for j in jobs))
@@ -52,7 +52,7 @@ class BatchValidation(unittest.TestCase):
             with patch.object(batch, "ROOT", root):
                 jobs = batch.partition(
                     ["scripts/CheckV10One.lean", "scripts/CheckV10Two.lean"],
-                    8, 64, root / "scripts/.v10_batches")
+                    8, 64, root / "scripts/v10_batches_generated")
                 self.assertEqual(len(jobs), 2)
                 self.assertTrue(jobs[0].batched)
                 self.assertFalse(jobs[1].batched)
@@ -68,7 +68,7 @@ class BatchValidation(unittest.TestCase):
             with patch.object(batch, "ROOT", root):
                 jobs = batch.partition(
                     ["scripts/CheckV10A.lean", "scripts/CheckV10B.lean"],
-                    8, 64, root / "scripts/.v10_batches")
+                    8, 64, root / "scripts/v10_batches_generated")
                 self.assertEqual(len(jobs), 2)
 
     def test_failed_lean_does_not_skip_named_validator(self):
