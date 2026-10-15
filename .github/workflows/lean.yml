@@ -652,6 +652,17 @@ jobs:
             cat proof-audit/i3-algorithm-sharp-axioms.log
             exit 1
           }
+      - name: Check sharp finite forest meet-closure 2N bound
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10ForestMeetLinear.lean > proof-audit/forest-meet-linear-axioms.log 2>&1; then
+            cat proof-audit/forest-meet-linear-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/forest-meet-linear-axioms.log scripts/CheckV10ForestMeetLinear.lean || {
+            cat proof-audit/forest-meet-linear-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

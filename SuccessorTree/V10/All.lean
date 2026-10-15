@@ -375,3 +375,6 @@ import SuccessorTree.V10.I3AlgorithmRunPool
 
 -- Proposition 6.44: selected I3 stages of the actual run obey sharp higher-generation R(M_g).
 import SuccessorTree.V10.I3AlgorithmRunSharp
+
+-- V10 Proposition 6.44: sharp generic forest meet-closure 2N bound.
+import SuccessorTree.V10.ForestMeetLinear
