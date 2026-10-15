@@ -850,6 +850,39 @@ jobs:
             cat proof-audit/singleton-normalization-axioms.log
             exit 1
           }
+      - name: Check countable H+ exact finite coherent prefixes and transitive axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HCountablePartialTower.lean > proof-audit/CheckV10HCountablePartialTower-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HCountablePartialTower-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HCountablePartialTower-axioms.log scripts/CheckV10HCountablePartialTower.lean || {
+            cat proof-audit/CheckV10HCountablePartialTower-axioms.log
+            exit 1
+          }
+      - name: Check canonical countable finite G+ vertices and transitive axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10GPlusFiniteCode.lean > proof-audit/CheckV10GPlusFiniteCode-axioms.log 2>&1; then
+            cat proof-audit/CheckV10GPlusFiniteCode-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10GPlusFiniteCode-axioms.log scripts/CheckV10GPlusFiniteCode.lean || {
+            cat proof-audit/CheckV10GPlusFiniteCode-axioms.log
+            exit 1
+          }
+      - name: Check canonical finite G+ initial-segment restriction and transitive axioms
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10GPlusFinitePrefix.lean > proof-audit/CheckV10GPlusFinitePrefix-axioms.log 2>&1; then
+            cat proof-audit/CheckV10GPlusFinitePrefix-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10GPlusFinitePrefix-axioms.log scripts/CheckV10GPlusFinitePrefix.lean || {
+            cat proof-audit/CheckV10GPlusFinitePrefix-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
