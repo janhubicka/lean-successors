@@ -6,9 +6,11 @@
 
 PR 463, exact head `de5913638fb72164432a8232cbde2c9f02fe5fc7`, has completed successful Lean/transitive-axiom run 38728699198 and V10 run 38728699434. This proves the actual canonical countable C+ to G+ prefix-code embedding, including the numerical H+ specialization. The merge tool call was blocked in this continuation; the PR has not been merged by an alternative mechanism.
 
-PR 464 is stacked on that checked head. It contains candidates for the exhaustive nondecreasing-size enumeration and the ordered H-to-G-omega embedding. Its review note is `manuscript/v10-Gplus-enumeration-review.tex`. Check exact-head full Lean and transitive axioms before treating these candidates as certified.
+PR 464 is stacked on that checked head. Its current candidate head is `4a6a531aca6d3411a3d4aec1522ab9ddd6e38152`. It implements the exhaustive nondecreasing-size enumeration and the ordered H-to-G-omega embedding. Its review note is `manuscript/v10-Gplus-enumeration-review.tex`.
 
-The new enumeration is explicit: let the width of layer n be the number of valid codes of size n+1. The canonical prefix map provides an inhabitant of every layer. Rank a numbered vertex (n,i) by the sum of all earlier widths plus i. The rank is injective; the least cumulative upper endpoint supplies a preimage for every natural number. Thus the inverse rank is a bijection whose sizes do not decrease. Composing inverse-enumeration rank with the canonical prefix-code map is strictly increasing, because its code sizes are v+1.
+The first full build compiled `FiniteLayerEnumeration.lean`, then stopped on one ambiguous subtype projection in the proof that a valid size layer is finite. The current head explicitly types that projection, without changing any statement or mathematical argument. All 31 new declarations appear in the existing G+ axiom checker (67 distinct checks total). These source checks are not kernel verification: check current-head full Lean run 38732939208 and V10 run 38732939207 before marking the new enumeration certified.
+
+The enumeration is explicit: let the width of layer n be the number of valid codes of size n+1. The canonical prefix map provides an inhabitant of every layer. Rank a numbered vertex (n,i) by the sum of all earlier widths plus i. The rank is injective; the least cumulative upper endpoint supplies a preimage for every natural number. Thus the inverse rank is a bijection whose sizes do not decrease. Composing inverse-enumeration rank with the canonical prefix-code map is strictly increasing, because its code sizes are v+1.
 
 ## The next manuscript bridge is Observation 6.42
 
@@ -22,6 +24,24 @@ The available reviewed v10 text defines v(S,T) as the ordinary initial code of T
 6. Use K-universality for the ordered G-omega-to-K embedding, compose the concrete K-to-H and H-to-G maps with Phi_F, and prove the final ordered self-embedding and colour bound.
 
 Do not abbreviate items 1--5 as an already checked final assembly.
+
+## Concrete proof route for the G+ action — not yet Lean-checked
+
+Let A be a valid finite code of positive size a. Let U_A be the level-a admissible neutral-cap type obtained from `NonedgePadding.socleCapNode`. Its ordinary code is A. Prove once that it depends only on A's finite tables, not on the raw witness's off-carrier values. Also prove that if A is the size-a prefix of B, then U_A is the level-a prefix of U_B: every ordinary atom is copied, the cap's singleton is neutral, and all ordinary-to-tip E atoms are prescribed identically.
+
+For a genuine shape map F with common strictly increasing level map lambda, define Phi_F(A) to be the ordinary code of F(U_A) restricted to lambda(a-1)+1. This cut is inside F(U_A), since lambda(a-1)<lambda(a). Admissibility of F(U_A) and hereditary restriction give a genuine valid G+ vertex. Its last coordinate is lambda(a-1).
+
+To identify this definition with any representative v(S,T)=A, put a=level(S)+1 and Q=T restricted to level a. Then Q and U_A have the same full ordinary L+ socle A. The existing `shapeMap_preserves_source_compatibility` gives equality of the full image ordinary socles of F(Q) and F(U_A), both of level lambda(a). Moreover F(Q) is a prefix of F(T). Restricting these equal image socles to lambda(a-1)+1 gives
+
+    v(F(S),F(T)) = Phi_F(A).
+
+Thus the forward implication of Observation 6.42 is independent of the chosen representative. For injectivity, equality Phi_F(A)=Phi_F(B) first forces a=b by strict increase of lambda. Every retained coordinate lambda(i), i<a, lies below lambda(a-1)+1. Reindexing all four finite atomic tables at those retained coordinates and applying `shapeMap_recovers_complete_record` recovers A=B. This supplies the reverse implication.
+
+For A properly below B, cap-prefix coherence and prefix preservation by F show Phi_F(A) is properly below Phi_F(B). The converse follows by reindexing the retained finite tables. Hence incomparability is also reflected. On comparable pairs, the G+ relation definition reads the image atoms at lambda(a-1),lambda(b-1) inside the image cap of B. Full record recovery identifies them with the original two last-coordinate atoms in B, in both orientations and for both Boolean values. Unary and diagonal atoms use the same argument at one last coordinate. Incomparable pairs have no binary or E tuples on either side. This proves an induced L+ embedding, not just preservation of positive relations.
+
+Composition and identity should then be proved through the representative identity above: applying G and then F to the pair (S,T) is the same as applying F composed with G. For finite approximations, explicitly ensure both types in the representative pair lie in the approximation domain before using this identity as a colouring definition.
+
+The cap-code construction, its prefix coherence, its image-prefix validity and the exact retained-index identities still need formalization. The argument above is a proof plan using established lemmas, not a completed Observation 6.42 certificate.
 
 ## Existing proofs to reuse
 
