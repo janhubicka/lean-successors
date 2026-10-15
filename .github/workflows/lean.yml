@@ -795,6 +795,17 @@ jobs:
             cat proof-audit/CheckV10HUniformEnvelopeBound-axioms.log
             exit 1
           }
+      - name: Check exact H top-root free cut and preceding seed prefixes
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HTopRootFreeCut.lean > proof-audit/h-top-root-free-cut-axioms.log 2>&1; then
+            cat proof-audit/h-top-root-free-cut-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-top-root-free-cut-axioms.log scripts/CheckV10HTopRootFreeCut.lean || {
+            cat proof-audit/h-top-root-free-cut-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

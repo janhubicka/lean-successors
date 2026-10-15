@@ -404,3 +404,6 @@ import SuccessorTree.V10.HBackwardNumericalInduction
 import SuccessorTree.V10.HActualRunDescendingBudget
 -- Proposition 6.44: HUniformEnvelopeBound.
 import SuccessorTree.V10.HUniformEnvelopeBound
+
+-- V10 original embedding: exact root free cut supports earlier top-generation seed vertices.
+import SuccessorTree.V10.HTopRootFreeCut
