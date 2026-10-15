@@ -24,6 +24,24 @@ namespace SuccessorTree.V10
 variable {db du dd : Nat}
 variable {family : List (NormalizedForbidden db du dd)}
 
+/-- Dependent image lengths are aligned once, before projecting the
+full same-ordinary record to the on-carrier finite code. -/
+private theorem ordinaryCode_eq_of_compatible_levels
+    (A B : RawPartialTypeNode db du dd)
+    (hLev : A.1 = B.1)
+    (hComp : SameOrdinaryAtCut A.2
+      (cast (congrArg (fun k => PartialTypeWithE k db du dd)
+        hLev.symm) B.2)) :
+    RawPartialTypeNode.ordinaryCode A =
+      RawPartialTypeNode.ordinaryCode B := by
+  rcases A with ⟨n,T⟩
+  rcases B with ⟨m,U⟩
+  change n = m at hLev
+  subst m
+  have hOrd : SameOrdinaryAtCut T U := by
+    simpa using hComp
+  exact ordinaryCode_eq_of_sameOrdinary T U hOrd
+
 /-- Equality of complete finite ordinary L+ codes is preserved by every
 genuine admissible Kpt ShapeMap, at positive source levels. -/
 theorem shapeMap_preserves_equal_ordinaryCode
@@ -37,8 +55,7 @@ theorem shapeMap_preserves_equal_ordinaryCode
   rcases A with ⟨⟨n,T⟩,hT⟩
   rcases B with ⟨⟨m,U⟩,hU⟩
   have hLevels : n = m := by
-    have h := congrArg FinitePartialCode.size hCode
-    exact h
+    exact congrArg FinitePartialCode.size hCode
   subst m
   have hOrd : SameOrdinaryAtCut T U :=
     sameOrdinary_of_ordinaryCode_eq T U hCode
@@ -49,16 +66,8 @@ theorem shapeMap_preserves_equal_ordinaryCode
   change (F a).1.1 = (F b).1.1 at hImageLev
   change RawPartialTypeNode.ordinaryCode (F a).1 =
     RawPartialTypeNode.ordinaryCode (F b).1
-  cases hFA : (F a).1 with
-  | mk na qa =>
-    cases hFB : (F b).1 with
-    | mk nb qb =>
-      simp only [hFA, hFB] at hImageLev hImageOrd ⊢
-      change na = nb at hImageLev
-      subst nb
-      have hOrdEq : SameOrdinaryAtCut qa qb := by
-        simpa using hImageOrd
-      exact ordinaryCode_eq_of_sameOrdinary qa qb hOrdEq
+  exact ordinaryCode_eq_of_compatible_levels
+    (F a).1 (F b).1 hImageLev hImageOrd
 
 /-- Equality remains true after a shared smaller ordinary socle cut.
 In particular it can be read at lambda(level(S))+1 rather than the
