@@ -29,10 +29,13 @@ theorem gPlusShapeImage_eq_canonicalPairImage
     (A : FiniteGPlusVertex family) :
     gPlusShapeImage F A =
       ((GPlusRepresentingPair.canonical A).image F).vertex := by
-  have hRep := GPlusRepresentingPair.canonical_vertex A
-  rw [←hRep]
-  exact (GPlusRepresentingPair.image_vertex_eq_canonicalShapeImage
-    (GPlusRepresentingPair.canonical A) F).symm
+  calc
+    gPlusShapeImage F A =
+        gPlusShapeImage F (GPlusRepresentingPair.canonical A).vertex := by
+      rw [GPlusRepresentingPair.canonical_vertex A]
+    _ = ((GPlusRepresentingPair.canonical A).image F).vertex :=
+      (GPlusRepresentingPair.image_vertex_eq_canonicalShapeImage
+        (GPlusRepresentingPair.canonical A) F).symm
 
 /-- The genuine identity Kpt ShapeMap induces the identity G+ map. -/
 theorem gPlusShapeImage_id
