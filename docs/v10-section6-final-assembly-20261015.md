@@ -164,3 +164,46 @@ checkpoint supersedes their earlier OPEN status. It does not
 retroactively validate the general-language or universal-transfer
 steps. The v10 mathematical prose and earlier four repairs remain
 frozen. Add correction notes and validation markers only.
+
+## October 15 integration checkpoint: final G+ transfer candidates
+
+The Lean library was first refactored to remove redundant imports, old CI
+experiments, and duplicated M2/shape-Ramsey proofs. The abstract Core and
+both independent finite-dimensional Ramsey proofs retain their existing
+mathematical endpoints and named transitive-axiom checks.
+
+The following scoped **Section 6 candidates have merged**, each preserving
+its exact reviewed source while reconciling the consolidated V10 checker:
+
+- #486 and #489: genuine common-upper Kpt representations of finite G+
+  prefixes of an H+ chain, with full induced unary/binary/E tables;
+- #490 and #491: strict numerical HTop root free-cut containment and
+  genuine representing pairs inside the *actual selected* HTop seeds;
+- #492 and #509: initial height of real Algorithm 5.4 seeds and coverage
+  of their selected G+ prefixes by its genuine output map;
+- #512: finite **source** representation palette of a real prefix envelope,
+  conditional on the stated E1, seed-height, and top-level premises.
+
+Every candidate passed full Lean and V10 checking on its original proof head.
+The import/checker rebases preserved theorem sources. The new combined
+`main` head after merging #512 is `2c310c39f50fd9e3335502765e82bc400527da17`;
+its exact-head **full Lean + V10 integration workflows were still running**
+at the time of this checkpoint, so this paragraph is not a GREEN label
+for the combined integration.
+
+The remaining #511 candidate turns finitely many genuine palette colourings
+into one finite product colouring. A missing classical decidability instance
+was repaired by an explicit `classical` step in that proof; **exact-head
+Lean and V10 validation remains required** before merging the repair.
+
+### Mathematical boundary not to cross
+
+None of these local results establishes Section 5's OneLevelPullback E1
+for the normalized Kpt monoid. Nor do the finite representation bounds
+alone verify the sufficiently long simultaneous finite approximant, the
+exact final colour evaluation, all boundary cases, or the uniform ordered
+`K → H+ → G+ → K` embedding composition demanded by the source
+Theorem 6.26. Do not promote a scoped lemma to the unqualified original
+Proposition 6.44 or Theorem 6.26 merely because Lean checked a conditional
+candidate. Preserve the author manuscript prose; review-only notes and
+truthfully scoped validation markers are the allowed manuscript edits.
