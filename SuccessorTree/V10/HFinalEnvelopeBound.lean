@@ -127,22 +127,29 @@ theorem numericHTopSeeds_finalRun_selected_card_le_sharp
   let T : Finset Nat := S.filter (fun ell => 0 < ell ∧ ¬ Event ell)
   have hSeeds : X ⊆ ambientPrefixPool family A hAvoidA
       (U : Set (Fin A.size)) := by
-    simpa [X,Xfin,A,U] using
-      (numericHTopGenerationSeeds_subset_rootPool
-        family K k N hAvoidA c blocks hWithin)
+    have hSingleton :
+        (↑U : Set (Fin N)) = ({c} : Set (Fin N)) := by
+      ext v
+      simp [U]
+    change (↑(numericHTopGenerationSeeds family K k N
+        hAvoidA c blocks hWithin) : Set (AdmissibleKptNode family)) ⊆
+      ambientPrefixPool family (finiteNumericH K k N)
+        hAvoidA (↑U : Set (Fin N))
+    rw [hSingleton]
+    exact numericHTopGenerationSeeds_subset_rootPool
+      family K k N hAvoidA c blocks hWithin
   have hUV : U ⊆ V := by
     intro i hi
-    have hName : i ∈ ({c} : Finset (Fin N)) := by
-      simpa [U] using hi
+    have hiEq : i = c := by
+      simpa only [U, Finset.mem_singleton] using hi
+    have hName : i ∈ ({c} : Finset (Fin N)) :=
+      Finset.mem_singleton.mpr hiEq
     have hMem :
         i ∈ hStageOriginals K k N
           ({c} : Finset (Fin N)) (R.I 0) := by
-      change i ∈ (Finset.univ : Finset (Fin N)).filter
-        (fun j => j ∈ ({c} : Finset (Fin N)) ∨
-          (j.val ∈ R.I 0 ∧
-            0 < (finiteNumericH K k N).freeLevel j.val))
-      exact Finset.mem_filter.mpr
-        ⟨Finset.mem_univ _,Or.inl hName⟩
+      simp only [hStageOriginals, Finset.mem_filter,
+        Finset.mem_univ, true_and]
+      exact Or.inl hName
     exact hMem
   have hParams : ∀ i : Fin A.size, i.val ∈ R.I 0 →
       0 < A.freeLevel i.val → i ∈ V := by
@@ -150,12 +157,9 @@ theorem numericHTopSeeds_finalRun_selected_card_le_sharp
     have hMem :
         i ∈ hStageOriginals K k N
           ({c} : Finset (Fin N)) (R.I 0) := by
-      change i ∈ (Finset.univ : Finset (Fin N)).filter
-        (fun j => j ∈ ({c} : Finset (Fin N)) ∨
-          (j.val ∈ R.I 0 ∧
-            0 < (finiteNumericH K k N).freeLevel j.val))
-      exact Finset.mem_filter.mpr
-        ⟨Finset.mem_univ _,Or.inr ⟨hi,hFree⟩⟩
+      simp only [hStageOriginals, Finset.mem_filter,
+        Finset.mem_univ, true_and]
+      exact Or.inr ⟨hi,hFree⟩
     exact hMem
   have hForest :
       SMTree.Envelope.closure (admissibleKptSTree family)
@@ -193,7 +197,11 @@ theorem numericHTopSeeds_finalRun_selected_card_le_sharp
     intro ell hLt
     have hTail : R.I (ell+1) ⊆ R.I 0 := by
       intro q hq
-      have hEq := R.I_eq_final_tail_of_run (ell+1) (by omega)
+      have hBound :
+          ell + 1 ≤ (finiteNumericH K k N).freeLevel c.val := by
+        change ell < (finiteNumericH K k N).freeLevel c.val at hLt
+        omega
+      have hEq := R.I_eq_final_tail_of_run (ell+1) hBound
       rw [hEq] at hq
       exact hq.1
     exact actualKptClosure_mono_params family hTail X
