@@ -146,10 +146,8 @@ theorem numericHTopSeeds_finalRun_selected_card_le_sharp
     have hMem :
         i ∈ hStageOriginals K k N
           ({c} : Finset (Fin N)) (R.I 0) := by
-      change i = c ∨
-        (i.val ∈ R.I 0 ∧
-          0 < (finiteNumericH K k N).freeLevel i.val)
-      exact Or.inl (Finset.mem_singleton.mp hName)
+      exact Finset.mem_filter.mpr
+        ⟨Finset.mem_univ i, Or.inl hName⟩
     exact hMem
   have hParams : ∀ i : Fin A.size, i.val ∈ R.I 0 →
       0 < A.freeLevel i.val → i ∈ V := by
@@ -157,10 +155,8 @@ theorem numericHTopSeeds_finalRun_selected_card_le_sharp
     have hMem :
         i ∈ hStageOriginals K k N
           ({c} : Finset (Fin N)) (R.I 0) := by
-      change i = c ∨
-        (i.val ∈ R.I 0 ∧
-          0 < (finiteNumericH K k N).freeLevel i.val)
-      exact Or.inr ⟨hi,hFree⟩
+      exact Finset.mem_filter.mpr
+        ⟨Finset.mem_univ i, Or.inr ⟨hi,hFree⟩⟩
     exact hMem
   have hForest :
       SMTree.Envelope.closure (admissibleKptSTree family)

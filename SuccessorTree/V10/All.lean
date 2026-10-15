@@ -389,17 +389,18 @@ import SuccessorTree.V10.HActualGenerationEventBound
 -- V10 Section 6: validated scope of HHigherPoolCumulativeBound.
 import SuccessorTree.V10.HHigherPoolCumulativeBound
 
--- V10 Section 6: ForestMeetLinear.
-import SuccessorTree.V10.ForestMeetLinear
--- V10 Section 6: KptForestMeetBound.
-import SuccessorTree.V10.KptForestMeetBound
--- V10 Section 6: HFinalEnvelopeBound.
-import SuccessorTree.V10.HFinalEnvelopeBound
--- V10 Section 6: HFinalPoolPositiveGeneration.
+-- Proposition 6.44: real positive E-free original addresses and final pool bound.
 import SuccessorTree.V10.HFinalPoolPositiveGeneration
--- V10 Section 6: HBackwardNumericalInduction.
+
+-- Proposition 6.44: ForestMeetLinear.
+import SuccessorTree.V10.ForestMeetLinear
+-- Proposition 6.44: KptForestMeetBound.
+import SuccessorTree.V10.KptForestMeetBound
+-- Proposition 6.44: HFinalEnvelopeBound.
+import SuccessorTree.V10.HFinalEnvelopeBound
+-- Proposition 6.44: HBackwardNumericalInduction.
 import SuccessorTree.V10.HBackwardNumericalInduction
--- V10 Section 6: HActualRunDescendingBudget.
+-- Proposition 6.44: HActualRunDescendingBudget.
 import SuccessorTree.V10.HActualRunDescendingBudget
--- Proposition 6.44: complete uniform numerical H envelope height.
+-- Proposition 6.44: HUniformEnvelopeBound.
 import SuccessorTree.V10.HUniformEnvelopeBound
