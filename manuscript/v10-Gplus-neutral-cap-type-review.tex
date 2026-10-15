@@ -1,0 +1,18 @@
+% Review-only successor v10 note; do not edit author proof prose.
+% Candidate pending exact-head full Lean and standard-axiom/counting CI.
+\todo[inline]{\textbf{v10 validation: full canonical neutral-cap type -- candidate.}
+The code \texttt{GPlusNeutralCapType.lean} defines a completely
+explicit L$^+$ partial-type record over a finite $G^+$ table.
+Its ordinary vertices retain every directed binary, unary,
+diagonal and E atom; the distinguished neutral type vertex has
+no incident L atoms, has incoming E from every old vertex, and
+has no outgoing or diagonal E atom. The actual verified
+two-neutral padding and \texttt{prefixReplicaE} construction
+are compared atom-by-atom to this record, without postulating
+a canonicalization axiom or adding E to any L-only witness.
+The record commutes with restriction of the finite ordinary code.
+This is the technical input for canonical-cap prefix coherence
+and hence preservation/reflection of comparability under the
+induced ShapeMap action. The full induced relational identities,
+bounded-envelope coverage, finite-colouring assembly and final
+Theorem~6.26 remain open until individually checked.}
