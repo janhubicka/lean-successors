@@ -143,13 +143,13 @@ theorem CountableEnumeratedPartialStructure.finitePrefix_freeLevel_eq
     · rw [hColumn]
       exact hGlobal.2
   have hChosen : IsFreeCut (C.finitePrefix N).E v
-      (C.finitePrefix N).freeLevel v :=
+      ((C.finitePrefix N).freeLevel v) :=
     canonicalFreeLevel_isFreeCut
       (C.finitePrefix N).E
       (C.finitePrefix N).spaced
       (C.finitePrefix N).downward v
   exact freeCut_unique (C.finitePrefix N).E v
-    (C.finitePrefix N).freeLevel v
+    ((C.finitePrefix N).freeLevel v)
     (canonicalFreeLevel C.E C.spaced C.downward v)
     hChosen hLocal
 
@@ -228,7 +228,7 @@ theorem infiniteNumericHPlus_prefix_freeLevel
     · rw [hColumn]
       exact hCutGlobal.2
   have hSelected : IsFreeCut (finiteNumericH K k N).E v
-      (finiteNumericH K k N).freeLevel v :=
+      ((finiteNumericH K k N).freeLevel v) :=
     canonicalFreeLevel_isFreeCut
       (finiteNumericH K k N).E
       (finiteNumericH K k N).spaced
