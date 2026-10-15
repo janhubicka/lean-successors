@@ -1,0 +1,29 @@
+% Review-only successor v10 validation note, original author prose frozen.
+% CANDIDATE pending exact-head full Lean and V10 transitive-axiom CI.
+\todo[inline]{\textbf{v10 Section~5 E1: genuine finite partial structure
+from an explicit free-$E$-cut profile -- candidate.}
+\texttt{KptE1FreeCutRealization.lean} defines
+$E(u,v)$ to hold precisely when $v<N$ and $u<f(v)$.
+If every positive cut satisfies $f(v)<v$, the constructed
+$E$ is spaced and downward closed; its canonical first
+missing coordinate is EXACTLY the prescribed $f(v)$.
+The separately stated linked-pair condition
+$L(u,v)\ne\varnothing\Rightarrow u<f(v)$ is used to prove
+that the resulting \texttt{EnumeratedPartialStructure}
+satisfies every original Definition~6.28 axiom.
+Its $L$-reduct is the caller's existing finite age-test model,
+unchanged. It does not attach arbitrary E to any L-only
+forbidden configuration and does not manufacture age avoidance:
+that comes independently from the checked retained-coordinate
+induced-$L$-age pullback.
+For the missing E1 successor realization, apply this constructor
+with old cuts inherited from the source node, new ordinary
+cut determined by the unique successor parameter, neutral
+spacer cut zero and distinguished witness cut $n+1$.
+Then show the resulting witness has free level $n+1$ at its
+last type vertex and extracts the exact pulled-back complete
+$L^+$ record; the canonical successor graph then provides
+the source successor. This actual E1 theorem, the uniform
+numerical envelope-to-palette consequence and the final ordered
+big Ramsey transfer are still separate obligations. Theorem~6.26
+is NOT yet certified unconditionally.}
