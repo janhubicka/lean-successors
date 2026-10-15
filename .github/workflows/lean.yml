@@ -883,15 +883,26 @@ jobs:
             cat proof-audit/CheckV10GPlusFinitePrefix-axioms.log
             exit 1
           }
-      - name: Check G+ valid finite prefix restriction and forbidden-age preservation
+      - name: Check exact Definition 6.40 induced unary binary E atoms of G+
         run: |
           set -o pipefail
-          if ! lake env lean scripts/CheckV10GPlusValidPrefix.lean > proof-audit/gplus-valid-prefix-axioms.log 2>&1; then
-            cat proof-audit/gplus-valid-prefix-axioms.log
+          if ! lake env lean scripts/CheckV10GPlusAtomicRelations.lean > proof-audit/gplus-atomic-relations-axioms.log 2>&1; then
+            cat proof-audit/gplus-atomic-relations-axioms.log
             exit 1
           fi
-          python3 scripts/check-axiom-log.py proof-audit/gplus-valid-prefix-axioms.log scripts/CheckV10GPlusValidPrefix.lean || {
-            cat proof-audit/gplus-valid-prefix-axioms.log
+          python3 scripts/check-axiom-log.py proof-audit/gplus-atomic-relations-axioms.log scripts/CheckV10GPlusAtomicRelations.lean || {
+            cat proof-audit/gplus-atomic-relations-axioms.log
+            exit 1
+          }
+      - name: Check Lemma 6.41 irreducible forbidden copy lies on one G+ prefix chain
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10GPlusIrreducibleChain.lean > proof-audit/gplus-irreducible-chain-axioms.log 2>&1; then
+            cat proof-audit/gplus-irreducible-chain-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/gplus-irreducible-chain-axioms.log scripts/CheckV10GPlusIrreducibleChain.lean || {
+            cat proof-audit/gplus-irreducible-chain-axioms.log
             exit 1
           }
       - name: Test axiom-audit checker

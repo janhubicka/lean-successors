@@ -426,5 +426,8 @@ import SuccessorTree.V10.GPlusFiniteCode
 -- Definition 6.40 transfer: canonical finite G+ initial-segment restriction.
 import SuccessorTree.V10.GPlusFinitePrefix
 
--- G+ countable tree: nonempty prefixes preserve exact partial structure and forbidden age.
-import SuccessorTree.V10.GPlusValidPrefix
+-- Original Definition 6.40: finite G+ nodes carry literal induced L+ tuple atoms.
+import SuccessorTree.V10.GPlusAtomicRelations
+
+-- Lemma 6.41: irreducible forbidden pairs lie on one G+ prefix chain.
+import SuccessorTree.V10.GPlusIrreducibleChain

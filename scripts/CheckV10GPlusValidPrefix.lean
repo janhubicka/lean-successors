@@ -1,7 +1,0 @@
-import SuccessorTree.V10.GPlusValidPrefix
-#print axioms SuccessorTree.V10.EnumeratedPartialStructure.initialSegment
-#print axioms SuccessorTree.V10.NormalizedForbidden.avoids_restrictCarrier
-#print axioms SuccessorTree.V10.EnumeratedPartialStructure.initialSegment_avoids
-#print axioms SuccessorTree.V10.FinitePartialCode.ofEnumerated_initialSegment
-#print axioms SuccessorTree.V10.FiniteGPlusVertex.restrict
-#print axioms SuccessorTree.V10.FiniteGPlusVertex.restrict_isPrefix

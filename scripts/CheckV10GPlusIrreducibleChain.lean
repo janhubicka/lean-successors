@@ -1,0 +1,4 @@
+import SuccessorTree.V10.GPlusIrreducibleChain
+#print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
+#print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
+#print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
