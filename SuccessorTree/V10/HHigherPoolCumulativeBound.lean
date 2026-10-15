@@ -87,6 +87,15 @@ theorem numericHHighOriginals_subset_root_or_selected
     exact Finset.mem_filter.mpr
       ⟨Finset.mem_univ _,hSelected,hReal⟩
 
+/-- The finite set of actual selected original addresses at
+one real generation. The noncomputable definition provides the
+classical decidability instance outside later theorem statements. -/
+noncomputable def numericHSelectedGenerationAddresses
+    (k N m : Nat) (I : Set Nat) : Finset (Fin N) := by
+  classical
+  exact (Finset.univ : Finset (Fin N)).filter
+    (fun v => v.val ∈ I ∧ ∃ p : Nat, v.val = hPosition k p m)
+
 /-- The selected higher addresses lie in the union of the
 generation-m selected address sets, for r<m<=k. This relies on
 their LITERAL positions, not on equivalence of partial types. -/
@@ -102,15 +111,17 @@ theorem numericHSelectedHigherAddresses_subset_generationUnion
     (r : Nat) :
     numericHSelectedHigherAddresses family K k N c X R r ⊆
       (Finset.Icc (r+1) k).biUnion
-        (fun m => (Finset.univ : Finset (Fin N)).filter
-          (fun v => v.val ∈ R.I 0 ∧
-            ∃ p : Nat, v.val = hPosition k p m)) := by
+        (fun m => numericHSelectedGenerationAddresses
+          k N m (R.I 0)) := by
   classical
   intro v hv
   have hData := (Finset.mem_filter.mp hv).2
   obtain ⟨hSelected,p,m,hrm,hmk,hReal⟩ := hData
   apply Finset.mem_biUnion.mpr
   refine ⟨m, Finset.mem_Icc.mpr ⟨by omega,hmk⟩,?_⟩
+  change v ∈ (Finset.univ : Finset (Fin N)).filter
+    (fun x => x.val ∈ R.I 0 ∧
+      ∃ p : Nat, x.val = hPosition k p m)
   exact Finset.mem_filter.mpr
     ⟨Finset.mem_univ _,hSelected,p,hReal⟩
 
@@ -127,15 +138,12 @@ theorem numericHSelectedGenerationAddresses_card_le_levels
       (normalizedKptSMTree family) X
       ((finiteNumericH K k N).freeLevel c.val))
     (m : Nat) :
-    ((Finset.univ : Finset (Fin N)).filter
-      (fun v => v.val ∈ R.I 0 ∧
-        ∃ p : Nat, v.val = hPosition k p m)).card ≤
+    (numericHSelectedGenerationAddresses k N m (R.I 0)).card ≤
       (numericHSelectedRealGenerationLevels
         family K k N c X R m).card := by
   classical
-  let T : Finset (Fin N) := Finset.univ.filter
-    (fun v => v.val ∈ R.I 0 ∧
-      ∃ p : Nat, v.val = hPosition k p m)
+  let T : Finset (Fin N) :=
+    numericHSelectedGenerationAddresses k N m (R.I 0)
   have hInjective : Set.InjOn Fin.val (T : Set (Fin N)) := by
     intro a _ b _ h
     exact Fin.ext h
@@ -145,7 +153,10 @@ theorem numericHSelectedGenerationAddresses_card_le_levels
       numericHSelectedRealGenerationLevels family K k N c X R m := by
     intro ell hEll
     obtain ⟨v,hv,rfl⟩ := Finset.mem_image.mp hEll
-    obtain ⟨hSel,p,hReal⟩ := (Finset.mem_filter.mp hv).2
+    have hv' : v ∈ (Finset.univ : Finset (Fin N)).filter
+        (fun x => x.val ∈ R.I 0 ∧
+          ∃ p : Nat, x.val = hPosition k p m) := hv
+    obtain ⟨hSel,p,hReal⟩ := (Finset.mem_filter.mp hv').2
     have hTop :
         v.val ≤ (finiteNumericH K k N).freeLevel c.val :=
       (R.I_mem_bounds 0 (Nat.zero_le _) v.val hSel).2
@@ -153,7 +164,7 @@ theorem numericHSelectedGenerationAddresses_card_le_levels
     constructor
     · exact Finset.mem_range.mpr (by omega)
     · exact ⟨hSel,p,hReal⟩
-  exact hCard.trans (Finset.card_le_card hSub)
+  exact hCard.le.trans (Finset.card_le_card hSub)
 
 /-- The induction's critical higher-pool estimate: one root plus
 actual selected real levels in strictly higher generations bound
@@ -178,9 +189,7 @@ theorem numericHHighOriginals_card_le_higherSelectedLevels
   let B : Finset (Fin N) :=
     numericHSelectedHigherAddresses family K k N c X R r
   let Gen : Nat → Finset (Fin N) := fun m =>
-    (Finset.univ : Finset (Fin N)).filter
-      (fun v => v.val ∈ R.I 0 ∧
-        ∃ p : Nat, v.val = hPosition k p m)
+    numericHSelectedGenerationAddresses k N m (R.I 0)
   have hGenSub : B ⊆ (Finset.Icc (r+1) k).biUnion Gen :=
     numericHSelectedHigherAddresses_subset_generationUnion
       family K k N c X R r
@@ -192,7 +201,7 @@ theorem numericHHighOriginals_card_le_higherSelectedLevels
       B.card ≤ ((Finset.Icc (r+1) k).biUnion Gen).card :=
         Finset.card_le_card hGenSub
       _ ≤ ∑ m ∈ Finset.Icc (r+1) k, (Gen m).card :=
-        Finset.card_biUnion_le _ _
+        Finset.card_biUnion_le
       _ ≤ ∑ m ∈ Finset.Icc (r+1) k,
           (numericHSelectedRealGenerationLevels
             family K k N c X R m).card := by
