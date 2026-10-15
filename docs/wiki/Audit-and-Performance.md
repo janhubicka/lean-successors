@@ -140,6 +140,27 @@ No Lean source, theorem declaration or author manuscript prose was changed
 by the historical workflow pruning. This reduces configuration maintenance,
 not the number of actual proof obligations.
 
+## Avoid compiling Core twice in full CI
+
+`SuccessorTree.lean` directly imports `SuccessorTree.Core`; the full
+`lake build` target therefore builds the abstract theorem and all its
+dependencies. The separate `lake build SuccessorTree.Core` invocation
+before `lake build` was redundant in the *full CI* workflow and has
+been removed. `check-core-boundary.py` now also verifies the direct
+root import, so a future cleanup cannot accidentally invalidate this
+reasoning.
+
+Developers should still use `lake build SuccessorTree.Core` when working
+only on the abstract library. In full CI, one Lake invocation allows a
+single dependency scheduler to build the entire graph without forcing a
+Core-first synchronization barrier.
+
+For perspective, the successful pre-refactor workflow (run 38787818856)
+took roughly 700 seconds overall. After removing 73 duplicate V10
+checks (run 38789555626), the full workflow took roughly 443 seconds
+on a different CI run/cache. Both reports included the separate Core
+build; they are a **baseline**, not a predicted saving from this PR.
+
 ## Next cleanup phases
 
 - Source reachability found no orphan Lean modules. Audit *private declarations and redundant lemmas inside active files* before considering deletions; obsolete fat-tree maintenance workflows were removed in PR #494.
