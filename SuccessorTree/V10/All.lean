@@ -410,3 +410,6 @@ import SuccessorTree.V10.HTopInducedEmbedding
 
 -- V10: countable numerical H embeds K in its top generation and preserves forbidden age.
 import SuccessorTree.V10.HInfiniteBaseEmbedding
+
+-- Definition 6.40: canonical countable finite-coordinate G+ vertex codes.
+import SuccessorTree.V10.GPlusFiniteCode
