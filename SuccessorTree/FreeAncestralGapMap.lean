@@ -225,8 +225,8 @@ theorem gapNode_child_of_ge
         (gapShiftParamTuple m choose
           (⟨n, h⟩ : Node Label arity) t ha) c
   rw [gapNodeAux]
-  rw [dif_neg (by omega : ¬ n + 1 < m)]
-  rw [dif_neg (by omega : ¬ n + 1 = m)]
+  rw [dite_eq_right (by omega : ¬ n + 1 < m)]
+  rw [dite_eq_right (by omega : ¬ n + 1 = m)]
   let gp := gapNodeAux m choose n h
   change
     child gp.1

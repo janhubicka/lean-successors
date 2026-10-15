@@ -672,7 +672,7 @@ theorem tailStage_fusionStable (U : FatTree H) (n : Nat) :
         (if U.cut n ≤ j + 1 then j + 1 - U.cut n + 1 else 0) x
   by_cases hj : U.cut n ≤ j
   · have hj1 : U.cut n ≤ j + 1 := hj.trans (Nat.le_succ j)
-    rw [if_pos hj, if_pos hj1]
+    rw [ite_eq_left hj, ite_eq_left hj1]
     have hcount :
         (j + 1 - U.cut n + 1) = (j - U.cut n + 1) + 1 := by
       omega
@@ -729,14 +729,14 @@ theorem tailStage_fusionStable (U : FatTree H) (n : Nat) :
     omega
   · by_cases hj1 : U.cut n ≤ j + 1
     · have heq : U.cut n = j + 1 := by omega
-      rw [if_neg hj, if_pos hj1]
+      rw [ite_eq_right hj, ite_eq_left hj1]
       have hzero : j + 1 - U.cut n + 1 = 1 := by omega
       rw [hzero]
       change x = U.rowExtension H n x
       symm
       apply U.rowExtension_fixesBelow H
       omega
-    · rw [if_neg hj, if_neg hj1]
+    · rw [ite_eq_right hj, ite_eq_right hj1]
 
 /-- The tail shape map F_U^n. -/
 noncomputable def tailMap (U : FatTree H) (n : Nat) : MMap H := by
@@ -760,7 +760,7 @@ theorem tailMap_apply_at_level
           then U.cut n + k - U.cut n + 1 else 0) x =
       intervalMap H U n (k + 1) x
   have hle : U.cut n ≤ U.cut n + k := Nat.le_add_right _ _
-  rw [if_pos hle]
+  rw [ite_eq_left hle]
   have hcount : U.cut n + k - U.cut n + 1 = k + 1 := by omega
   rw [hcount]
 
@@ -787,7 +787,7 @@ theorem tailMap_fixesBelow
     intervalMap H U n
       (if U.cut n ≤ LevelTree.lev x
         then LevelTree.lev x - U.cut n + 1 else 0) x = x
-  rw [if_neg (Nat.not_le.mpr hx)]
+  rw [ite_eq_right (Nat.not_le.mpr hx)]
   rfl
 
 /-- Exact level behaviour of the tail map on consecutive source levels. -/

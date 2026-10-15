@@ -52,7 +52,7 @@ theorem list_map_injective_of_injective
 /-- Insert one gap at m in a source level below n. -/
 def shiftFin (m n : Nat) (i : Fin n) : Fin (n + 1) :=
   if hi : i.val < m then
-    ⟨i.val, Nat.lt.step i.isLt⟩
+    ⟨i.val, Nat.lt_succ_of_lt i.isLt⟩
   else
     ⟨i.val + 1, by omega⟩
 

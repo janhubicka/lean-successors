@@ -88,7 +88,7 @@ theorem levelSets_eq_final_tail
     intro hi
     rw [levelSets_next_eq I ell htop hstep i (by omega), ih (by omega)]
     ext q
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     constructor
     · rintro ⟨⟨hq, _⟩, hiq⟩
       exact ⟨hq, by omega⟩

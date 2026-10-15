@@ -49,7 +49,7 @@ theorem appendedApproxColour_append
         appendApprox H a q = appendApprox H a g :=
     ⟨g, rfl⟩
   unfold appendedApproxColour
-  rw [dif_pos hex]
+  rw [dite_eq_left hex]
   have hchosen :
       Classical.choose hex = g := by
     apply appendApprox_injective H a
