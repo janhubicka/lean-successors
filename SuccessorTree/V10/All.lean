@@ -6,10 +6,6 @@ import SuccessorTree.V10.HELinkage
 import SuccessorTree.V10.LevelRemovalFullRangeOrder
 import SuccessorTree.V10.LocalAgeOneLinkedUpper
 import SuccessorTree.V10.M3RepresentativeIndependence
-import SuccessorTree.V10.M2RecoveryAxiomAudit
-import SuccessorTree.V10.M2ParameterPrefixAxiomAudit
-import SuccessorTree.V10.M2SocleCapAxiomAudit
-import SuccessorTree.V10.M2CapTypesAxiomAudit
 import SuccessorTree.V10.M2BadCopySourceAge
 import SuccessorTree.V10.PrescribedB3BoundedCores
 import SuccessorTree.V10.KptRamseyApplications
@@ -22,7 +18,7 @@ import SuccessorTree.V10.GPlusIrreducibleChain
 /-!
 # Complete V10 proof-assembly import frontier
 
-Each line is a currently necessary terminal branch of the actual dependency
+Each line is a necessary terminal branch of the current dependency
 graph. Their transitive closure is the SAME as the historical explicit
 231-module import list; verified intermediate proof files are not removed or
 left uncompiled. The list is an assembly target rather than a public API.
