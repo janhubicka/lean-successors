@@ -883,6 +883,17 @@ jobs:
             cat proof-audit/CheckV10GPlusFinitePrefix-axioms.log
             exit 1
           }
+      - name: Check G+ valid finite prefix restriction and forbidden-age preservation
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10GPlusValidPrefix.lean > proof-audit/gplus-valid-prefix-axioms.log 2>&1; then
+            cat proof-audit/gplus-valid-prefix-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/gplus-valid-prefix-axioms.log scripts/CheckV10GPlusValidPrefix.lean || {
+            cat proof-audit/gplus-valid-prefix-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

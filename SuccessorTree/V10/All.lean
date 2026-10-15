@@ -425,3 +425,6 @@ import SuccessorTree.V10.HCountablePartialTower
 import SuccessorTree.V10.GPlusFiniteCode
 -- Definition 6.40 transfer: canonical finite G+ initial-segment restriction.
 import SuccessorTree.V10.GPlusFinitePrefix
+
+-- G+ countable tree: nonempty prefixes preserve exact partial structure and forbidden age.
+import SuccessorTree.V10.GPlusValidPrefix
