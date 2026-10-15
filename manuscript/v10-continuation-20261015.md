@@ -30,10 +30,28 @@ The earlier downloaded checkpoint said the latter audits were pending. That stat
 
 The review note is versioned in `manuscript/v10-lemma-6.41-review.tex`. It is not automatically inserted into the author's `main.tex`.
 
-## Next obligations
+## Canonical C+ to G+ embedding — PR 463 candidate
 
-1. Construct an exhaustive size-nondecreasing enumeration of all valid finite G+ codes. Countability alone does not provide the size condition. Finitely many codes occur at each size; the neutral structures provide unbounded sizes in the normalized setting.
-2. For any countable forbidden-free partial structure C+, formalize v |-> code(C+ restricted to its first v+1 vertices). Prove prefix coherence, injectivity, strict size increase, and the full induced L+ atomic identities. Apply to the existing countable H+ tower.
-3. Combine these with the envelope bound and successor-tree Ramsey theorem in the manuscript's final transfer. Keep Theorem 6.26 marked incomplete until this assembly is checked.
+Head `de5913638fb72164432a8232cbde2c9f02fe5fc7` adds `CountableGPlusEmbedding.lean`. For any countable forbidden-free enumerated partial structure C+, it defines
 
-New continuation proofs must be recorded as candidates until their exact-head full Lean and transitive standard-axiom checks complete.
+    eta(v) = code(C+ restricted to v+1).
+
+The code is identified with a genuine finite partial prefix, whose forbidden-age avoidance follows from that of C+. Prefix restriction is coherent, sizes are v+1, and the candidate proves injectivity and exact preservation of unary, diagonal, both directed off-diagonal binary and all E atoms. In particular it handles reversed pairs, absent atoms and E diagonals. The numerical H+ instance uses the already checked H-age theorem; no new age or representation hypothesis is added.
+
+All seventeen new declarations are included in the existing G+ transitive standard-axiom checker (36 checks total). Full Lean run 38728699198 and V10 run 38728699434 were started for that head. This paragraph records a candidate, not completed verification; promote only after checking their completed conclusions.
+
+The accompanying candidate review note is also in Git on PR 463: `manuscript/v10-countable-Gplus-embedding-review.tex`. Author prose remains untouched.
+
+## Next enumeration argument — English proof plan, not a Lean certificate
+
+Countability alone is not the size-respecting enumeration statement. Work with the finite layers V_n of valid codes of size n, for n >= 1. The raw tables at size n have exactly (db+1)n^2+(du+dd)n Boolean coordinates, so V_n is finite. Fix an enumeration without repetition of each finite layer.
+
+For the actual application, the already available countable H+ is a witness that every V_n is nonempty: eta(n-1) has size n. Thus no separate neutral-structure construction or stronger forbidden-family assumption is needed for this step. More generally any forbidden-free countable C+ suffices.
+
+Concatenate the finite layer enumerations in increasing n. If a_n=|V_n| and s_0=0, s_n=sum_{j=1}^n a_j, then s_n>=n. Every m belongs to a unique interval [s_{n-1},s_n); send it to entry m-s_{n-1} of layer V_n. This is an exhaustive bijection Nat -> G+ whose sizes are nondecreasing. The rank of eta(v) lies in layer v+1, hence the inverse-enumeration rank of eta is strictly increasing. The induced atomic identities therefore give an ordered embedding into the enumerated G-omega L-reduct. Its forbidden-age avoidance follows from the already checked `finiteGPlusEnumeratedL_avoids_family`.
+
+Formalization obligations for this plan: finite raw layers and admissible sublayers; actual finite layer listings; the cumulative-size inverse and its two inverse identities; the nondecreasing-size theorem; and strict monotonicity of the canonical embedding's rank. None is to be replaced by an assumed enumeration interface at the final endpoint.
+
+## Remaining final obligation
+
+Combine the genuine enumeration and induced H+ map with the verified envelope bound and successor-tree Ramsey theorem in the manuscript's final transfer. Keep Theorem 6.26 marked incomplete until this assembly is checked.
