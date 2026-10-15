@@ -1,0 +1,16 @@
+% Review-only successor v10 verification marker. No author prose edits.
+\todo[inline]{\textbf{Concrete Kpt target successor parameter-cut reconstruction.}
+The \texttt{KptE1TargetParameterCut.lean} candidate does not assume
+one-level pullback: it unpacks an ACTUAL defined target successor
+\(\mathrm{succ}(F(a),F[p],c)\), where \(F\) is a genuine Kpt shape map.
+The canonical graph proves its target E free cut \(g\) vanishes
+exactly when the ORIGINAL source parameter list is empty.
+If the source parameter list is the singleton \([x]\), then
+\(g=\widetilde F(\mathrm{lev}(x))\), and if \(F\) preserves roots,
+\(\mathrm{lev}(x)>0\). Thus the arithmetic hypothesis of
+\texttt{KptE1ShapeLevelCut} is supplied by the actual parameter
+record, rather than a freely chosen new-ordinary E cut.
+This is one necessary step toward E1. The source old record,
+terminal letter, complete admissibility and compatibility of
+actual canonical successor inputs remain to be assembled.
+Do not mark \texttt{OneLevelPullback} or Theorem~6.26 verified.}
