@@ -21,13 +21,52 @@ Those are observed workflow logs, not predicted speedups.
 - `scripts/audit-import-graph.py` generates `successor-import-audit.json`: module reachability from public umbrella and named checks, orphan **candidates**, direct-import hotspots, and indicative risk-token counts. It never deletes files or claims comments containing `sorry` are proof holes.
 - Axiom checking continues to reject unexpected axioms, duplicate/substituted endpoint names, error reports and `sorryAx`. Allowed axiom names are `propext`, `Classical.choice` and `Quot.sound`.
 
-**Benchmark after merge, rather than assuming an improvement:** compare the JSON wall-time evidence for matched full-audit runs. Measure peak memory, runner CPU saturation, cache restore, proof compile and checker runtimes separately.
+## Measured results and complete-source review
+
+At PR [#493](https://github.com/janhubicka/lean-successors/pull/493),
+exact-head workflow 38776681095 compiled the selected V10 targets and passed
+**240/240** named transitive-axiom checkers. The three-worker check stage took
+**344.191 seconds**, versus about **744 seconds** for the preceding serial
+full audit (about **54% less** wall time). The full job fell from roughly
+16 minutes to roughly 10 minutes; this includes runner/cache differences.
+The fastest path for a changed V10 endpoint remains the selected closure,
+while the daily full audit preserves complete coverage. The CI artifact
+contains per-check timing and source-import JSON.
+
+The checked source snapshot contains **518** source modules (including the
+root umbrella) and **254** checker modules. Reachability found **zero** source
+modules outside *both* the root umbrella and all checker entry points.
+Only these three were not imported by the root umbrella, and each has an
+explicit checked entry point:
+
+- `FatTree.A4RootPigeonhole` via `CheckFatTreeReplay.lean`;
+- `V10.M3StepGraphB3` via `CheckV10M3StepGraphB3.lean`;
+- `V10.PrescribedKptOrderEmbedding` via `CheckV10PrescribedKptOrderEmbedding.lean`.
+
+Consequently, there is **no evidence for safely deleting a batch of orphaned
+Lean files**. Every apparent `axiom` or `admit` token found by the static
+inventory was inside a comment, not an executable declaration. The separate
+transitive checker is still decisive for the exported theorem endpoints.
+
+The cached full Lean build produced **989 warning lines**. A measured breakdown
+includes 429 transitional Mathlib module-system import warnings, 159
+deprecations, 67 unnecessary-`simpa` suggestions, 45 unused simp arguments,
+26 unused-tactic warnings and 20 implicit section-variable warnings; further
+warnings concern tactic suggestions, unused binders and similar lint.
+About **398 of 517** source files directly import the broad
+`Mathlib.Tactic` umbrella. These are useful *profiling and cleanup targets*,
+not evidence that the proof is wrong or that all warnings cause the slow build.
+
+See [compiler warning triage](Compiler-Warnings.md) for a staged strategy.
+Do **not** suppress warnings globally merely to reduce log size.
 
 ## Developer commands
 
 ```bash
 lake exe cache get
-# Fast proof iteration:
+# Fast abstract development: no V10 application loaded
+lake build SuccessorTree.Core
+# Fast Section 6 iteration:
 lake build SuccessorTree.V10.HUniformEnvelopeBound
 lake env lean scripts/CheckV10HUniformEnvelopeBound.lean \
   > h-envelope-axioms.log 2>&1
@@ -57,9 +96,9 @@ Use the pinned `lean-toolchain` and `lakefile.toml`. `lake-manifest.json` is cur
 
 ## Next cleanup phases
 
-- Review the generated reachability report and remove provably dead intermediate experiment modules, unused check scripts and inactive historic workflows **in a second, isolated PR**.
+- Source reachability found no orphan Lean modules. Audit *private declarations and redundant lemmas inside active files* before considering deletions; obsolete fat-tree maintenance workflows were removed in PR #494.
 - Audit the root umbrella and `V10/All.lean` for redundant import lists; keep public APIs stable until known downstream repositories are updated.
 - Consolidate equivalent axiom-check steps in the very large `lean.yml` without reducing the set of named exported endpoints. This is separate from the first bounded-parallel change.
-- Address compiler warnings and run proof-file timing regressions; avoid moving hundreds of modules until incremental build behavior is measured.
+- Triage the categorized compiler warnings, then gradually replace broad `Mathlib.Tactic` imports with verified narrower dependencies. Avoid moving hundreds of modules until incremental build behavior is measured.
 
 Open performance issue: avoid a repository-wide re-elaboration on every minor Section 6 patch and investigate why the 2 GB Lake cache can become stale when the cache key does not change with sources.

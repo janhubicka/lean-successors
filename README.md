@@ -30,8 +30,7 @@ import SuccessorTree.Core
 
 The focused build is `lake build SuccessorTree.Core`. Unlike the root
 `SuccessorTree` umbrella, this entry point does **not** import the ongoing
-`V10` Section 6 application, free-ancestral examples or non-precompactness
-applications. The existing default full-library build is unchanged.
+`V10` Section 6 application, free-ancestral examples applications. The existing default full-library build is unchanged.
 
 ## Main endpoints
 
@@ -86,36 +85,9 @@ CI artifacts retain the resolved manifest and proof-audit logs. The manifest is 
 [audit notes](docs/wiki/Audit-and-Performance.md) before changing dependency
 pinning or cache keys.
 
-## Additional lower-bound formalizations
-
-### Non-precompact colourings
-
-The library also contains the formalised lower-bound arguments used by the
-BANANA project:
-
-* odd subset-sum surjectivity for pre-BANANA and Folkman--BANANA;
-* affine-fibre parity over `F₂` and the determinant/Cauchy--Binet step;
-* the residue group algebra and the full bilinear residue-count theorem;
-* target-copy wrappers showing that the selected pre-BANANA blocks are
-  legitimate, the Folkman witness has odd ordinary count, and the BANANA
-  affine slice produces nonzero vectors with the required pairing parity;
-* coordinate perfect-copy interfaces turning the BANANA matrix data into
-  injective left/right linear maps preserving the pairing, and identifying
-  the matrix weight with the ordinary support-intersection count of the
-  ambient image vectors.
-* structure-level perfect-pair embeddings and line-pair copies, so the final BANANA witness is stated as an embedded finite source copy rather than raw vectors.
-* standard-coordinate BANANA structures with arbitrary bilinear pairing matrices and injective pairing-preserving embeddings, matching the manuscript's finite structure definition.
-* an explicit perfect-completion embedding for every finite pairing, formalising the manuscript's completion lemma in coordinates;
-* arbitrary perfect-pair embeddings converted back to coordinate matrices, so persistence is not restricted to a chosen matrix presentation;
-* a fixed-completion persistence theorem with the manuscript's quantifier order: the ambient coordinate realisation is fixed before the target copy;
-* the fixed-parity palette has exactly `2^k=q/2` colours, and every one occurs inside each embedded `B_q` target.
-* the palette is enumerated by the manuscript's `Fin r` colour convention, giving the fixed-ambient persistent colouring itself, the sharper `A₁` target of dimension `q-1`, and the deduction that both four-element line-pair sources have infinite copy Ramsey degree.
-
-These results live under `SuccessorTree/NonPrecompact/`.
-
 ## Normalized Kpt (S,M)-tree
 
-`SuccessorTree.V10.KptCompleteSMTree.normalizedKptSMTree` assembles
+`SuccessorTree.V10.normalizedKptSMTree` (module `V10.KptCompleteSMTree`) assembles
 M1, corrected finite L-age M2, and literal M3 in the normalized
 Boolean-record model. This does not yet establish the adapter for the
 full original-language signature of Section 6.3.
@@ -123,7 +95,7 @@ full original-language signature of Section 6.3.
 
 ### Successor v10: normalized finite-\(H^+\) upper-bound endpoint
 
-\`SuccessorTree.V10.HUniformEnvelopeBound.numericH_actualRun_uniform_sharp_envelope_bound\`
+`SuccessorTree.V10.numericH_actualRun_uniform_sharp_envelope_bound`
 is the kernel-checked end-to-end **normalized** finite-\(H^+\)
 envelope-height bound \(2(q+1+M)+R(M)+1\), with \(M\) computed by the
 paper's exact descending numerical recurrence. The theorem uses
