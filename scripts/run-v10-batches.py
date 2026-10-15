@@ -159,7 +159,7 @@ def main() -> None:
     try:
         checks = read_checks(args.checks_file)
         jobs = partition(checks, args.batch_size, args.max_axioms,
-                         ROOT / "scripts/.v10_batches")
+                         ROOT / "scripts/v10_batches_generated")
     except (ValueError, OSError) as error:
         parser.error(str(error))
     print(f"V10: {len(checks)} original scripts, {len(jobs)} bounded jobs, "
