@@ -3,8 +3,9 @@ on:
   pull_request:
     paths:
       - '.github/workflows/m2-source-export.yml'
-      - 'SuccessorTree/**'
-      - 'scripts/**'
+      - 'SuccessorTree/V10/**'
+      - 'scripts/CheckV10*.lean'
+      - '.github/workflows/m2-source-export.yml'
   workflow_dispatch:
 
 permissions:
