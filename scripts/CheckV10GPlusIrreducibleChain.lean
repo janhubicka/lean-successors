@@ -1,4 +1,5 @@
 import SuccessorTree.V10.GPlusCanonicalCapPrefix
+import SuccessorTree.V10.GPlusEnvelopePairLift
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -173,3 +174,8 @@ import SuccessorTree.V10.GPlusCanonicalCapPrefix
 #print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap_raw_eq
 #print axioms SuccessorTree.V10.RawPartialTypeNode.neutralCapOfCode_isPrefix
 #print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap_le_of_prefix
+
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.lifts_from_shapeMap_range
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.vertex_mem_gPlus_image_range
+#print axioms SuccessorTree.V10.gPlus_vertex_mem_image_of_Kpt_envelope
+#print axioms SuccessorTree.V10.gPlus_vertices_covered_by_Kpt_envelope
