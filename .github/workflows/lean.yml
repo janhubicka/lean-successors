@@ -74,9 +74,7 @@ jobs:
       - name: Download Mathlib cache
         run: lake exe cache get
       - name: Check reusable abstract core boundary
-        run: |
-          python3 scripts/check-core-boundary.py
-          lake build SuccessorTree.Core
+        run: python3 scripts/check-core-boundary.py
       - name: Build
         run: |
           mkdir -p proof-audit
