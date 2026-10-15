@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusRepresentingPairs
+import SuccessorTree.V10.GPlusCanonicalRepresentatives
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -110,3 +110,9 @@ import SuccessorTree.V10.GPlusRepresentingPairs
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.image_vertex_size
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.canonical
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.canonical_cut
+
+#print axioms SuccessorTree.V10.NonedgePadding.socleCapNode_ordinaryCode
+#print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap_ordinaryCode
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.canonical_representedNode
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.canonical_vertex
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.vertex_surjective
