@@ -1,4 +1,20 @@
-import SuccessorTree.V10.GPlusIrreducibleChain
+import SuccessorTree.V10.GPlusEnumeratedAge
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
+#print axioms SuccessorTree.V10.FinitePartialCode.toAgeModel
+#print axioms SuccessorTree.V10.FinitePartialCode.realizes_ofEnumerated
+#print axioms SuccessorTree.V10.FinitePartialCode.IsPrefix.binary_eq
+#print axioms SuccessorTree.V10.FinitePartialCode.IsPrefix.unary_eq
+#print axioms SuccessorTree.V10.FinitePartialCode.IsPrefix.diagonal_eq
+#print axioms SuccessorTree.V10.finiteGPlus_code_avoids
+#print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_strictMono_size
+#print axioms SuccessorTree.V10.finiteGPlus_binary_in_top_forward
+#print axioms SuccessorTree.V10.finiteGPlus_binary_in_top_reverse
+#print axioms SuccessorTree.V10.finiteGPlus_unary_in_top
+#print axioms SuccessorTree.V10.finiteGPlus_diagonal_in_top
+#print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_realizes_top
+#print axioms SuccessorTree.V10.finiteGPlus_excludes_nontrivial
+#print axioms SuccessorTree.V10.finiteGPlus_excludes_singleton
+#print axioms SuccessorTree.V10.finiteGPlusEnumeratedL
+#print axioms SuccessorTree.V10.finiteGPlusEnumeratedL_avoids_family

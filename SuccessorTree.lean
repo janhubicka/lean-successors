@@ -39,8 +39,8 @@ import SuccessorTree.ShapeLarge
 import SuccessorTree.ShapeLargeFusion
 import SuccessorTree.ShapeExactFactor
 import SuccessorTree.ShapeLargeLine
-import SuccessorTree.ShapeAction
 import SuccessorTree.ShapeBlockForcing
+import SuccessorTree.ShapeAction
 import SuccessorTree.ShapeBlockLine
 import SuccessorTree.ShapeSplit
 import SuccessorTree.ShapeTransport
@@ -79,6 +79,8 @@ import SuccessorTree.ShapeFiniteCorollaries
 import SuccessorTree.EnvelopeTheorem
 -- Explicit complete V10 proof-build aggregation; preserve all V10 regression coverage.
 import SuccessorTree.V10.All
+-- Lemma 6.41: full induced transfer and size-nondecreasing enumerated G+ age.
+import SuccessorTree.V10.GPlusEnumeratedAge
 
 -- Preserve the additional free-ancestral proof modules on main.
 import SuccessorTree.ShapeEvents
