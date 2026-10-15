@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusShapeImageInjective
+import SuccessorTree.V10.GPlusNeutralCapType
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -161,3 +161,10 @@ import SuccessorTree.V10.GPlusShapeImageInjective
 #print axioms SuccessorTree.V10.shapeImageRetainedCode_eq_of_image_eq
 #print axioms SuccessorTree.V10.gPlusShapeImage_injective
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.image_vertex_eq_iff_vertex_eq
+
+#print axioms SuccessorTree.V10.FinitePartialCode.neutralCapType
+#print axioms SuccessorTree.V10.FinitePartialCode.neutralCapType_restrict
+#print axioms SuccessorTree.V10.NonedgePadding.socleCap_neutral_unary
+#print axioms SuccessorTree.V10.NonedgePadding.socleCap_neutral_diagonal
+#print axioms SuccessorTree.V10.NonedgePadding.socleCapNode_neutralCapType
+#print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap_neutralCapType
