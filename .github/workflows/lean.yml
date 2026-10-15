@@ -663,6 +663,17 @@ jobs:
             cat proof-audit/forest-meet-linear-axioms.log
             exit 1
           }
+      - name: Check sharp forest bound for the actual Kpt closure
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10KptForestMeetBound.lean > proof-audit/kpt-forest-meet-bound-axioms.log 2>&1; then
+            cat proof-audit/kpt-forest-meet-bound-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/kpt-forest-meet-bound-axioms.log scripts/CheckV10KptForestMeetBound.lean || {
+            cat proof-audit/kpt-forest-meet-bound-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
