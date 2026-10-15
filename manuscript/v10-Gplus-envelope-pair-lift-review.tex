@@ -1,0 +1,20 @@
+% Review-only successor v10 note; author proof prose is unchanged.
+% Candidate until exact-head full Lean and transitive standard-axiom CI.
+\todo[inline]{\textbf{v10 Definition 6.43: genuine envelope coverage
+lifts from Kpt pairs to $G^+$ vertices -- candidate.}
+\texttt{GPlusEnvelopePairLift.lean} uses the already verified
+\texttt{ShapeMap.reflects\_le} theorem. If both endpoints $S<T$
+of a genuine Kpt representing pair lie in the range of an actual
+Kpt ShapeMap $F$, their preimages $s,t$ satisfy $s<t$.
+The preimage pair represents a true $G^+$ vertex, and the
+verified representative-independence equation identifies its
+$F$-image with $v(S,T)$. Thus any Kpt envelope containing BOTH
+endpoints of a representing pair yields the corresponding actual
+$G^+$ vertex in the induced-image range. This is extended to
+finite families of represented pairs.
+The proof does NOT assume that an Algorithm~5.4 run already
+covers an arbitrary target pair: the precise seed choice, E1
+pullback hypothesis, finite prefix domain and geometric coverage
+for the target H-chain remain to be verified. The numerical
+envelope bound alone cannot replace those premises.
+Theorem~6.26 remains open pending that assembly.}
