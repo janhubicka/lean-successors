@@ -1,0 +1,16 @@
+% Review-only continuation for Observation 6.42.
+% Candidate until exact-head full Lean and transitive standard-axiom checks pass.
+\todo[inline]{\textbf{v10 validation: Observation~6.42 image-cut foundation -- candidate.}
+For a genuine finite $G^+$ vertex $A^+$, \texttt{GPlusShapeActionFoundation.lean}
+chooses one finite partial-structure witness only to construct the standard neutral
+cap, applies a genuine Kpt ShapeMap $F$, and cuts the image at
+$\lambda(|A|-1)+1$.  Strict increase of the common level map puts this cut
+inside the image cap.  The cut is an admissible Kpt ancestor and is converted
+back to a genuine forbidden-free finite $G^+$ vertex through an actual finite
+partial-structure witness and its initial segment; no abstract representation
+or age-preservation hypothesis is added.
+The resulting candidate action has size exactly $\lambda(|A|-1)+1$.
+This file does \emph{not} yet claim representative independence, equality
+reflection, preservation of all $G^+$ atoms, or functoriality.  Those are the
+remaining parts of Observation~6.42 and must use the existing full compatibility
+and retained-record recovery lemmas.  Theorem~6.26 remains open.}
