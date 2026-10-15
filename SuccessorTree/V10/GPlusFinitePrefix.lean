@@ -70,6 +70,27 @@ theorem FinitePartialCode.restrict_restrict
   cases C
   rfl
 
+/-- Restriction respects equality of complete codes, with
+proof irrelevance taking care of the dependent length witnesses. -/
+private theorem FinitePartialCode.restrict_congr
+    {db du dd : Nat}
+    {A B : FinitePartialCode db du dd}
+    (h : A = B) (n : Nat)
+    (ha : n ≤ A.size) (hb : n ≤ B.size) :
+    A.restrict n ha = B.restrict n hb := by
+  cases h
+  rfl
+
+/-- Restriction at provably equal lengths has equal finite tables. -/
+private theorem FinitePartialCode.restrict_eq_of_length_eq
+    {db du dd : Nat}
+    (C : FinitePartialCode db du dd)
+    {n m : Nat} (h : n = m)
+    (hn : n ≤ C.size) (hm : m ≤ C.size) :
+    C.restrict n hn = C.restrict m hm := by
+  subst m
+  rfl
+
 /-- The canonical initial-segment order on finite partial
 codes used for the countable vertex tree of G+. -/
 def FinitePartialCode.IsPrefix
@@ -91,9 +112,13 @@ theorem FinitePartialCode.isPrefix_trans
   rcases hAB with ⟨hAB,hA⟩
   rcases hBC with ⟨hBC,hB⟩
   refine ⟨hAB.trans hBC,?_⟩
+  have hCong :
+      B.restrict A.size hAB =
+        (C.restrict B.size hBC).restrict A.size hAB :=
+    FinitePartialCode.restrict_congr hB A.size hAB hAB
   calc
     A = B.restrict A.size hAB := hA
-    _ = (C.restrict B.size hBC).restrict A.size hAB := by rw [hB]
+    _ = (C.restrict B.size hBC).restrict A.size hAB := hCong
     _ = C.restrict A.size (hAB.trans hBC) :=
       C.restrict_restrict A.size B.size hAB hBC
 
@@ -106,8 +131,8 @@ theorem FinitePartialCode.prefix_unique_at_size
     (hSize : A.size = B.size) : A = B := by
   rcases hA with ⟨ha,hAC⟩
   rcases hB with ⟨hb,hBC⟩
-  cases hSize
-  exact hAC.trans hBC.symm
+  exact hAC.trans
+    ((C.restrict_eq_of_length_eq hSize ha hb).trans hBC.symm)
 
 /-- Distinct sizes force different finite codes; prefix maps
 with strictly increasing size are automatically injective. -/
@@ -130,19 +155,27 @@ theorem FinitePartialCode.prefixes_comparable
   rcases le_total A.size B.size with hab | hba
   · left
     refine ⟨hab,?_⟩
+    have hCong :
+        B.restrict A.size hab =
+          (C.restrict B.size hb).restrict A.size hab :=
+      FinitePartialCode.restrict_congr hBC A.size hab hab
     calc
       A = C.restrict A.size ha := hAC
-      _ = (C.restrict B.size hb).restrict A.size hab := by
-        rw [C.restrict_restrict A.size B.size hab hb]
-        rfl
-      _ = B.restrict A.size hab := by rw [←hBC]
+      _ = C.restrict A.size (hab.trans hb) := rfl
+      _ = (C.restrict B.size hb).restrict A.size hab :=
+        (C.restrict_restrict A.size B.size hab hb).symm
+      _ = B.restrict A.size hab := hCong.symm
   · right
     refine ⟨hba,?_⟩
+    have hCong :
+        A.restrict B.size hba =
+          (C.restrict A.size ha).restrict B.size hba :=
+      FinitePartialCode.restrict_congr hAC B.size hba hba
     calc
       B = C.restrict B.size hb := hBC
-      _ = (C.restrict A.size ha).restrict B.size hba := by
-        rw [C.restrict_restrict B.size A.size hba ha]
-        rfl
-      _ = A.restrict B.size hba := by rw [←hAC]
+      _ = C.restrict B.size (hba.trans ha) := rfl
+      _ = (C.restrict A.size ha).restrict B.size hba :=
+        (C.restrict_restrict B.size A.size hba ha).symm
+      _ = A.restrict B.size hba := hCong.symm
 
 end SuccessorTree.V10
