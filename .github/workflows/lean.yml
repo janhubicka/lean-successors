@@ -729,6 +729,72 @@ jobs:
             cat proof-audit/h-final-pool-axioms.log
             exit 1
           }
+      - name: Verify end-to-end v10 ForestMeetLinear
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10ForestMeetLinear.lean > proof-audit/CheckV10ForestMeetLinear-axioms.log 2>&1; then
+            cat proof-audit/CheckV10ForestMeetLinear-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10ForestMeetLinear-axioms.log scripts/CheckV10ForestMeetLinear.lean || {
+            cat proof-audit/CheckV10ForestMeetLinear-axioms.log
+            exit 1
+          }
+      - name: Verify end-to-end v10 KptForestMeetBound
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10KptForestMeetBound.lean > proof-audit/CheckV10KptForestMeetBound-axioms.log 2>&1; then
+            cat proof-audit/CheckV10KptForestMeetBound-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10KptForestMeetBound-axioms.log scripts/CheckV10KptForestMeetBound.lean || {
+            cat proof-audit/CheckV10KptForestMeetBound-axioms.log
+            exit 1
+          }
+      - name: Verify end-to-end v10 HFinalEnvelopeBound
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HFinalEnvelopeBound.lean > proof-audit/CheckV10HFinalEnvelopeBound-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HFinalEnvelopeBound-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HFinalEnvelopeBound-axioms.log scripts/CheckV10HFinalEnvelopeBound.lean || {
+            cat proof-audit/CheckV10HFinalEnvelopeBound-axioms.log
+            exit 1
+          }
+      - name: Verify end-to-end v10 HBackwardNumericalInduction
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HBackwardNumericalInduction.lean > proof-audit/CheckV10HBackwardNumericalInduction-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HBackwardNumericalInduction-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HBackwardNumericalInduction-axioms.log scripts/CheckV10HBackwardNumericalInduction.lean || {
+            cat proof-audit/CheckV10HBackwardNumericalInduction-axioms.log
+            exit 1
+          }
+      - name: Verify end-to-end v10 HActualRunDescendingBudget
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HActualRunDescendingBudget.lean > proof-audit/CheckV10HActualRunDescendingBudget-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HActualRunDescendingBudget-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HActualRunDescendingBudget-axioms.log scripts/CheckV10HActualRunDescendingBudget.lean || {
+            cat proof-audit/CheckV10HActualRunDescendingBudget-axioms.log
+            exit 1
+          }
+      - name: Verify end-to-end v10 HUniformEnvelopeBound
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HUniformEnvelopeBound.lean > proof-audit/CheckV10HUniformEnvelopeBound-axioms.log 2>&1; then
+            cat proof-audit/CheckV10HUniformEnvelopeBound-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/CheckV10HUniformEnvelopeBound-axioms.log scripts/CheckV10HUniformEnvelopeBound.lean || {
+            cat proof-audit/CheckV10HUniformEnvelopeBound-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

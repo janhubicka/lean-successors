@@ -391,3 +391,16 @@ import SuccessorTree.V10.HHigherPoolCumulativeBound
 
 -- Proposition 6.44: real positive E-free original addresses and final pool bound.
 import SuccessorTree.V10.HFinalPoolPositiveGeneration
+
+-- Proposition 6.44: ForestMeetLinear.
+import SuccessorTree.V10.ForestMeetLinear
+-- Proposition 6.44: KptForestMeetBound.
+import SuccessorTree.V10.KptForestMeetBound
+-- Proposition 6.44: HFinalEnvelopeBound.
+import SuccessorTree.V10.HFinalEnvelopeBound
+-- Proposition 6.44: HBackwardNumericalInduction.
+import SuccessorTree.V10.HBackwardNumericalInduction
+-- Proposition 6.44: HActualRunDescendingBudget.
+import SuccessorTree.V10.HActualRunDescendingBudget
+-- Proposition 6.44: HUniformEnvelopeBound.
+import SuccessorTree.V10.HUniformEnvelopeBound
