@@ -1,0 +1,18 @@
+% Review-only v10 validation note; original mathematical prose unchanged.
+% Candidate: require exact-head full Lean and standard-axiom/counting CI.
+\todo[inline]{\textbf{v10 validation: recover a genuine $G^+$ code from
+its ShapeMap image -- candidate.}
+In \texttt{GPlusCanonicalCodeReconstruction.lean}, the abstract
+complete-record recovery is specialized to a genuine finite
+$G^+$ vertex $A$. The proof uses two finite-code congruence lemmas:
+pullback from an actual prefix agrees with pullback from the full
+code along equal numerical addresses, and casting the source length
+along the proved cap-level equality does not change the tables.
+Thus the actual image vertex cut at $\lambda(|A|-1)+1$, reindexed at
+coordinates $\lambda(i)$, recovers $A$ itself. The comparison retains
+both positive and absent directed binary tuples, unary and diagonal
+atoms and the auxiliary $E$ record; it makes no new admissibility
+or representation assumption. This is the precise input for
+injectivity/equality reflection of the induced $G^+$ action.
+The full induced relational embedding, envelopes, colouring argument
+and Theorem~6.26 remain independent unverified obligations.}
