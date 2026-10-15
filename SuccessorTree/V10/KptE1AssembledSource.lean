@@ -53,7 +53,7 @@ theorem e1PaddedSourceAge_binary_ordinary
   have h :=
     e1PaddedSourceAge_binary_type Q (some i) (some j) t
   simpa [i,j,PartialTypeWithE.ageModel,typeAgeIndex,
-    prefixVertexIndex,hu',hv'] using h
+    prefixVertexIndex,hu',hv',hu,hv] using h
 
 /-- The combined model's linked E condition follows from
 linked old/new Q-columns, absence of L atoms at the neutral spacer,
