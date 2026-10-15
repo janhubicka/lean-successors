@@ -1,0 +1,20 @@
+% Review-only continuation of the G+ transfer. No author prose is replaced.
+% Candidate until exact-head full Lean and transitive standard-axiom checks pass.
+\todo[inline]{\textbf{v10 validation: the canonical countable partial-structure
+embedding into $G^+$ -- candidate, pending Lean and axiom checks.}
+In \texttt{CountableGPlusEmbedding.lean}, for a countable enumerated
+$\mathcal F$-free partial structure $C^+$, put
+$\eta(v)=\operatorname{code}(C^+\restriction_{v+1})$.
+Each code is a genuine $G^+$ vertex: it represents a verified finite
+partial structure, and forbidden-age avoidance is inherited by its
+initial segment. Its size is $v+1$ and its last coordinate is $v$.
+The codes form a strict prefix chain. Definition~6.40 therefore makes
+$\eta$ injective and preserves every directed off-diagonal binary atom,
+every unary and diagonal atom, and every $E$-atom, including absent
+relations and reversed pairs. The diagonal of $E$ is excluded by the
+original spacing axiom. Applying this construction to the existing
+countable numerical $H^+$ gives the actual $H^+$-to-$G^+$ map without
+assuming a new representation or age-preservation hypothesis.
+The exhaustive size-nondecreasing $G^\omega$ enumeration and the final
+Ramsey transfer remain separate obligations; this note does not certify
+Theorem~6.26.}
