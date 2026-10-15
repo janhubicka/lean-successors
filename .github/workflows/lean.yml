@@ -674,6 +674,17 @@ jobs:
             cat proof-audit/kpt-forest-meet-bound-axioms.log
             exit 1
           }
+      - name: Check actual final Kpt AlgorithmRun sharp envelope level bound
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HFinalEnvelopeBound.lean > proof-audit/h-final-envelope-bound-axioms.log 2>&1; then
+            cat proof-audit/h-final-envelope-bound-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-final-envelope-bound-axioms.log scripts/CheckV10HFinalEnvelopeBound.lean || {
+            cat proof-audit/h-final-envelope-bound-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

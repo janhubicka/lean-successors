@@ -381,3 +381,6 @@ import SuccessorTree.V10.ForestMeetLinear
 
 -- V10 actual finite Kpt closure inherits the sharp 2N forest meet bound.
 import SuccessorTree.V10.KptForestMeetBound
+
+-- Proposition 6.44: actual AlgorithmRun selected levels <= 2(q+1+V)+R(V)+1.
+import SuccessorTree.V10.HFinalEnvelopeBound
