@@ -1,0 +1,26 @@
+% Review-only successor v10 annotation, author proof prose unchanged.
+% CANDIDATE: requires exact-head full Lean and transitive V10 axiom/counting CI.
+\todo[inline]{\textbf{v10 Theorem~6.26: naturality of the finite
+bounded-palette colouring under ShapeMap substitution -- candidate.}
+The literal finite approximation $a\in AM_0^{b+1}$ of the concrete Kpt
+monoid determines its induced action on every actual $G^+$ vertex
+represented by a pair of upper source level at most $b$.
+By the previously checked \texttt{shapeActK\_representative\_agrees},
+the chosen total representative of $W\cdot a$ agrees with the
+literal composition of $W$ and the chosen representative of $a$
+through those levels. The new
+\texttt{GPlusFiniteColourNaturality.lean} combines this with the
+verified $G^+$ action's composition law to prove exact equality
+on all finite bounded-palette tuples. Consequently the
+finite approximation colouring
+$\chi_e''(a)=\chi'(\Phi_a(e(A)))$ is independent of total
+representative choices and satisfies the required substitution
+naturality law, retaining absent as well as positive binary,
+unary, diagonal and auxiliary $E$ records.
+It remains to combine this naturality with the actual simultaneous
+finite palette Ramsey theorem, the uniform geometric envelope
+bound on EVERY requested $A$-copy, and the final ordered
+$K\to H^+\to G^\omega\to K$ embeddings. Section~5's E1 premise
+is still an explicit gap for the concrete Kpt envelope unless an
+E1-free alternative is established. This note does not certify
+Theorem~6.26.}
