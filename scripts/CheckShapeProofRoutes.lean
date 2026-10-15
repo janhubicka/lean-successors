@@ -78,7 +78,6 @@ run_cmd do
       [(direct, [directOne, common], [fatEllentuck, viaFat]),
        (viaFat, [fatEllentuck, common],
          [direct, directOne,
-          ``SuccessorTree.SMTree.shapeRamsey_approximations,
           ``SuccessorTree.SMTree.shapeLocalPigeonhole,
           ``SuccessorTree.SMTree.buildShapeProductStep])] do
     let deps ← match projectDependencies env [root] with
