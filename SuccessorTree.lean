@@ -1,3 +1,4 @@
+import SuccessorTree.Core
 import SuccessorTree.Replay
 import SuccessorTree.Approximation
 import SuccessorTree.ShapePreserving
@@ -23,7 +24,6 @@ import SuccessorTree.HalesJewett.ForcingProposition
 import SuccessorTree.HalesJewett.LineSchedule
 import SuccessorTree.HalesJewett.AlphabetLift
 import SuccessorTree.HalesJewett.AlphabetEquiv
-import SuccessorTree.HalesJewett.AlphabetInduction
 import SuccessorTree.RamseySpace.Basic
 import SuccessorTree.RamseySpace.Finitization
 import SuccessorTree.CopyRamsey
@@ -55,7 +55,6 @@ import SuccessorTree.ShapeLargeShapeLine
 import SuccessorTree.ShapeRamseyFusion
 import SuccessorTree.ShapeLocalPigeonhole
 import SuccessorTree.ShapeFiniteProduct
-import SuccessorTree.ShapeFiniteRamsey
 import SuccessorTree.FatTree.Basic
 import SuccessorTree.FatTree.Sequencing
 import SuccessorTree.FatTree.ApproximationSystem
@@ -67,16 +66,12 @@ import SuccessorTree.FatTree.FiniteReduction
 import SuccessorTree.FatTree.Finitization
 import SuccessorTree.FatTree.Amalgamation
 import SuccessorTree.FatTree.A3Typed
-import SuccessorTree.FatTree.A4ReviewComplete
 
 import SuccessorTree.FatTree.ShapeCorrespondence
 import SuccessorTree.FatTree.ShapeRealization
 import SuccessorTree.FatTree.ShapeEllentuckOne
-import SuccessorTree.ShapeEllentuckRamsey
 import SuccessorTree.ShapeFiniteBounds
-import SuccessorTree.ShapeFiniteCorollaries
 -- The Section 5 entry point imports its verified proof layers.
-import SuccessorTree.EnvelopeTheorem
 -- Explicit complete V10 proof-build aggregation; preserve all V10 regression coverage.
 import SuccessorTree.V10.All
 -- Exhaustive size-nondecreasing G-omega enumeration and ordered H embedding.
