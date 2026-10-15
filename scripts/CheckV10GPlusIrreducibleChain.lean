@@ -23,6 +23,7 @@ import SuccessorTree.V10.KptE1AssembledSource
 import SuccessorTree.V10.KptE1CompleteERecord
 import SuccessorTree.V10.KptE1FiniteAgePullback
 import SuccessorTree.V10.KptE1ReindexedNewColumn
+import SuccessorTree.V10.KptE1ShapeLevelCut
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -329,3 +330,8 @@ import SuccessorTree.V10.KptE1ReindexedNewColumn
 #print axioms SuccessorTree.V10.PartialTypeWithE.reindexOrdinary_ageEmbedding
 #print axioms SuccessorTree.V10.PartialTypeWithE.reindexOrdinary_age_avoids
 #print axioms SuccessorTree.V10.PartialTypeWithE.reindexOrdinary_validNewColumn
+#print axioms SuccessorTree.V10.kptShapeLastRetainedIndex
+#print axioms SuccessorTree.V10.kptShapeLastRetainedIndex_strictMono
+#print axioms SuccessorTree.V10.kptShapeLastRetainedIndex_last
+#print axioms SuccessorTree.V10.kptShapeLastRetainedIndex_cut_iff
+#print axioms SuccessorTree.V10.kptShapeLastRetainedIndex_validNewColumn
