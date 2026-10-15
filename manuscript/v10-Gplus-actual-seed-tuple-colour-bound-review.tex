@@ -1,0 +1,20 @@
+% Review-only successor v10 Section 6 validation note; author text remains frozen.
+% All statements below are conditional at their exact Lean interfaces.
+\todo[inline]{\textbf{Concrete finite-approximation bridge for Algorithm 5.4.}
+The new Lean module \texttt{GPlusActualSeedTupleColourBound.lean} starts with
+one genuine normalized Kpt \texttt{AlgorithmRun} and the literal selected seed
+set \(X\). Under its \emph{explicit} E1, height, and top-level hypotheses,
+suppose every coordinate of each target \(q\)-tuple is represented by a
+genuine strict Kpt pair whose lower and upper nodes both belong to \(X\).
+The existing finite-source-palette lifting result then gives a bounded
+source tuple, and \texttt{MMap.toAM} applied to the actual output map
+produces an \emph{actual finite approximation} inducing exactly the same
+image on that tuple. Consequently the checked
+\texttt{FiniteGPlusPaletteCovers} hypothesis is discharged for this target
+family, and the finite product-colouring Ramsey lemma supplies a bound of
+\(\lvert\mathrm{boundedGPlusPaletteIndices}\rvert\) on the transformed
+colours. It is not necessary to assume an independent arbitrary palette
+coverage axiom for these selected seed targets.
+This does \emph{not} discharge E1, identify every copy of the given \(A\)
+with a selected seed target, or compose the final ordered
+\(K\to H^+\to G^\omega\to K\) maps. Do not mark Theorem~6.26 verified.}

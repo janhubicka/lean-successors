@@ -15,6 +15,7 @@ import SuccessorTree.V10.GPlusFiniteApproxAction
 import SuccessorTree.V10.GPlusFiniteColourNaturality
 import SuccessorTree.V10.GPlusPaletteRamseyStabilization
 import SuccessorTree.V10.GPlusFiniteBigRamseyTransfer
+import SuccessorTree.V10.GPlusActualSeedTupleColourBound
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -276,3 +277,5 @@ import SuccessorTree.V10.GPlusFiniteBigRamseyTransfer
 #print axioms SuccessorTree.V10.normalizedKpt_GPlus_palette_colour_stabilization
 #print axioms SuccessorTree.V10.FiniteGPlusPaletteCovers
 #print axioms SuccessorTree.V10.normalizedKpt_GPlus_finite_colour_bound_of_cover
+#print axioms SuccessorTree.V10.numericKptAlgorithmRun_seed_tuples_finiteApprox_cover
+#print axioms SuccessorTree.V10.numericKptAlgorithmRun_seed_tuples_finiteColour_bound
