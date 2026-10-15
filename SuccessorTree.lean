@@ -80,7 +80,8 @@ import SuccessorTree.EnvelopeTheorem
 -- Explicit complete V10 proof-build aggregation; preserve all V10 regression coverage.
 import SuccessorTree.V10.All
 -- Exhaustive size-nondecreasing G-omega enumeration and ordered H embedding.
-import SuccessorTree.V10.GPlusCanonicalCapPrefix
+import SuccessorTree.V10.GPlusInducedAction
+import SuccessorTree.V10.GPlusBoundedPalette
 import SuccessorTree.V10.GPlusEnvelopePairLift
 
 -- Preserve the additional free-ancestral proof modules on main.

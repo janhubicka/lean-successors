@@ -1,0 +1,17 @@
+% Review-only successor v10 validation note; author proof prose unchanged.
+% Candidate until exact-head full Lean and transitive axiom/counting CI.
+\todo[inline]{\textbf{v10 validation: unary and diagonal $G^+$ atoms
+under genuine ShapeMaps -- candidate.}
+The identity \texttt{shapeImageRetainedCode\_eq} recovers every finite
+source atom from the image code reindexed by the Kpt level map.
+The retained last source coordinate $|A|-1$ is sent exactly to
+$\lambda(|A|-1)$, the last coordinate of the genuine image code
+because its size is $\lambda(|A|-1)+1$.
+\texttt{GPlusShapeImageSingletonAtoms.lean} extracts exact equality
+of all unary predicate values and separately all diagonal binary
+(loop) values of a $G^+$ vertex and its image, preserving their
+absence as well as presence. The proof neither assumes prefix
+comparability nor collapses diagonal with off-diagonal binary atoms.
+The directed off-diagonal binary and $E$ identities on comparable
+pairs, and the final envelope/Ramsey assembly, remain distinct
+unverified obligations.}
