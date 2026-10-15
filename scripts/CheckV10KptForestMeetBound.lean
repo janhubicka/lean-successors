@@ -1,0 +1,5 @@
+import SuccessorTree.V10.KptForestMeetBound
+#print axioms SuccessorTree.V10.finiteKptClosureGeneratorPool
+#print axioms SuccessorTree.V10.actualKptStageClosure_subset_forestMeetNodes
+#print axioms SuccessorTree.V10.finiteKptClosureGeneratorPool_forest_card_le
+#print axioms SuccessorTree.V10.finiteKptClosureGeneratorPool_levels_card_le

@@ -388,3 +388,18 @@ import SuccessorTree.V10.HTopAlgorithmRunBase
 import SuccessorTree.V10.HActualGenerationEventBound
 -- V10 Section 6: validated scope of HHigherPoolCumulativeBound.
 import SuccessorTree.V10.HHigherPoolCumulativeBound
+
+-- V10 Section 6: ForestMeetLinear.
+import SuccessorTree.V10.ForestMeetLinear
+-- V10 Section 6: KptForestMeetBound.
+import SuccessorTree.V10.KptForestMeetBound
+-- V10 Section 6: HFinalEnvelopeBound.
+import SuccessorTree.V10.HFinalEnvelopeBound
+-- V10 Section 6: HFinalPoolPositiveGeneration.
+import SuccessorTree.V10.HFinalPoolPositiveGeneration
+-- V10 Section 6: HBackwardNumericalInduction.
+import SuccessorTree.V10.HBackwardNumericalInduction
+-- V10 Section 6: HActualRunDescendingBudget.
+import SuccessorTree.V10.HActualRunDescendingBudget
+-- Proposition 6.44: complete uniform numerical H envelope height.
+import SuccessorTree.V10.HUniformEnvelopeBound

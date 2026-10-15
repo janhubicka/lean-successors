@@ -1,0 +1,5 @@
+import SuccessorTree.V10.ForestMeetLinear
+#print axioms SuccessorTree.V10.forestFiniteMeetNodes
+#print axioms SuccessorTree.V10.forestFiniteMeetNodes_mem_iff
+#print axioms SuccessorTree.V10.forestFiniteMeetNodes_insert_cover
+#print axioms SuccessorTree.V10.forestFiniteMeetNodes_card_le_twice
