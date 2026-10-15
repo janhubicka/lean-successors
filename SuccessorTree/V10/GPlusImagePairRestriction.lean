@@ -51,7 +51,7 @@ theorem GPlusRepresentingPair.image_representedNode_le_fullImage
       (P.image F).cut := rfl
   have hFullLevel : LevelTree.lev (F P.representedNode) =
       kptShapeLevelMap family F P.cut := by
-    exact kptShapeLevelMap_eq family F P.representedNode
+    exact (kptShapeLevelMap_eq family F P.representedNode).symm
   have hPrev : LevelTree.lev P.lower < P.cut := by
     unfold GPlusRepresentingPair.cut
     omega
