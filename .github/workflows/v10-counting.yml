@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'SuccessorTree/V10/**'
+      - 'SuccessorTree/**'
       - 'scripts/CheckV10*.lean'
       - 'scripts/check_v10_*.py'
       - 'scripts/select-v10-checks.py'
@@ -19,7 +19,7 @@ on:
       - '.github/workflows/v10-counting.yml'
   pull_request:
     paths:
-      - 'SuccessorTree/V10/**'
+      - 'SuccessorTree/**'
       - 'scripts/CheckV10*.lean'
       - 'scripts/check_v10_*.py'
       - 'scripts/select-v10-checks.py'
