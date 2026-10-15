@@ -24,7 +24,12 @@ SMTree + Algorithm 5.4 envelope modules
           V10/GPlus*, final Section 6 transfer (ongoing)
 ```
 
-The diagram records proof dependence conceptually. Some Lean source modules currently have broader imports; import minimization and split build targets are part of the cleanup.
+The diagram records proof dependence conceptually. The main project root
+and the V10 aggregation now use *minimal transitive import frontiers*: 8
+rather than 96 direct root imports, and 20 rather than 231 V10 imports.
+The checked module reachability is unchanged by this refactor. The frontiers
+are not compatibility layers; concrete new proof endpoints may be added
+directly when their imports are not already reachable.
 
 ## Main interfaces
 
@@ -42,7 +47,12 @@ The diagram records proof dependence conceptually. Some Lean source modules curr
 
 **Normalized v10 application:** `SuccessorTree.V10.KptCompleteSMTree` proves M1, corrected M2 with finite common-socle age, and literal M3. The `V10/I3*`, `V10/H*`, and `V10/GPlus*` modules are specialized to finite relational-type records and the Section 6 counting/application proofs.
 
-**Auxiliary families:** `SuccessorTree.FreeAncestral*` supplies a separate model/check; `SuccessorTree.NonPrecompact/*` contains lower-bound facts also used by the BANANA research line. These are **not** justification to add stronger hypotheses to `SMTree`. Moving these to their eventual dedicated repositories should be a separate compatibility-reviewed change.
+**Auxiliary families:** `SuccessorTree.FreeAncestral*` supplies a separate
+concrete model/check. The previously documented
+`SuccessorTree/NonPrecompact/` directory does **not** exist in this
+repository; the BANANA lower-bound projects are separate and must not be
+silently advertised as successor exports. Neither application justifies
+adding model-specific assumptions to `SMTree`.
 
 ## Source organization recommendations
 
@@ -50,6 +60,11 @@ The diagram records proof dependence conceptually. Some Lean source modules curr
 - Preserve a lightweight abstract layer that depends on Mathlib and the pinned Todorčević Ramsey-space library, not on `V10`.
 - Keep proof-implementation helpers below final theorem modules. Avoid cycles or exporting a convenient implementation assumption as a theorem premise.
 - Move truly abandoned branches out of the active source tree after the import-graph audit and downstream check, not by deleting every file with `Review` or `Experimental` in its name.
-- A future reorganized umbrella may provide separate `Core`, `FiniteRamsey` and `V10` entry points. Do not remove current import APIs without updating the known downstream users.
+- `SuccessorTree.Core` is the lightweight abstract endpoint; the root umbrella
+  is a complete build/development convenience. We permit breaking public
+  proof-implementation APIs and deleting redundant wrappers. Update any
+  actual downstream consumers directly rather than retaining compatibility
+  shims. Preserve the *types and axiom provenance of verified theorems* until
+  mathematical generalization is undertaken separately.
 
 For the detailed two-route dependency and conventions see [shape proof routes](../shape-proof-routes.md).
