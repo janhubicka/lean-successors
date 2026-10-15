@@ -50,6 +50,12 @@ def closure() -> set[str]:
 
 def main() -> None:
     try:
+        root = ROOT / "SuccessorTree.lean"
+        root_imports = set(
+            name for line in IMPORT.findall(root.read_text(encoding="utf-8"))
+            for name in line.split())
+        if "SuccessorTree.Core" not in root_imports:
+            raise ValueError("full SuccessorTree build must import Core")
         modules = closure()
         missing = ESSENTIAL - modules
         if missing:
