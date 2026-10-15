@@ -388,3 +388,6 @@ import SuccessorTree.V10.HTopAlgorithmRunBase
 import SuccessorTree.V10.HActualGenerationEventBound
 -- V10 Section 6: validated scope of HHigherPoolCumulativeBound.
 import SuccessorTree.V10.HHigherPoolCumulativeBound
+
+-- V10 Proposition 6.44: exact descending cumulative generation induction, root counted once.
+import SuccessorTree.V10.HBackwardNumericalInduction

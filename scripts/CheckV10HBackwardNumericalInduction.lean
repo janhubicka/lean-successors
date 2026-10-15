@@ -1,0 +1,4 @@
+import SuccessorTree.V10.HBackwardNumericalInduction
+#print axioms SuccessorTree.V10.sum_Icc_nat_succ_lower
+#print axioms SuccessorTree.V10.descending_real_generation_count_bound
+#print axioms SuccessorTree.V10.descending_real_generation_signature_bound
