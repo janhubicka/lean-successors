@@ -53,10 +53,11 @@ theorem shapeMap_preserves_equal_ordinaryCode
   | mk na qa =>
     cases hFB : (F b).1 with
     | mk nb qb =>
+      simp only [hFA, hFB] at hImageLev hImageOrd ⊢
       change na = nb at hImageLev
       subst nb
       have hOrdEq : SameOrdinaryAtCut qa qb := by
-        simpa only [cast_eq] using hImageOrd
+        simpa using hImageOrd
       exact ordinaryCode_eq_of_sameOrdinary qa qb hOrdEq
 
 /-- Equality remains true after a shared smaller ordinary socle cut.
