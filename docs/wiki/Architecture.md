@@ -26,8 +26,13 @@ SMTree + Algorithm 5.4 envelope modules
 
 The diagram records proof dependence conceptually. The main project root
 and the V10 aggregation now use *minimal transitive import frontiers*: 8
-rather than 96 direct root imports, and 20 rather than 231 V10 imports.
-The checked module reachability is unchanged by this refactor. The frontiers
+rather than 96 direct root imports, and 16 rather than 231 V10 imports
+(after deleting four obsolete printer-only modules).
+The initial import-only refactor preserved exactly the checked module
+reachability. A separate follow-up removes four source files containing only
+`#print axioms` (no proofs or definitions); their unique named checks now
+live in maintained `scripts/CheckV10M2*.lean` checker files. All actual proof
+dependencies remain reachable. The frontiers
 are not compatibility layers; concrete new proof endpoints may be added
 directly when their imports are not already reachable.
 
