@@ -26,6 +26,7 @@ import SuccessorTree.V10.KptE1FreeCutRealization
 import SuccessorTree.V10.KptE1PaddedFreeCutProfile
 import SuccessorTree.V10.KptE1NeutralSourceAge
 import SuccessorTree.V10.KptE1PaddedLTypeEquality
+import SuccessorTree.V10.KptE1AssembledSource
 import SuccessorTree.V10.GPlusFiniteApproxAction
 import SuccessorTree.V10.GPlusFiniteColourNaturality
 import SuccessorTree.V10.GPlusPaletteRamseyStabilization
