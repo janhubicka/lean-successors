@@ -79,8 +79,8 @@ import SuccessorTree.ShapeFiniteCorollaries
 import SuccessorTree.EnvelopeTheorem
 -- Explicit complete V10 proof-build aggregation; preserve all V10 regression coverage.
 import SuccessorTree.V10.All
--- Lemma 6.41: full induced transfer and size-nondecreasing enumerated G+ age.
-import SuccessorTree.V10.GPlusEnumeratedAge
+-- G+ induced age and the canonical countable H+ prefix-code embedding.
+import SuccessorTree.V10.CountableGPlusEmbedding
 
 -- Preserve the additional free-ancestral proof modules on main.
 import SuccessorTree.ShapeEvents
