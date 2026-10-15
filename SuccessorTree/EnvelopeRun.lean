@@ -126,7 +126,7 @@ theorem I_succ_eq_higher_final_of_run
     R.I (i + 1) = higherLevels (R.I 0) i := by
   rw [R.I_eq_final_tail_of_run (i + 1) (by omega)]
   ext q
-  simp only [Set.mem_setOf_eq, higherLevels]
+  simp only [Set.mem_ofPred_eq, higherLevels]
   constructor
   · rintro ⟨hq, hiq⟩
     exact ⟨hq, by omega⟩

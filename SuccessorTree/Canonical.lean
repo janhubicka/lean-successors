@@ -442,9 +442,9 @@ theorem canonicalStage_succ_agrees
       H.canonicalStage F n i x := by
   rw [canonicalStage]
   by_cases hni : n ≤ i
-  · simp only [hni, if_true]
+  · simp only [hni, ite_true]
     exact H.closeGap_agrees (H.canonicalStage F n i) i x hx
-  · simp only [hni, if_false]
+  · simp only [hni, ite_false]
 
 theorem canonicalStage_eq_initial_of_le
     (H : SMTree S) (F : MMap H) (n : Nat) :
@@ -455,7 +455,7 @@ theorem canonicalStage_eq_initial_of_le
   | succ i ih =>
       have hnot : ¬ n ≤ i := by omega
       rw [canonicalStage]
-      simp only [hnot, if_false]
+      simp only [hnot, ite_false]
       exact ih (by omega)
 
 theorem canonicalStage_level_succ
@@ -464,7 +464,7 @@ theorem canonicalStage_level_succ
     H.levelMap (H.canonicalStage F n (i + 1)).map (i + 1) =
       H.levelMap (H.canonicalStage F n i).map i + 1 := by
   rw [canonicalStage]
-  simp only [hni, if_true]
+  simp only [hni, ite_true]
   exact H.closeGap_level_succ (H.canonicalStage F n i) i
 
 theorem canonicalStage_fusionStable

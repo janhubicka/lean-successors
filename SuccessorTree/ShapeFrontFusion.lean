@@ -170,11 +170,11 @@ theorem frontFusionStage_succ_mem
   classical
   rw [frontFusionStage]
   by_cases h : N ≤ i + 1
-  · simp only [h, dif_pos]
+  · simp only [h, dite_eq_left]
     exact (Classical.choose_spec
       (H.exists_depthFront_refinement colour hpig
         (frontFusionStage H colour hpig N B i) (i + 1) (by omega))).1
-  · simp only [h, dif_neg]
+  · simp only [h, dite_eq_right]
     exact (ramseyApproximationSystem H).self_mem_levelNeighborhood
       (i + 1) (frontFusionStage H colour hpig N B i)
 
@@ -220,7 +220,7 @@ theorem frontFusionStage_depth_homogeneous
   classical
   obtain ⟨i, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hd)
   rw [frontFusionStage]
-  simp only [show N ≤ i + 1 by exact hNd, dif_pos]
+  simp only [show N ≤ i + 1 by exact hNd, dite_eq_left]
   exact (Classical.choose_spec
     (H.exists_depthFront_refinement colour hpig
       (frontFusionStage H colour hpig N B i) (i + 1) (by omega))).2 p hp

@@ -337,11 +337,11 @@ theorem millikenStage_step
   classical
   rw [millikenStage]
   by_cases h : n ≤ i
-  · simp only [h, dif_pos]
+  · simp only [h, dite_eq_left]
     exact (Classical.choose_spec
       (H.settleExactFront h A hNo
         (H.millikenStage A hNo i))).1
-  · simp only [h, dif_neg]
+  · simp only [h, dite_eq_right]
     refine ⟨MMap.id H, MMap.id_fixesBelow H (i + 1), ?_⟩
     apply MMap.ext_apply
     intro x
@@ -357,7 +357,7 @@ theorem millikenStage_exact_settled
     H.ShapeSettled (H.millikenStage A hNo (m + 1)) A p.1 := by
   classical
   rw [millikenStage]
-  simp only [hnm, dif_pos]
+  simp only [hnm, dite_eq_left]
   exact (Classical.choose_spec
     (H.settleExactFront hnm A hNo
       (H.millikenStage A hNo m))).2 p
@@ -375,7 +375,7 @@ theorem millikenStage_eq_id_of_le
   | succ i ih =>
       rw [millikenStage]
       have hnot : ¬ n ≤ i := by omega
-      simp only [hnot, dif_neg]
+      simp only [hnot, dite_eq_right]
       exact ih (by omega)
 
 /-- M1 diagonal limit of the exact-front fusion. -/

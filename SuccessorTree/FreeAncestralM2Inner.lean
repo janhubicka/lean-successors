@@ -218,8 +218,8 @@ theorem m2InnerNode_child_of_ge
           F n h hskip hlevel
           (⟨k, hist⟩ : Node Label arity) t) c
   rw [m2InnerNodeAux]
-  rw [dif_neg (by omega : ¬ k + 1 < n)]
-  rw [dif_neg (by omega : ¬ k + 1 = n)]
+  rw [dite_eq_right (by omega : ¬ k + 1 < n)]
+  rw [dite_eq_right (by omega : ¬ k + 1 = n)]
   let gp :=
     m2InnerNodeAux F n h hskip hlevel k hist
   change

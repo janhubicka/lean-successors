@@ -130,10 +130,10 @@ noncomputable def canonicalAlgorithmRun
       constructionState_succ_interesting H X ell d (by
         simpa [hidx] using hinter')
     constructor
-    · simp only [constructionI, if_pos hi, if_pos hi1]
+    · simp only [constructionI, ite_eq_left hi, ite_eq_left hi1]
       rw [hdist, hstep]
       simpa [d, hidx]
-    · simp only [constructionF, if_pos hi, if_pos hi1]
+    · simp only [constructionF, ite_eq_left hi, ite_eq_left hi1]
       rw [hdist, hstep]
   noninteresting_step := by
     intro i hilt hinter
@@ -170,9 +170,9 @@ noncomputable def canonicalAlgorithmRun
         (by simpa [hidx] using hic)
       simpa [hidx] using h0
     refine ⟨D, hDskip, hDcross, ?_, ?_⟩
-    · simp only [constructionI, if_pos hi, if_pos hi1]
+    · simp only [constructionI, ite_eq_left hi, ite_eq_left hi1]
       rw [hdist, hstep]
-    · simp only [constructionF, if_pos hi, if_pos hi1]
+    · simp only [constructionF, ite_eq_left hi, ite_eq_left hi1]
       rw [hdist, hstep]
 
 /-- Algorithm 5.4 always has a run. -/
