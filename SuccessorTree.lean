@@ -79,6 +79,8 @@ import SuccessorTree.ShapeFiniteCorollaries
 import SuccessorTree.EnvelopeTheorem
 -- Explicit complete V10 proof-build aggregation; preserve all V10 regression coverage.
 import SuccessorTree.V10.All
+-- Lemma 6.41: transfer the entire induced forbidden pattern to one finite code.
+import SuccessorTree.V10.GPlusInducedAgeTransfer
 
 -- Preserve the additional free-ancestral proof modules on main.
 import SuccessorTree.ShapeEvents
