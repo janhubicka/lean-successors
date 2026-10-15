@@ -72,8 +72,15 @@ theorem RawPartialTypeNode.neutralCapOfCode_isPrefix
       (B.restrict A.size hLen).neutralCapType =
         B.neutralCapType.restrict hLen :=
     (B.neutralCapType_restrict A.size hLen).symm
-  rw [←hData] at hRestr
-  exact hRestr
+  have hCode := congrArg RawPartialTypeNode.neutralCapOfCode hData
+  have hSigma :
+      (⟨A.size,A.neutralCapType⟩ : RawPartialTypeNode db du dd) =
+      (⟨A.size,(B.restrict A.size hLen).neutralCapType⟩ :
+        RawPartialTypeNode db du dd) := hCode
+  have hCap : A.neutralCapType =
+      (B.restrict A.size hLen).neutralCapType :=
+    eq_of_heq (Sigma.mk.inj_iff.mp hSigma).2
+  exact hCap.trans hRestr
 
 /-- Genuine admissible canonical caps respect every initial-segment
 order relation of the actual finite G+ tree. -/
