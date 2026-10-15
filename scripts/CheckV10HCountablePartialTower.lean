@@ -1,0 +1,11 @@
+import SuccessorTree.V10.HCountablePartialTower
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.finitePrefix
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.finitePrefix_E_agree
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.finitePrefix_freeLevel_eq
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.finitePrefix_freeLevel_agree
+#print axioms SuccessorTree.V10.infiniteNumericHPlus
+#print axioms SuccessorTree.V10.infiniteNumericHPlus_prefix_L
+#print axioms SuccessorTree.V10.infiniteNumericHPlus_prefix_E
+#print axioms SuccessorTree.V10.infiniteNumericHPlus_prefix_freeLevel
+#print axioms SuccessorTree.V10.infiniteNumericHPlus_prefix_avoids_family

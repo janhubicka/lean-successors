@@ -410,3 +410,6 @@ import SuccessorTree.V10.HTopInducedEmbedding
 
 -- V10: countable numerical H embeds K in its top generation and preserves forbidden age.
 import SuccessorTree.V10.HInfiniteBaseEmbedding
+
+-- Countable numerical H+ and its genuinely coherent finite partial prefixes.
+import SuccessorTree.V10.HCountablePartialTower
