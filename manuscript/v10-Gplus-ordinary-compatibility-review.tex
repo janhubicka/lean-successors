@@ -1,0 +1,15 @@
+% Review-only addition for Observation 6.42; no author prose is touched.
+% Candidate until exact-head kernel build and transitive-axiom checks.
+\todo[inline]{\textbf{v10 validation: exact ordinary-code compatibility -- candidate.}
+\texttt{GPlusOrdinaryCompatibility.lean} proves the converse to the
+intrinsic-code bridge: two same-level partial-type records have equal
+ordinary finite codes if and only if they agree on the full
+\texttt{SameOrdinaryAtCut} record, including absent atoms and $E$.
+The converse is derived by the already constructed equivalence with
+the four finite-table fields, not an assumption about the shape map.
+For genuine admissible Kpt nodes, equality of their extracted $G^+$
+vertices therefore reflects all ordinary data. Combined with the
+previously checked \texttt{shapeMap\_preserves\_source\_compatibility},
+equal source ordinary codes force compatible full ordinary image records
+for every genuine ShapeMap. This is a Kpt-level transfer, not yet a
+well-defined action on $G^+$ or a certificate for Theorem~6.26.}
