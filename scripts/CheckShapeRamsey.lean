@@ -35,12 +35,10 @@ example (H : SMTree S) (n k r : Nat) (colour : AM H n k → Fin r) :
   exact ⟨W.1, W.2, hW⟩
 
 #check @SuccessorTree.SMTree.shapePreservingRamsey
-#check @SuccessorTree.SMTree.shapeRamsey_approximations
 #print axioms SuccessorTree.SMTree.canonicalExtension_unique
 #print axioms SuccessorTree.SMTree.oneDimensionalPigeonhole_shape
 #print axioms SuccessorTree.SMTree.shapeOneDimensionalRamsey
 #print axioms SuccessorTree.SMTree.shapeLocalPigeonhole
 #print axioms SuccessorTree.SMTree.frontFusion_homogeneous
 #print axioms SuccessorTree.SMTree.buildShapeProductStep
-#print axioms SuccessorTree.SMTree.shapeRamsey_approximations
 #print axioms SuccessorTree.SMTree.shapePreservingRamsey
