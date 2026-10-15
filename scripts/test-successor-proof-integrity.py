@@ -36,6 +36,10 @@ theorem foo : True := by trivial
         self.assertEqual(AUDIT.findings(example), [
             (1, "protected axiom"), (2, "noncomputable constant")])
 
+    def test_attribute_annotated_axiom_rejected(self):
+        self.assertEqual(AUDIT.findings("@[simp] axiom impossible : False\n"),
+                         [(1, "@[simp] axiom")])
+
     def test_print_axioms_is_not_axiom_declaration(self):
         self.assertEqual(AUDIT.findings("#print axioms My.Theorem\n"), [])
 
