@@ -407,3 +407,6 @@ import SuccessorTree.V10.HUniformEnvelopeBound
 
 -- V10 universal transfer: top generation of finite numerical H is an ordered induced L-copy.
 import SuccessorTree.V10.HTopInducedEmbedding
+
+-- V10: countable numerical H embeds K in its top generation and preserves forbidden age.
+import SuccessorTree.V10.HInfiniteBaseEmbedding
