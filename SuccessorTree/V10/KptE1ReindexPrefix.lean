@@ -184,4 +184,87 @@ theorem kptShapeReindex_terminalLetter
     (kptShapeLastRetainedIndex family F n)
     (kptShapeLastRetainedIndex_last family F n)
 
+
+/-- The actual image-level version of the retained coordinate map.
+Using the level of F(a), rather than an externally chosen target
+height, avoids dependent casts when reading a target canonical
+successor's literal predecessor. -/
+noncomputable def kptShapeLastIndexAtNode
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (a : AdmissibleKptNode family) :
+    Fin (a.1.1 + 1) → Fin ((F a).1.1 + 1) :=
+  fun i =>
+    ⟨kptShapeLevelMap family F i.val, by
+      have hi : i.val ≤ a.1.1 := by omega
+      have hmon := (kptShapeLevelMap_strictMono family F).monotone hi
+      have hLevel := kptShapeLevelMap_eq family F a
+      omega⟩
+
+/-- On the old coordinates this is *exactly* the existing
+retainedSocleIndex used by the verified full-record recovery theorem. -/
+theorem kptShapeLastIndexAtNode_compatible
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (a : AdmissibleKptNode family)
+    (i : Fin a.1.1) :
+    kptShapeLastIndexAtNode family F a i.castSucc =
+      (retainedSocleIndex family F a i).castSucc := by
+  apply Fin.ext
+  rfl
+
+/-- The new last ordinary vertex maps to the last ordinary
+coordinate of the real image of this exact source predecessor. -/
+theorem kptShapeLastIndexAtNode_last
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (a : AdmissibleKptNode family) :
+    kptShapeLastIndexAtNode family F a (Fin.last a.1.1) =
+      Fin.last (F a).1.1 := by
+  apply Fin.ext
+  change kptShapeLevelMap family F a.1.1 = (F a).1.1
+  exact kptShapeLevelMap_eq family F a
+
+/-- The new source type obtained from a GENUINE target successor
+restricts literally to the old source a, provided the target
+successor's old restriction is literally F(a), as the canonical
+Kpt successor graph itself guarantees. -/
+theorem kptShapeReindex_recovers_old_predecessor
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (a : AdmissibleKptNode family)
+    (Q : PartialTypeWithE ((F a).1.1 + 1) db du dd)
+    (hTargetPred :
+      Q.restrict (Nat.le_succ (F a).1.1) = (F a).1.2) :
+    (Q.reindexOrdinary
+      (kptShapeLastIndexAtNode family F a)).restrict
+        (Nat.le_succ a.1.1) = a.1.2 := by
+  rw [Q.reindexOrdinary_restrict_last
+    (retainedSocleIndex family F a)
+    (kptShapeLastIndexAtNode family F a)
+    (kptShapeLastIndexAtNode_compatible family F a)]
+  rw [hTargetPred]
+  change shapeMapRetainedRecord family F a = a.1.2
+  exact shapeMap_recovers_complete_record family F a
+
+/-- This exact-node retained embedding also preserves the
+complete terminal Sigma letter, so the source does not need to
+choose an unrelated raw or admissible letter. -/
+theorem kptShapeReindex_terminalLetter_atNode
+    {db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
+    (a : AdmissibleKptNode family)
+    (Q : PartialTypeWithE ((F a).1.1 + 1) db du dd) :
+    (Q.reindexOrdinary
+      (kptShapeLastIndexAtNode family F a)).terminalLetter =
+      Q.terminalLetter := by
+  exact Q.reindexOrdinary_terminalLetter
+    (kptShapeLastIndexAtNode family F a)
+    (kptShapeLastIndexAtNode_last family F a)
+
 end SuccessorTree.V10
