@@ -18,6 +18,7 @@ import SuccessorTree.V10.GPlusFiniteBigRamseyTransfer
 import SuccessorTree.V10.GPlusActualSeedTupleColourBound
 import SuccessorTree.V10.KptE1PaddedFreeCutProfile
 import SuccessorTree.V10.KptE1NeutralSourceAge
+import SuccessorTree.V10.KptE1PaddedLTypeEquality
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -300,3 +301,9 @@ import SuccessorTree.V10.KptE1NeutralSourceAge
 #print axioms SuccessorTree.V10.e1PaddedSourceAge_avoids
 #print axioms SuccessorTree.V10.e1PaddedSourceAge_spacer_left
 #print axioms SuccessorTree.V10.e1PaddedSourceAge_spacer_right
+#print axioms SuccessorTree.V10.e1PaddedAgeIndex_option
+#print axioms SuccessorTree.V10.e1PaddedReal_option
+#print axioms SuccessorTree.V10.e1PaddedSourceAge_binary_type
+#print axioms SuccessorTree.V10.e1PaddedSourceAge_unary_type
+#print axioms SuccessorTree.V10.e1PaddedSourceAge_diagonal_type
+#print axioms SuccessorTree.V10.e1PaddedSourceAge_complete_L_type
