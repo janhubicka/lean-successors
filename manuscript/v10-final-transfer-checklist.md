@@ -6,9 +6,33 @@
 
 PR 463, exact head `de5913638fb72164432a8232cbde2c9f02fe5fc7`, has completed successful Lean/transitive-axiom run 38728699198 and V10 run 38728699434. This proves the actual canonical countable C+ to G+ prefix-code embedding, including the numerical H+ specialization. The merge tool call was blocked in this continuation; the PR has not been merged by an alternative mechanism.
 
-PR 464 is stacked on that checked head. Its current candidate head is `4a6a531aca6d3411a3d4aec1522ab9ddd6e38152`. It implements the exhaustive nondecreasing-size enumeration and the ordered H-to-G-omega embedding. Its review note is `manuscript/v10-Gplus-enumeration-review.tex`.
+PR 464 is stacked on that checked head. Its corrected proof head
+`17cfed7cb173c52b0aa40582470277126ac32539` PASSED the complete
+Lean/transitive-standard-axiom workflow 38737960940 and the V10 counting/axiom
+workflow 38737960658. This now certifies the explicit exhaustive
+size-nondecreasing G+ enumeration and ordered H-to-G-omega induced embedding.
+The first two CI failures were respectively an ambiguous nested subtype
+projection and an unapplied-lambda normalization; the corrections changed no
+theorem statement. The review-only note is
+`manuscript/v10-Gplus-enumeration-review.tex`. PR 464 remains open because
+its predecessor PR 463 could not be merged by the connector in this session.
 
-The first full build compiled `FiniteLayerEnumeration.lean`, then stopped on one ambiguous subtype projection in the proof that a valid size layer is finite. The current head explicitly types that projection, without changing any statement or mathematical argument. All 31 new declarations appear in the existing G+ axiom checker (67 distinct checks total). These source checks are not kernel verification: check current-head full Lean run 38732939208 and V10 run 38732939207 before marking the new enumeration certified.
+PR 465, candidate head `b77e3ee98e7e8208761e42cf8e519cd8960bc3e0`,
+adds the genuine image-cut foundation of Observation 6.42. It defines the
+cut lambda(|A|-1)+1, proves it is inside the image of the canonical neutral
+cap, takes an actual admissible ancestor and constructs a genuine valid
+G+ vertex by its finite ordinary socle. Its full Lean run 38738911691 passed;
+the focused V10 run 38738911810 must be checked before marking GREEN.
+The review note is `manuscript/v10-Gplus-shape-action-review.tex`.
+
+PR 466, candidate head `9ca7377d4241e3baa1a1c0945b1fa53ff85616e6`,
+introduces `GPlusOrdinaryCode.lean`: an intrinsic finite ordinary code for a
+Kpt partial-type record, comparison with any chosen admissibility witness,
+and equality of genuine G+ vertices under `SameOrdinaryAtCut`.
+These bridge results are pending exact-head Lean and transitive-axiom CI.
+Its review note is `manuscript/v10-Gplus-ordinary-code-review.tex`.
+None of these certificates yet proves the full well-defined induced
+ShapeMap action, envelope representation or final Ramsey transfer.
 
 The enumeration is explicit: let the width of layer n be the number of valid codes of size n+1. The canonical prefix map provides an inhabitant of every layer. Rank a numbered vertex (n,i) by the sum of all earlier widths plus i. The rank is injective; the least cumulative upper endpoint supplies a preimage for every natural number. Thus the inverse rank is a bijection whose sizes do not decrease. Composing inverse-enumeration rank with the canonical prefix-code map is strictly increasing, because its code sizes are v+1.
 
