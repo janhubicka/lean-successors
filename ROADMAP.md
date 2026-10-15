@@ -1,42 +1,55 @@
-# Formalization roadmap
+# Active formalization and maintenance roadmap
 
-## Paper-to-Lean map
+Updated 15 October 2026. The early scaffold (which still described starred
+Hales–Jewett as an unproved input) has been superseded; its history is in Git.
+See the [maintained wiki](docs/wiki/Home.md) for exact statements and
+[assumption boundaries](docs/wiki/Axioms-and-Future-Work.md).
 
-| Paper ingredient | Lean target | Status |
-|---|---|---|
-| starred line `L`, evaluations `L(c)`, `L(*)` | `StarLine` | proved |
-| fixed word `s` containing every `Γ`-letter | `fullSupport`, `Supports` | proved |
-| HJ after the support prefix | `supportedStarHJ` | proved from `StarHJ` |
-| recursive history `g_w` | `ReplaySystem.wordApprox` | interface |
-| M3 replay construction of `h` | `ReplaySystem.replay` | interface; next target |
-| `h ∘ Id = g_{L(*)}` | `replay_base` | interface; next target |
-| `h ∘ e = g_{L(e)}` | `replay_letter` | interface; next target |
-| 1-dimensional pigeonhole | `oneDimensionalPigeonhole` | proved from the two inputs above |
-| starred Hales–Jewett theorem | `StarHJ` | explicit unproved combinatorial input |
+## Status
 
-## Immediate Hales--Jewett order
+- **Checked abstract core:** Hales–Jewett, successor `LevelTree`/`STree`/`SMTree`,
+  M1–M3, both shape-Ramsey proof routes, typed fat-tree A4/Ellentuck, finite
+  bounded/exact terminal corollaries.
+- **Checked concrete scope:** normalized finite-signature Kpt M1–M3 and
+  actual-run finite numerical H+ envelope bound.
+- **Unfinished v10:** universal induced K→H+→G+ transfer, sufficiently long
+  canonical finite approximants, colouring pullback and final Theorem 6.26;
+  separately confirm empty/boundary cases and literal author-language
+  normalisation. Higher arities are deferred.
 
-Before the structural tree layer, add:
+## Immediate maintenance
 
-1. `SuccessorTree/VariableWord.lean`: finite/omega variable words and substitution.
-2. `SuccessorTree/Shift.lean`: prefix/tail identities and substitution associativity.
-3. `SuccessorTree/Large.lean`: large sets and the two forcing lemmas.
-4. `SuccessorTree/Fusion.lean`: stabilization and the omega-dimensional theorem.
-5. `SuccessorTree/HalesJewett.lean`: alphabet-size induction, proving `StarHJ`.
+1. Preserve the theorem statements and transitive `#print axioms` checks.
+   Introduce dependency-aware V10 CI on `main` pushes, parallelize the
+   independently checked proof scripts and retain an exhaustive nightly run.
+2. Collect an import-graph inventory of every source/check module, rank orphan
+   candidates, examine the actual downstream imports and remove only confirmed
+   obsolete experiments in a **separate reviewed change**.
+3. Reduce oversized `lean.yml` and source umbrellas incrementally while keeping
+   all named endpoints and the two independent proof-route checks intact.
+4. Profile the largest remaining Lean elaboration bottlenecks, warning sites
+   and Lake cache behavior. Track measured time before and after, not merely
+   fewer lines or fewer CI commands.
+5. Keep the manuscript prose frozen apart from reviewed TODO/validation
+   markers while Section 6 is being finished.
 
-## Structural order
+## After current v10 validation
 
-After `StarHJ` is discharged, add:
+Extract a lightweight reusable core with stable public imports. Then assess
+weakening the full M3 duplication requirement to a finitary controlled-replay
+interface supporting variable words, finite sums/Hindman, and potentially
+Carlson-type theorems. This is **future work**, not an assumption already
+validated in the successor draft.
 
-1. `SuccessorTree/Tree.lean`: rooted levelled trees and restriction to levels.
-2. `SuccessorTree/Successor.lean`: successor operation, parameters and character.
-3. `SuccessorTree/ShapePreserving.lean`: definition and basic preservation lemmas.
-4. `SuccessorTree/Approximation.lean`: finite approximations and level maps.
-5. `SuccessorTree/Monoid.lean`: M1–M3.
-6. `SuccessorTree/Canonical.lean`: canonical extension.
-7. `SuccessorTree/Replay.lean`: actual M3 replay block; instantiate `ReplaySystem`.
-8. `SuccessorTree/HalesJewett.lean`: finite starred HJ.
+## Verification
 
-The point of the interface boundary is auditability: if the tree-specific
-formalization accidentally assumes more than M1–M3, it will become visible
-when instantiating `ReplaySystem`.
+```bash
+lake exe cache get
+lake build
+lake env lean scripts/CheckShapeProofRoutes.lean
+python3 scripts/select-v10-checks.py
+python3 scripts/run-v10-checks.py --jobs 3
+python3 scripts/audit-import-graph.py
+```
+
+See [CI and adversarial audit details](docs/wiki/Audit-and-Performance.md).
