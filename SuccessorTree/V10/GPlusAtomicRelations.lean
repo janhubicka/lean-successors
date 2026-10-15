@@ -143,7 +143,8 @@ theorem finiteGPlusBinary_reverse
     (h : A.IsProperPrefix B) :
     finiteGPlusBinary B A a =
       B.val.binary B.last (A.lowerLastIn B h) a := by
-  have hNot : ¬ B.IsProperPrefix A := h.properPrefix_asymm
+  have hNot : ¬ B.IsProperPrefix A :=
+    FiniteGPlusVertex.properPrefix_asymm h
   simp [finiteGPlusBinary, hNot, h, FiniteGPlusVertex.lowerLastIn]
 
 /-- The forward E atom is the exact E bit of the larger node's
