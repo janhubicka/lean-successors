@@ -25,7 +25,7 @@ namespace SuccessorTree.V10
 
 universe u
 
-variable {T : Type u} [PartialOrder T] [LevelTree T]
+variable {T : Type u} [PartialOrder T] [LevelTree T] [DecidableEq T]
 
 private theorem forest_meet_comm_of_related {a b : T}
     (h : SMTree.Envelope.SameComponent a b) :
@@ -212,7 +212,7 @@ theorem forestFiniteMeetNodes_insert_cover (w : T) (V : Finset T) :
         exact hStrict.le.trans (LevelTree.meet_le_right ha0Related)
       have hOld : LevelTree.meet w b ∈ forestFiniteMeetNodes V :=
         (forestFiniteMeetNodes_mem_iff V _).2
-          (Or.inr ⟨b,hbV,a0,ha0V,hOldRelated,hOldEq⟩)
+          (Or.inr ⟨b,hbV,a0,ha0V,hOldRelated,hOldEq.symm⟩)
       exact Finset.mem_union.mpr (Or.inl hOld)
   · refine ⟨w,
       forestFiniteMeetNodes_insert_subset_of_cross w V w ?_⟩

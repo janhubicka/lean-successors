@@ -379,5 +379,5 @@ import SuccessorTree.V10.I3AlgorithmRunSharp
 -- V10 Proposition 6.44: sharp generic forest meet-closure 2N bound.
 import SuccessorTree.V10.ForestMeetLinear
 
--- V10: actual finite Kpt closure inherits the sharp 2N forest meet level bound.
+-- V10 actual finite Kpt closure inherits the sharp 2N forest meet bound.
 import SuccessorTree.V10.KptForestMeetBound
