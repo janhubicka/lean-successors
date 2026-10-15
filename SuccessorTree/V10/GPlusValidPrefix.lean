@@ -160,8 +160,10 @@ noncomputable def FiniteGPlusVertex.restrict
   let A : EnumeratedPartialStructure db du dd :=
     Classical.choose C.property
   obtain ⟨hCode,hAPos,hAvoid⟩ := Classical.choose_spec C.property
-  have hnA : n ≤ A.size := by
-    exact (congrArg FinitePartialCode.size hCode) ▸ hn
+  have hSizeEq : C.val.size = A.size := by
+    simpa only [FinitePartialCode.ofEnumerated_size] using
+      (congrArg FinitePartialCode.size hCode)
+  have hnA : n ≤ A.size := hSizeEq ▸ hn
   let B : EnumeratedPartialStructure db du dd :=
     A.initialSegment n hnA
   have hCodeB :
