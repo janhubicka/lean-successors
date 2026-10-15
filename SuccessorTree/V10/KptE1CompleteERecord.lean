@@ -69,7 +69,7 @@ theorem e1PaddedSourceStructure_complete_E
   have hFree : A.freeLevel (n + 2) = n + 1 :=
     e1PaddedSourceStructure_freeLevel Q oldCut f hOld hNew hOrd
   have hCut : n + 1 ≤ A.freeLevel (n + 2) := by
-    rw [hFree]
+    simpa only [hFree] using (Nat.le_refl (n + 1))
   intro x y
   cases x with
   | none =>
