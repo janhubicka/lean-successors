@@ -87,3 +87,22 @@ These results live under `SuccessorTree/NonPrecompact/`.
 M1, corrected finite L-age M2, and literal M3 in the normalized
 Boolean-record model. This does not yet establish the adapter for the
 full original-language signature of Section 6.3.
+
+
+### Successor v10: normalized finite-\(H^+\) upper-bound endpoint
+
+\`SuccessorTree.V10.HUniformEnvelopeBound.numericH_actualRun_uniform_sharp_envelope_bound\`
+is the kernel-checked end-to-end **normalized** finite-\(H^+\)
+envelope-height bound \(2(q+1+M)+R(M)+1\), with \(M\) computed by the
+paper's exact descending numerical recurrence. The theorem uses
+the actual finite-\(H^+\) construction and Algorithm 5.4 run,
+including the sharp \(2N\) forest meet bound; no age-change witness
+is given a fictional \(E\)-expansion. PR #447 passed full Lean,
+transitive axiom and source-snapshot CI before merging.
+
+**Scope:** this is not yet the unqualified original Proposition 6.44
+or Theorem 6.26. The outstanding work is the uniform \(K\to H^+\to
+G^+\) embedding/enumeration transfer, the paper's *finite unary and
+binary* relational-language adapter, the big Ramsey application
+and the boundary cases. See
+[the final Section 6 ledger](docs/v10-section6-final-assembly-20261015.md).
