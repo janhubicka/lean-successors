@@ -8,6 +8,7 @@ on:
       - 'scripts/CheckV10*.lean'
       - 'scripts/check_v10_*.py'
       - 'scripts/select-v10-checks.py'
+      - 'scripts/run-v10-checks.py'
       - 'scripts/check-axiom-log.py'
       - 'lean-toolchain'
       - 'lakefile.toml'
@@ -20,6 +21,7 @@ on:
       - 'scripts/CheckV10*.lean'
       - 'scripts/check_v10_*.py'
       - 'scripts/select-v10-checks.py'
+      - 'scripts/run-v10-checks.py'
       - 'scripts/check-axiom-log.py'
       - 'lean-toolchain'
       - 'lakefile.toml'
@@ -27,6 +29,9 @@ on:
       - 'SuccessorTree.lean'
       - '.github/workflows/v10-counting.yml'
   workflow_dispatch:
+  # Full transitive axiom audit daily; push/PR check only affected consumers.
+  schedule:
+    - cron: '19 2 * * *'
 
 concurrency:
   group: v10-count-${{ github.event.pull_request.head.ref || github.ref_name }}
@@ -70,6 +75,8 @@ jobs:
       - name: Select transitive V10 axiom checks and finite regressions
         id: scope
         shell: bash
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         run: |
           set -euo pipefail
           python3 scripts/select-v10-checks.py --output-file "$GITHUB_OUTPUT"
@@ -115,16 +122,11 @@ jobs:
           mapfile -t targets < <(sed -nE 's/^import (SuccessorTree\.[A-Za-z0-9_.]+)$/\1/p' "${checks[@]}" | sort -u)
           test "${#targets[@]}" -gt 0
           lake build "${targets[@]}" 2>&1 | tee v10-build.log
-      - name: Check affected v10 theorem axioms
+      - name: Check affected v10 theorem axioms (bounded parallel)
         shell: bash
         run: |
           set -euo pipefail
-          while IFS= read -r check; do
-            test -n "$check" || continue
-            log="$(basename "$check" .lean)-axioms.log"
-            lake env lean "$check" > "$log" 2>&1 || { cat "$log"; exit 1; }
-            python3 scripts/check-axiom-log.py "$log" "$check" || { cat "$log"; exit 1; }
-          done < v10-selected-checks.txt
+          python3 scripts/run-v10-checks.py --checks-file v10-selected-checks.txt --jobs 3
       - name: Seed shared Lake cache on main only
         if: ${{ github.ref == 'refs/heads/main' && steps.lake-cache.outputs.cache-hit != 'true' && success() }}
         uses: actions/cache/save@v5
@@ -139,6 +141,8 @@ jobs:
           path: |
             v10-build.log
             v10-selected-checks.txt
+            v10-check-timings.json
+            scripts/run-v10-checks.py
             scripts/select-v10-checks.py
             v10-actual-meet-regression.json
             v10-original-pool-regression.json
