@@ -1,0 +1,15 @@
+% Review only: real Kpt representatives v(S,T) for Observation 6.42.
+% Candidate until the exact-head kernel and transitive standard-axiom checks pass.
+\todo[inline]{\textbf{v10 validation: representing pairs $v(S^+,T^+)$ -- candidate.}
+In \texttt{GPlusRepresentingPairs.lean}, a strict pair of actual admissible
+Kpt nodes $S^+\subsetneq T^+$ defines a genuine forbidden-free finite
+$G^+$ vertex, by taking the ordinary code of the admissible ancestor
+of $T^+$ at level $\ell(S^+)+1$.  Its size is exactly that cut.
+Any genuine Kpt ShapeMap takes the strict pair to another strict pair;
+the image vertex has size $\lambda(\ell(S^+))+1$.
+Every valid finite $G^+$ code also supplies the neutral-cap pair with
+lower ancestor of level $|A|-1$, whose cut is $|A|$.
+The equality $v(S_A,T_A)=A$ still needs the complete cap ordinary-code
+calculation; representative-pair independence, reverse equality,
+preservation of all induced tuples and composition remain open.
+Do not infer Observation~6.42 or Theorem~6.26 from this local candidate.}
