@@ -1,102 +1,21 @@
 import SuccessorTree.Core
-import SuccessorTree.Replay
-import SuccessorTree.Approximation
-import SuccessorTree.ShapePreserving
-import SuccessorTree.WeakSuccessorInjectivity
-import SuccessorTree.Monoid
-import SuccessorTree.Tree
-import SuccessorTree.Successor
-import SuccessorTree.StarLine
-import SuccessorTree.Support
-import SuccessorTree.Pigeonhole
-import SuccessorTree.HalesJewett.VariableWord
-import SuccessorTree.HalesJewett.Forcing
-import SuccessorTree.HalesJewett.Composition
-import SuccessorTree.HalesJewett.ForcingReduction
-import SuccessorTree.HalesJewett.FiniteVariableWord
-import SuccessorTree.HalesJewett.ForcingLemmaOne
-import SuccessorTree.HalesJewett.GreedyLimit
-import SuccessorTree.HalesJewett.ForcingMaximal
-import SuccessorTree.HalesJewett.ForcingLemmaTwo
-import SuccessorTree.HalesJewett.ForcingFusion
-import SuccessorTree.HalesJewett.ForcingFusionLimit
-import SuccessorTree.HalesJewett.ForcingProposition
-import SuccessorTree.HalesJewett.LineSchedule
-import SuccessorTree.HalesJewett.AlphabetLift
-import SuccessorTree.HalesJewett.AlphabetEquiv
-import SuccessorTree.RamseySpace.Basic
-import SuccessorTree.RamseySpace.Finitization
 import SuccessorTree.CopyRamsey
-import SuccessorTree.Canonical
-import SuccessorTree.ShapePigeonhole
-import SuccessorTree.ShapeFusion
-import SuccessorTree.RamseySpace.Nonempty
-import SuccessorTree.ShapeFrontFusion
-import SuccessorTree.ShapePrefixPigeonhole
-import SuccessorTree.ShapeFrontPigeonhole
-import SuccessorTree.ShapeReplayFusion
-import SuccessorTree.ShapeLarge
-import SuccessorTree.ShapeLargeFusion
-import SuccessorTree.ShapeExactFactor
-import SuccessorTree.ShapeLargeLine
-import SuccessorTree.ShapeBlockForcing
-import SuccessorTree.ShapeAction
-import SuccessorTree.ShapeBlockLine
-import SuccessorTree.ShapeSplit
-import SuccessorTree.ShapeTransport
-import SuccessorTree.ShapeTransportAlphabet
-import SuccessorTree.ShapeWordFactor
-import SuccessorTree.ShapeFusionExcess
-import SuccessorTree.ShapeGoodTails
-import SuccessorTree.ShapeDirectLine
-import SuccessorTree.ShapeTwoBlock
-import SuccessorTree.ShapeMillikenFusion
-import SuccessorTree.ShapeLargeShapeLine
-import SuccessorTree.ShapeRamseyFusion
-import SuccessorTree.ShapeLocalPigeonhole
-import SuccessorTree.ShapeFiniteProduct
-import SuccessorTree.FatTree.Basic
-import SuccessorTree.FatTree.Sequencing
-import SuccessorTree.FatTree.ApproximationSystem
-import SuccessorTree.FatTree.RamseyFinitization
-import SuccessorTree.FatTree.Closed
-import SuccessorTree.FatTree.Lift
-import SuccessorTree.FatTree.Reduction
-import SuccessorTree.FatTree.FiniteReduction
-import SuccessorTree.FatTree.Finitization
-import SuccessorTree.FatTree.Amalgamation
-import SuccessorTree.FatTree.A3Typed
-
-import SuccessorTree.FatTree.ShapeCorrespondence
-import SuccessorTree.FatTree.ShapeRealization
-import SuccessorTree.FatTree.ShapeEllentuckOne
-import SuccessorTree.ShapeFiniteBounds
--- The Section 5 entry point imports its verified proof layers.
--- Explicit complete V10 proof-build aggregation; preserve all V10 regression coverage.
 import SuccessorTree.V10.All
--- Exhaustive size-nondecreasing G-omega enumeration and ordered H embedding.
 import SuccessorTree.V10.GPlusInducedAction
 import SuccessorTree.V10.GPlusBoundedPalette
 import SuccessorTree.V10.GPlusEnvelopePairLift
-
--- Preserve the additional free-ancestral proof modules on main.
 import SuccessorTree.ShapeEvents
-import SuccessorTree.FreeAncestral
-import SuccessorTree.FreeAncestralOrder
-import SuccessorTree.FreeAncestralLevelTree
-import SuccessorTree.FreeAncestralSuccessor
-import SuccessorTree.FreeAncestralCover
-import SuccessorTree.FreeAncestralGap
-import SuccessorTree.FreeAncestralGapMap
-import SuccessorTree.FreeAncestralGapShape
-import SuccessorTree.FreeAncestralMonoid
-import SuccessorTree.FreeAncestralM3
-import SuccessorTree.FreeAncestralM2Prep
-import SuccessorTree.FreeAncestralM2Gap
-import SuccessorTree.FreeAncestralM2Level
-import SuccessorTree.FreeAncestralM2Inner
-import SuccessorTree.FreeAncestralM2InnerOrder
-import SuccessorTree.FreeAncestralM2InnerShape
-import SuccessorTree.FreeAncestralM2
-import SuccessorTree.FreeAncestralSMTree
 import SuccessorTree.FreeAncestralFiniteRamsey
+
+/-!
+# Complete successor library entry point
+
+The minimal import frontier covers the same transitively imported source
+modules as the previous 96-line import list. The reusable abstract library
+has its own smaller `SuccessorTree.Core` entry point.
+
+This is a complete development umbrella, not a compatibility API. It brings in
+both abstract Ramsey proofs, the verified finite V10 construction and the
+free-ancestral example. The graph comparison test verifies that shortening the
+import list does not silently drop historical proof modules.
+-/

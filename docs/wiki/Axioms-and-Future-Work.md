@@ -22,7 +22,11 @@ This is a design agenda, not a formally established equivalence to M1–M3 or a 
 2. Separate algebraic map laws, finitary replay, Ramsey input and model-specific `V10` age tests into modules with explicit interfaces.
 3. Create an abstract interface for controlled finite replay; prove that the **old M1–M3 structure instantiates it** before migrating the existing theorem.
 4. Prove at least one new intended example that fails the old duplication contract but satisfies the weaker one; reject a reformulation that merely reintroduces unrestricted M3 under another name.
-5. Maintain exact-head theorem and axiom checks, and update `lean-ramsey-space-todorcevic` downstream APIs only as needed. Avoid compatibility wrappers when all affected consumers can be migrated deliberately.
+5. Maintain exact-head theorem and axiom checks. **Internal and public
+   implementation APIs may break**: remove obsolete wrappers instead of
+   preserving aliases, and repair downstream consumers directly. A change to
+   M1–M3 or the final theorem's quantifiers is a mathematical change and
+   still requires a separate proof/statement audit.
 6. Do not touch the proof prose of successor v10 in this phase. Future stronger paper and its Lean theory can live on a separate branch.
 
 The safest approach is to **extract a reusable core first**, then generalize it, rather than weaken assumptions inside an unfinished Section 6 application.

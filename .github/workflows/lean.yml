@@ -8,6 +8,7 @@ on:
       - 'SuccessorTree.lean'
       - 'scripts/*.lean'
       - 'scripts/check-axiom-log.py'
+      - 'scripts/check-umbrella-closure.py'
       - 'scripts/audit-envelope.sh'
       - 'tests/test_axiom_audit.py'
       - 'lean-toolchain'
@@ -20,6 +21,7 @@ on:
       - 'SuccessorTree.lean'
       - 'scripts/*.lean'
       - 'scripts/check-axiom-log.py'
+      - 'scripts/check-umbrella-closure.py'
       - 'scripts/audit-envelope.sh'
       - 'tests/test_axiom_audit.py'
       - 'lean-toolchain'
@@ -39,6 +41,8 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+      - name: Verify umbrella-import closure is unchanged
+        run: python3 scripts/check-umbrella-closure.py
       - name: Cache Lean toolchain
         uses: actions/cache@v5
         with:
