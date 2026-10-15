@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusShapeMapCodeTransport
+import SuccessorTree.V10.GPlusImagePairRestriction
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -124,3 +124,8 @@ import SuccessorTree.V10.GPlusShapeMapCodeTransport
 
 #print axioms SuccessorTree.V10.shapeMap_preserves_equal_ordinaryCode
 #print axioms SuccessorTree.V10.shapeMap_preserves_equal_ordinaryCode_restrict
+
+#print axioms SuccessorTree.V10.admissibleKpt_ordinaryCode_of_le
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.image_representedNode_le_fullImage
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.image_vertex_code_of_fullImage
+#print axioms SuccessorTree.V10.gPlusShapeImage_code_of_fullCap
