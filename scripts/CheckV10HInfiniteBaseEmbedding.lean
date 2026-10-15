@@ -1,0 +1,5 @@
+import SuccessorTree.V10.HInfiniteBaseEmbedding
+#print axioms SuccessorTree.V10.infiniteNumericHL
+#print axioms SuccessorTree.V10.infiniteNumericHL_top_induced_ordered_copy
+#print axioms SuccessorTree.V10.infiniteNumericHL_copy_has_finite_truncation
+#print axioms SuccessorTree.V10.infiniteNumericHL_avoids_family
