@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusFinitePrefix
+import SuccessorTree.V10.GPlusValidPrefix
 import Mathlib.Tactic
 
 /-!

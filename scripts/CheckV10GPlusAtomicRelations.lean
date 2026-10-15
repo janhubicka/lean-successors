@@ -1,4 +1,10 @@
 import SuccessorTree.V10.GPlusAtomicRelations
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.initialSegment
+#print axioms SuccessorTree.V10.NormalizedForbidden.avoids_restrictCarrier
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.initialSegment_avoids
+#print axioms SuccessorTree.V10.FinitePartialCode.ofEnumerated_initialSegment
+#print axioms SuccessorTree.V10.FiniteGPlusVertex.restrict
+#print axioms SuccessorTree.V10.FiniteGPlusVertex.restrict_isPrefix
 #print axioms SuccessorTree.V10.finiteGPlusVertex_size_pos
 #print axioms SuccessorTree.V10.FiniteGPlusVertex.last
 #print axioms SuccessorTree.V10.FiniteGPlusVertex.IsProperPrefix
