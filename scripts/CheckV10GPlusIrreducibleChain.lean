@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusCanonicalCodeReconstruction
+import SuccessorTree.V10.GPlusShapeImageInjective
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -155,3 +155,9 @@ import SuccessorTree.V10.GPlusCanonicalCodeReconstruction
 #print axioms SuccessorTree.V10.FinitePartialCode.reindex_of_prefix
 #print axioms SuccessorTree.V10.FinitePartialCode.reindex_change_size
 #print axioms SuccessorTree.V10.shapeImageRetainedCode_eq
+
+#print axioms SuccessorTree.V10.FinitePartialCode.reindex_congr
+#print axioms SuccessorTree.V10.gPlusShapeImage_eq_source_sizes
+#print axioms SuccessorTree.V10.shapeImageRetainedCode_eq_of_image_eq
+#print axioms SuccessorTree.V10.gPlusShapeImage_injective
+#print axioms SuccessorTree.V10.GPlusRepresentingPair.image_vertex_eq_iff_vertex_eq
