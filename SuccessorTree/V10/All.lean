@@ -415,3 +415,6 @@ import SuccessorTree.V10.HInfiniteBaseEmbedding
 import SuccessorTree.V10.HTopRootFreeCut
 -- Original finite unary/directed-binary language and induced copies.
 import SuccessorTree.V10.BinaryUnaryAgeAdapter
+
+-- Theorem 6.26: neutralize any chosen allowed unary/diagonal singleton.
+import SuccessorTree.V10.SingletonNormalization
