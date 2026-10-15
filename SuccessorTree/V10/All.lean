@@ -428,3 +428,6 @@ import SuccessorTree.V10.GPlusFinitePrefix
 
 -- Original Definition 6.40: finite G+ nodes carry literal induced L+ tuple atoms.
 import SuccessorTree.V10.GPlusAtomicRelations
+
+-- Lemma 6.41: irreducible forbidden pairs lie on one G+ prefix chain.
+import SuccessorTree.V10.GPlusIrreducibleChain

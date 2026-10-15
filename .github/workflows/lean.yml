@@ -894,6 +894,17 @@ jobs:
             cat proof-audit/gplus-atomic-relations-axioms.log
             exit 1
           }
+      - name: Check Lemma 6.41 irreducible forbidden copy lies on one G+ prefix chain
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10GPlusIrreducibleChain.lean > proof-audit/gplus-irreducible-chain-axioms.log 2>&1; then
+            cat proof-audit/gplus-irreducible-chain-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/gplus-irreducible-chain-axioms.log scripts/CheckV10GPlusIrreducibleChain.lean || {
+            cat proof-audit/gplus-irreducible-chain-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms
