@@ -46,8 +46,8 @@ theorem EnumeratedPartialStructure.initialSegment_code_eq_ordinaryCode
     FinitePartialCode.ofEnumerated (B.initialSegment n hn) =
         (FinitePartialCode.ofEnumerated B).restrict n hn :=
       (FinitePartialCode.ofEnumerated_initialSegment B n hn).symm
-    _ = (⟨n,B.partialTypeAt n v⟩ :
-         RawPartialTypeNode db du dd).ordinaryCode := rfl
+    _ = RawPartialTypeNode.ordinaryCode
+          (⟨n,B.partialTypeAt n v⟩ : RawPartialTypeNode db du dd) := rfl
 
 /-- The G+ vertex extracted from a genuine admissible partial type has
 exactly its intrinsic ordinary table, not a witness-dependent code. -/
