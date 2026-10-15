@@ -47,6 +47,11 @@ theorem toGOmega_strictMono
   have hRank : C.toGOmega family hAvoid v ≤ C.toGOmega family hAvoid u :=
     Nat.le_of_not_gt h
   have hs := GPlusEnumeration.enumerate_size_mono C family hAvoid hRank
+  change
+    (GPlusEnumeration.enumerate C family hAvoid
+      (C.toGOmega family hAvoid v)).val.size ≤
+    (GPlusEnumeration.enumerate C family hAvoid
+      (C.toGOmega family hAvoid u)).val.size at hs
   rw [C.toGOmega_eval family hAvoid v, C.toGOmega_eval family hAvoid u,
     C.toGPlus_size family hAvoid v, C.toGPlus_size family hAvoid u] at hs
   omega
