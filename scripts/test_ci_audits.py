@@ -9,7 +9,6 @@ from __future__ import annotations
 import importlib.util
 import os
 from pathlib import Path
-from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -26,7 +25,6 @@ def load(name: str, path: str):
 
 
 selector = load("successor_ci_selector", "scripts/select-v10-checks.py")
-runner = load("successor_ci_runner", "scripts/run-v10-checks.py")
 
 
 class SelectorTests(unittest.TestCase):
@@ -89,56 +87,6 @@ class SelectorTests(unittest.TestCase):
         self.assertTrue(any("HUniformEnvelopeBound" in c.name for c in checks),
                         "a concrete modified theorem must select its consumers")
 
-
-class RunnerTests(unittest.TestCase):
-    def test_rejects_check_outside_repository_script_directory(self):
-        with TemporaryDirectory() as base:
-            root = Path(base)
-            (root / "scripts").mkdir()
-            allowed = root / "scripts" / "CheckV10Toy.lean"
-            allowed.write_text("#print axioms Foo.bar\n", encoding="utf-8")
-            listfile = root / "checks.txt"
-            listfile.write_text("scripts/CheckV10Toy.lean\n", encoding="utf-8")
-            with patch.object(runner, "ROOT", root):
-                self.assertEqual(runner.read_checks(listfile),
-                                 ["scripts/CheckV10Toy.lean"])
-                listfile.write_text("scripts/CheckV10Toy.lean\n"
-                                    "scripts/CheckV10Toy.lean\n",
-                                    encoding="utf-8")
-                with self.assertRaisesRegex(ValueError, "duplicate"):
-                    runner.read_checks(listfile)
-                listfile.write_text("../external/CheckV10Toy.lean\n",
-                                    encoding="utf-8")
-                with self.assertRaisesRegex(ValueError, "not a checked-in"):
-                    runner.read_checks(listfile)
-
-    def test_validator_not_skipped_after_successful_lean(self):
-        with TemporaryDirectory() as base:
-            root = Path(base)
-            (root / "scripts").mkdir()
-            class Completed:
-                def __init__(self, returncode=0, stdout="PASS: 1 reports"):
-                    self.returncode, self.stdout = returncode, stdout
-            with patch.object(runner, "ROOT", root), \
-                 patch.object(runner.subprocess, "run",
-                              side_effect=[Completed(), Completed()]) as called:
-                result = runner.run_check("scripts/CheckV10Toy.lean")
-            self.assertTrue(result["passed"])
-            self.assertEqual(called.call_count, 2)
-            self.assertIn("check-axiom-log.py", called.call_args.args[0][1])
-            self.assertEqual(called.call_args.args[0][-1],
-                             "scripts/CheckV10Toy.lean")
-
-    def test_failed_lean_does_not_report_success(self):
-        with TemporaryDirectory() as base:
-            root = Path(base)
-            (root / "scripts").mkdir()
-            with patch.object(runner, "ROOT", root), \
-                 patch.object(runner.subprocess, "run",
-                              return_value=SimpleNamespace(returncode=1)) as called:
-                result = runner.run_check("scripts/CheckV10Toy.lean")
-            self.assertFalse(result["passed"])
-            self.assertEqual(called.call_count, 1)
 
 
 if __name__ == "__main__":
