@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusShapeActionLaws
+import SuccessorTree.V10.GPlusRetainedCoordinates
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -138,3 +138,13 @@ import SuccessorTree.V10.GPlusShapeActionLaws
 #print axioms SuccessorTree.V10.gPlusShapeImage_eq_canonicalPairImage
 #print axioms SuccessorTree.V10.gPlusShapeImage_id
 #print axioms SuccessorTree.V10.gPlusShapeImage_comp
+
+#print axioms SuccessorTree.V10.FinitePartialCode.reindex
+#print axioms SuccessorTree.V10.FinitePartialCode.reindex_size
+#print axioms SuccessorTree.V10.FinitePartialCode.reindex_self
+#print axioms SuccessorTree.V10.shapeImageRetainedIndex
+#print axioms SuccessorTree.V10.shapeImageRetainedIndex_val
+#print axioms SuccessorTree.V10.shapeImageRetainedIndex_injective
+#print axioms SuccessorTree.V10.shapeImageRetainedIndex_strictMono
+#print axioms SuccessorTree.V10.shapeImageRetainedCode
+#print axioms SuccessorTree.V10.shapeImageRetainedCode_size
