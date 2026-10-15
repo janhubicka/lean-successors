@@ -2,6 +2,7 @@ import SuccessorTree.V10.GPlusInducedAction
 import SuccessorTree.V10.GPlusBoundedPalette
 import SuccessorTree.V10.GPlusEnvelopePairLift
 import SuccessorTree.V10.GPlusCommonUpperRepresentation
+import SuccessorTree.V10.GPlusHPrefixCommonUpper
 import SuccessorTree.V10.GPlusAlgorithmRunCoverage
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
@@ -225,3 +226,7 @@ import SuccessorTree.V10.GPlusAlgorithmRunCoverage
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.fromUpper_representedNode
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.fromUpper_vertex_eq_of_prefix
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.commonUpper_represents_all
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_code_prefix_of_le
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_prefixes_have_common_upper
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_prefixes_range_common_upper
+#print axioms SuccessorTree.V10.infiniteNumericHPlus_GPlus_prefixes_have_common_upper
