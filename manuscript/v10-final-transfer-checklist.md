@@ -26,29 +26,56 @@ G+ vertex by its finite ordinary socle. Its full Lean run 38738911691 AND focuse
 foundation is GREEN; this does not make the full action GREEN.
 The review note is `manuscript/v10-Gplus-shape-action-review.tex`.
 
-PR 466, candidate head `9ca7377d4241e3baa1a1c0945b1fa53ff85616e6`,
-introduces `GPlusOrdinaryCode.lean`: an intrinsic finite ordinary code for a
-Kpt partial-type record, comparison with any chosen admissibility witness,
-and equality of genuine G+ vertices under `SameOrdinaryAtCut`.
-These bridge results are pending exact-head Lean and transitive-axiom CI.
-Its review note is `manuscript/v10-Gplus-ordinary-code-review.tex`.
-PR 467, candidate branch `v10-Gplus-ordinary-compatibility-20261015`,
-builds on the intrinsic ordinary-code result to derive the converse:
-code equality iff SameOrdinaryAtCut. This is then used to transport equal
-source ordinary codes through the already checked Kpt shape-map
-compatibility theorem. Review note:
-`manuscript/v10-Gplus-ordinary-compatibility-review.tex`.
-This remains pending exact-head kernel and transitive-axiom verification.
+PR 466, intrinsic Kpt ordinary finite codes:
+exact head `2c0cc2315512f4d801e5f70a84787f5d4336f32e`,
+full Lean 38741444447 and V10 standard-axiom/counting 38741444382
+BOTH PASSED. This proves literal equality with the code extracted from
+a genuine admissibility witness; representative choice cannot change
+the ordinary finite tables.
 
-PR 468, candidate branch `v10-Gplus-representing-pairs-20261015`,
-constructs the literal manuscript representation v(S,T) from two genuine
-admissible Kpt nodes S<T: cut T at level(S)+1 and take its genuine
-ordinary G+ code. It proves the image of a strict pair under a ShapeMap
-is strict and has cut lambda(level(S))+1. It also constructs the
-canonical neutral-cap pair for every finite code A with cut size |A|.
-The equality v(canonical(A))=A requires the cap's ordinary-code identity
-and is NOT asserted; nor is representative independence. Candidate note:
-`manuscript/v10-Gplus-representing-pairs-review.tex`.
+PR 467, ordinary-code equality in both directions:
+exact head `5dbe5a328fa29c4324a2d7e3f2cd10b794556216`,
+full Lean 38741448941 and V10 38741449000 BOTH PASSED.
+Equality of four induced finite atom tables is equivalent to
+SameOrdinaryAtCut and remains compatible under genuine ShapeMaps.
+
+PR 468, genuine Kpt representing pairs v(S,T):
+exact head `8c6c11caa8278543ee01df70c2529e10a3fbb255`,
+full Lean 38742947049 and V10 38742946967 BOTH PASSED.
+Its scope is the actual pair/cut/image-size construction, not the
+complete induced G+ action.
+
+PR 469, canonical neutral-cap representative of every finite G+ code:
+exact head `7a7f131b2afa2e3e7bdfa0823f5e4359a2da035a`,
+full Lean 38745208463 and V10 38745208189 BOTH PASSED.
+This verifies v(canonical(A))=A, including the literal full ordinary
+neutral-cap code, and hence surjectivity of the representing-pair map.
+
+PR 470, compatibility of Kpt prefix and G+ finite-code restriction:
+exact corrected head `aaeddbe58f6b9b9041e7b92dd9749e238b681f7d`,
+full Lean 38747112763 and V10 38747112704 BOTH PASSED.
+The final correction replaced an invalid dependent rewrite with direct
+restriction of all four atomic tables.
+
+PR 471, shape-map transport of equal ordinary finite codes:
+exact candidate head `8d0894f793491062c0a84d61fb14196d377742a9`.
+Its full Lean run 38748924400 PASSED; V10 focused audit
+38748924343 remained in progress at the last check.
+The image-record cast is handled by an explicit equal-level helper.
+
+PR 472, the image representing pair as a prefix of the full image
+ordinary code: candidate head `fb8b26d262caa605bf5b15335175be7b2a81e1d7`.
+The first proof error was only the orientation of a level-map equality;
+it was corrected without changing the statement. CI is pending.
+Review note: `manuscript/v10-Gplus-image-pair-restriction-review.tex`.
+
+PR 473, independence of the induced G+ image from the representing
+Kpt pair: candidate head `1638cb89d747c6969ae18910c1f656c8e1032454`.
+It combines the common image cut, complete ordinary code compatibility,
+and the two image-prefix identities to establish
+v(F(S),F(T)) = gPlusShapeImage F (v(S,T)).
+No new action interface is postulated. CI is pending.
+Review note: `manuscript/v10-Gplus-representative-independence-review.tex`.
 
 None of these certificates yet proves the full well-defined induced
 ShapeMap action, envelope representation or final Ramsey transfer.
