@@ -8,6 +8,7 @@
 - [Verified theorems and manuscript correspondence](Theorems-and-Manuscript.md): named public declarations, additional Lean lemmas, proof adjustments, and unproved final transfers.
 - [Adversarial audit and build performance](Audit-and-Performance.md): proof-assumption checks, removal policy for abandoned branches, CI commands, benchmark baseline, and practical profiling.
 - [Axioms and future generalizations](Axioms-and-Future-Work.md): how to preserve the existing theorem while eventually weakening duplication assumptions.
+- [M1–M3 source dependency map](M1-M3-Dependency-Map.md): audited direct axiom uses, replay/padding clients and a staged weakening plan.
 - [Compiler warning triage](Compiler-Warnings.md): measured warning categories and safe incremental-import cleanup.
 - [Adversarial fat-tree A4 checks](A4-Adversarial-Verification.md): unconditional endpoints, root/trace edge cases and the circularity firewall.
 
