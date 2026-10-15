@@ -10,6 +10,7 @@ on:
       - 'scripts/select-v10-checks.py'
       - 'scripts/run-v10-checks.py'
       - 'scripts/audit-import-graph.py'
+      - 'scripts/test_ci_audits.py'
       - 'scripts/check-axiom-log.py'
       - 'lean-toolchain'
       - 'lakefile.toml'
@@ -24,6 +25,7 @@ on:
       - 'scripts/select-v10-checks.py'
       - 'scripts/run-v10-checks.py'
       - 'scripts/audit-import-graph.py'
+      - 'scripts/test_ci_audits.py'
       - 'scripts/check-axiom-log.py'
       - 'lean-toolchain'
       - 'lakefile.toml'
@@ -74,6 +76,8 @@ jobs:
           fi
       - name: Download Mathlib cache
         run: lake exe cache get
+      - name: Fast CI-helper regression tests
+        run: python3 scripts/test_ci_audits.py
       - name: Select transitive V10 axiom checks and finite regressions
         id: scope
         shell: bash
@@ -148,6 +152,7 @@ jobs:
             v10-check-timings.json
             successor-import-audit.json
             scripts/audit-import-graph.py
+            scripts/test_ci_audits.py
             scripts/run-v10-checks.py
             scripts/select-v10-checks.py
             v10-actual-meet-regression.json
