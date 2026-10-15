@@ -94,11 +94,33 @@ Use the pinned `lean-toolchain` and `lakefile.toml`. `lake-manifest.json` is cur
 5. **Performance audit:** profile individual slow proof files, warning volume and memory use before large rewriting. Favor narrower imports, specialized endpoints and split CI validation over blindly increasing elaborator limits.
 6. **Manuscript integrity:** do not change author prose as a side effect of Lean cleanup. Distinguish corrected B3 and finite `L`-age witnesses from the original printed B3. Review all TODO/validation notes independently.
 
+## One owner for each axiom check
+
+The general `Lean` workflow previously repeated **73**
+`scripts/CheckV10*.lean` verification steps already discovered and checked
+by the dedicated `V10 counting audit`. Those duplicate shell steps have
+been removed. The general workflow still performs the complete `lake build`,
+abstract Ramsey proof-route independence and transitive axiom checks,
+fat-tree checks, free-ancestral checks and envelope proofs.
+
+The `V10 counting audit` remains the one authoritative CI owner of every
+`CheckV10*.lean` script. Its dependency-sensitive selection, nightly
+exhaustive run, conservative batch parser, 240-script coverage regression,
+named-axiom validator and retained artifacts are unchanged. Source edits
+under `SuccessorTree/**` trigger both workflows. The structural ownership
+guard is `scripts/check-ci-audit-ownership.py`; the checkers' own proof
+correctness is still verified by Lean and `scripts/check-axiom-log.py`.
+
+This change removes nearly 800 lines of redundant workflow code. Its
+end-to-end runtime saving should be measured against an exact-head build,
+not inferred just from line count. No proof source or public theorem was
+modified.
+
 ## Next cleanup phases
 
 - Source reachability found no orphan Lean modules. Audit *private declarations and redundant lemmas inside active files* before considering deletions; obsolete fat-tree maintenance workflows were removed in PR #494.
 - Audit the root umbrella and `V10/All.lean` for redundant import lists; keep public APIs stable until known downstream repositories are updated.
-- Consolidate equivalent axiom-check steps in the very large `lean.yml` without reducing the set of named exported endpoints. This is separate from the first bounded-parallel change.
+- Keep the shared Lean workflow compact; any new V10 theorem check goes in the dynamically discovered dedicated V10 checker suite, not into a second hard-coded list.
 - Triage the categorized compiler warnings, then gradually replace broad `Mathlib.Tactic` imports with verified narrower dependencies. Avoid moving hundreds of modules until incremental build behavior is measured.
 
 Open performance issue: avoid a repository-wide re-elaboration on every minor Section 6 patch and investigate why the 2 GB Lake cache can become stale when the cache key does not change with sources.
