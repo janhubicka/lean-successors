@@ -121,6 +121,25 @@ end-to-end runtime saving should be measured against an exact-head build,
 not inferred just from line count. No proof source or public theorem was
 modified.
 
+## Historical CI experiments retired
+
+The source tree and Git history preserve the old fat-tree and shape-Ramsey
+development branches. Eleven branch-specific snapshot, v4-patch,
+offline-source and redundant one-off CI workflows have been retired.
+The old `verify-proof-patch.yml` workflow had write permission and is
+particularly inappropriate as an unattended research proof mutation route.
+
+The **active** theorem validation remains with the generic `Lean` workflow,
+the `V10 counting audit`, the focused `Envelope` workflow, manuscript
+annotation regressions and the available independent fat-tree adversarial
+review. `m2-source-export.yml` remains available for reproducible source
+archives. Former check scripts are still in Git and may be run directly;
+their mathematical endpoints are covered by the current main tests.
+
+No Lean source, theorem declaration or author manuscript prose was changed
+by the historical workflow pruning. This reduces configuration maintenance,
+not the number of actual proof obligations.
+
 ## Next cleanup phases
 
 - Source reachability found no orphan Lean modules. Audit *private declarations and redundant lemmas inside active files* before considering deletions; obsolete fat-tree maintenance workflows were removed in PR #494.
