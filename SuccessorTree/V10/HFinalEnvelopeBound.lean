@@ -126,7 +126,7 @@ theorem numericHTopSeeds_finalRun_selected_card_le_sharp
         LevelTree.lev (LevelTree.meet a b) = ell)
   let T : Finset Nat := S.filter (fun ell => 0 < ell ∧ ¬ Event ell)
   have hSeeds : X ⊆ ambientPrefixPool family A hAvoidA
-      (U : Set (Fin A.size)) := by
+      (↑U : Set (Fin N)) := by
     have hSingleton :
         (↑U : Set (Fin N)) = ({c} : Set (Fin N)) := by
       ext v
@@ -146,7 +146,10 @@ theorem numericHTopSeeds_finalRun_selected_card_le_sharp
     have hMem :
         i ∈ hStageOriginals K k N
           ({c} : Finset (Fin N)) (R.I 0) := by
-      simp [hStageOriginals, hName]
+      change i = c ∨
+        (i.val ∈ R.I 0 ∧
+          0 < (finiteNumericH K k N).freeLevel i.val)
+      exact Or.inl (Finset.mem_singleton.mp hName)
     exact hMem
   have hParams : ∀ i : Fin A.size, i.val ∈ R.I 0 →
       0 < A.freeLevel i.val → i ∈ V := by
@@ -154,7 +157,10 @@ theorem numericHTopSeeds_finalRun_selected_card_le_sharp
     have hMem :
         i ∈ hStageOriginals K k N
           ({c} : Finset (Fin N)) (R.I 0) := by
-      simp [hStageOriginals, hi, hFree]
+      change i = c ∨
+        (i.val ∈ R.I 0 ∧
+          0 < (finiteNumericH K k N).freeLevel i.val)
+      exact Or.inr ⟨hi,hFree⟩
     exact hMem
   have hForest :
       SMTree.Envelope.closure (admissibleKptSTree family)
