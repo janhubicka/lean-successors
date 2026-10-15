@@ -1,0 +1,19 @@
+% Review-only successor v10 note; do not change author mathematical prose.
+% Candidate pending exact-head full Lean and V10 counting/axiom CI.
+\todo[inline]{\textbf{v10 validation: finite bounded Kpt representation palette
+-- candidate.}
+The actual Kpt forest has finitely many nodes at every finite level.
+\texttt{GPlusBoundedPalette.lean} uses the already verified generic
+\texttt{SMTree.InitialNode} finiteness result to prove that genuine
+strict representing pairs $(S,T)$ with $\ell(T)\le b$ form a finite
+type. Their represented $G^+$ vertices therefore form a finite set.
+More generally all $q$-point tuples obtained from such bounded
+representing pairs form an explicitly finite palette. This is a
+coarse palette before imposing injectivity or the induced ordered
+type of a prescribed finite structure, so those restrictions will
+also be finite once represented inside this set.
+This statement does NOT assume that the verified numerical envelope
+bound itself produces a bounded representing pair for every required
+vertex: the geometric envelope-coverage and exact approximation-domain
+transfer remain to be checked. Neither the final colouring
+stabilization nor Theorem~6.26 is certified here.}
