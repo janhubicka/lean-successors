@@ -7,6 +7,7 @@ import SuccessorTree.V10.HTopRootStrictPrefix
 import SuccessorTree.V10.GPlusHTopSeedPairs
 import SuccessorTree.V10.HTopAlgorithmSeedHeight
 import SuccessorTree.V10.GPlusHTopAlgorithmCoverage
+import SuccessorTree.V10.GPlusAlgorithmFinitePalette
 import SuccessorTree.V10.GPlusAlgorithmRunCoverage
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
@@ -240,3 +241,7 @@ import SuccessorTree.V10.GPlusAlgorithmRunCoverage
 #print axioms SuccessorTree.V10.numericHTopGenerationSeeds_bounded_by_root_freeLevel
 #print axioms SuccessorTree.V10.numericHTopRun_covers_selected_GPlus_prefix
 #print axioms SuccessorTree.V10.canonicalNumericHTopRun_covers_selected_GPlus_prefix
+#print axioms SuccessorTree.V10.boundedGPlusPair_lift_of_prefixEnvelope
+#print axioms SuccessorTree.V10.numericKptAlgorithmRun_bounded_GPlus_pair
+#print axioms SuccessorTree.V10.numericKptAlgorithmRun_GPlus_seed_in_finite_palette
+#print axioms SuccessorTree.V10.numericKptAlgorithmRun_GPlus_seed_tuple_from_finite_palette
