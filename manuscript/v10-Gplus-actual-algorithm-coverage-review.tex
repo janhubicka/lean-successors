@@ -1,0 +1,24 @@
+% Review-only successor v10 note; preserve original manuscript mathematical prose.
+% Candidate until exact-head full Lean and transitive V10 counting/axiom CI succeeds.
+\todo[inline]{\textbf{v10 Algorithm~5.4: actual output covers genuine
+represented $G^+$ vertices -- candidate.}
+\texttt{GPlusAlgorithmRunCoverage.lean} specializes the previously checked
+Section~5 \texttt{AlgorithmRun.fullInvariant} to the ACTUAL normalized
+admissible Kpt SM-tree. Under the Section~5 one-level-pullback (E1)
+hypothesis and the explicit initial seed-height bound, the output
+$(R.F\,0).map$ covers every node of the final Kpt closure.
+If both endpoints of a genuine representing pair belong to that
+closure, the already verified ShapeMap-order-reflection and
+representative-independence theorems put its actual $G^+$ vertex in
+the range of the induced action. The statement extends to finite
+families of such pairs. Finally the genuine
+\texttt{canonicalAlgorithmRun} removes any separate existence
+assumption about Algorithm~5.4.
+These theorems DO NOT claim that the specific numerical $H^+$
+construction has already supplied those exact endpoint seeds, nor
+that the finite approximation has sufficient domain. The E1
+hypothesis has not been silently dropped; it must be discharged
+for the intended concrete application, or retained at the precise
+manuscript scope. The uniform numerical envelope bound alone does
+not establish this coverage. Theorem~6.26 remains open until the
+seed/approximation and Ramsey-colouring assembly is verified.}
