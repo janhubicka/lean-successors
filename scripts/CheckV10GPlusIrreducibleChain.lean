@@ -1,3 +1,4 @@
+import SuccessorTree.V10.GPlusInducedAction
 import SuccessorTree.V10.GPlusBoundedPalette
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
@@ -168,6 +169,38 @@ import SuccessorTree.V10.GPlusBoundedPalette
 #print axioms SuccessorTree.V10.NonedgePadding.socleCap_neutral_diagonal
 #print axioms SuccessorTree.V10.NonedgePadding.socleCapNode_neutralCapType
 #print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap_neutralCapType
+
+#print axioms SuccessorTree.V10.RawPartialTypeNode.neutralCapOfCode
+#print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap_raw_eq
+#print axioms SuccessorTree.V10.RawPartialTypeNode.neutralCapOfCode_isPrefix
+#print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap_le_of_prefix
+
+#print axioms SuccessorTree.V10.gPlusShapeImage_size_lt_of_source_size_lt
+#print axioms SuccessorTree.V10.gPlusShapeImage_size_le_of_source_size_le
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_prefix
+#print axioms SuccessorTree.V10.gPlusShapeImage_reflects_prefix
+#print axioms SuccessorTree.V10.gPlusShapeImage_properPrefix_iff
+
+#print axioms SuccessorTree.V10.FinitePartialCode.binary_eq_of_eq
+#print axioms SuccessorTree.V10.FinitePartialCode.eRelation_eq_of_eq
+#print axioms SuccessorTree.V10.shapeImage_retained_binary
+#print axioms SuccessorTree.V10.shapeImage_retained_E
+#print axioms SuccessorTree.V10.shapeImage_retainedLower_eq_lowerLast
+#print axioms SuccessorTree.V10.shapeImage_retainedUpper_eq_last
+#print axioms SuccessorTree.V10.gPlusShapeImage_binary_forward
+#print axioms SuccessorTree.V10.gPlusShapeImage_binary_reverse
+#print axioms SuccessorTree.V10.finiteGPlusE_reverse
+#print axioms SuccessorTree.V10.gPlusShapeImage_E_forward
+#print axioms SuccessorTree.V10.gPlusShapeImage_E_reverse
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_binary
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_E
+
+#print axioms SuccessorTree.V10.FinitePartialCode.unary_eq_of_eq
+#print axioms SuccessorTree.V10.FinitePartialCode.diagonal_eq_of_eq
+#print axioms SuccessorTree.V10.shapeImageRetainedLast_eq_last
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_unary
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_diagonal
+#print axioms SuccessorTree.V10.gPlusShapeImage_induced_LPlus
 
 #print axioms SuccessorTree.V10.boundedGPlusRepresentingPairFintype
 #print axioms SuccessorTree.V10.boundedRepresentableGPlusVertices
