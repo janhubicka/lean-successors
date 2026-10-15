@@ -418,3 +418,10 @@ import SuccessorTree.V10.BinaryUnaryAgeAdapter
 
 -- Theorem 6.26: neutralize any chosen allowed unary/diagonal singleton.
 import SuccessorTree.V10.SingletonNormalization
+
+-- Definition 6.40 transfer: countable H+ exact finite coherent prefixes.
+import SuccessorTree.V10.HCountablePartialTower
+-- Definition 6.40 transfer: canonical countable finite G+ vertices.
+import SuccessorTree.V10.GPlusFiniteCode
+-- Definition 6.40 transfer: canonical finite G+ initial-segment restriction.
+import SuccessorTree.V10.GPlusFinitePrefix
