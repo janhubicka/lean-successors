@@ -15,7 +15,7 @@ Those are observed workflow logs, not predicted speedups.
 
 ## Improvements in the audit PR
 
-- `scripts/run-v10-checks.py` retains one isolated `lake env lean` process and one exact named-axiom validation per checker, but uses **three bounded workers** and saves `v10-check-timings.json` to measure wall time and outliers.
+- Historical PR #493 first parallelized 240 per-file Lean checks with three workers. PR #496 superseded that path with the **single maintained** `scripts/run-v10-batches.py` runner: 30 conservative batches plus seven unmodified complex scripts; it preserves named transitive-axiom validation and JSON timing evidence. The obsolete per-file runner has been deleted rather than retained as a compatibility API.
 - `scripts/select-v10-checks.py` compares the actual full `push` range (`github.event.before` through HEAD), as well as the PR synthetic-merge base. Imported dependencies are followed transitively and unknown modified V10 modules are rejected.
 - A daily scheduled **full** V10 audit and workflow dispatch keep exhaustive coverage even when routine main merges use affected-consumer selection.
 - `scripts/audit-import-graph.py` generates `successor-import-audit.json`: module reachability from public umbrella and named checks, orphan **candidates**, direct-import hotspots, and indicative risk-token counts. It never deletes files or claims comments containing `sorry` are proof holes.
@@ -48,6 +48,11 @@ Lean files**. Every apparent `axiom` or `admit` token found by the static
 inventory was inside a comment, not an executable declaration. The separate
 transitive checker is still decisive for the exported theorem endpoints.
 
+With exact-head #496 validation (run 38781418191), batching checked **all
+240/240 original script interfaces and 1,321 named axiom directives** in
+70.838 seconds, down from 344.191 seconds for the historical parallel
+checker (and approximately 744 seconds for the original serial path).
+
 The cached full Lean build produced **989 warning lines**. A measured breakdown
 includes 429 transitional Mathlib module-system import warnings, 159
 deprecations, 67 unnecessary-`simpa` suggestions, 45 unused simp arguments,
@@ -79,7 +84,7 @@ lake env lean scripts/CheckShapeProofRoutes.lean
 
 # Selection is full outside a PR/push GitHub Actions event.
 python3 scripts/select-v10-checks.py
-python3 scripts/run-v10-checks.py --checks-file v10-selected-checks.txt --jobs 3
+python3 scripts/run-v10-batches.py --checks-file v10-selected-checks.txt --jobs 2
 python3 scripts/audit-import-graph.py
 ```
 
