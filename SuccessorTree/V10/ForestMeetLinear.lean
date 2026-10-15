@@ -25,7 +25,7 @@ namespace SuccessorTree.V10
 
 universe u
 
-variable {T : Type u} [PartialOrder T] [LevelTree T] [DecidableEq T]
+variable {T : Type u} [PartialOrder T] [LevelTree T]
 
 private theorem forest_meet_comm_of_related {a b : T}
     (h : SMTree.Envelope.SameComponent a b) :
@@ -110,7 +110,7 @@ private theorem forest_strict_cross_meet_is_old
 /-- If all compatible new cross-meets are either old or one
 fixed new branch point y, inserting w adds only w and y. -/
 private theorem forestFiniteMeetNodes_insert_subset_of_cross
-    (w : T) (V : Finset T) (y : T)
+    [DecidableEq T] (w : T) (V : Finset T) (y : T)
     (hcross : ∀ a : T, a ∈ V →
       SMTree.Envelope.SameComponent w a →
       LevelTree.meet w a ∈ forestFiniteMeetNodes V ∪ {y}) :
@@ -156,7 +156,8 @@ private theorem forestFiniteMeetNodes_insert_subset_of_cross
   simpa only [Finset.mem_union, Finset.mem_singleton] using hMem
 
 /-- The highest cross-meet is the only potential new branch point. -/
-theorem forestFiniteMeetNodes_insert_cover (w : T) (V : Finset T) :
+theorem forestFiniteMeetNodes_insert_cover
+    [DecidableEq T] (w : T) (V : Finset T) :
     ∃ y : T, forestFiniteMeetNodes (insert w V) ⊆
       (forestFiniteMeetNodes V ∪ {w}) ∪ {y} := by
   classical
