@@ -9,6 +9,8 @@ on:
       - 'scripts/check_v10_*.py'
       - 'scripts/select-v10-checks.py'
       - 'scripts/run-v10-checks.py'
+      - 'scripts/run-v10-batches.py'
+      - 'scripts/test_v10_batches.py'
       - 'scripts/audit-import-graph.py'
       - 'scripts/test_ci_audits.py'
       - 'scripts/check-axiom-log.py'
@@ -24,6 +26,8 @@ on:
       - 'scripts/check_v10_*.py'
       - 'scripts/select-v10-checks.py'
       - 'scripts/run-v10-checks.py'
+      - 'scripts/run-v10-batches.py'
+      - 'scripts/test_v10_batches.py'
       - 'scripts/audit-import-graph.py'
       - 'scripts/test_ci_audits.py'
       - 'scripts/check-axiom-log.py'
@@ -76,8 +80,10 @@ jobs:
           fi
       - name: Download Mathlib cache
         run: lake exe cache get
-      - name: Fast CI-helper regression tests
-        run: python3 scripts/test_ci_audits.py
+      - name: Fast CI-helper and batching coverage regressions
+        run: |
+          python3 scripts/test_ci_audits.py
+          python3 scripts/test_v10_batches.py
       - name: Select transitive V10 axiom checks and finite regressions
         id: scope
         shell: bash
@@ -130,11 +136,11 @@ jobs:
           mapfile -t targets < <(sed -nE 's/^import (SuccessorTree\.[A-Za-z0-9_.]+)$/\1/p' "${checks[@]}" | sort -u)
           test "${#targets[@]}" -gt 0
           lake build "${targets[@]}" 2>&1 | tee v10-build.log
-      - name: Check affected v10 theorem axioms (bounded parallel)
+      - name: Check affected v10 theorem axioms (bounded exact batches)
         shell: bash
         run: |
           set -euo pipefail
-          python3 scripts/run-v10-checks.py --checks-file v10-selected-checks.txt --jobs 3
+          python3 scripts/run-v10-batches.py --checks-file v10-selected-checks.txt --jobs 2 --batch-size 8 --max-axioms 64
       - name: Seed shared Lake cache on main only
         if: ${{ github.ref == 'refs/heads/main' && steps.lake-cache.outputs.cache-hit != 'true' && success() }}
         uses: actions/cache/save@v5
@@ -154,6 +160,9 @@ jobs:
             scripts/audit-import-graph.py
             scripts/test_ci_audits.py
             scripts/run-v10-checks.py
+            scripts/run-v10-batches.py
+            scripts/test_v10_batches.py
+            scripts/v10_batches_generated/*.lean
             scripts/select-v10-checks.py
             v10-actual-meet-regression.json
             v10-original-pool-regression.json

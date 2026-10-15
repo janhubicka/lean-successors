@@ -4,3 +4,6 @@ lake-manifest.json
 *.ilean
 *.c
 .DS_Store
+
+# Ephemeral exact-axiom CI batch sources (regenerated deterministically)
+scripts/v10_batches_generated/
