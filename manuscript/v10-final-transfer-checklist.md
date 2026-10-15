@@ -240,3 +240,57 @@ supply the induced action used by the finite-colouring pullback.
 
 Keep review-only TeX notes in Git. Do not change author proof prose,
 weaken axioms, add higher arity or manufacture E on L-only witnesses.
+
+## Comparable G+ atom verification progress (15 October 2026)
+
+The previous GREEN checkpoints are unchanged: PRs #475--#478 have
+completed exact-head full Lean and V10 transitive/counting workflows.
+In particular the actual source-code reconstruction and injectivity
+of the G+ ShapeMap image, including the both-way representative equality
+from Observation 6.42, are checked.
+
+PR #479 `GPlusNeutralCapType.lean`, corrected exact head
+`86a6d9f8af899db194a02292beb3919145d043cb`:
+the full Lean build passed after explicitly exposing two original-socle
+index bounds to omega. Exact-head transitive/counting workflows were
+still in progress at this checkpoint. Its full L+ neutral type is
+deterministic from a finite G+ code, with all type vertex L atoms false,
+incoming E all true and outgoing E all false.
+
+PR #480 `GPlusCanonicalCapPrefix.lean`, corrected head
+`15d13988729455890b72d263f01b1d22733dfacd`:
+the first build failed only at an abstract dependent `calc` transitivity
+step in the finite-code restriction equality. The proof was
+rewritten to use one explicitly typed neutral-cap restriction equality
+and the already proved code-prefix equality; the mathematical statement
+is unchanged. Awaiting exact-head CI.
+
+PR #481 `GPlusShapeImagePrefix.lean`, corrected head
+`744ef3711dbc576a32c9a2b58713d67c3782b107`:
+five candidate lemmas establish strict/weak image-size monotonicity,
+preservation and reflection of genuine finite code prefixes, and
+proper-prefix equivalence; the reflection uses actual verified finite
+prefixes, uniqueness of same-size prefixes in one cone, and the
+checked injectivity theorem. Awaiting exact-head CI.
+
+PR #482 `GPlusShapeImageSingletonAtoms.lean`, independent of the cap
+prefix work and stacked only on checked PR #478, head
+`7e2f73bf122ebdb731506e0e42743123c2a10b03`:
+candidate exact unary and diagonal atom preservation at the
+retained last coordinate of each image vertex. Its full Lean build
+passed, transitive/counting audit pending at this checkpoint.
+
+PR #483 `GPlusComparableAtoms.lean`, corrected head
+`c756ba1f07748c77aeac2d623cdbc54ba99da625`:
+all four directed-binary and E orientation equalities for proper-prefix
+pairs from the checked retained-code recovery; incomparable (including
+equal) cases use prefix reflection to prevent new atoms. All 13
+declarations are in the full build and standard-axiom checker, awaiting
+exact-head CI. Together with PR #482, if verified and combined,
+this completes the induced finite L+ action required in Observation 6.42.
+
+Manuscript review notes are committed individually in Git; do not
+alter author mathematical proof prose. Theorem 6.26 still needs
+actual Algorithm 5.4 envelope representation, finite approximation
+palette/colour stabilization and final ordered K→H→G→K transfer,
+beyond its already checked numerical envelope bound.
