@@ -93,3 +93,74 @@ strictly above r.
 - Recheck the exact end-to-end Lean theorem and #print axioms
   before marking Proposition 6.44 GREEN. The normalized language
   adapter and A3(2) equality caveat are separately tracked.
+
+## 15 October 2026: merged normalized endpoint
+
+**GREEN at the exact normalized finite-\(H^+\) scope.** PR
+[#447](https://github.com/janhubicka/lean-successors/pull/447)
+merged an end-to-end theorem
+\`SuccessorTree.V10.numericH_actualRun_uniform_sharp_envelope_bound\`
+in \`HUniformEnvelopeBound.lean\`.
+
+For finite unary, directed binary and diagonal Boolean records,
+a finite normalized forbidden family, positive \(k\), forbidden-free
+\`finiteNumericHL K k N\`, an actual root \(c\), a finite set of
+top-generation block indices with each chosen prefix inside the
+root's actual free cut, and a genuine \`AlgorithmRun\` on the literal
+seed family, the theorem proves
+
+\[
+ |I|\le 2(q+1+M)+R(M)+1,\qquad
+ R(t)=\sum_{F\in\mathcal F}(t+1)^{|F|},
+ \quad M=\operatorname{descendingCumulativeBudget}(R,q,k-1).
+\]
+
+The proof includes the actual-run I1/I2/I3 partition, L-only
+failed-B3 test, original-labelled I3 signatures, higher-generation
+original addresses, top-generation base, root-once induction,
+positive-free-cut/real-generation classification, the sharp generic
+forest meet-closure \(2N\), its actual Kpt application, and the final
+level count. No \`sorry\`, \`admit\`, or new global axiom occurs in
+the new source modules. Exact-head workflows succeeded:
+
+- Lean: 38668545390.
+- V10 counting and named transitive axioms: 38668545463.
+- Source snapshot: 38668545404.
+
+The signed GitHub head was
+\`4a8771ff41679bdf7af235f5e80e2cd30727c4c0\`.
+The source/checker blobs of the earlier #443/#445/#446 branches
+match the merged files; the obsolete PRs are closed.
+
+### Do not conflate this with the original unqualified proposition
+
+The source proposition quantifies over *every* enumerated structure
+\(K\) of ordered age in \(\mathcal K_{\mathcal F}\), and constructs
+a single embedding \(K\to G^+\) controlling envelopes of all
+isomorphic finite \(A'\subseteq K\). The normalized Lean endpoint
+is a bound for an *already supplied concrete finite numerical*
+\(H^+\), top seed and actual Algorithm 5.4 run. The following
+transfers remain open in the manuscript as written:
+
+1. Construct the prescribed \(K\to H^+\to G^+\) embedding uniformly
+   for all \(A'\), including the root/free-cut condition,
+   finite truncations, the singleton convention and \(q=0\).
+2. Translate the paper's finite **unary/binary** relational
+   language to the normalized Boolean-record representation,
+   preserving induced tuples, diagonal records, irreducibility,
+   and forbidden singletons. **Higher relation arities are not
+   part of this v10 pass**.
+3. Validate the universal \(G^+\), its enumeration \(G^\omega\),
+   Lemma 6.41, Observation 6.42 and the composition of embeddings
+   and colourings in Theorem 6.26 using the checked finite
+   shape-preserving Ramsey theorem.
+4. Check the precise no-forbidden-family, empty-A and
+   integer \(k\) conventions against the author's statements.
+
+Earlier sections of this ledger are a historical sequence of proof
+obligations. The geometric induction and the sharp forest bound are
+now **discharged in the merged normalized theorem**; this later
+checkpoint supersedes their earlier OPEN status. It does not
+retroactively validate the general-language or universal-transfer
+steps. The v10 mathematical prose and earlier four repairs remain
+frozen. Add correction notes and validation markers only.

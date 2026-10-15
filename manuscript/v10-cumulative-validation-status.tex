@@ -425,3 +425,58 @@ Earlier step-by-step notes are preserved in the review archive.}
 % root level, yielding b(A)=2(q+1+M)+R(M)+1.
 % Handle q=0 via the empty-envelope convention and F=empty
 % with R=0. The general-language/nullary adapter is postponed.
+
+% ================================================================
+% 2026-10-15 -- FULL NORMALIZED FINITE H+ UPPER BOUND: GREEN (scoped).
+% Supersedes the earlier chronological Section 6.44 OPEN notes above,
+% but only for the precise Lean statement and its prerequisites.
+%
+% \textbf{Lean end-to-end normalized Proposition 6.44 bound -- GREEN.}
+% \texttt{SuccessorTree/V10/HUniformEnvelopeBound.lean} proves
+% \texttt{numericH\_actualRun\_uniform\_sharp\_envelope\_bound}.
+% For the concrete finite unary/directed-binary/diagonal Boolean
+% signature, the literal forbidden-free finite numerical H+ model,
+% bounded forbidden-pattern sizes, a root c with prescribed
+% top-generation seed prefixes, and the genuine AlgorithmRun R,
+% it yields
+%   |I(R)| <= 2(q+1+M) + R(M) + 1,
+% where R(t)=sum_F(t+1)^|F| and M is the exact descending
+% cumulative generation budget starting with q+1.
+% The complete proof derives the I1/I2 charge, actual selected
+% closure B3 failure, induced L-only I3 signatures, strict
+% generation of chosen original addresses, root-once numerical
+% induction, finite original-pool cardinal bound and sharp 2N
+% forest meet-closure level count. No E is introduced on finite
+% forbidden L-age witnesses.
+%
+% Merged PR 447, head 4a8771ff41679bdf7af235f5e80e2cd30727c4c0;
+% full Lean workflow 38668545390, V10 counting/axiom audit
+% 38668545463 and M2/source snapshot 38668545404 succeeded.
+% The exact end-to-end theorem's transitive axiom checker
+% \texttt{scripts/CheckV10HUniformEnvelopeBound.lean} was run;
+% allowed logical axioms are propext, Classical.choice, Quot.sound.
+% Source modules and checks from #443, #445 and #446 match the
+% merged PR 447 file blobs; their obsolete branches were closed.
+%
+% \textbf{Original Proposition 6.44 / Theorem 6.26 -- OPEN transfer.}
+% TODO (Řehořek): Derive for EVERY enumerated K with ordered
+% age in K_F the manuscript's embedding K -> H+ -> G+ and the
+% concrete run/root/seed hypotheses of the Lean theorem for
+% every nonempty A' of fixed size q, with the SAME bound b(A).
+% In particular verify the selection and finite truncation of
+% the root c with |max A'| < fl(c), and check the q=0 convention.
+% TODO (Řehořek): Supply the finite unary/binary language
+% dictionary to the normalized Boolean record signature,
+% including forbidden singleton/nonempty irreducibility and
+% diagonal/unary/both directed L-atoms. Higher arities remain
+% outside the existing v10 theorem and must not be undertaken now.
+% TODO (Řehořek): Verify Lemma 6.41 / Observation 6.42 and the
+% universal G+ / G^omega / K embedding transfer of Theorem 6.26.
+% The finite approximation Ramsey theorem is separately GREEN,
+% but this application is not obtained automatically from the
+% normalized finite H+ upper-bound endpoint.
+% TODO (Řehořek): Match the manuscript's q>0 and F=empty
+% conventions to the exported theorem's k>0 and family-size
+% hypotheses without silently strengthening the manuscript.
+% Preserve all four earlier approved v10 repair patches and
+% author proof text. Validation updates remain TODOs/markers only.
