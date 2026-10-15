@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusOrdinaryCode
+import SuccessorTree.V10.GPlusOrdinaryCompatibility
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -91,3 +91,8 @@ import SuccessorTree.V10.GPlusOrdinaryCode
 #print axioms SuccessorTree.V10.AdmissibleKptNode.toGPlus_code
 #print axioms SuccessorTree.V10.ordinaryCode_eq_of_sameOrdinary
 #print axioms SuccessorTree.V10.admissibleKpt_toGPlus_eq_of_sameOrdinary
+
+#print axioms SuccessorTree.V10.sameOrdinary_of_ordinaryCode_eq
+#print axioms SuccessorTree.V10.sameOrdinary_iff_ordinaryCode_eq
+#print axioms SuccessorTree.V10.admissibleKpt_sameOrdinary_of_toGPlus_eq
+#print axioms SuccessorTree.V10.shapeMap_preserves_ordinaryCode_eq
