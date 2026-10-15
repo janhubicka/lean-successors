@@ -1,6 +1,11 @@
 import SuccessorTree.V10.NonedgePaddingTypes
+import SuccessorTree.V10.NonedgePaddingCapTypes
 
 #print axioms SuccessorTree.V10.NonedgePadding.model_upper_type
 #print axioms SuccessorTree.V10.NonedgePadding.upper_cut_le_free
 #print axioms SuccessorTree.V10.NonedgePadding.upper_type_admissible
 #print axioms SuccessorTree.V10.NonedgePadding.upper_type_lReduct
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.fullSocle_ordinaryType
+#print axioms SuccessorTree.V10.PartialTypeWithE.ordinaryTypes_sameSocle
+#print axioms SuccessorTree.V10.NonedgePadding.socleCapNode_ordinaryType
+#print axioms SuccessorTree.V10.NonedgePadding.simultaneous_types_in_socleCapNode
