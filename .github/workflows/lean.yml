@@ -718,6 +718,17 @@ jobs:
             cat proof-audit/CheckV10HHigherPoolCumulativeBound-axioms.log
             exit 1
           }
+      - name: Check final H original-pool bound by selected positive real generations
+        run: |
+          set -o pipefail
+          if ! lake env lean scripts/CheckV10HFinalPoolPositiveGeneration.lean > proof-audit/h-final-pool-axioms.log 2>&1; then
+            cat proof-audit/h-final-pool-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/h-final-pool-axioms.log scripts/CheckV10HFinalPoolPositiveGeneration.lean || {
+            cat proof-audit/h-final-pool-axioms.log
+            exit 1
+          }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check envelope section statements and axioms

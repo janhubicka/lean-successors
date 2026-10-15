@@ -388,3 +388,6 @@ import SuccessorTree.V10.HTopAlgorithmRunBase
 import SuccessorTree.V10.HActualGenerationEventBound
 -- V10 Section 6: validated scope of HHigherPoolCumulativeBound.
 import SuccessorTree.V10.HHigherPoolCumulativeBound
+
+-- Proposition 6.44: real positive E-free original addresses and final pool bound.
+import SuccessorTree.V10.HFinalPoolPositiveGeneration
