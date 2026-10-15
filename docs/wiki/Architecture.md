@@ -48,6 +48,15 @@ directly when their imports are not already reachable.
 
 **Finite shape results:** `SuccessorTree.ShapeFiniteBounds` and `SuccessorTree.ShapeFiniteCorollaries` provide bounded and exact finite-terminal corollaries. Their compactness and padding steps are not arbitrary-strength infinite theorems.
 
+**M2 gap factorization:** `SMTree.exists_lower_gap_once_factor` in
+`Canonical.lean` is the single proof that extracts a genuine
+`F = D ∘ G` one-gap factor with exact frozen-prefix agreement and the
+level-lowering equation. The earlier `exists_lower_gap_once` separately
+reproved the same M2 step and is removed; its sole internal consumer
+now projects the necessary conclusions directly from the stronger theorem.
+No compatibility alias is retained. `ShapeSplit` continues to reuse
+the same factorized lemma.
+
 **Envelope construction:** `SuccessorTree.Envelope*` builds the `SMTree` envelope machinery and Algorithm 5.4-style invariants. These modules should continue to expose abstract input/output statements rather than importing the `V10` finite model.
 
 **Normalized v10 application:** `SuccessorTree.V10.KptCompleteSMTree` proves M1, corrected M2 with finite common-socle age, and literal M3. The `V10/I3*`, `V10/H*`, and `V10/GPlus*` modules are specialized to finite relational-type records and the Section 6 counting/application proofs.
