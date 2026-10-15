@@ -11,6 +11,7 @@ import SuccessorTree.V10.GPlusHTopAlgorithmCoverage
 import SuccessorTree.V10.GPlusAlgorithmFinitePalette
 import SuccessorTree.V10.KptSimultaneousFinitePalette
 import SuccessorTree.V10.GPlusAlgorithmRunCoverage
+import SuccessorTree.V10.GPlusFiniteApproxAction
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -261,3 +262,7 @@ import SuccessorTree.V10.GPlusAlgorithmRunCoverage
 #print axioms SuccessorTree.V10.finiteFreeCutE_isFreeCut
 #print axioms SuccessorTree.V10.finiteFreeCutE_canonicalFreeLevel
 #print axioms SuccessorTree.V10.EnumeratedPartialStructure.ofFreeCutProfile
+#print axioms SuccessorTree.V10.gPlusShapeImage_eq_of_agree_bounded_pair
+#print axioms SuccessorTree.V10.gPlusShapeImage_eq_of_agree_bounded_palette
+#print axioms SuccessorTree.V10.gPlusShapeImage_eq_of_agree_bounded_tuple
+#print axioms SuccessorTree.V10.gPlusShapeImage_eq_of_ramseyApprox_eq

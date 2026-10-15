@@ -1,0 +1,24 @@
+% Review-only successor v10 annotation; preserve the author's proof prose.
+% Exact-head full Lean and transitive V10 axiom audit required before GREEN.
+\todo[inline]{\textbf{v10 Theorem~6.26: finite approximations determine their
+action on the bounded $G^+$ representation palette -- candidate.}
+\texttt{GPlusFiniteApproxAction.lean} proves that two genuine Kpt
+ShapeMaps agreeing at all nodes of source level at most $b$ have
+identical images of every $G^+$ vertex represented by a strict
+Kpt pair whose upper level is at most $b$. The proof uses the
+already verified representative-pair independence; it compares
+both endpoint images and does not assume any new $G^+$ action.
+It extends pointwise to all $q$-tuples in the actual finite
+bounded representation palette. In particular, equal
+\texttt{ramseyApprox} values at level $b+1$ imply identical
+induced $G^+$ tuple images, independently of the total
+ShapeMap representatives chosen.
+This is the precise finiteness/well-definedness input for the
+colouring $\chi_e''$ on $AM_b^0$ in the manuscript, rather than
+just a numerical envelope bound. Still needed: reconcile the
+source prefix indexing with the action on the manuscript's
+finite approximation $AM_b^0$, show the preimages of all target
+copies lie in this bounded palette, and compose the final
+ordered embeddings. The Section~5 E1 dependency remains
+explicit for the envelope construction and is not solved
+by this independent action lemma. Theorem~6.26 stays open.}
