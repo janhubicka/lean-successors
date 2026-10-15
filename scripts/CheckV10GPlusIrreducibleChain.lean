@@ -1,6 +1,7 @@
 import SuccessorTree.V10.GPlusInducedAction
 import SuccessorTree.V10.GPlusBoundedPalette
 import SuccessorTree.V10.GPlusEnvelopePairLift
+import SuccessorTree.V10.KptE1FreeCutRealization
 import SuccessorTree.V10.GPlusCommonUpperRepresentation
 import SuccessorTree.V10.GPlusHPrefixCommonUpper
 import SuccessorTree.V10.HTopRootStrictPrefix
@@ -250,3 +251,13 @@ import SuccessorTree.V10.GPlusAlgorithmRunCoverage
 #print axioms SuccessorTree.V10.boundedGPlusPaletteIndices
 #print axioms SuccessorTree.V10.boundedGPlusPaletteIndicesFintype
 #print axioms SuccessorTree.V10.normalizedKpt_shapeRamsey_boundedGPlusPalette
+
+#print axioms SuccessorTree.V10.finiteFreeCutE
+#print axioms SuccessorTree.V10.finiteFreeCutE_true_iff
+#print axioms SuccessorTree.V10.finiteFreeCutE_false_at_cut
+#print axioms SuccessorTree.V10.finiteFreeCutE_spaced
+#print axioms SuccessorTree.V10.finiteFreeCutE_downward
+#print axioms SuccessorTree.V10.finiteFreeCutE_inside
+#print axioms SuccessorTree.V10.finiteFreeCutE_isFreeCut
+#print axioms SuccessorTree.V10.finiteFreeCutE_canonicalFreeLevel
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.ofFreeCutProfile
