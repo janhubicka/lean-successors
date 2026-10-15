@@ -355,3 +355,5 @@ import SuccessorTree.V10.KptE1ReindexPrefix
 #print axioms SuccessorTree.V10.kptShapeOldRetainedIndex
 #print axioms SuccessorTree.V10.kptShapeRetainedIndices_compatible
 #print axioms SuccessorTree.V10.kptShapeReindex_restrict_last
+#print axioms SuccessorTree.V10.PartialTypeWithE.reindexOrdinary_terminalLetter
+#print axioms SuccessorTree.V10.kptShapeReindex_terminalLetter
