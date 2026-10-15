@@ -13,6 +13,8 @@ on:
       - 'scripts/audit-import-graph.py'
       - 'scripts/test_ci_audits.py'
       - 'scripts/check-axiom-log.py'
+      - 'scripts/check-successor-proof-integrity.py'
+      - 'scripts/test-successor-proof-integrity.py'
       - 'lean-toolchain'
       - 'lakefile.toml'
       - 'lake-manifest.json'
@@ -29,6 +31,8 @@ on:
       - 'scripts/audit-import-graph.py'
       - 'scripts/test_ci_audits.py'
       - 'scripts/check-axiom-log.py'
+      - 'scripts/check-successor-proof-integrity.py'
+      - 'scripts/test-successor-proof-integrity.py'
       - 'lean-toolchain'
       - 'lakefile.toml'
       - 'lake-manifest.json'
@@ -51,6 +55,10 @@ jobs:
         with:
           # For PR synthetic merge commits, retain the base parent for diff.
           fetch-depth: 2
+      - name: Reject admissions and unverified axioms in all Lean source
+        run: |
+          python3 scripts/test-successor-proof-integrity.py
+          python3 scripts/check-successor-proof-integrity.py
       - name: Cache Lean toolchain
         uses: actions/cache@v5
         with:
