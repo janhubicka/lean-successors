@@ -123,9 +123,7 @@ theorem finiteGPlus_irreducible_copy_strictMono_size
   obtain hAB | hBA := finiteGPlus_irreducible_copy_pairwise_comparable
     F hIrred f hBinary a b (ne_of_lt hab)
   · exact hAB.2
-  · have hLe := hSize (le_of_lt hab)
-    have hLt := hBA.2
-    omega
+  · exact False.elim (not_lt_of_ge (hSize (le_of_lt hab)) hBA.2)
 
 /-- Forward atoms on a comparable pair are read unchanged in any
 common larger code. In particular false atoms are preserved. -/
@@ -215,8 +213,9 @@ theorem finiteGPlus_irreducible_copy_realizes_top
     F hIrred f hStrict hBinary
   have hOrder : StrictMono (fun a : Fin r => (f a).val.size-1) := by
     intro a b hab
+    change (f a).val.size-1 < (f b).val.size-1
     have hPos := finiteGPlusVertex_size_pos (f a)
-    have hLt := hStrict hab
+    have hLt : (f a).val.size < (f b).val.size := hStrict hab
     omega
   have hCarrier : ∀ a, (f a).val.size-1 ∈ C.val.toAgeModel.carrier := by
     intro a
