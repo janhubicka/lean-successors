@@ -115,54 +115,12 @@ theorem FinitePartialCode.ofEnumerated_initialSegment
     (n : Nat) (hn : n ≤ A.size) :
     (FinitePartialCode.ofEnumerated A).restrict n hn =
       FinitePartialCode.ofEnumerated (A.initialSegment n hn) := by
-  cases h : (FinitePartialCode.ofEnumerated A).restrict n hn with
-  | mk size binary unary diagonal eRelation =>
-      have hSize : size = n := by
-        simpa [h] using
-          (FinitePartialCode.restrict_size
-            (FinitePartialCode.ofEnumerated A) n hn)
-      subst size
-      have hBinary :
-          binary = (FinitePartialCode.ofEnumerated
-            (A.initialSegment n hn)).binary := by
-        funext i j a
-        have hAt := congrArg
-          (fun C : FinitePartialCode db du dd => C.binary i j a) h
-        simpa [FinitePartialCode.ofEnumerated,
-          FinitePartialCode.restrict,
-          EnumeratedPartialStructure.initialSegment,
-          AgeTestModel.restrictCarrier] using hAt.symm
-      have hUnary :
-          unary = (FinitePartialCode.ofEnumerated
-            (A.initialSegment n hn)).unary := by
-        funext i a
-        have hAt := congrArg
-          (fun C : FinitePartialCode db du dd => C.unary i a) h
-        simpa [FinitePartialCode.ofEnumerated,
-          FinitePartialCode.restrict,
-          EnumeratedPartialStructure.initialSegment,
-          AgeTestModel.restrictCarrier] using hAt.symm
-      have hDiagonal :
-          diagonal = (FinitePartialCode.ofEnumerated
-            (A.initialSegment n hn)).diagonal := by
-        funext i a
-        have hAt := congrArg
-          (fun C : FinitePartialCode db du dd => C.diagonal i a) h
-        simpa [FinitePartialCode.ofEnumerated,
-          FinitePartialCode.restrict,
-          EnumeratedPartialStructure.initialSegment,
-          AgeTestModel.restrictCarrier] using hAt.symm
-      have hE :
-          eRelation = (FinitePartialCode.ofEnumerated
-            (A.initialSegment n hn)).eRelation := by
-        funext i j
-        have hAt := congrArg
-          (fun C : FinitePartialCode db du dd => C.eRelation i j) h
-        simpa [FinitePartialCode.ofEnumerated,
-          FinitePartialCode.restrict,
-          EnumeratedPartialStructure.initialSegment, j.isLt] using hAt.symm
-      simp [FinitePartialCode.ofEnumerated,
-        hBinary,hUnary,hDiagonal,hE] at *
+  classical
+  -- Both sides have literal finite size n and identical on-carrier
+  -- atomic records; at each j : Fin n the E target guard is true.
+  simp [FinitePartialCode.ofEnumerated, FinitePartialCode.restrict,
+    EnumeratedPartialStructure.initialSegment,
+    AgeTestModel.restrictCarrier]
 
 /-- Positive-length prefixes remain canonical forbidden-free
 G+ vertices, not merely arbitrary finite table records. -/
@@ -173,19 +131,20 @@ noncomputable def FiniteGPlusVertex.restrict
     (n : Nat) (hPos : 0 < n) (hn : n ≤ C.val.size) :
     FiniteGPlusVertex family := by
   classical
-  obtain ⟨A,hCode,hAPos,hAvoid⟩ := C.property
+  let A : EnumeratedPartialStructure db du dd :=
+    Classical.choose C.property
+  obtain ⟨hCode,hAPos,hAvoid⟩ := Classical.choose_spec C.property
   have hnA : n ≤ A.size := by
-    rw [hCode] at hn
-    exact hn
-  let B := A.initialSegment n hnA
+    simpa [hCode] using hn
+  let B : EnumeratedPartialStructure db du dd :=
+    A.initialSegment n hnA
   have hCodeB :
       C.val.restrict n hn = FinitePartialCode.ofEnumerated B := by
-    have hEq := FinitePartialCode.ofEnumerated_initialSegment A n hnA
-    cases hCode
-    exact hEq
+    have hCodeRestr := FinitePartialCode.ofEnumerated_initialSegment A n hnA
+    rw [hCode]
+    exact hCodeRestr
   exact ⟨C.val.restrict n hn,
-    B,hCodeB,by simpa only [B] using hPos,
-    A.initialSegment_avoids family hAvoid n hnA⟩
+    ⟨B,hCodeB,hPos,A.initialSegment_avoids family hAvoid n hnA⟩⟩
 
 /-- The selected prefix is a literal ancestor in the finite-code
 prefix relation of Definition 6.40. -/
@@ -195,6 +154,8 @@ theorem FiniteGPlusVertex.restrict_isPrefix
     (C : FiniteGPlusVertex family)
     (n : Nat) (hPos : 0 < n) (hn : n ≤ C.val.size) :
     (C.restrict n hPos hn).val.IsPrefix C.val := by
+  change ∃ h : n ≤ C.val.size,
+    (C.val.restrict n hn) = C.val.restrict n h
   exact ⟨hn,rfl⟩
 
 end SuccessorTree.V10
