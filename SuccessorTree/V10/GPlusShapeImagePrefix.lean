@@ -158,6 +158,7 @@ theorem gPlusShapeImage_properPrefix_iff
         rw [gPlusShapeImage_size F A, gPlusShapeImage_size F B]
         unfold gPlusShapeImageCut
         rw [hSame]
+      have hImageStrict := h.2
       omega
     exact ⟨hPrefix,hSize⟩
   · intro h
