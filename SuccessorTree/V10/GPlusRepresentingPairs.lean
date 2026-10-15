@@ -38,7 +38,7 @@ structure GPlusRepresentingPair
 namespace GPlusRepresentingPair
 
 /-- The numerical cut producing v(S,T) from the larger partial type. -/
-def cut (P : GPlusRepresentingPair family) : Nat :=
+noncomputable def cut (P : GPlusRepresentingPair family) : Nat :=
   LevelTree.lev P.lower + 1
 
 theorem cut_pos (P : GPlusRepresentingPair family) :
@@ -54,7 +54,7 @@ theorem cut_le_upper (P : GPlusRepresentingPair family) :
   omega
 
 /-- The actual admissible Kpt prefix whose ordinary code is v(S,T). -/
-def representedNode (P : GPlusRepresentingPair family) :
+noncomputable def representedNode (P : GPlusRepresentingPair family) :
     AdmissibleKptNode family :=
   admissibleKptAncestor P.upper P.cut P.cut_le_upper
 
