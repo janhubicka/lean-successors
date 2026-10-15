@@ -118,15 +118,16 @@ theorem numericHTopSeeds_actualRun_top_selected_is_seed_level
       (R.I (ell+1)) X
   have hSeedPool : X ⊆ ambientPrefixPool family A hAvoidA
       (U : Set (Fin N)) := by
-    exact numericHTopGenerationSeeds_subset_rootPool
-      family K k N hAvoidA c blocks hWithin
+    simpa [X, A, U] using
+      (numericHTopGenerationSeeds_subset_rootPool
+        family K k N hAvoidA c blocks hWithin)
   have hTop : ∃ x ∈ X, LevelTree.lev x = top := by
     refine ⟨A.kptOriginal family hAvoidA c,?_,?_⟩
     · change (A.kptOriginal family hAvoidA c) ∈
         numericHTopGenerationSeeds family K k N hAvoidA
           c blocks hWithin
       unfold numericHTopGenerationSeeds
-      simp
+      exact Finset.mem_insert.mpr (Or.inl (by dsimp [A]))
     · rfl
   have hBound := R.I_mem_bounds 0 (Nat.zero_le top) ell hSelected
   have hTopNeReal : top ≠ hPosition k p k := by
@@ -144,6 +145,7 @@ theorem numericHTopSeeds_actualRun_top_selected_is_seed_level
     have hNe : ell ≠ top := by
       intro heq
       exact hTopNeReal (heq.symm.trans hReal)
+    have hBoundTop : ell ≤ top := (hBound).2
     omega
   have hPos : 0 < ell := by
     rw [hReal]
@@ -229,6 +231,14 @@ theorem numericHTopSeeds_actualRun_top_level_from_block
       c blocks hWithin z hSeed p (by rw [hLev]; exact hReal)
   exact ⟨i,hi,hLev.symm.trans hZLevel⟩
 
+/-- The finite top-generation selected levels of one actual run,
+with the predicate's finite decidability fixed inside the definition. -/
+noncomputable def topSelectedRealPositions
+    (k top : Nat) (I : Set Nat) : Finset Nat := by
+  classical
+  exact (Finset.range (top+1)).filter
+    (fun ell => ell ∈ I ∧ ∃ p : Nat, ell = hPosition k p k)
+
 /-- The q top prefixes are the only real top-generation selected
 levels. This is the top-level part of the base a_k=q+1; the
 extra one accounts for the root original c in the pool V. -/
@@ -250,19 +260,20 @@ theorem numericHTopSeeds_actualRun_top_generation_card_le_blocks
       ((finiteNumericH K k N).freeLevel c.val))
     (hFamilyBound : ∀ bad, bad ∈ family →
       bad.patternCard ≤ k+1) :
-    ((Finset.range ((finiteNumericH K k N).freeLevel c.val + 1)).filter
-      (fun ell => ell ∈ R.I 0 ∧
-        ∃ p : Nat, ell = hPosition k p k)).card ≤ blocks.card := by
+    (topSelectedRealPositions k
+      ((finiteNumericH K k N).freeLevel c.val)
+      (R.I 0)).card ≤ blocks.card := by
   classical
   let top : Nat := (finiteNumericH K k N).freeLevel c.val
-  let L : Finset Nat := (Finset.range (top+1)).filter
-    (fun ell => ell ∈ R.I 0 ∧
-      ∃ p : Nat, ell = hPosition k p k)
+  let L : Finset Nat :=
+    topSelectedRealPositions k top (R.I 0)
   have hSub : L ⊆ blocks.image (fun i => hPosition k i k) := by
     intro ell hEll
     have hMem : ell ∈ R.I 0 ∧
         ∃ p : Nat, ell = hPosition k p k := by
-      simpa only [L,Finset.mem_filter] using hEll
+      change ell ∈ (Finset.range (top+1)).filter
+        (fun x => x ∈ R.I 0 ∧ ∃ p : Nat, x = hPosition k p k) at hEll
+      exact (Finset.mem_filter.mp hEll).2
     obtain ⟨p,hReal⟩ := hMem.2
     obtain ⟨i,hi,hEq⟩ :=
       numericHTopSeeds_actualRun_top_level_from_block
