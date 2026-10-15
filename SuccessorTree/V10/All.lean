@@ -425,3 +425,6 @@ import SuccessorTree.V10.HCountablePartialTower
 import SuccessorTree.V10.GPlusFiniteCode
 -- Definition 6.40 transfer: canonical finite G+ initial-segment restriction.
 import SuccessorTree.V10.GPlusFinitePrefix
+
+-- Original Definition 6.40: finite G+ nodes carry literal induced L+ tuple atoms.
+import SuccessorTree.V10.GPlusAtomicRelations
