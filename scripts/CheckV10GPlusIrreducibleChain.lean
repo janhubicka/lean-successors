@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusRetainedCoordinates
+import SuccessorTree.V10.GPlusRetainedCodeRecovery
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -148,3 +148,6 @@ import SuccessorTree.V10.GPlusRetainedCoordinates
 #print axioms SuccessorTree.V10.shapeImageRetainedIndex_strictMono
 #print axioms SuccessorTree.V10.shapeImageRetainedCode
 #print axioms SuccessorTree.V10.shapeImageRetainedCode_size
+
+#print axioms SuccessorTree.V10.shapeMap_recovers_ordinaryCode
+#print axioms SuccessorTree.V10.shapeMap_recovers_ordinaryCode_of_imagePrefix
