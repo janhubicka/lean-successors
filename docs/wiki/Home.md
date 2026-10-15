@@ -8,6 +8,7 @@
 - [Verified theorems and manuscript correspondence](Theorems-and-Manuscript.md): named public declarations, additional Lean lemmas, proof adjustments, and unproved final transfers.
 - [Adversarial audit and build performance](Audit-and-Performance.md): proof-assumption checks, removal policy for abandoned branches, CI commands, benchmark baseline, and practical profiling.
 - [Axioms and future generalizations](Axioms-and-Future-Work.md): how to preserve the existing theorem while eventually weakening duplication assumptions.
+- [Compiler warning triage](Compiler-Warnings.md): measured warning categories and safe incremental-import cleanup.
 
 The proof routes are explained in [`docs/shape-proof-routes.md`](../shape-proof-routes.md). The precise Section 6 validation ledger is [`docs/v10-section6-final-assembly-20261015.md`](../v10-section6-final-assembly-20261015.md). These are part of the audit trail, not a substitute for compiled declarations and transitive axiom checks.
 
