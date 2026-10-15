@@ -108,6 +108,8 @@ theorem NonedgePadding.socleCapNode_neutralCapType
           | some j =>
               change (NonedgePadding.twoNeutralL A).binary
                 (A.size+1) j.val t = false
+              have hj := j.isLt
+              change j.val < A.size at hj
               exact NonedgePadding.twoNeutralL_binary_new A
                 (A.size+1) j.val (by omega) (by omega)
                 (Or.inl (by omega)) t
@@ -116,6 +118,8 @@ theorem NonedgePadding.socleCapNode_neutralCapType
           | none =>
               change (NonedgePadding.twoNeutralL A).binary
                 i.val (A.size+1) t = false
+              have hi := i.isLt
+              change i.val < A.size at hi
               exact NonedgePadding.twoNeutralL_binary_new A
                 i.val (A.size+1) (by omega) (by omega)
                 (Or.inr (by omega)) t
