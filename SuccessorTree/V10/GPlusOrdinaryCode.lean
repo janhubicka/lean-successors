@@ -124,6 +124,7 @@ theorem admissibleKpt_toGPlus_eq_of_sameOrdinary
     _ = RawPartialTypeNode.ordinaryCode (⟨n,U⟩ : RawPartialTypeNode db du dd) :=
       ordinaryCode_eq_of_sameOrdinary T U hComp
     _ = (AdmissibleKptNode.toGPlus (⟨⟨n,U⟩,hU⟩ : AdmissibleKptNode family) hn).val :=
-      (AdmissibleKptNode.toGPlus_code _ _).symm
+      (AdmissibleKptNode.toGPlus_code
+        (⟨⟨n,U⟩,hU⟩ : AdmissibleKptNode family) hn).symm
 
 end SuccessorTree.V10
