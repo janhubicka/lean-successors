@@ -2,6 +2,29 @@
 
 ## Shared induction, separate one-dimensional inputs
 
+## Lean implementation hygiene
+
+The public direct and fat-tree shape Ramsey endpoints are
+`shapePreservingRamsey` and `shapePreservingRamsey_viaFatEllentuck`.
+Both call the same `shapePreservingRamsey_of_oneDimensional` theorem and
+supply their own independently proved one-dimensional input.
+
+In the maintainability cleanup, five redundant forwarding declarations
+were deleted: `shapeRamsey_one_relative`, `shapeRamsey_approximations`,
+`shapeRamsey_one_relative_viaFatEllentuck`,
+`shapeRamsey_approximations_viaFatEllentuck`, and
+`buildShapeProductStep_viaFatEllentuck`. None had proof consumers; the
+generic helper lemmas in `ShapeFiniteInduction` remain available when a
+relative statement is needed. Because the API is allowed to break, no
+deprecated aliases were kept.
+
+`CheckShapeProofRoutes.lean` still checks the actual **elaborated proof
+dependencies**, not merely imports: the direct theorem must depend on its
+direct one-dimensional Ramsey input and the common induction; the fat-tree
+theorem must use Ellentuck and the same induction, without using the
+direct one-dimensional theorem. Both retain named transitive axiom checks.
+
+
 `ShapeFiniteInduction` contains three proof-independent steps:
 
 - `shapeRamsey_one_relative_of_oneDimensional` pulls a colouring back along a
