@@ -1,4 +1,4 @@
-import SuccessorTree.V10.CountableGPlusEmbedding
+import SuccessorTree.V10.GPlusOrderedEmbedding
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -35,3 +35,34 @@ import SuccessorTree.V10.CountableGPlusEmbedding
 #print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGPlus_induced
 #print axioms SuccessorTree.V10.infiniteNumericHPlusToGPlus
 #print axioms SuccessorTree.V10.infiniteNumericHPlusToGPlus_induced
+#print axioms SuccessorTree.V10.FiniteLayerEnumeration.offset
+#print axioms SuccessorTree.V10.FiniteLayerEnumeration.offset_zero
+#print axioms SuccessorTree.V10.FiniteLayerEnumeration.offset_succ
+#print axioms SuccessorTree.V10.FiniteLayerEnumeration.offset_mono
+#print axioms SuccessorTree.V10.FiniteLayerEnumeration.index_le_offset
+#print axioms SuccessorTree.V10.FiniteLayerEnumeration.rank
+#print axioms SuccessorTree.V10.FiniteLayerEnumeration.rank_lt_of_layer_lt
+#print axioms SuccessorTree.V10.FiniteLayerEnumeration.rank_injective
+#print axioms SuccessorTree.V10.FiniteLayerEnumeration.rank_surjective
+#print axioms SuccessorTree.V10.FiniteLayerEnumeration.rankEquiv
+#print axioms SuccessorTree.V10.FiniteLayerEnumeration.rankEquiv_symm_layer_mono
+#print axioms SuccessorTree.V10.GPlusEnumeration.fixedSizeEquivTables
+#print axioms SuccessorTree.V10.GPlusEnumeration.Layer
+#print axioms SuccessorTree.V10.GPlusEnumeration.layerFintype
+#print axioms SuccessorTree.V10.GPlusEnumeration.width
+#print axioms SuccessorTree.V10.GPlusEnumeration.width_pos
+#print axioms SuccessorTree.V10.GPlusEnumeration.flatten
+#print axioms SuccessorTree.V10.GPlusEnumeration.flatten_bijective
+#print axioms SuccessorTree.V10.GPlusEnumeration.flattenEquiv
+#print axioms SuccessorTree.V10.GPlusEnumeration.numberedEquiv
+#print axioms SuccessorTree.V10.GPlusEnumeration.enumerate
+#print axioms SuccessorTree.V10.GPlusEnumeration.enumerate_size
+#print axioms SuccessorTree.V10.GPlusEnumeration.enumerate_size_mono
+#print axioms SuccessorTree.V10.GPlusEnumeration.enumeratedL_avoids_family
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGOmega
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGOmega_eval
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGOmega_strictMono
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGOmega_induced
+#print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGOmega_E
+#print axioms SuccessorTree.V10.infiniteNumericHPlusToGOmega
+#print axioms SuccessorTree.V10.infiniteNumericHPlusGOmega_avoids_family

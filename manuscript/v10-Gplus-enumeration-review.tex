@@ -1,0 +1,30 @@
+% Review-only note: no author mathematical prose is changed.
+% New enumeration and ordered transfer: candidate until full Lean/axiom CI passes.
+% Prerequisite PR 463 proof head de5913638fb72164432a8232cbde2c9f02fe5fc7
+% passed complete Lean/transitive axiom run 38728699198 and V10 run 38728699434.
+% PR 463 is not claimed merged here: its merge action was blocked in this continuation.
+\todo[inline]{\textbf{v10 validation: exhaustive size-respecting enumeration
+of $G^+$ and ordered $H$-to-$G^\omega$ transfer -- candidate.}
+For $n\geq1$, let $V_n$ be the finite set of valid $G^+$ codes of size $n$.
+Its finiteness follows from its inclusion in the finite type of all
+unary, diagonal, directed binary and $E$ tables of that size. The
+canonical code of $H^+\restriction_n$ witnesses $V_n\ne\varnothing$;
+no separate neutral-structure construction is needed. Choose a bijective
+numbering of each $V_n$ and concatenate these finite numberings in
+increasing $n$. The cumulative offsets prove both injectivity and
+surjectivity of this enumeration, together with nondecreasing sizes.
+These obligations are implemented in \texttt{FiniteLayerEnumeration.lean}
+and \texttt{GPlusSizeEnumeration.lean}; countability alone is not substituted
+for the enumeration statement. The checked forbidden-age theorem then
+applies to this actual enumeration.
+
+In \texttt{GPlusOrderedEmbedding.lean}, compose
+$v\mapsto\operatorname{code}(H^+\restriction_{v+1})$ with the inverse
+enumeration. The resulting ranks strictly increase, since nondecreasing
+sizes would otherwise contradict the strict increase from $u+1$ to $v+1$.
+The inverse identities transport the complete induced atomic records,
+including absent and reversed relations, into the actual $G^\omega$.
+The result uses the existing ordered induced-embedding record, rather
+than another unverified interface. All new declarations have explicit
+transitive standard-axiom checks. The final envelope-to-Ramsey assembly
+is not asserted here, and Theorem~6.26 is not yet certified in full.}
