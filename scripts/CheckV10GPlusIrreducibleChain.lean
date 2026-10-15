@@ -1,6 +1,7 @@
 import SuccessorTree.V10.GPlusInducedAction
 import SuccessorTree.V10.GPlusBoundedPalette
 import SuccessorTree.V10.GPlusEnvelopePairLift
+import SuccessorTree.V10.GPlusAlgorithmRunCoverage
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -213,3 +214,8 @@ import SuccessorTree.V10.GPlusEnvelopePairLift
 #print axioms SuccessorTree.V10.GPlusRepresentingPair.vertex_mem_gPlus_image_range
 #print axioms SuccessorTree.V10.gPlus_vertex_mem_image_of_Kpt_envelope
 #print axioms SuccessorTree.V10.gPlus_vertices_covered_by_Kpt_envelope
+
+#print axioms SuccessorTree.V10.numericKptAlgorithmRun_covers_GPlus_pair
+#print axioms SuccessorTree.V10.numericKptAlgorithmRun_covers_GPlus_seed_pair
+#print axioms SuccessorTree.V10.numericKptAlgorithmRun_covers_GPlus_pairs
+#print axioms SuccessorTree.V10.canonicalNumericKptAlgorithmRun_covers_GPlus_seed_pair
