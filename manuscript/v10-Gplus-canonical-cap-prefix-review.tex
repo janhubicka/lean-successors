@@ -1,0 +1,17 @@
+% Review-only successor v10 note; preserve the author's mathematical prose.
+% Candidate pending exact-head Lean and transitive standard-axiom CI.
+\todo[inline]{\textbf{v10 validation: canonical cap prefix coherence -- candidate.}
+\texttt{GPlusCanonicalCapPrefix.lean} defines the raw Kpt neutral cap
+determined solely by a finite $G^+$ code. Its equality with the
+genuine admissible cap is proved from the full two-neutral padding
+record, eliminating dependence on a chosen raw witness.
+Because this neutral terminal record commutes with ordinary finite
+code restriction, $A\subseteq B$ in the actual $G^+$ prefix tree
+implies $U_A\subseteq U_B$ in the genuine admissible Kpt forest,
+including all absent directed binary, unary, diagonal and E atoms.
+The next local step maps these Kpt prefixes through a genuine
+ShapeMap and takes their specified image cuts to show that the
+induced $G^+$ action preserves prefixes. Incomparability
+reflection and all-atom induced relation preservation require
+additional arguments; no complete Observation~6.42 or Theorem~6.26
+certificate is asserted by this candidate.}
