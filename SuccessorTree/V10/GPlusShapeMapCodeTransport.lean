@@ -73,12 +73,14 @@ theorem shapeMap_preserves_equal_ordinaryCode_restrict
     (hdB : d ≤ (F B).1.1) :
     (RawPartialTypeNode.ordinaryCode (F A).1).restrict d hdA =
       (RawPartialTypeNode.ordinaryCode (F B).1).restrict d hdB := by
-  have hEq := shapeMap_preserves_equal_ordinaryCode F A B hPos hCode
-  have hSizes : (F A).1.1 = (F B).1.1 := by
-    have h := congrArg FinitePartialCode.size hEq
-    exact h
-  have hdEq : hdA = hSizes ▸ hdB := Subsingleton.elim _ _
-  subst hdA
-  rw [hEq]
+  have hImage := shapeMap_preserves_equal_ordinaryCode F A B hPos hCode
+  have hCongr :
+      ∀ (X Y : FinitePartialCode db du dd), X = Y →
+        ∀ (hx : d ≤ X.size) (hy : d ≤ Y.size),
+          X.restrict d hx = Y.restrict d hy := by
+    intro X Y heq hx hy
+    cases heq
+    rfl
+  exact hCongr _ _ hImage hdA hdB
 
 end SuccessorTree.V10
