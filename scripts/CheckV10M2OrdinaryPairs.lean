@@ -1,4 +1,5 @@
 import SuccessorTree.V10.ShapeMapFullRecovery
+import SuccessorTree.V10.ShapeMapParameterPrefix
 
 #print axioms SuccessorTree.V10.PartialTypeWithE.ordinaryType_pairAt
 #print axioms SuccessorTree.V10.shapeMap_preserves_type_pair_at_levelMap
@@ -9,3 +10,5 @@ import SuccessorTree.V10.ShapeMapFullRecovery
 #print axioms SuccessorTree.V10.rawPrefix_preserves_type_singleton
 #print axioms SuccessorTree.V10.shapeMap_preserves_type_singleton
 #print axioms SuccessorTree.V10.shapeMap_recovers_complete_record
+#print axioms SuccessorTree.V10.PartialTypeWithE.ordinaryType_restrict_cut
+#print axioms SuccessorTree.V10.shapeMap_transports_parameter_prefix
