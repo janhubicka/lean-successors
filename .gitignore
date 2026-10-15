@@ -6,4 +6,4 @@ lake-manifest.json
 .DS_Store
 
 # Ephemeral exact-axiom CI batch sources (regenerated deterministically)
-scripts/.v10_batches/
+scripts/v10_batches_generated/
