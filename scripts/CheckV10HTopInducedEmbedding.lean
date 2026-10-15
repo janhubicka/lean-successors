@@ -1,0 +1,6 @@
+import SuccessorTree.V10.HTopInducedEmbedding
+#print axioms SuccessorTree.V10.hNumericBinary_top_forward_eq
+#print axioms SuccessorTree.V10.hNumericBinary_top_reverse_true_iff
+#print axioms SuccessorTree.V10.hNumericBinary_top_reverse_eq
+#print axioms SuccessorTree.V10.hNumericBinary_top_induced_pair
+#print axioms SuccessorTree.V10.finiteNumericHL_top_induced_ordered_copy

@@ -404,3 +404,6 @@ import SuccessorTree.V10.HBackwardNumericalInduction
 import SuccessorTree.V10.HActualRunDescendingBudget
 -- Proposition 6.44: HUniformEnvelopeBound.
 import SuccessorTree.V10.HUniformEnvelopeBound
+
+-- V10 universal transfer: top generation of finite numerical H is an ordered induced L-copy.
+import SuccessorTree.V10.HTopInducedEmbedding
