@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusCanonicalCapPrefix
+import SuccessorTree.V10.GPlusShapeImagePrefix
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -173,3 +173,9 @@ import SuccessorTree.V10.GPlusCanonicalCapPrefix
 #print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap_raw_eq
 #print axioms SuccessorTree.V10.RawPartialTypeNode.neutralCapOfCode_isPrefix
 #print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap_le_of_prefix
+
+#print axioms SuccessorTree.V10.gPlusShapeImage_size_lt_of_source_size_lt
+#print axioms SuccessorTree.V10.gPlusShapeImage_size_le_of_source_size_le
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_prefix
+#print axioms SuccessorTree.V10.gPlusShapeImage_reflects_prefix
+#print axioms SuccessorTree.V10.gPlusShapeImage_properPrefix_iff
