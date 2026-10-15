@@ -19,6 +19,20 @@ transitive-dependency selection on pushes/PRs and a daily full check.
 automatically safe-to-delete Lean files. Proposed weakening of the M3
 duplication axiom belongs to a later, separate phase.
 
+## Import only the reusable core
+
+For abstract M1–M3 successor trees, Hales–Jewett, the two verified
+shape-Ramsey routes, fat-tree A4/Ellentuck and envelope machinery, use:
+
+```lean
+import SuccessorTree.Core
+```
+
+The focused build is `lake build SuccessorTree.Core`. Unlike the root
+`SuccessorTree` umbrella, this entry point does **not** import the ongoing
+`V10` Section 6 application, free-ancestral examples or non-precompactness
+applications. The existing default full-library build is unchanged.
+
 ## Main endpoints
 
 The public results are theorems of the `LevelTree`, `STree` and `SMTree`
