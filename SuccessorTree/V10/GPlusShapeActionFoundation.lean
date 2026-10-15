@@ -77,7 +77,9 @@ noncomputable def toGPlus
 @[simp] theorem toGPlus_size
     (N : AdmissibleKptNode family) (hPos : 0 < N.1.1) :
     (N.toGPlus hPos).val.size = N.1.1 := by
-  simp [toGPlus]
+  change (N.witnessStructure.initialSegment N.1.1
+    N.level_le_witness_size).size = N.1.1
+  rfl
 
 end AdmissibleKptNode
 
@@ -151,7 +153,7 @@ noncomputable def gPlusShapeImageNode
     (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
     (A : FiniteGPlusVertex family) :
     LevelTree.lev (gPlusShapeImageNode F A) = gPlusShapeImageCut F A := by
-  exact LevelTree.level_ancestor _ _ _
+  rfl
 
 /-- Candidate action of F on an actual G+ vertex, obtained from the
 genuine finite ordinary socle of the image prefix. -/
@@ -159,12 +161,15 @@ noncomputable def gPlusShapeImage
     (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
     (A : FiniteGPlusVertex family) : FiniteGPlusVertex family :=
   (gPlusShapeImageNode F A).toGPlus
-    (by rw [gPlusShapeImageNode_level]; exact gPlusShapeImageCut_pos F A)
+    (by
+      change 0 < gPlusShapeImageCut F A
+      exact gPlusShapeImageCut_pos F A)
 
 @[simp] theorem gPlusShapeImage_size
     (F : SuccessorTree.ShapeMap (admissibleKptSTree family))
     (A : FiniteGPlusVertex family) :
     (gPlusShapeImage F A).val.size = gPlusShapeImageCut F A := by
-  simp [gPlusShapeImage]
+  change (gPlusShapeImageNode F A).1.1 = gPlusShapeImageCut F A
+  rfl
 
 end SuccessorTree.V10
