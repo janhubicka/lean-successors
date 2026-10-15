@@ -1,0 +1,4 @@
+import SuccessorTree.V10.HFinalPoolPositiveGeneration
+#print axioms SuccessorTree.V10.finiteNumericH_positive_freeCut_has_real_positive_generation
+#print axioms SuccessorTree.V10.numericH_stage_originals_subset_root_or_real_selected
+#print axioms SuccessorTree.V10.numericH_stage_originals_card_le_root_plus_selected
