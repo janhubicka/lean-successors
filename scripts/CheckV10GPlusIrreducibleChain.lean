@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusRetainedCodeRecovery
+import SuccessorTree.V10.GPlusCanonicalCodeReconstruction
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -151,3 +151,7 @@ import SuccessorTree.V10.GPlusRetainedCodeRecovery
 
 #print axioms SuccessorTree.V10.shapeMap_recovers_ordinaryCode
 #print axioms SuccessorTree.V10.shapeMap_recovers_ordinaryCode_of_imagePrefix
+
+#print axioms SuccessorTree.V10.FinitePartialCode.reindex_of_prefix
+#print axioms SuccessorTree.V10.FinitePartialCode.reindex_change_size
+#print axioms SuccessorTree.V10.shapeImageRetainedCode_eq
