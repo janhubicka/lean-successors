@@ -8,6 +8,7 @@ import SuccessorTree.V10.GPlusHTopSeedPairs
 import SuccessorTree.V10.HTopAlgorithmSeedHeight
 import SuccessorTree.V10.GPlusHTopAlgorithmCoverage
 import SuccessorTree.V10.GPlusAlgorithmFinitePalette
+import SuccessorTree.V10.KptSimultaneousFinitePalette
 import SuccessorTree.V10.GPlusAlgorithmRunCoverage
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
@@ -245,3 +246,7 @@ import SuccessorTree.V10.GPlusAlgorithmRunCoverage
 #print axioms SuccessorTree.V10.numericKptAlgorithmRun_bounded_GPlus_pair
 #print axioms SuccessorTree.V10.numericKptAlgorithmRun_GPlus_seed_in_finite_palette
 #print axioms SuccessorTree.V10.numericKptAlgorithmRun_GPlus_seed_tuple_from_finite_palette
+#print axioms SuccessorTree.V10.normalizedKpt_shapeRamsey_simultaneous
+#print axioms SuccessorTree.V10.boundedGPlusPaletteIndices
+#print axioms SuccessorTree.V10.boundedGPlusPaletteIndicesFintype
+#print axioms SuccessorTree.V10.normalizedKpt_shapeRamsey_boundedGPlusPalette

@@ -21,6 +21,7 @@ import SuccessorTree.V10.GPlusHTopSeedPairs
 import SuccessorTree.V10.HTopAlgorithmSeedHeight
 import SuccessorTree.V10.GPlusHTopAlgorithmCoverage
 import SuccessorTree.V10.GPlusAlgorithmFinitePalette
+import SuccessorTree.V10.KptSimultaneousFinitePalette
 import SuccessorTree.V10.GPlusIrreducibleChain
 
 /-!
