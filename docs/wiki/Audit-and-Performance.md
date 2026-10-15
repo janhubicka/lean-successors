@@ -90,6 +90,28 @@ python3 scripts/audit-import-graph.py
 
 Use the pinned `lean-toolchain` and `lakefile.toml`. `lake-manifest.json` is currently gitignored; this means reproducible dependency resolution deserves a separate, tested change. Keep the transitive axiom audit for any exported theorem even if a local `lake build` succeeds.
 
+## Whole-source admission and axiom firewall
+
+The main Lean build compiles every source module but could still accept a
+`sorry` in an unused declaration. Likewise, checking the transitive axioms
+of named theorem endpoints does not by itself prove that **every other
+declaration** is free from local axioms.
+
+`scripts/check-successor-proof-integrity.py` now scans every
+`SuccessorTree/**/*.lean` module and the root umbrella, rejecting
+executable `sorry`, `admit`, `sorryAx`, `axiom` and `constant`
+declarations. It strips nested Lean block comments, line comments and
+escaped strings first; seven regression tests cover those cases and
+fail-closed behavior on unclosed comments or strings. The complete
+518-module source snapshot used in the audit passed this scan. Both
+general Lean CI and the dedicated V10 audit run it before compiling.
+
+This is a **lexical safety net**, not a replacement for Lean kernel
+checking, named transitive `#print axioms`, the finite-model tests, or
+manuscript statement comparison. External Mathlib dependencies are
+not scanned by this script; named theorem axiom checks continue to
+restrict permitted standard axioms.
+
 ## Adversarial review checklist
 
 1. **Statement audit:** compare every final `#check` type with the manuscript quantifiers, ambient structures, positive/negative relations, empty boundaries, finite ranges and language arities.
