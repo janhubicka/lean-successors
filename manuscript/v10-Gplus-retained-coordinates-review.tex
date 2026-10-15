@@ -1,0 +1,17 @@
+% Review-only continuation for Observation 6.42; author prose unchanged.
+% Candidate pending exact-head full Lean and transitive-axiom checks.
+\todo[inline]{\textbf{v10 validation: retained coordinates of the
+induced $G^+$ ShapeMap image -- candidate.}
+\texttt{GPlusRetainedCoordinates.lean} constructs the inclusion
+$i\mapsto\lambda(i)$ from the original finite code's $n$ vertices
+to the image prefix of length $\lambda(n-1)+1$. It is well defined
+because $i<n$ implies $i\leq n-1$, and $\lambda$ is strictly increasing.
+The inclusion itself is strictly increasing and injective.  Pulling
+back the complete image finite table along this inclusion retains
+every directed binary, unary, diagonal and $E$ atom.
+The next verification must identify this pulled-back code with the
+source code using the already checked
+\texttt{shapeMap\_recovers\_complete\_record}; this identity is
+not assumed here. It will give the reverse/equality-reflection half
+of Observation~6.42, which remains OPEN along with induced relational
+preservation, envelope coverage and Theorem~6.26.}
