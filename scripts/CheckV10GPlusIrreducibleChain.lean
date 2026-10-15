@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusShapeActionFoundation
+import SuccessorTree.V10.GPlusOrdinaryCode
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -85,3 +85,9 @@ import SuccessorTree.V10.GPlusShapeActionFoundation
 #print axioms SuccessorTree.V10.gPlusShapeImageNode_level
 #print axioms SuccessorTree.V10.gPlusShapeImage
 #print axioms SuccessorTree.V10.gPlusShapeImage_size
+
+#print axioms SuccessorTree.V10.RawPartialTypeNode.ordinaryCode
+#print axioms SuccessorTree.V10.EnumeratedPartialStructure.initialSegment_code_eq_ordinaryCode
+#print axioms SuccessorTree.V10.AdmissibleKptNode.toGPlus_code
+#print axioms SuccessorTree.V10.ordinaryCode_eq_of_sameOrdinary
+#print axioms SuccessorTree.V10.admissibleKpt_toGPlus_eq_of_sameOrdinary
