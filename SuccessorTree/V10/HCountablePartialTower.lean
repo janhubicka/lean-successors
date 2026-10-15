@@ -203,7 +203,7 @@ theorem infiniteNumericHPlus_prefix_freeLevel
     ((infiniteNumericHPlus K k).finitePrefix N).freeLevel v =
       (finiteNumericH K k N).freeLevel v := by
   have hC :
-      (infiniteNumericHPlus K k).finitePrefix N |>.freeLevel v =
+      ((infiniteNumericHPlus K k).finitePrefix N).freeLevel v =
         canonicalFreeLevel (exactHEBool k)
           (exactHEBool_spaced k) (exactHEBool_downward k) v :=
     (infiniteNumericHPlus K k).finitePrefix_freeLevel_eq N v hv
