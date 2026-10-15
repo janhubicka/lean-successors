@@ -57,7 +57,8 @@ noncomputable instance layerFintype
   intro A B h
   apply Subtype.ext
   apply Subtype.ext
-  exact congrArg Subtype.val h
+  exact congrArg
+    (fun X : {A : FinitePartialCode db du dd // A.size = n+1} => X.val) h
 
 noncomputable def width (family : List (NormalizedForbidden db du dd)) (n : Nat) : Nat :=
   Fintype.card (Layer family n)
