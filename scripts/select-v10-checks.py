@@ -2,8 +2,9 @@
 """Select every V10 axiom checker affected by changed Lean imports.
 
 On a pull request, compare GitHub's synthetic merge commit with its first
-(parent/base) commit. Follow *transitive* in-repository Lean imports, so
-changing a dependency rechecks all consumers. On main/dispatch run all.
+(parent/base) commit. On a push, compare the exact previous main SHA with HEAD.
+Follow *transitive* in-repository Lean imports, so changing a dependency
+rechecks all consumers. Schedule and manual dispatch run the full audit.
 A changed V10 Lean module that no checker imports is a coverage error,
 rather than a silently skipped proof. Fail closed if diff discovery fails.
 """
@@ -24,6 +25,7 @@ V10_PREFIX = "SuccessorTree/V10/"
 ALWAYS_RECHECK = {
     "lean-toolchain", "lake-manifest.json", "lakefile.toml",
     "scripts/check-axiom-log.py", "scripts/select-v10-checks.py",
+    "scripts/run-v10-checks.py",
     ".github/workflows/v10-counting.yml", "SuccessorTree.lean",
     "SuccessorTree/V10/All.lean",
 }
@@ -45,16 +47,43 @@ def closure(relative: str) -> frozenset[str]:
     return frozenset(deps)
 
 def changed_paths() -> tuple[set[str], bool]:
-    if os.environ.get("GITHUB_EVENT_NAME") != "pull_request":
+    event = os.environ.get("GITHUB_EVENT_NAME")
+    if event not in {"push", "pull_request"}:
+        return set(), True
+    base = "HEAD^1" if event == "pull_request" else os.environ.get(
+        "GITHUB_EVENT_BEFORE", "")
+    if not base or base == "0" * 40:
+        print("Missing previous commit; running ALL V10 audits", file=sys.stderr)
         return set(), True
     try:
+        if event == "push":
+            # A multi-commit push must include the WHOLE event range, not
+            # merely HEAD^; shallow checkouts may omit the before commit.
+            present = subprocess.run(
+                ["git", "cat-file", "-e", base + "^{commit}"], cwd=ROOT,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                check=False).returncode == 0
+            if not present:
+                subprocess.check_call(
+                    ["git", "fetch", "--no-tags", "--depth=1", "origin", base],
+                    cwd=ROOT, stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL)
         data = subprocess.check_output(
-            ["git", "diff", "--name-only", "--diff-filter=ACMR", "HEAD^1", "HEAD"],
+            ["git", "diff", "--name-only", "--diff-filter=ACMRD", base, "HEAD"],
             cwd=ROOT, stderr=subprocess.DEVNULL, text=True)
-        return {x for x in data.splitlines() if x}, False
+        changed = {x for x in data.splitlines() if x}
+        # Source/checker deletions must never disappear from an incremental
+        # check selection merely because their imports no longer exist.
+        if any(path.endswith(".lean") and not (ROOT / path).is_file()
+               for path in changed):
+            print("Deleted Lean modules; running ALL V10 audits",
+                  file=sys.stderr)
+            return changed, True
+        return changed, False
     except (subprocess.CalledProcessError, OSError):
-        # A missing synthetic merge parent must never turn CI green.
-        print("Cannot find PR base diff; running ALL V10 audits", file=sys.stderr)
+        # A missing base or an inaccessible event range must fail CLOSED.
+        print("Cannot determine changed files; running ALL V10 audits",
+              file=sys.stderr)
         return set(), True
 
 def select(changed: set[str], full: bool) -> list[Path]:
@@ -73,7 +102,12 @@ def regression_scope(changed: set[str], full: bool) -> dict[str, bool]:
     flags = dict(h=False, sigma=False, m3=False, meet=False, pool=False, removal=False)
     if full or changed & ALWAYS_RECHECK:
         return dict.fromkeys(flags, True)
-    # Foundational changes can affect all finite models, so be conservative.
+    # Changes to an abstract tree/monoid dependency may affect every V10 model.
+    if any(path.startswith("SuccessorTree/") and
+           not path.startswith(V10_PREFIX) and path.endswith(".lean")
+           for path in changed):
+        return dict.fromkeys(flags, True)
+    # Foundational V10 changes can affect all finite models.
     foundational = (
         "SuccessorTree/V10/PartialStructure", "SuccessorTree/V10/LocalAge",
         "SuccessorTree/V10/AdmissibleKpt", "SuccessorTree/V10/Canonical",

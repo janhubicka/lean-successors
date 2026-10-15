@@ -3,6 +3,22 @@
 Lean 4 formalisation of **Ramsey theorem for trees with successor operation**
 (Balko–Chodounský–Dobrinen–Hubička–Konečný–Nešetřil–Zucker).
 
+## Documentation and active status
+
+Start with the [successor formalization wiki](docs/wiki/Home.md), the
+[theorem/manuscript scope table](docs/wiki/Theorems-and-Manuscript.md) and the
+[performance/adversarial audit](docs/wiki/Audit-and-Performance.md).
+The abstract successor-tree Ramsey theorem, fat-tree A4/Ellentuck and finite
+corollaries are verified at their stated Lean interfaces. The Section 6
+finite normalized H+ envelope bound is verified; the final universal
+K→H+→G+ transfer and Theorem 6.26 remain in progress.
+
+The current audit uses a bounded-parallel V10 checker with exact
+transitive-dependency selection on pushes/PRs and a daily full check.
+`scripts/audit-import-graph.py` identifies **candidates for review**, not
+automatically safe-to-delete Lean files. Proposed weakening of the M3
+duplication axiom belongs to a later, separate phase.
+
 ## Main endpoints
 
 The public results are theorems of the `LevelTree`, `STree` and `SMTree`
@@ -51,8 +67,10 @@ allow only `propext`, `Classical.choice` and `Quot.sound`.
 
 The toolchain is Lean `v4.35.0-rc3`. Dependencies are pinned in `lakefile.toml`:
 mathlib at `5bd58ac291422a21f412ae354c91e7d172255a2c` and
-`lean-ramsey-space-todorcevic` at `54a9eb02f7f7bd2e942e95f7b44fc6f04f48892c`.
-CI artifacts retain the resolved manifest and proof-audit logs.
+`lean-ramsey-space-todorcevic` at `bb29d1f3f36ff37a35857247ca9fae581fa1fa43`.
+CI artifacts retain the resolved manifest and proof-audit logs. The manifest is currently gitignored; see the
+[audit notes](docs/wiki/Audit-and-Performance.md) before changing dependency
+pinning or cache keys.
 
 ## Additional lower-bound formalizations
 
