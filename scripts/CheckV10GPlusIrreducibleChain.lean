@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusShapeImagePrefix
+import SuccessorTree.V10.GPlusComparableAtoms
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -179,3 +179,17 @@ import SuccessorTree.V10.GPlusShapeImagePrefix
 #print axioms SuccessorTree.V10.gPlusShapeImage_preserves_prefix
 #print axioms SuccessorTree.V10.gPlusShapeImage_reflects_prefix
 #print axioms SuccessorTree.V10.gPlusShapeImage_properPrefix_iff
+
+#print axioms SuccessorTree.V10.FinitePartialCode.binary_eq_of_eq
+#print axioms SuccessorTree.V10.FinitePartialCode.eRelation_eq_of_eq
+#print axioms SuccessorTree.V10.shapeImage_retained_binary
+#print axioms SuccessorTree.V10.shapeImage_retained_E
+#print axioms SuccessorTree.V10.shapeImage_retainedLower_eq_lowerLast
+#print axioms SuccessorTree.V10.shapeImage_retainedUpper_eq_last
+#print axioms SuccessorTree.V10.gPlusShapeImage_binary_forward
+#print axioms SuccessorTree.V10.gPlusShapeImage_binary_reverse
+#print axioms SuccessorTree.V10.finiteGPlusE_reverse
+#print axioms SuccessorTree.V10.gPlusShapeImage_E_forward
+#print axioms SuccessorTree.V10.gPlusShapeImage_E_reverse
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_binary
+#print axioms SuccessorTree.V10.gPlusShapeImage_preserves_E
