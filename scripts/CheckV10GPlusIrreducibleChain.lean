@@ -1,4 +1,4 @@
-import SuccessorTree.V10.GPlusOrderedEmbedding
+import SuccessorTree.V10.GPlusShapeActionFoundation
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -66,3 +66,22 @@ import SuccessorTree.V10.GPlusOrderedEmbedding
 #print axioms SuccessorTree.V10.CountableEnumeratedPartialStructure.toGOmega_E
 #print axioms SuccessorTree.V10.infiniteNumericHPlusToGOmega
 #print axioms SuccessorTree.V10.infiniteNumericHPlusGOmega_avoids_family
+
+#print axioms SuccessorTree.V10.AdmissibleKptNode.witnessStructure
+#print axioms SuccessorTree.V10.AdmissibleKptNode.witnessVertex
+#print axioms SuccessorTree.V10.AdmissibleKptNode.witness_spec
+#print axioms SuccessorTree.V10.AdmissibleKptNode.level_le_witness_size
+#print axioms SuccessorTree.V10.AdmissibleKptNode.toGPlus
+#print axioms SuccessorTree.V10.AdmissibleKptNode.toGPlus_size
+#print axioms SuccessorTree.V10.FiniteGPlusVertex.chosenStructure
+#print axioms SuccessorTree.V10.FiniteGPlusVertex.chosenStructure_spec
+#print axioms SuccessorTree.V10.FiniteGPlusVertex.chosenStructure_size
+#print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap
+#print axioms SuccessorTree.V10.FiniteGPlusVertex.canonicalCap_level
+#print axioms SuccessorTree.V10.gPlusShapeImageCut
+#print axioms SuccessorTree.V10.gPlusShapeImageCut_pos
+#print axioms SuccessorTree.V10.gPlusShapeImageCut_le_capImage
+#print axioms SuccessorTree.V10.gPlusShapeImageNode
+#print axioms SuccessorTree.V10.gPlusShapeImageNode_level
+#print axioms SuccessorTree.V10.gPlusShapeImage
+#print axioms SuccessorTree.V10.gPlusShapeImage_size
