@@ -69,9 +69,17 @@ def changed_paths() -> tuple[set[str], bool]:
                     cwd=ROOT, stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL)
         data = subprocess.check_output(
-            ["git", "diff", "--name-only", "--diff-filter=ACMR", base, "HEAD"],
+            ["git", "diff", "--name-only", "--diff-filter=ACMRD", base, "HEAD"],
             cwd=ROOT, stderr=subprocess.DEVNULL, text=True)
-        return {x for x in data.splitlines() if x}, False
+        changed = {x for x in data.splitlines() if x}
+        # Source/checker deletions must never disappear from an incremental
+        # check selection merely because their imports no longer exist.
+        if any(path.endswith(".lean") and not (ROOT / path).is_file()
+               for path in changed):
+            print("Deleted Lean modules; running ALL V10 audits",
+                  file=sys.stderr)
+            return changed, True
+        return changed, False
     except (subprocess.CalledProcessError, OSError):
         # A missing base or an inaccessible event range must fail CLOSED.
         print("Cannot determine changed files; running ALL V10 audits",
