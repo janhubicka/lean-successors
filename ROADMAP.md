@@ -83,3 +83,17 @@ verified old theorem and replace **both** (a) level-habitation/
 terminal-padding consequences and (b) exact successor-code replay.
 Higher arities are deferred. See [M1–M3 dependency map](docs/wiki/M1-M3-Dependency-Map.md)
 and [adversarial referee record](docs/wiki/Adversarial-referee-record.md).
+
+## Referee escalation — Section 4 projection (16 October)
+
+A new free-ancestral example with one ancestral parameter has
+fat-tree reductions V_q≤U that agree with U on any prescribed
+finite stem, but whose associated maps fail to factor through
+F_U. This points to **discontinuity** of the original Section 4
+projection, not simply a missing proof of A.3(2) or a faulty
+index cast. The q=1,2,3 finite regressions are checked;
+the all-q all-row argument is explained in
+[the transfer audit](docs/wiki/Fat-Tree-to-Shape-Map-Transfer.md).
+A Lean-kernel counterexample and a different proof (or a justified
+restriction of the theorem) remain the next tasks. Do not merge
+conditional claims of projected fat reductions as public API.

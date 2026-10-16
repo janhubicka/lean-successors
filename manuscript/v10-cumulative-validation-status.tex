@@ -517,3 +517,19 @@ Earlier step-by-step notes are preserved in the review archive.}
 % all q-tuples (default outside induced copies), so the FORMAL
 % theorem has no missing hypothesis; printed proof needs this step.
 % Proposed wording in v10-final-validation-referee-20261016.md.
+
+% 2026-10-16: ADVERSARIAL TODO for Section 4, Lemma 4.1.
+% With a free ancestral history S-tree, arity 1, full monoid M:
+% U rows (E0, id, id, ...), V_q shares first q rows of U then
+% inserts E_(q+1) using ancestral parameter [0], identity tail.
+% Each V_q <=_fat U by phi_q(i)=i until q and i+1 afterward.
+% However F_(V_q) is not in right-composition cone of F_U=E0,
+% since E0's parameter indices after its first code are >=1.
+% This gives a mathematical noncontinuity witness for pi;
+% finite q=1,2,3 diagnostic passes. The FULL infinite witness
+% still requires a Lean certificate, so source theorem 1.11
+% remains OPEN rather than declared refuted.
+% TODO (Řehořek): Theorem 1.17 is sound, but the original
+% Section 4 transfer should be replaced, not patched by
+% assuming direct A3(2), nor by range(T_U)=range(F_U).
+% See docs/wiki/Fat-Tree-to-Shape-Map-Transfer.md.
