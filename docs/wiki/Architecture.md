@@ -97,3 +97,11 @@ simultaneous finite expansion-colouring and abstract copy-degree estimates.
 A map may stretch a successor step, so the first transported successor
 and the later history address are recorded distinctly. These are
 reusable outside the concrete free-ancestral and Kpt instances.
+
+## Geometry/axioms-only lightweight public import
+
+`SuccessorTree.Library.Structures` imports `Monoid`, `CopyRamsey`
+and `ShapeEvents` but deliberately none of the Hales–Jewett,
+fat-tree, Ramsey-space, envelope or V10 theorem modules. This enables
+experiments in changing or splitting M3 without recompiling the large
+proof graph. The current fully verified `SMTree` remains intact.
