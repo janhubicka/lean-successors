@@ -98,6 +98,23 @@ construction unless reduced to the checked class.
   countable witness. The universal K result transfers via induced
   embeddings and preserves the finite palette.
 
+## Adversarial printed-proof mismatch
+
+In the reviewed v10 PDF, Definition 6.25 defines big Ramsey
+degrees for **all** `Emb(A,K)`, and Theorem 6.26 asserts the
+same; the printed final proof begins with a colouring of
+`OEmb(A,K)` and bounds ordered copies only. This leaves a
+short but necessary step: split embeddings by the finitely many
+order types `σ∈Sym(q)`, regard each as an increasing embedding
+of the corresponding relabelled `A_σ`, and successively
+stabilize the induced colourings, pulling each back through the
+previous self-embedding. The resulting composition bounds
+all `Emb(A,K)` (by a finite sum of ordered palettes).
+The checked Lean proof **already colours all tuples directly**,
+so the defect is editorial, not an open formal theorem.
+Exact proposed wording is in
+[the manuscript reviewer note](../../manuscript/v10-final-validation-referee-20261016.md).
+
 ## Remaining literal manuscript-fidelity checks
 
 The current author-edited v10 `main.tex` is not part of this
