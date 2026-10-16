@@ -27,7 +27,8 @@ theorem incompatible_family_isNowhereDense
     (hGap : HasLateProperGaps H) :
     @IsNowhereDense (MMap H)
       (ramseyApproximationSystem H).ellentuckTopology N := by
-  letI : TopologicalSpace (MMap H) := (ramseyApproximationSystem H).ellentuckTopology
+  letI : TopologicalSpace (ramseyApproximationSystem H).Point :=
+    (ramseyApproximationSystem H).ellentuckTopology
   change interior (closure N) = (∅ : Set (MMap H))
   apply Set.eq_empty_of_subset_empty
   intro x hx
