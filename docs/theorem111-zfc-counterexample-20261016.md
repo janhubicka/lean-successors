@@ -42,7 +42,7 @@ and \(s=(\varnothing)\) for the unique level-one node.
 
 Let \(\mathcal M\) consist of **all** shape-preserving self maps of
 this tree. This is the Lean-verified instance
-\`FreeAncestral.freeSMTree (Label := Unit) (arity := 1)\`:
+`FreeAncestral.freeSMTree (Label := Unit) (arity := 1)`:
 M1 (closure/fusion), M2 (splitting skipped levels), and M3
 (duplication of a level) have actual proofs. In particular,
 each \(F\in\mathcal M\) has a strictly increasing image-level
