@@ -53,7 +53,9 @@ patterns.
 
 ## Library design
 
-`SuccessorTree.Library.Abstract` exposes application-neutral
+`SuccessorTree.Library.Structures` exposes only the tree/map/SMTree
+axiom structures, copy systems and intrinsic-event geometry, with no
+Ramsey proof import. `SuccessorTree.Library.Abstract` exposes application-neutral
 M1–M3/shape/Hales–Jewett/fat-tree/envelope results.
 `SuccessorTree.Library.Applications` exposes normalized Kpt and
 finite big-Ramsey theorems.
