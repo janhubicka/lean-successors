@@ -1,6 +1,7 @@
 import SuccessorTree.Counterexample.NowhereDense
 import SuccessorTree.Counterexample.MaskCodes
 import SuccessorTree.Counterexample.SupportRigidity
+import SuccessorTree.Counterexample.Topology
 
 /-!
 Exact-name audit: only the declarations below have been proved so far.
@@ -29,3 +30,8 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 #print axioms SuccessorTree.FreeAncestral.remapTuple_injective
 #print axioms SuccessorTree.FreeAncestral.remapCode_injective
 #print axioms SuccessorTree.SMTree.compatible_marked_unique
+
+#check @SuccessorTree.SMTree.incompatible_family_isNowhereDense
+#check @SuccessorTree.FreeAncestral.freeAncestral_incompatible_isNowhereDense
+#print axioms SuccessorTree.SMTree.incompatible_family_isNowhereDense
+#print axioms SuccessorTree.FreeAncestral.freeAncestral_incompatible_isNowhereDense
