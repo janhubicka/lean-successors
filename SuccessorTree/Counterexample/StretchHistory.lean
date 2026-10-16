@@ -20,6 +20,10 @@ and the resulting \`ShapeMap\` structure.
 
 namespace SuccessorTree.FreeAncestral
 
+/-- The sole legal code at the original root level. -/
+def initialEmptyCode : Code Unit 1 0 :=
+  ⟨(), emptyParamTuple 1 0⟩
+
 /-- Append exactly k steps with the root as the unique ancestral
 parameter. The positive starting level guarantees that the root is
 a valid ancestor at every appended step. -/
@@ -71,7 +75,7 @@ noncomputable def markedHistoryAux
       subst h
       simpa only [hroot] using
         (History.step History.root
-          (projectionEmptyCode) : History Unit 1 1)
+          (initialEmptyCode) : History Unit 1 1)
   | n + 1, h => by
       cases h with
       | step p c =>
@@ -104,9 +108,8 @@ theorem markedNode_root
     (levels : Nat → Nat) (mono : StrictMono levels)
     (hroot : levels 0 = 1) :
     markedNode levels mono hroot (rootNode (Label := Unit) (arity := 1)) =
-    (⟨1, History.step History.root projectionEmptyCode⟩ : Node Unit 1) := by
-  apply Sigma.ext
-  · exact hroot
-  · exact Subsingleton.elim _ _
+    (⟨1, History.step History.root initialEmptyCode⟩ : Node Unit 1) := by
+  cases hroot
+  rfl
 
 end SuccessorTree.FreeAncestral
