@@ -191,3 +191,27 @@ build; they are a **baseline**, not a predicted saving from this PR.
 - Triage the categorized compiler warnings, then gradually replace broad `Mathlib.Tactic` imports with verified narrower dependencies. Avoid moving hundreds of modules until incremental build behavior is measured.
 
 Open performance issue: avoid a repository-wide re-elaboration on every minor Section 6 patch and investigate why the 2 GB Lake cache can become stale when the cache key does not change with sources.
+
+## 16 October 2026: checked countable big-Ramsey status
+
+At `main` commit
+[`1e084eb47aee`](https://github.com/janhubicka/lean-successors/commit/1e084eb47aee283f94ced58290455baf882a5285),
+[full Lean](https://github.com/janhubicka/lean-successors/actions/runs/38916948261)
+and [V10 named-axiom counting](https://github.com/janhubicka/lean-successors/actions/runs/38916948218)
+completed successfully. These tests include the new canonical Gω,
+original all-induced-Emb(A,K) and countable universal K endpoints.
+Earlier temporary cancelled runs were superseded by exact-head green
+checks, not evidence of theorem failures.
+
+The library refactor introduces `SuccessorTree.Library.Abstract`,
+`Applications`, `Examples` and an explicit `CheckPublicAPI`
+compile-time smoke test. Since the new `Library` umbrella is **not**
+a transitive dependency of the historical root build, it must be
+compiled independently in CI; kernel and named-axiom tests remain
+separate and unchanged. Additional abstract exports are generic
+`CopyRamsey` and `ShapeEvents`, neither tied to Section 6 models.
+
+No performance improvement is claimed from these new imports.
+The last source-reachability audit found no safe orphan modules;
+a removal pass should first identify genuinely unused *private*
+declarations and verify all transitive imports and proof checkers.
