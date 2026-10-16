@@ -49,7 +49,7 @@ the image \(Q_A(h|_k)\), which is the ancestor of \(Q_A(h)\)
 at target level \(\ell_k\). Thus the target \(\mathcal S\)
 successor exists and is a prefix of \(Q_A(h^\frown c)\).
 This is precisely the **weak** successor clause of
-\`ShapeMap\`, not a stronger false immediate-edge condition.
+`ShapeMap`, not a stronger false immediate-edge condition.
 The root maps to its child \(s\), so the root inequality holds.
 
 **Disposition:** a bona fide member of the all-shape-map monoid.
