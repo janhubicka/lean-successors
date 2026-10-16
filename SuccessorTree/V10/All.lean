@@ -57,6 +57,7 @@ import SuccessorTree.V10.GPlusGlobalTopTuplePalette
 import SuccessorTree.V10.KptFinalBigRamseyTransfer
 import SuccessorTree.V10.KptBigRamseyNormalizedTheorem
 import SuccessorTree.V10.KptOriginalBinaryUnaryBigRamsey
+import SuccessorTree.V10.KptCanonicalGomegaBigRamsey
 import SuccessorTree.V10.GPlusHTopTopBlocksColour
 import SuccessorTree.V10.GPlusIrreducibleChain
 import SuccessorTree.V10.KptBaseToGOmega
