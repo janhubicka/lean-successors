@@ -29,6 +29,8 @@ and [manuscript review ledger](manuscript/v10-final-validation-referee-20261016.
 ## Import the theorem library
 
 ```lean
+import SuccessorTree.Library.Structures    -- lightweight tree/map/monoid and copy systems
+-- or:
 import SuccessorTree.Library.Abstract      -- M1–M3, HJ, shape Ramsey, fat A4, envelopes
 -- or:
 import SuccessorTree.Library.Applications  -- Kpt, concrete E1, H+ bound, big Ramsey
