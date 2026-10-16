@@ -1,0 +1,3 @@
+import SuccessorTree.V10.GPlusFinitePaletteCoverageMono
+
+#print axioms SuccessorTree.V10.finiteGPlusPaletteCovers_mono
