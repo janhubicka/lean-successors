@@ -201,13 +201,15 @@ theorem binaryUnaryAllEmbeddings_preserved
   · intro a b t
     by_cases hab : a = b
     · subst b
-      change H.diagonal (e.toFun (f a)) t = PB a a t
-      calc
-        H.diagonal (e.toFun (f a)) t =
-            G.diagonal (f a) t :=
-          e.diagonal (f a) (hCarrier a) t
-        _ = PB a a t := by
-          simpa [AgeTestModel.originalBinary] using hBinary a a t
+      have hDiagonal :
+          H.diagonal (e.toFun (f a)) t = PB a a t := by
+        calc
+          H.diagonal (e.toFun (f a)) t =
+              G.diagonal (f a) t :=
+            e.diagonal (f a) (hCarrier a) t
+          _ = PB a a t := by
+            simpa [AgeTestModel.originalBinary] using hBinary a a t
+      simpa [AgeTestModel.originalBinary] using hDiagonal
     · have hDifferent : f a ≠ f b := by
         intro heq
         exact hab (hInjective heq)
