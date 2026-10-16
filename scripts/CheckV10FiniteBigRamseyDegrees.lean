@@ -1,0 +1,3 @@
+import SuccessorTree.V10.FiniteBigRamseyDegrees
+
+#print axioms SuccessorTree.V10.AgeTestModel.hasOriginalFiniteBigRamseyDegrees_of_universal
