@@ -84,6 +84,48 @@ def check():
                                     name, m, marker, n, h, j, out
                                 )
 
+    # Independent adversarial check of the compatibility-marker contradiction.
+    # Generate pairs G=H_B o Q_B and H o Q_A, where H,H_B are
+    # compositions of genuinely pure one-gap maps. If target level
+    # lambda_H(j) lies in the retained level range of G but j is
+    # omitted by Q_A, the two output histories must carry
+    # contradictory successor parameters on the same target edge.
+    import random
+    rnd = random.Random(196)
+    a_levels = masks["even"]
+    b_levels = masks["odd"]
+    collisions = 0
+    for _ in range(80):
+        h_blocks = [(rnd.randrange(2, 6), rnd.choice(((), (0,))))
+                    for _ in range(rnd.randrange(4))]
+        b_blocks = [(rnd.randrange(2, 6), rnd.choice(((), (0,))))
+                    for _ in range(rnd.randrange(4))]
+
+        def compose(h, blocks):
+            for level, marker in blocks:
+                h = gap_map(h, level, marker)
+            return h
+
+        def image_level(j, blocks):
+            return len(compose(((),) * j, blocks))
+
+        n = 5
+        h_a, h_b = rnd.choice(histories(n)), rnd.choice(histories(n))
+        out_a = compose(marked_map(h_a, a_levels), h_blocks)
+        out_b = compose(marked_map(h_b, b_levels), b_blocks)
+        retained_b = {image_level(b_levels[k], b_blocks)
+                      for k in range(n)}
+        for j in range(2, a_levels[n]):
+            t = image_level(j, h_blocks)
+            if j not in a_levels:
+                assert out_a[t] == (0,), (j, t, "lost root marker")
+                if t in retained_b:
+                    assert out_b[t] != (0,), (j, t, "spurious root marker")
+                    collisions += 1
+
+    assert collisions > 0
+    print(f"PASS: {collisions} independent retained/skipped "
+          "marker collisions in 80 compositions of pure maps")
     print(f"PASS: {tested} full history mask checks plus pure gap-map transport")
     print("NOTE: all-level ZFC topology argument is mathematical, not a "
           "finite-computation conclusion.")
