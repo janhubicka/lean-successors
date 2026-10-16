@@ -11,6 +11,7 @@ import SuccessorTree.Counterexample.MarkerTransfer
 import SuccessorTree.Counterexample.CompatibilityLevels
 import SuccessorTree.Counterexample.CompatibilityMarker
 import SuccessorTree.Counterexample.ConcreteAntichain
+import SuccessorTree.Counterexample.Final
 
 /-!
 Exact-name audit: only the declarations below have been proved so far.
@@ -136,3 +137,9 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 #print axioms SuccessorTree.Counterexample.raisedCandidate_root
 #print axioms SuccessorTree.Counterexample.raisedCandidate_compatible_unique
 #print axioms SuccessorTree.Counterexample.exists_pure_meeting_incompatible_family
+
+#check @SuccessorTree.Counterexample.exists_closed_nowhereDense_not_avoidable
+#check @SuccessorTree.Counterexample.exists_nowhereDense_hits_every_pure
+
+#print axioms SuccessorTree.Counterexample.exists_closed_nowhereDense_not_avoidable
+#print axioms SuccessorTree.Counterexample.exists_nowhereDense_hits_every_pure
