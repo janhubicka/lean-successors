@@ -85,3 +85,6 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 #check @SuccessorTree.FreeAncestral.root_marker_transported_along_successor
 #print axioms SuccessorTree.FreeAncestral.image_root_successor_has_marker
 #print axioms SuccessorTree.FreeAncestral.root_marker_transported_along_successor
+
+#check @SuccessorTree.FreeAncestral.root_marker_transported_from_code
+#print axioms SuccessorTree.FreeAncestral.root_marker_transported_from_code
