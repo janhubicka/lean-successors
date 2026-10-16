@@ -43,12 +43,20 @@ checks representative principal endpoints, not every helper lemma.
 ## Theorem 1.11 is an independent outstanding statement
 
 The source Ellentuck topology on the **monoid of shape-preserving maps**
-is not the verified fat-tree Ellentuck topology. The inverse-neighborhood
-projection in printed Lemma 4.1 is not proved, nor are the direct monoid
-Ramsey-space A.3(2) refinement and A.4 pigeonhole axioms. The new
-closedness theorem removes the metric/Tychonoff closedness obstacle
-using only M1 fusion; it does not discharge the other two obligations.
-See [the precise monoid Ellentuck audit](Shape-Ellentuck-Validation.md).
+is not the verified fat-tree Ellentuck topology. Direct monoid A.3(2)
+fails in general, which is why the paper introduces fat trees.
+More seriously, the proposed Section 4 neighborhood transfer
+`π([x,U])=[F_x,F_U]` appears **false even in its forward inclusion**:
+the free-ancestral one-parameter example has `V_q≤_fat U`
+agreeing on arbitrarily many rows, but its associated map cannot
+factor through `F_U`. This also obstructs continuity of `π`
+under the printed topologies. A detailed all-depth mathematical
+argument and finite `q=1,2,3` regression checks are in
+[the fat-tree projection audit](Fat-Tree-to-Shape-Map-Transfer.md).
+The infinite counterexample is **not yet Lean certified**.
+The already verified Tychonoff closedness of the monoid does not
+repair this failure. Theorem 1.11 remains independently OPEN;
+its truth is not refuted by a gap in the Section 4 proof.
 
 ## Definition 6.25 packaged as a reusable proposition
 

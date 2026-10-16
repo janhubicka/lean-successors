@@ -20,7 +20,7 @@ is not independently replayed here.
 | --- | --- | --- |
 | 1.6 | Main abstract successor-tree Ramsey theorem | **CHECKED**: `SMTree.shapePreservingRamsey`, with independent fat-tree route |
 | 1.7–1.8 | Finite bounded/exact-terminal corollaries | **CHECKED**: `shapeRamsey_bounded`, `shapeRamsey_exact` |
-| 1.11 | Ellentuck topology on **shape-map monoid M** | **OPEN**: direct A.1/A.2/A.3(1) checked, closedness proof newly staged; A.3(2), A.4 and full monoid theorem still missing. Fat-tree Ellentuck does **not** certify this |
+| 1.11 | Ellentuck topology on **shape-map monoid M** | **OPEN**: direct A.3(2) is not valid in general. Requires the original fat-tree projection and exact neighbourhood transfer of Section 4; fat-tree Ellentuck itself is CHECKED |
 | 1.12 | Canonical extension of finite shape maps | **CHECKED**: `SMTree.canonicalExtension_unique` |
 | 1.17 | Fat-tree Ellentuck | **CHECKED**: `SMTree.FatTree.fatTreeEllentuck` |
 | §2–§4 | Fat-tree structure, A1–A4, one-level combinatorial forcing | **CHECKED core**: A4 from independent source-fusion proof; two proof routes audited |
@@ -38,15 +38,14 @@ is not independently replayed here.
 | 6.41–6.42 | Ordered age of Gω / induced G+ action | **CHECKED normalized implementations**: G+ enumeration and action modules; source-language bridge review remains |
 | 6.44 | Arbitrary-K bounded envelope embedding | **PARTIAL literal match**: concrete numerical actual-run H+ bound CHECKED, plus final global big-Ramsey consequence CHECKED; exact `∀K ∀A ∃b ∀A' ∃C` printed proposition not separately identified as a named export |
 
-## Topological separation: Theorem 1.11 is not Theorem 1.17
+## Theorem 1.11: original fat-tree transfer required
 
-Fat-tree Ellentuck (Theorem 1.17) and its one-row finite Ramsey
-consequence are verified. The monoid M Ellentuck theorem (Theorem 1.11)
-still needs the full direct M-map Ramsey-space instance, or the exact
-open neighborhood-projection lemma in Section 4. A.1/A.2/A.3(1) are
-already checked. A new M1-fusion closedness proof is in progress,
-but A.3(2) and A.4 for arbitrary monoid basic neighborhoods remain
-unproved. See [direct shape Ellentuck validation](Shape-Ellentuck-Validation.md).
+The direct shape-map space does not satisfy A.3(2) in general;
+this motivates fat trees. The fat-tree Ellentuck theorem (1.17)
+is verified, but Lemma 4.1 has not yet been checked at its
+claimed exact neighbourhood image and depth correspondence.
+Proving direct A.3(2) is **not** a permissible shortcut.
+See [the original transfer audit](Fat-Tree-to-Shape-Map-Transfer.md).
 
 ## Adversarial discrepancies requiring manuscript TODOs
 

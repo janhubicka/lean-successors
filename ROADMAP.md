@@ -21,13 +21,14 @@ passed at the exact same commit.
 
 ## Genuine unfinished monoid-topology theorem
 
-**Theorem 1.11** is not yet verified. Fat-tree Ellentuck (1.17) and
-finite-dimensional shape Ramsey (1.6) are checked, but cannot
-substitute for the continuous/open projection and exact basic
-neighborhood identity in Section 4. Direct M-map A.1/A.2/A.3(1)
-are checked; a new M1-fusion Tychonoff closedness proof is staged.
-The direct A.3(2) refinement and A.4 full front pigeonhole remain.
-See [theorem-specific plan](docs/wiki/Shape-Ellentuck-Validation.md).
+**Theorem 1.11** is not yet verified. Fat-tree Ellentuck (1.17)
+and finite-dimensional shape Ramsey (1.6) are checked. The
+shape-map space **does not satisfy A.3(2) in general**; the original
+paper deliberately proves Ellentuck on fat trees and transfers it
+by the projection U ↦ F_U. The transfer's claimed exact
+neighbourhood image, relative lift and depth correspondence are
+the outstanding tasks, not direct A.3(2). See the
+[fat-tree projection audit](docs/wiki/Fat-Tree-to-Shape-Map-Transfer.md).
 
 ## Outstanding manuscript-fidelity verification
 
@@ -82,3 +83,17 @@ verified old theorem and replace **both** (a) level-habitation/
 terminal-padding consequences and (b) exact successor-code replay.
 Higher arities are deferred. See [M1–M3 dependency map](docs/wiki/M1-M3-Dependency-Map.md)
 and [adversarial referee record](docs/wiki/Adversarial-referee-record.md).
+
+## Referee escalation — Section 4 projection (16 October)
+
+A new free-ancestral example with one ancestral parameter has
+fat-tree reductions V_q≤U that agree with U on any prescribed
+finite stem, but whose associated maps fail to factor through
+F_U. This points to **discontinuity** of the original Section 4
+projection, not simply a missing proof of A.3(2) or a faulty
+index cast. The q=1,2,3 finite regressions are checked;
+the all-q all-row argument is explained in
+[the transfer audit](docs/wiki/Fat-Tree-to-Shape-Map-Transfer.md).
+A Lean-kernel counterexample and a different proof (or a justified
+restriction of the theorem) remain the next tasks. Do not merge
+conditional claims of projected fat reductions as public API.

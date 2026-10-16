@@ -1,0 +1,113 @@
+import SuccessorTree.FatTree.ShapeCorrespondence
+import Mathlib.Tactic
+
+/-!
+# The canonical fat-tree projection: exact obligations
+
+This module starts the original proof route from *fat-tree*
+Ellentuck to the topological theorem on shape-preserving M-maps.
+
+It is **not** an attempt to assert A.3(2) for M-maps. The
+fat-tree reduction relation is geometric (lift inclusions),
+whereas a reduction of M-maps is right composition.
+
+The theorem `projection_surjective` is already a verified
+consequence of the canonical `ofShapeMap` widening.
+
+The surjection and the finite-prefix stability theorem below are
+**proved** from the existing widening and canonical row products.
+The original Section 4 claim that arbitrary geometric fat-tree
+reductions project to right-composition refinements is obstructed
+by free-ancestral histories with nontrivial successor parameters.
+That disproved implication is not retained as a public Lean API;
+see docs/wiki/Fat-Tree-to-Shape-Map-Transfer.md.
+-/
+
+namespace SuccessorTree.SMTree.FatTree
+
+universe u v
+
+variable {T : Type u} {Label : Type v}
+variable [PartialOrder T] [LevelTree T] {S : STree T Label}
+
+/-- The canonical projection from fat trees onto the original
+shape-preserving monoid is surjective, by explicit widening. -/
+theorem projection_surjective (H : SMTree S) :
+    Function.Surjective (associatedMap H) := by
+  intro F
+  exact ⟨ofShapeMap H F, associatedMap_ofShapeMap H F⟩
+
+/-- The projected approximation through n source levels depends
+only on the first n rows of the fat tree. For n = 0 this is
+the unique empty approximation. The following theorem proves
+this from the actual canonical row products. -/
+def ProjectionRespectsPrefixes (H : SMTree S) : Prop :=
+  ∀ (V U : FatTree H) (n : Nat),
+    V.initialSegment H n = U.initialSegment H n →
+    ramseyApprox H n (associatedMap H V) =
+      ramseyApprox H n (associatedMap H U)
+
+/-- An optional row extension defined on every finite fat tree,
+without a dependent Fin index in the type of the accessor. This makes
+transport along equality of whole finite fat trees straightforward. -/
+private noncomputable def finiteRowExtensionAt
+    (H : SMTree S) (x : FiniteFatTree H) (i : Nat) :
+    Option (MMap H) :=
+  if hi : i < x.height then
+    some (x.rowExtension H ⟨i, hi⟩)
+  else none
+
+/-- The canonical total extension of a row is determined by the
+corresponding row of any common finite fat-tree prefix. -/
+private theorem rowExtension_eq_of_common_prefix
+    (H : SMTree S)
+    (V U : FatTree H) (n i : Nat)
+    (hi : i < n)
+    (hstem : V.initialSegment H n = U.initialSegment H n) :
+    V.rowExtension H i = U.rowExtension H i := by
+  have h := congrArg
+    (fun x : FiniteFatTree H => finiteRowExtensionAt H x i) hstem
+  have heq :
+      some (V.rowExtension H i) = some (U.rowExtension H i) := by
+    simpa [finiteRowExtensionAt, FatTree.initialSegment,
+      FiniteFatTree.rowExtension, FatTree.rowExtension, hi] using h
+  exact Option.some.inj heq
+
+/-- Equality of a finite fat-tree prefix fixes every partial row
+product through that prefix, including the canonical tail. -/
+theorem partialMap_eq_of_common_prefix
+    (H : SMTree S)
+    (V U : FatTree H) (n : Nat)
+    (hstem : V.initialSegment H n = U.initialSegment H n) :
+    ∀ k : Nat, k ≤ n →
+      partialMap H V k = partialMap H U k := by
+  intro k hk
+  induction k with
+  | zero => rfl
+  | succ k ih =>
+      rw [partialMap_succ, partialMap_succ]
+      rw [rowExtension_eq_of_common_prefix H V U n k
+        (by omega) hstem, ih (by omega)]
+
+/-- The n-th projection approximation depends only on the
+first n rows of the fat tree. This is the finite-continuity
+part of the original Section 4 transfer, not the unproved
+reduction or relative tail lifting. -/
+theorem projectionRespectsPrefixes (H : SMTree S) :
+    ProjectionRespectsPrefixes H := by
+  intro V U n hstem
+  cases n with
+  | zero => rfl
+  | succ n =>
+      apply Subtype.ext
+      funext x
+      let k := LevelTree.lev x.1 + 1
+      have hk : k ≤ n + 1 := by omega
+      have hprod :=
+        partialMap_eq_of_common_prefix H V U (n + 1)
+          hstem k hk
+      have hx := congrArg (fun F : MMap H => F x.1) hprod
+      change associatedMap H V x.1 = associatedMap H U x.1
+      simpa only [associatedMap_apply] using hx
+
+end SuccessorTree.SMTree.FatTree

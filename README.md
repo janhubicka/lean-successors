@@ -102,11 +102,12 @@ dependency-aware incremental check on changes, plus a scheduled
 exhaustive audit. Source reachability is inventoried before any
 deletion; a short import list is **not** proof that a module is dead.
 
-**Theorem 1.11 remains open at the topological monoid level.** The
-checked fat-tree Ellentuck theorem does not establish the exact
-projection of its neighborhoods onto M. We have direct A.1/A.2/A.3(1)
-and are verifying closedness; A.3(2) and A.4 are separate missing
-steps. See [the topology audit](docs/wiki/Shape-Ellentuck-Validation.md).
+**Theorem 1.11 remains open at the topological monoid level.**
+The direct monoid space fails A.3(2) in general, motivating the
+fat-tree construction. The checked fat-tree Ellentuck theorem
+still needs the original Section 4 exact neighbourhood projection,
+finite-stem lifting and depth correspondence to transfer to M.
+See the [fat-to-shape transfer audit](docs/wiki/Fat-Tree-to-Shape-Map-Transfer.md).
 
 The toolchain is Lean `v4.35.0-rc3`; mathlib and
 `lean-ramsey-space-todorcevic` revisions are pinned in `lakefile.toml`.

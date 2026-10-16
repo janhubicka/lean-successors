@@ -19,7 +19,8 @@ its identification with the author's current external manuscript.
 | [Using the library](Using-the-library.md) | Install/import public theorem modules; copyable `#check` statements; hypotheses |
 | [Theorems and manuscript](Theorems-and-Manuscript.md) | Principal checked Lean exports, source scope, formalized repairs |
 | [Whole-manuscript coverage](Manuscript-Coverage.md) | Section-by-section proof coverage, unexported Section 6 specializations and exact TODOs |
-| [Shape-map Ellentuck validation](Shape-Ellentuck-Validation.md) | Direct monoid A.1/A.2/A.3/closedness status, missing Theorem 1.11 obligations |
+| [Shape-map Ellentuck validation](Shape-Ellentuck-Validation.md) | Why fat trees are necessary; original Theorem 1.11 transfer |
+| [Fat-to-shape projection audit](Fat-Tree-to-Shape-Map-Transfer.md) | Precise Lemma 4.1 neighbourhood and relative lifting obligations |
 | [Architecture](Architecture.md) | Successor monoids, two independent shape-Ramsey routes, fat trees and Kpt |
 | [Adversarial referee record](Adversarial-referee-record.md) | Mathematical scope, transitive axioms and dependency/maintenance scrutiny |
 | [Audit and performance](Audit-and-Performance.md) | Actual workflow evidence, import audit, CI speed improvements |
@@ -36,7 +37,7 @@ its identification with the author's current external manuscript.
 | Starred Hales–Jewett | Kernel checked |
 | Abstract M1–M3 shape Ramsey | Kernel checked by two independent one-dimensional inputs |
 | Fat-tree Ramsey-space A4 and Ellentuck (Theorem 1.17) | Kernel checked at typed interfaces |
-| Shape-map monoid Ellentuck (Theorem 1.11) | Not yet kernel checked: direct A.3(2), A.4 remain open |
+| Shape-map monoid Ellentuck (Theorem 1.11) | Not yet kernel checked: the original fat-tree projection/neighbourhood transfer is missing; direct A.3(2) fails in general |
 | Finite bounded and exact-terminal corollaries | Kernel checked, including common-terminal padding |
 | Envelope minimality | Kernel checked with explicit E1 and nonempty-top assumptions |
 | Normalized finite unary/binary Kpt monoid | Kernel checked M1, M2, M3 and concrete E1 |

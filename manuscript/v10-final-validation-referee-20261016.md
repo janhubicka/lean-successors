@@ -125,3 +125,36 @@ TODOs/validation markers; the underlying proof text is unchanged.
 The active library/referee documentation is in
 `docs/wiki/Adversarial-referee-record.md` and
 `docs/wiki/Theorems-and-Manuscript.md`.
+
+## Section 4: explicit adversarial counterexample to the proposed transfer
+
+The full monoid of the free-ancestral S-tree with arity 1 and a
+singleton letter supplies an explicit obstruction to printed
+Lemma 4.1. Let E₀ insert the empty code at level 0, and E₂
+insert the ancestral parameter [0] at level 2. For fat trees
+U=(E₀,id,id,...) and V=(E₀,E₂,id,...), the cut functions are
+(0,2,3,4,...) and (0,2,4,5,...); the reduction index
+φ(0)=0, φ(1)=1, φ(i)=i+1 for i≥2 satisfies the fat-tree
+lift inclusions. But π(V)=E₂∘E₀ maps the level-1 source
+history to the history ([],[],[0]), which is not in range
+π(U)=range E₀ (at that level E₀ only yields ([],[],[])
+or ([],[],[1])). Hence π(V) cannot factor through π(U).
+
+Inserting the parameter step after row q instead of row 1,
+for arbitrary q≥1, preserves the first q rows of U and the
+fat-tree reduction but still gives π(V_q) outside [∅,E₀].
+Thus the projection is not continuous at U in the printed
+topologies. The all-depth proof and q=1,2,3 finite history
+diagnostics are in
+`docs/wiki/Fat-Tree-to-Shape-Map-Transfer.md`.
+The infinite witness **is not yet formalized in Lean**.
+
+**Referee disposition:** the argument for Theorem 1.11 in
+Section 4 is not repaired by adding A.3(2) to the direct
+monoid (the latter deliberately fails that axiom), nor by
+claiming all fat geometric refinements project to right
+composition. The actual fat-tree Ellentuck Theorem 1.17
+remains Lean verified. No claim that Theorem 1.11 itself
+is false is justified solely by this proof counterexample.
+A revised transfer construction or a new proof is needed.
+The mathematical manuscript text remains frozen.
