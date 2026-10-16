@@ -67,17 +67,17 @@ theorem incompatible_family_local_escape
     (hN : PairwiseRightIncompatible H N)
     (hGap : HasLateProperGaps H)
     {n : Nat} (a : RamseyApprox H (n + 1)) (F : MMap H)
-    (hne : ((ramseyApproximationSystem H).neighborhood a F).Nonempty) :
+    (hne : ((ramseyApproximationSystem H).neighborhood (n := n + 1) a F).Nonempty) :
     ∃ G : MMap H,
-      ((ramseyApproximationSystem H).neighborhood a G).Nonempty ∧
-      (ramseyApproximationSystem H).neighborhood a G ⊆
-        (ramseyApproximationSystem H).neighborhood a F ∧
-      Disjoint ((ramseyApproximationSystem H).neighborhood a G) N := by
+      ((ramseyApproximationSystem H).neighborhood (n := n + 1) a G).Nonempty ∧
+      (ramseyApproximationSystem H).neighborhood (n := n + 1) a G ⊆
+        (ramseyApproximationSystem H).neighborhood (n := n + 1) a F ∧
+      Disjoint ((ramseyApproximationSystem H).neighborhood (n := n + 1) a G) N := by
   classical
   let R := ramseyApproximationSystem H
-  by_cases hdis : Disjoint (R.neighborhood a F) N
+  by_cases hdis : Disjoint (R.neighborhood (n := n + 1) a F) N
   · exact ⟨F, hne, Set.Subset.rfl, hdis⟩
-  · have hmeet : ∃ K : MMap H, K ∈ R.neighborhood a F ∧ K ∈ N := by
+  · have hmeet : ∃ K : MMap H, K ∈ R.neighborhood (n := n + 1) a F ∧ K ∈ N := by
       by_contra hm
       apply hdis
       rw [Set.disjoint_left]
@@ -133,7 +133,11 @@ theorem freeAncestral_hasLateProperGaps :
   refine ⟨D, ?_, ?_⟩
   · intro x hx
     change gapNode m choice x = x
-    exact gapNode_eq_self_of_lt m choice (by dsimp [m]; omega)
+    have hlt : x.level < m := by
+      change x.level ≤ n at hx
+      dsimp [m]
+      omega
+    exact gapNode_eq_self_of_lt m choice hlt
   · intro hsurj
     obtain ⟨x, hx⟩ :=
       hsurj (canonicalNode (Label := Unit) (arity := 1) m)
