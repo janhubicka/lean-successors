@@ -125,7 +125,7 @@ jobs:
             cat proof-audit/axioms.log
             exit 1
           fi
-          python3 scripts/check-axiom-log.py proof-audit/axioms.log 7 || {
+          python3 scripts/check-axiom-log.py proof-audit/axioms.log scripts/CheckShapeRamsey.lean || {
             cat proof-audit/axioms.log
             exit 1
           }
@@ -136,7 +136,7 @@ jobs:
             cat proof-audit/shape-proof-routes.log
             exit 1
           fi
-          python3 scripts/check-axiom-log.py proof-audit/shape-proof-routes.log 10 || {
+          python3 scripts/check-axiom-log.py proof-audit/shape-proof-routes.log scripts/CheckShapeProofRoutes.lean || {
             cat proof-audit/shape-proof-routes.log
             exit 1
           }
@@ -151,7 +151,7 @@ jobs:
             cat proof-audit/free-ancestral-axioms.log
             exit 1
           }
-          python3 scripts/check-axiom-log.py proof-audit/free-ancestral-axioms.log 7 || {
+          python3 scripts/check-axiom-log.py proof-audit/free-ancestral-axioms.log scripts/CheckFreeAncestral.lean || {
             cat proof-audit/free-ancestral-axioms.log
             exit 1
           }
