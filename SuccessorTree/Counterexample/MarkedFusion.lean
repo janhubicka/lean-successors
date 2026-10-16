@@ -138,6 +138,7 @@ theorem markedStage_level
       · have hp : 0 < x.level := Nat.pos_of_ne_zero hx
         have hn : ¬x.level ≤ 0 := by omega
         simp [hn, hroot]
+        omega
   | succ n ih =>
       intro x
       let start : Nat := levels n + 1
