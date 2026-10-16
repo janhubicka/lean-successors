@@ -1,0 +1,35 @@
+name: Theorem 1.11 English referee regression
+
+on:
+  pull_request:
+    paths:
+      - 'docs/theorem111-zfc-counterexample-20261016.md'
+      - 'docs/theorem111-zfc-counterexample-referee-20261016.md'
+      - 'scripts/check-theorem111-free-ancestral-mask.py'
+      - 'manuscript/v10-theorem111-counterexample-review-20261016.md'
+      - '.github/workflows/theorem111-english-referee.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/theorem111-zfc-counterexample-20261016.md'
+      - 'docs/theorem111-zfc-counterexample-referee-20261016.md'
+      - 'scripts/check-theorem111-free-ancestral-mask.py'
+      - 'manuscript/v10-theorem111-counterexample-review-20261016.md'
+      - '.github/workflows/theorem111-english-referee.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  finite-referee:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check free-ancestral support and marker calculations
+        run: python3 scripts/check-theorem111-free-ancestral-mask.py
+      - name: Referee scope and proof status
+        run: |
+          grep -F 'not yet been formalized' docs/theorem111-zfc-counterexample-20261016.md
+          grep -F 'NOT YET LEAN-CERTIFIED' docs/theorem111-zfc-counterexample-referee-20261016.md
+          grep -F 'Theorem 1.11' manuscript/v10-theorem111-counterexample-review-20261016.md
