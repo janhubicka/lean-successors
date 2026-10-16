@@ -60,6 +60,55 @@ subsequently proved **uniform** countable big-Ramsey endpoint.
 The latter is an actual separately checked theorem; its conditions
 still need matching to the exact source-language proposition.
 
+## Concrete source mismatch: Emb versus OEmb (mandatory TODO)
+
+The inspected reviewed v10 PDF states in **Definition 6.25** that
+big Ramsey degrees concern arbitrary `Emb(A,K)`, and **Theorem 6.26**
+claims this property. However its displayed proof begins
+“a finite colouring χ of `OEmb(A,K)`” and the final palette estimate
+counts `OEmb(A,...)`. As written, that proves only the
+ordered-source-embedding assertion. The bridge is standard and short,
+but **must be stated** rather than changing the definition.
+
+**Precise suggested paragraph (requires author approval before adding
+to frozen text):**
+
+> To pass from ordered embeddings to all embeddings, put
+> `q=|A|` and consider the finitely many permutations `σ` of its
+> vertex set. For each `σ`, let `A_σ` be the enumerated structure
+> obtained by transporting the relations of `A` along `σ`.
+> Every embedding `f:A→K` has a unique order type `σ` and may
+> be written `f=g∘σ` with
+> `g∈OEmb(A_σ,K)`. Thus the colouring `χ` induces finitely
+> many colourings `χ_σ(g)=χ(g∘σ)` of ordered embeddings.
+> Apply the ordered conclusion successively to these finitely
+> many colourings, each time pulling the next colouring back
+> along the already chosen self-embedding of `K`.
+> Subsequent self-embeddings cannot introduce new colours into
+> any earlier stabilised class. The composition therefore
+> simultaneously bounds all `χ_σ`; the union of their finite
+> palettes bounds `χ` on **all** `Emb(A,K)`.
+
+The uniform bound can be taken as at most
+`sum_σ b(A_σ)`, or `q! * max_σ b(A_σ)`. In the normalized
+Lean implementation the final all-Emb theorem bypasses the textual
+omission: it colours *every* finite tuple (with a default value
+outside the induced-copy predicate) and transfers this directly.
+This is a **genuine manuscript proof-exposition gap**, but the Lean
+all-Emb endpoint is separately checked.
+
+For completeness, also document the preceding printed “without loss”
+normalizations: if no singleton type is allowed, the only member
+is empty; for a nonempty age choose an allowed singleton and
+toggle its unary/diagonal truth bits globally to make it neutral,
+preserving induced embeddings and irreducibility of pairs.
+The assumption that some irreducible two-point type is allowed
+requires either a separate degenerate-language argument or a
+proof that the construction works without it; do not leave it
+under an unexplained WLOG. Finite `K` has finite big Ramsey
+degrees trivially, so it need not be force-extended to `ω`
+unless a uniform intermediate construction actually requires that.
+
 ## Referee disposition
 
 - **Formal kernel proof and transitive axioms at the above main head:
