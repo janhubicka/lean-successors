@@ -29,3 +29,6 @@ import SuccessorTree.Counterexample.GreedySelection
 #print axioms SuccessorTree.Counterexample.greedySelection_avoids_earlier
 #print axioms SuccessorTree.Counterexample.greedySelection_is_candidate
 #print axioms SuccessorTree.Counterexample.greedySelection_pairwise
+
+#check @SuccessorTree.Counterexample.no_embedding_earlier_of_minimal_ord
+#print axioms SuccessorTree.Counterexample.no_embedding_earlier_of_minimal_ord
