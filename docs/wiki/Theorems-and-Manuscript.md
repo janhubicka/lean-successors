@@ -10,6 +10,8 @@ without changing these mathematical statements.
 | Mathematical statement | Module (prefix `SuccessorTree.`) | Exact declaration |
 | --- | --- | --- |
 | Finite starred Hales–Jewett | `HalesJewett.AlphabetInduction` | `HalesJewett.starHJ_finite` |
+| Finite copy Ramsey degree from expansions | `CopyRamsey` | `RamseyExpansion.copyRamseyDegreeLE_card_expansionTypes` |
+| Intrinsic successor event injection | `ShapeEvents` | `ShapeMap.mapEvent_injective` |
 | Direct finite shape Ramsey | `ShapeFiniteRamsey` | `SMTree.shapePreservingRamsey` |
 | Shape Ramsey via fat Ellentuck | `ShapeEllentuckRamsey` | `SMTree.shapePreservingRamsey_viaFatEllentuck` |
 | Fat-tree A4 | `FatTree.A4ReviewComplete` | `SMTree.FatTree.fatTreeA4` |
@@ -73,6 +75,10 @@ construction unless reduced to the checked class.
 
 ## Additional proof work beyond printed prose
 
+- A generic `FiniteCopySystem`/`RamseyExpansion` interface provides an
+  expansion-type upper bound on copy Ramsey degrees, without requiring
+  rigidity of embeddings, and `IntrinsicEvent`/`PointedOccurrence`
+  transport is independent of the concrete Kpt model.
 - Starred HJ was proved by an explicit forcing/alphabet induction rather
   than assumed as an unverified one-dimensional input.
 - The fat-tree A4 proof uses typed history/trace replay and independent
