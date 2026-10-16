@@ -165,3 +165,19 @@ forbidden families are deferred. The author manuscript should
 remain frozen except reviewed TODOs and validation markers.
 See [the adversarial report](Adversarial-referee-record.md) and
 [manuscript validation note](../../manuscript/v10-final-validation-referee-20261016.md).
+
+## Formal separation of the Section 4 obstruction
+
+The library now exports a generic checked **conditional**
+`FatTree.projected_rightFactorCone_not_neighborhood` theorem
+along with the unconditional algebraic example
+`FreeAncestral.projectionComposite_not_rightFactor`.
+The example proves, for the actual arity-one free monoid,
+`E₂∘E₀ ≠ E₀∘G` for *every* function `G`.
+This is stronger than the finite Python diagnostic.
+A Lean witness `FatTree.BadProjectedDepthCones H U`
+connecting these maps to all-depth geometric fat
+refinements is still missing, so the full noncontinuity
+counterexample is **not yet kernel certified**.
+The original Section 4 neighbourhood transfer is not
+regarded as validated.
