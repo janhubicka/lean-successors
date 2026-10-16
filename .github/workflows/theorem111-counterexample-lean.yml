@@ -51,7 +51,7 @@ jobs:
           lake exe cache get
       - name: Compile counterexample and check its axioms
         run: |
-          lake build SuccessorTree.Counterexample.NowhereDense SuccessorTree.Counterexample.MaskCodes SuccessorTree.Counterexample.SupportRigidity SuccessorTree.Counterexample.Topology SuccessorTree.Counterexample.StretchHistory SuccessorTree.Counterexample.MarkedFusion SuccessorTree.Counterexample.RootMarkerRigidity SuccessorTree.Counterexample.RootMarkerTransport SuccessorTree.Counterexample.MarkerIntervals SuccessorTree.Counterexample.MarkerTransfer SuccessorTree.Counterexample.CompatibilityLevels
+          lake build SuccessorTree.Counterexample.NowhereDense SuccessorTree.Counterexample.MaskCodes SuccessorTree.Counterexample.SupportRigidity SuccessorTree.Counterexample.Topology SuccessorTree.Counterexample.StretchHistory SuccessorTree.Counterexample.MarkedFusion SuccessorTree.Counterexample.RootMarkerRigidity SuccessorTree.Counterexample.RootMarkerTransport SuccessorTree.Counterexample.MarkerIntervals SuccessorTree.Counterexample.MarkerTransfer SuccessorTree.Counterexample.CompatibilityLevels SuccessorTree.Counterexample.CompatibilityMarker
           lake env lean scripts/CheckTheorem111Counterexample.lean > theorem111-counterexample-axioms.log
           cat theorem111-counterexample-axioms.log
           python3 scripts/check-axiom-log.py theorem111-counterexample-axioms.log scripts/CheckTheorem111Counterexample.lean
