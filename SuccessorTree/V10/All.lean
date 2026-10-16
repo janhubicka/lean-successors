@@ -55,6 +55,7 @@ import SuccessorTree.V10.GPlusHTopTopBlocksColour
 import SuccessorTree.V10.GPlusIrreducibleChain
 import SuccessorTree.V10.KptBaseToGOmega
 import SuccessorTree.V10.GPlusHCountableFinitePrefixCode
+import SuccessorTree.V10.GPlusHtopFixedGOmegaBlockTuples
 
 /-!
 # Complete V10 proof-assembly import frontier
