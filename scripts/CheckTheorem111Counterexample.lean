@@ -10,6 +10,7 @@ import SuccessorTree.Counterexample.MarkerIntervals
 import SuccessorTree.Counterexample.MarkerTransfer
 import SuccessorTree.Counterexample.CompatibilityLevels
 import SuccessorTree.Counterexample.CompatibilityMarker
+import SuccessorTree.Counterexample.ConcreteAntichain
 
 /-!
 Exact-name audit: only the declarations below have been proved so far.
@@ -125,3 +126,13 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 #print axioms SuccessorTree.FreeAncestral.mmap_level_ge_self
 #print axioms SuccessorTree.FreeAncestral.meetingLevels_subset_marked_range
 #print axioms SuccessorTree.FreeAncestral.compatible_marked_has_infinite_support
+
+#check @SuccessorTree.Counterexample.raisedCandidate_reduces
+#check @SuccessorTree.Counterexample.raisedCandidate_root
+#check @SuccessorTree.Counterexample.raisedCandidate_compatible_unique
+#check @SuccessorTree.Counterexample.exists_pure_meeting_incompatible_family
+
+#print axioms SuccessorTree.Counterexample.raisedCandidate_reduces
+#print axioms SuccessorTree.Counterexample.raisedCandidate_root
+#print axioms SuccessorTree.Counterexample.raisedCandidate_compatible_unique
+#print axioms SuccessorTree.Counterexample.exists_pure_meeting_incompatible_family
