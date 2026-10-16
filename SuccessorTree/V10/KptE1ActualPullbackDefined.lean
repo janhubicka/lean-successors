@@ -107,7 +107,9 @@ theorem normalizedKpt_oneLevelPullback
             Q.lastOrdinaryParameter
               (kptShapeLevelMap family F (LevelTree.lev x))
               hgParameter⟩ : RawPartialTypeNode db du dd) := by
-      rw [hgSource] at hRawParameter
+      -- A dependent equality: rewriting only the numeric cut leaves
+      -- its free-cut proof ill-typed. Eliminate the equality together.
+      cases hgSource
       simpa using hRawParameter
     have hRecovered :
         (Q.reindexOrdinary
@@ -124,6 +126,8 @@ theorem normalizedKpt_oneLevelPullback
         Nat.ne_of_gt hxPos
       simp [PartialTypeWithE.canonicalParameterRecord,
         hxNonzero, hRecovered]
+      -- The remaining equality is the eta rule for the raw Sigma node.
+      rfl
     exact kptE1_source_successor_of_parameter_record
       family F a [x] c Q hTargetPred hTargetAd hLetter
       (LevelTree.lev x) hf (Or.inr hxLt)
