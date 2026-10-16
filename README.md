@@ -2,7 +2,8 @@
 
 Lean 4 formalization of **Ramsey theorem for trees with a successor operation**
 (Balko–Chodounský–Dobrinen–Hubička–Konečný–Nešetřil–Zucker), including
-Hales–Jewett, shape-preserving Ramsey, fat-tree Ellentuck, envelopes
+Hales–Jewett, copy-Ramsey expansion bounds, intrinsic successor events,
+shape-preserving Ramsey, fat-tree Ellentuck, envelopes
 and finite big-Ramsey applications.
 
 ## Verified Lean status (16 October 2026)
@@ -50,6 +51,8 @@ their axiom certificates remain under regression checks.
 | Result | Lean declaration |
 | --- | --- |
 | Finite starred Hales–Jewett | `SuccessorTree.HalesJewett.starHJ_finite` |
+| Finite copy-degree bound from Ramsey expansions | `SuccessorTree.RamseyExpansion.copyRamseyDegreeLE_card_expansionTypes` |
+| Shape event transport | `SuccessorTree.ShapeMap.mapEvent_injective` |
 | Direct shape Ramsey | `SuccessorTree.SMTree.shapePreservingRamsey` |
 | Fat-tree Ellentuck shape Ramsey | `SuccessorTree.SMTree.shapePreservingRamsey_viaFatEllentuck` |
 | Fat-tree A4 / Ellentuck | `SuccessorTree.SMTree.FatTree.fatTreeA4` / `fatTreeEllentuck` |
