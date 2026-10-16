@@ -228,6 +228,66 @@ has not been proved. It is also **strictly less than the
 paper's Theorem 1.11**: an arbitrary open set in the monoid
 Ellentuck topology need not be pointwise-Borel.
 
+## 4A. An *unconditional* fat-tree replacement (weaker statement)
+
+There is a rigorous theorem that **does not require FR0, FR1,
+RC-open or RC-null** and is ready for a separate Lean formulation.
+
+**Theorem (Borel fat-image Ramsey).** Let
+\((T,\preceq,\Sigma,\mathcal S,\mathcal M)\) be any
+\((\mathcal S,\mathcal M)\)-tree. Let \(X\subseteq\mathcal M\)
+be *pointwise-Borel* (in the product topology on total
+shape maps). For every nonempty fat-tree neighbourhood
+\([x,U]_{\mathcal R}\), there exists
+\[
+             V\in[\operatorname{depth}_U(x),U]_{\mathcal R}
+\]
+such that **either**
+\[
+             P([x,V]_{\mathcal R})\subseteq X
+\]
+**or**
+\[
+             P([x,V]_{\mathcal R})\cap X=\varnothing.
+\]
+Consequently, every pointwise-Borel finite colouring of
+\(\mathcal M\) becomes monochromatic on **the entire projected
+fat neighbourhood** \(P([x,V])\) after a fat-depth-preserving
+refinement.
+
+**Proof.** Set \(Y=P^{-1}(X)\subseteq\mathcal R\).
+The verified \`projectionRespectsPrefixes\` states that the
+restriction of \(P(W)\) through source level \(n-1\) depends
+only on the first \(n\) fat rows of \(W\). Therefore \(P\)
+is continuous from the metric fat approximation topology
+into the pointwise topology on \(\mathcal M\).
+It follows that \(Y\) is Borel for the metric topology
+on \(\mathcal R\). Since the fat Ellentuck topology refines
+its metric topology, \(Y\) is also Ellentuck-Borel and
+in particular has the fat Ellentuck Baire property.
+
+Apply the **verified fat-tree Theorem 1.17** to \(Y\)
+in \([x,U]\). It gives a pure fat refinement \(V\) such that
+the whole of \([x,V]\) lies in or outside \(Y\).
+Taking images under \(P\) gives the two displayed
+alternatives. For finitely many Borel colours, apply the
+two-colour version consecutively, using transitivity
+of fat refinement and retaining the same protected
+stem; nonemptiness of each protected neighbourhood
+comes from the proved fat A.3(1). QED.
+
+**Referee boundary:** this is a genuine infinite-dimensional
+Borel Ramsey statement **about projections of fat-tree
+neighbourhoods**, *not* the printed Theorem 1.11.
+Its homogeneous set is \(P([x,V])\), which may contain
+shape maps outside the algebraic monoid cone \([F_x,F_V]\).
+No implication that a monoid neighbourhood \([f,F']\)
+is homogeneous follows. This distinction is forced by
+the free-ancestral counterexample. The theorem is
+nevertheless useful independently of the truth of 1.11,
+and its English proof has no missing lifting or
+category-transfer assumption.
+
 ## 5. Adversarial audit: two major gaps
 
 ### Referee A — geometric relative lifting
@@ -355,6 +415,9 @@ unqualified "Theorem 1.11 verified" statement.
   nonfactorization and arbitrarily delayed geometric
   witnesses; the full infinite latter still needs kernel
   verification.
+- **English proof completed unconditionally:** Section 4A,
+  pointwise-Borel Ramsey homogeneity on projected **fat**
+  neighbourhoods; this is a strictly weaker, sound theorem.
 - **English proof completed conditionally:** Section 3 of
   this note, with FR0, FR1, RC-open, RC-null explicit.
 - **English pointwise-Borel transfer completed conditionally:**
