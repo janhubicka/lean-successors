@@ -78,8 +78,7 @@ theorem ramseyApproximation_isMetricallyClosed
 theorem ramseyApproximation_isTychonoffClosed
     (H : SMTree S) :
     (ramseyApproximationSystem H).IsTychonoffClosed :=
-  ((ramseyApproximationSystem H).
-    isTychonoffClosed_iff_isClosedApproximationImage).2
+  ((ramseyApproximationSystem H).isTychonoffClosed_iff_isClosedApproximationImage).2
       (H.ramseyApproximation_isMetricallyClosed)
 
 /-- The direct M-map approximation space has fusion limits already
