@@ -13,7 +13,8 @@ be the image of a genuinely finite AM approximation. These are equivalent
 on a bounded source palette, because the canonical AM of R.F 0 agrees with
 R.F 0 on every source Kpt node at or below the palette bound.
 
-This is the finite-approximation bridge, not a new Ramsey axiom. The hypotheses are the seed-height/top-original conditions, together with
+This is the finite-approximation bridge, not a new Ramsey axiom. The
+hypotheses are the seed-height/top-original conditions, together with
 representation of every target tuple's coordinates by
 actual strict Kpt pairs whose two endpoints lie in the chosen seed set.
 The last requirement is *not* asserted for all copies of A in G omega.
