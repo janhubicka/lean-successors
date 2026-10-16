@@ -1,0 +1,7 @@
+import SuccessorTree.V10.KptBaseToGOmega
+
+#print axioms SuccessorTree.V10.AgeTestModel.InducedEmbedding.comp
+#print axioms SuccessorTree.V10.infiniteNumericHL_top_induced_embedding
+#print axioms SuccessorTree.V10.infiniteNumericKToGOmega
+#print axioms SuccessorTree.V10.GPlusEnumeration.enumerate_independent_of_witness
+#print axioms SuccessorTree.V10.infiniteNumericKToFixedGOmega
