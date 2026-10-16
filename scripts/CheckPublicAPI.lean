@@ -1,10 +1,19 @@
 import SuccessorTree.Library
+import SuccessorTree.Library.Structures
 
 /-!
 Compile-time smoke test of the theorem-facing library import.
 The existing independent checker suites perform exact transitive
 axiom reports; do not duplicate hundreds of V10 axiom checks here.
 -/
+
+#check @SuccessorTree.LevelTree
+#check @SuccessorTree.STree
+#check @SuccessorTree.ShapeMap
+#check @SuccessorTree.SMTree
+#check @SuccessorTree.FiniteCopySystem
+#check @SuccessorTree.RamseyExpansion
+#check @SuccessorTree.IntrinsicEvent
 
 #check @SuccessorTree.HalesJewett.starHJ_finite
 #check @SuccessorTree.RamseyExpansion.copyRamseyDegreeLE_card_expansionTypes
