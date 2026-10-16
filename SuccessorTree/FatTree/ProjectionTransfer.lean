@@ -1,5 +1,6 @@
 import SuccessorTree.FatTree.ShapeCorrespondence
 import SuccessorTree.FatTree.A3Typed
+import Mathlib.Tactic
 
 /-!
 # The canonical fat-tree projection: exact obligations
@@ -22,7 +23,8 @@ prefix from the tail of a fat tree. The conditional
 what those properties would establish about images of
 the paper's `[n,U]` neighborhoods.
 
-Neither of the two hypotheses has been established yet.
+Prefix stability is proved below. Projecting arbitrary geometric
+reductions and lifting arbitrary relative tails remain open.
 Do not confuse `associatedMap_ofShapeMap` (surjectivity)
 with the reverse lifting required by paper Lemma 4.1.
 -/
@@ -50,13 +52,70 @@ def ProjectionRespectsReduction (H : SMTree S) : Prop :=
 
 /-- The projected approximation through n source levels depends
 only on the first n rows of the fat tree. For n = 0 this is
-the unique empty approximation. This is an obligation,
-not an additional SMTree axiom. -/
+the unique empty approximation. The following theorem proves
+this from the actual canonical row products. -/
 def ProjectionRespectsPrefixes (H : SMTree S) : Prop :=
   ∀ (V U : FatTree H) (n : Nat),
     V.initialSegment H n = U.initialSegment H n →
     ramseyApprox H n (associatedMap H V) =
       ramseyApprox H n (associatedMap H U)
+
+/-- The canonical total extension of a row is determined by the
+corresponding row of any common finite fat-tree prefix. -/
+private theorem rowExtension_eq_of_common_prefix
+    (H : SMTree S)
+    (V U : FatTree H) (n i : Nat)
+    (hi : i < n)
+    (hstem : V.initialSegment H n = U.initialSegment H n) :
+    V.rowExtension H i = U.rowExtension H i := by
+  let j : Fin n := ⟨i, hi⟩
+  let k : Fin (n + 1) := ⟨i, by omega⟩
+  have hcut : V.cut i = U.cut i := by
+    have hc := FiniteFatTree.cut_eq_of_eq H hstem k
+    simpa [FatTree.initialSegment, k] using hc
+  have hrow : HEq (V.row i) (U.row i) := by
+    have hr := FiniteFatTree.row_heq_of_eq H hstem j
+    simpa [FatTree.initialSegment, j] using hr
+  cases hcut
+  have hrow' : V.row i = U.row i := eq_of_heq hrow
+  simp only [FatTree.rowExtension, hrow']
+
+/-- Equality of a finite fat-tree prefix fixes every partial row
+product through that prefix, including the canonical tail. -/
+theorem partialMap_eq_of_common_prefix
+    (H : SMTree S)
+    (V U : FatTree H) (n : Nat)
+    (hstem : V.initialSegment H n = U.initialSegment H n) :
+    ∀ k : Nat, k ≤ n →
+      partialMap H V k = partialMap H U k := by
+  intro k hk
+  induction k with
+  | zero => rfl
+  | succ k ih =>
+      rw [partialMap_succ, partialMap_succ]
+      rw [rowExtension_eq_of_common_prefix H V U n k
+        (by omega) hstem, ih (by omega)]
+
+/-- The n-th projection approximation depends only on the
+first n rows of the fat tree. This is the finite-continuity
+part of the original Section 4 transfer, not the unproved
+reduction or relative tail lifting. -/
+theorem projectionRespectsPrefixes (H : SMTree S) :
+    ProjectionRespectsPrefixes H := by
+  intro V U n hstem
+  cases n with
+  | zero => rfl
+  | succ n =>
+      apply Subtype.ext
+      funext x
+      let k := LevelTree.lev x.1 + 1
+      have hk : k ≤ n + 1 := by omega
+      have hprod :=
+        partialMap_eq_of_common_prefix H V U (n + 1)
+          hstem k hk
+      have hx := congrArg (fun F : MMap H => F x.1) hprod
+      change associatedMap H V x.1 = associatedMap H U x.1
+      simpa only [associatedMap_apply] using hx
 
 /-- The exact conclusion about the fat-tree depth cone
 `[n,U]`, *conditional on the two identified projection
