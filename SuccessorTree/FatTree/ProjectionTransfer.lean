@@ -60,6 +60,16 @@ def ProjectionRespectsPrefixes (H : SMTree S) : Prop :=
     ramseyApprox H n (associatedMap H V) =
       ramseyApprox H n (associatedMap H U)
 
+/-- An optional row extension defined on every finite fat tree,
+without a dependent Fin index in the type of the accessor. This makes
+transport along equality of whole finite fat trees straightforward. -/
+private noncomputable def finiteRowExtensionAt
+    (H : SMTree S) (x : FiniteFatTree H) (i : Nat) :
+    Option (MMap H) :=
+  if hi : i < x.height then
+    some (x.rowExtension H ⟨i, hi⟩)
+  else none
+
 /-- The canonical total extension of a row is determined by the
 corresponding row of any common finite fat-tree prefix. -/
 private theorem rowExtension_eq_of_common_prefix
@@ -68,13 +78,13 @@ private theorem rowExtension_eq_of_common_prefix
     (hi : i < n)
     (hstem : V.initialSegment H n = U.initialSegment H n) :
     V.rowExtension H i = U.rowExtension H i := by
-  let j : Fin n := ⟨i, hi⟩
-  calc
-    V.rowExtension H i =
-        (V.initialSegment H n).rowExtension H j := rfl
-    _ = (U.initialSegment H n).rowExtension H j := by
-      rw [hstem]
-    _ = U.rowExtension H i := rfl
+  have h := congrArg
+    (fun x : FiniteFatTree H => finiteRowExtensionAt H x i) hstem
+  have heq :
+      some (V.rowExtension H i) = some (U.rowExtension H i) := by
+    simpa [finiteRowExtensionAt, FatTree.initialSegment,
+      FiniteFatTree.rowExtension, FatTree.rowExtension, hi] using h
+  exact Option.some.inj heq
 
 /-- Equality of a finite fat-tree prefix fixes every partial row
 product through that prefix, including the canonical tail. -/
