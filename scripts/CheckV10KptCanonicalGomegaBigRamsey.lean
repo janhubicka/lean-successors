@@ -1,0 +1,5 @@
+import SuccessorTree.V10.KptCanonicalGomegaBigRamsey
+
+#print axioms SuccessorTree.V10.allFalseAgeModel_avoids_family
+#print axioms SuccessorTree.V10.canonicalNormalizedGOmega_bigRamsey
+#print axioms SuccessorTree.V10.canonicalNormalizedGOmega_avoids_family
