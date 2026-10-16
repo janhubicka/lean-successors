@@ -44,11 +44,18 @@ theorem e1OldPrefix_binary_from_witness
       T.lReduct.binary
         (some (⟨u, hu⟩ : Fin n)) (some (⟨v, hv⟩ : Fin n)) r)
     hPrefix
-  simpa [PartialTypeWithE.ageModel, typeAgeIndex,
-    PartialTypeWithE.restrict, RelationalPrefixType.restrict,
+  have hU : typeAgeIndex (n + 1) u =
+      some (⟨u, Nat.lt_succ_of_lt hu⟩ : Fin (n + 1)) := by
+    simp [typeAgeIndex, Nat.lt_succ_of_lt hu]
+  have hV : typeAgeIndex (n + 1) v =
+      some (⟨v, Nat.lt_succ_of_lt hv⟩ : Fin (n + 1)) := by
+    simp [typeAgeIndex, Nat.lt_succ_of_lt hv]
+  change Q.lReduct.binary (typeAgeIndex (n + 1) u)
+    (typeAgeIndex (n + 1) v) r = A.L.binary u v r
+  rw [hU, hV]
+  simpa [PartialTypeWithE.restrict, RelationalPrefixType.restrict,
     liftTypeCoordinate, EnumeratedPartialStructure.partialTypeAt,
-    RelationalPrefixType.ofAgeModel, prefixVertexIndex,
-    Nat.lt_succ_of_lt hu, Nat.lt_succ_of_lt hv] using h
+    RelationalPrefixType.ofAgeModel, prefixVertexIndex] using h
 
 /-- The inherited source E bits agree *exactly* with the actual
 E relation of the admissibility witness, not merely the positive
@@ -66,8 +73,9 @@ theorem e1OldPrefix_E_from_witness
   have h := congrArg
     (fun T : PartialTypeWithE n db du dd =>
       T.eRelation (some i) (some j)) hPrefix
-  simpa [PartialTypeWithE.restrict, liftTypeCoordinate,
-    EnumeratedPartialStructure.partialTypeAt, prefixVertexIndex] using h
+  change Q.eRelation (some i.castSucc) (some j.castSucc) =
+    A.E i.val j.val at h
+  exact h
 
 /-- Every genuine old free-level column of an enumerated partial
 structure is empty or has its first free coordinate STRICTLY
