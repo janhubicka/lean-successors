@@ -3,6 +3,7 @@
 - [Home](Home.md)
 - [Using the library](Using-the-library.md)
 - [Theorems and manuscript](Theorems-and-Manuscript.md)
+- [Whole-manuscript coverage](Manuscript-Coverage.md)
 - [Proof architecture](Architecture.md)
 - [Adversarial referee audit](Adversarial-referee-record.md)
 - [Performance and CI](Audit-and-Performance.md)
