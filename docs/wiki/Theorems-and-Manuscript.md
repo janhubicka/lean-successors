@@ -12,6 +12,8 @@
 | Bounded-terminal finite corollary | `ShapeFiniteCorollaries` | `SMTree.shapeRamsey_bounded` |
 | Exact-terminal finite corollary | `ShapeFiniteCorollaries` | `SMTree.shapeRamsey_exact` |
 | Concrete normalized model of M1–M3 | `V10.KptCompleteSMTree` | `V10.normalizedKptSMTree` |
+| Concrete Kpt source-successor pullback (E1) | `V10.KptE1ActualPullbackDefined` | `V10.normalizedKpt_oneLevelPullback` |
+| Envelope algorithm E1 for normalized Kpt | `V10.KptE1EnvelopeIntegration` | `V10.normalizedKpt_oneLevelPullback_for_envelopes` |
 | Sharp finite numerical `H^+` envelope bound | `V10.HUniformEnvelopeBound` | `V10.numericH_actualRun_uniform_sharp_envelope_bound` |
 
 The last theorem is explicitly parameterized by a finite normalized forbidden family, finite model `K` avoiding that family, a positive `k`, root and admissible top seed blocks, a **genuine AlgorithmRun**, and the stated forbidden-pattern size constraint. Its inequality bounds selected levels in that concrete run. It is not the complete universal statement of Proposition 6.44. Read its Lean type before using it as an external premise.
@@ -27,6 +29,7 @@ The library also contains finite-type and model verification modules not listed 
 - **M2 repair:** use the actual finite common-socle `L`-age condition for the corrected prescribed B3; nonedges must be handled in induced copies. Do not assume an arbitrary `E` expansion on an `L`-only age witness.
 - **M3 and Section 6 record precision:** keep directed binary bits, unary and diagonal data and the absence of edges; linked-clone projection is not indiscriminate upper-column copying.
 - **Actual Algorithm 5.4 counting:** isolate original-name addresses, selected generations, I1/I2 real meet charges, I3 failed-B3 signatures and the sharp forest meet closure. This makes the numerical `H^+` estimate checkable independently of the final universal transfer.
+- **Concrete E1 pullback:** the canonical target parameter has an empty/singleton source preimage, and complete L+ type reindexing preserves predecessor, canonical source parameter, all E and L atoms, and the terminal letter. The source successor uses an actual neutral-spacer admissibility witness; source *existence* is what E1 requires, not equality of the chosen target with an F-image.
 
 These are proof engineering and repair notes, not a claim that every such addition has already been written into the frozen manuscript.
 

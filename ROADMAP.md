@@ -1,6 +1,6 @@
 # Active formalization and maintenance roadmap
 
-Updated 15 October 2026. The early scaffold (which still described starred
+Updated 16 October 2026. The early scaffold (which still described starred
 Hales–Jewett as an unproved input) has been superseded; its history is in Git.
 See the [maintained wiki](docs/wiki/Home.md) for exact statements and
 [assumption boundaries](docs/wiki/Axioms-and-Future-Work.md).
@@ -10,8 +10,10 @@ See the [maintained wiki](docs/wiki/Home.md) for exact statements and
 - **Checked abstract core:** Hales–Jewett, successor `LevelTree`/`STree`/`SMTree`,
   M1–M3, both shape-Ramsey proof routes, typed fat-tree A4/Ellentuck, finite
   bounded/exact terminal corollaries.
-- **Checked concrete scope:** normalized finite-signature Kpt M1–M3 and
-  actual-run finite numerical H+ envelope bound.
+- **Checked concrete scope:** normalized finite-signature Kpt M1–M3,
+  the concrete Section 5 E1/OneLevelPullback condition required by
+  the envelope algorithm, and the actual-run finite numerical H+
+  envelope bound.
 - **Unfinished v10:** universal induced K→H+→G+ transfer, sufficiently long
   canonical finite approximants, colouring pullback and final Theorem 6.26;
   separately confirm empty/boundary cases and literal author-language
@@ -48,7 +50,7 @@ lake exe cache get
 lake build
 lake env lean scripts/CheckShapeProofRoutes.lean
 python3 scripts/select-v10-checks.py
-python3 scripts/run-v10-checks.py --jobs 3
+python3 scripts/run-v10-batches.py --jobs 2
 python3 scripts/audit-import-graph.py
 ```
 
