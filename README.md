@@ -64,8 +64,13 @@ their axiom certificates remain under regression checks.
 | Concrete envelope E1 | `SuccessorTree.V10.normalizedKpt_oneLevelPullback_for_envelopes` |
 | Sharp actual-run finite H+ bound | `SuccessorTree.V10.numericH_actualRun_uniform_sharp_envelope_bound` |
 | Canonical Gω big Ramsey | `SuccessorTree.V10.canonicalNormalizedGOmega_bigRamsey` |
+| Finite big Ramsey degree predicate and universal instance | `SuccessorTree.V10.AgeTestModel.HasOriginalFiniteBigRamseyDegrees`, `hasOriginalFiniteBigRamseyDegrees_of_universal` |
 | Original unary/binary all-Emb(A,K) theorem | `SuccessorTree.V10.universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound` |
 | Free-ancestral finite Ramsey | `SuccessorTree.FreeAncestral.finiteShapeRamsey` |
+
+The paper-facing finite-degree assertion is exported as
+`AgeTestModel.HasOriginalFiniteBigRamseyDegrees` with a proved universal-age
+instance; its quantifiers match Definition 6.25 at the normalized signature.
 
 The final countable application requires a finite normalized
 irreducible forbidden family and a full-carrier, forbidden-free target
