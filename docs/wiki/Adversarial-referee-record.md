@@ -49,7 +49,18 @@ authorial LaTeX.
    singletons and requires irreducibility of nontrivial forbidden
    patterns. The result must not be quoted for arbitrary forbidden
    families without the corresponding normalization/reduction.
-6. **Residual literal source checks.** The user's current editable
+6. **Verified source mismatch at the last step.** The inspected
+   reviewed v10 PDF defines the big Ramsey degree by
+   `Emb(A,K)`, but the displayed final proof starts from
+   `OEmb(A,K)` and does not explicitly promote the ordered
+   bound to all embeddings. One needs a finite permutation-
+   type partition and a simultaneous (sequentially composed)
+   stabilization argument. The last Lean endpoint proves
+   the stronger all-Emb form by direct tuple colourings.
+   This is a real source-prose correction/TODO, not an
+   extra Lean axiom. The exact proposed text is in
+   `manuscript/v10-final-validation-referee-20261016.md`.
+7. **Residual literal source checks.** The user's current editable
    author `main.tex` is not included in this repository. The
    repo's `manuscript` directory supplies review notes and patch
    generators, not a full editable source. Thus exact textual
