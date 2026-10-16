@@ -27,6 +27,11 @@ theorem incompatible_family_isNowhereDense
     (hGap : HasLateProperGaps H) :
     @IsNowhereDense (MMap H)
       (ramseyApproximationSystem H).ellentuckTopology N := by
+  -- Lean sees the same point type both through the SMTree and the
+  -- approximation-system projection. Register the chosen topology in
+  -- both syntactic forms to make all closure/open-set expressions infer.
+  letI : TopologicalSpace (MMap H) :=
+    (ramseyApproximationSystem H).ellentuckTopology
   letI : TopologicalSpace (ramseyApproximationSystem H).Point :=
     (ramseyApproximationSystem H).ellentuckTopology
   change interior (closure N) = (∅ : Set (MMap H))
