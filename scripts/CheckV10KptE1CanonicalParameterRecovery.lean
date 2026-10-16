@@ -1,0 +1,3 @@
+import SuccessorTree.V10.KptE1CanonicalParameterRecovery
+
+#print axioms SuccessorTree.V10.kptShapeReindex_parameter_recovers_source
