@@ -26,6 +26,7 @@ import SuccessorTree.V10.KptE1ReindexedNewColumn
 import SuccessorTree.V10.KptE1ShapeLevelCut
 import SuccessorTree.V10.KptE1TargetParameterCut
 import SuccessorTree.V10.KptE1OldNewColumnConsequences
+import SuccessorTree.V10.KptE1OldPrefixGeometry
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -343,3 +344,9 @@ import SuccessorTree.V10.KptE1OldNewColumnConsequences
 #print axioms SuccessorTree.V10.actualKptTargetStep_imageParameterCut
 #print axioms SuccessorTree.V10.e1PaddedOrdinaryLinked_of_old_and_validNew
 #print axioms SuccessorTree.V10.e1PaddedColumns_of_oldE_and_validNew
+#print axioms SuccessorTree.V10.e1OldPrefix_binary_from_witness
+#print axioms SuccessorTree.V10.e1OldPrefix_E_from_witness
+#print axioms SuccessorTree.V10.e1OldPrefix_freeCut_spaced
+#print axioms SuccessorTree.V10.e1OldPrefix_E_profile
+#print axioms SuccessorTree.V10.e1OldPrefix_linked
+#print axioms SuccessorTree.V10.e1PaddedOldNew_from_admissible_prefix
