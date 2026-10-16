@@ -1,0 +1,3 @@
+import SuccessorTree.V10.GPlusHTopTopBlocksColour
+
+#print axioms SuccessorTree.V10.numericHTop_priorBlocks_uniform_tuple_colour_bound
