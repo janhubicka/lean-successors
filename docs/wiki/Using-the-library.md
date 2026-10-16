@@ -48,6 +48,8 @@ import SuccessorTree.Library
 #check SuccessorTree.V10.numericH_actualRun_uniform_sharp_envelope_bound
 #check SuccessorTree.V10.canonicalNormalizedGOmega_bigRamsey
 #check SuccessorTree.V10.universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound
+#check SuccessorTree.V10.AgeTestModel.HasOriginalFiniteBigRamseyDegrees
+#check SuccessorTree.V10.AgeTestModel.hasOriginalFiniteBigRamseyDegrees_of_universal
 #check SuccessorTree.FreeAncestral.finiteShapeRamsey
 ```
 
@@ -69,6 +71,12 @@ and an `SMTree S` with the original M1–M3 contract. The minimal-envelope
 statement additionally requires `SMTree.Envelope.OneLevelPullback`; this
 is **not** an SMTree axiom. The normalized Kpt instance has a separate
 proof of that property.
+
+The paper-facing predicate `AgeTestModel.HasOriginalFiniteBigRamseyDegrees`
+and theorem `hasOriginalFiniteBigRamseyDegrees_of_universal` package the
+explicit per-pattern statement into a single `∀A ∃t ∀χ` assertion,
+using finite colour types `Fin (r+1)`. This is a proved corollary,
+not a new combinatorial premise.
 
 The final finite big-Ramsey theorem uses a finite unary/binary signature,
 normalized irreducible forbidden families, and a countable full-carrier
