@@ -54,6 +54,7 @@ import SuccessorTree.V10.GPlusHTopUniformPalette
 import SuccessorTree.V10.GPlusHTopTopBlocksColour
 import SuccessorTree.V10.GPlusIrreducibleChain
 import SuccessorTree.V10.KptBaseToGOmega
+import SuccessorTree.V10.GPlusHCountableFinitePrefixCode
 
 /-!
 # Complete V10 proof-assembly import frontier
