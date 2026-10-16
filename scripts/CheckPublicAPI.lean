@@ -7,6 +7,8 @@ axiom reports; do not duplicate hundreds of V10 axiom checks here.
 -/
 
 #check @SuccessorTree.HalesJewett.starHJ_finite
+#check @SuccessorTree.RamseyExpansion.copyRamseyDegreeLE_card_expansionTypes
+#check @SuccessorTree.ShapeMap.mapEvent_injective
 
 #check @SuccessorTree.SMTree.shapePreservingRamsey
 #check @SuccessorTree.SMTree.shapePreservingRamsey_viaFatEllentuck
