@@ -5,8 +5,10 @@ on:
     paths:
       - 'SuccessorTree/FatTree/ProjectionTransfer.lean'
       - 'SuccessorTree/FatTree/ProjectionObstruction.lean'
+      - 'SuccessorTree/FreeAncestralProjectionRange.lean'
       - 'scripts/CheckFatToMonoidProjection.lean'
       - 'scripts/CheckFatProjectionObstruction.lean'
+      - 'scripts/CheckFreeAncestralProjectionRange.lean'
       - '.github/workflows/fat-to-monoid-projection.yml'
       - 'scripts/check-fat-projection-free-ancestral-witness.py'
   push:
@@ -76,6 +78,14 @@ jobs:
             exit 1
           }
           python3 scripts/check-axiom-log.py proof-audit/fat-projection-obstruction-axioms.log scripts/CheckFatProjectionObstruction.lean
+      - name: Check free ancestral parameter-range obstruction
+        run: |
+          lake build SuccessorTree.FreeAncestralProjectionRange
+          lake env lean scripts/CheckFreeAncestralProjectionRange.lean > proof-audit/free-ancestral-projection-range.log 2>&1 || {
+            cat proof-audit/free-ancestral-projection-range.log
+            exit 1
+          }
+          python3 scripts/check-axiom-log.py proof-audit/free-ancestral-projection-range.log scripts/CheckFreeAncestralProjectionRange.lean
       - name: Preserve proof audit
         if: always()
         uses: actions/upload-artifact@v7
