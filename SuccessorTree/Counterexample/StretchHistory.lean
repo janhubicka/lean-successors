@@ -109,7 +109,6 @@ theorem markedNode_root
     (hroot : levels 0 = 1) :
     markedNode levels mono hroot (rootNode (Label := Unit) (arity := 1)) =
     (⟨1, History.step History.root initialEmptyCode⟩ : Node Unit 1) := by
-  cases hroot
-  rfl
+  simpa only [markedNode, rootNode, markedHistoryAux, hroot]
 
 end SuccessorTree.FreeAncestral
