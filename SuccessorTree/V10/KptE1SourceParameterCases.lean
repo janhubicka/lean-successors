@@ -74,11 +74,16 @@ theorem kptE1_source_parameter_length_le_one
       ((p.map F).map (fun x => x.1)) =
         (Q.canonicalParameterRecord g hg).toList) :
     p.length ≤ 1 := by
-  have hLength := congrArg List.length hTargetParameter
+  have hLength : p.length =
+      (Q.canonicalParameterRecord g hg).toList.length := by
+    simpa only [List.length_map] using
+      congrArg List.length hTargetParameter
   by_cases hz : g = 0
-  · simp [PartialTypeWithE.canonicalParameterRecord, hz] at hLength
+  · have hEmpty : p.length = 0 := by
+      simpa [PartialTypeWithE.canonicalParameterRecord, hz] using hLength
     omega
-  · simp [PartialTypeWithE.canonicalParameterRecord, hz] at hLength
+  · have hOne : p.length = 1 := by
+      simpa [PartialTypeWithE.canonicalParameterRecord, hz] using hLength
     omega
 
 end SuccessorTree.V10
