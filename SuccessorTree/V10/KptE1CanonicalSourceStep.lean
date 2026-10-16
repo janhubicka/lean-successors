@@ -40,8 +40,7 @@ theorem kptE1_source_successor_of_parameter_record
     (hParameter :
       p.map (fun x => x.1) =
       ((Q.reindexOrdinary
-        (kptShapeLastIndexAtNode family F a)).
-        canonicalParameterRecord f hf).toList) :
+        (kptShapeLastIndexAtNode family F a)).canonicalParameterRecord f hf).toList) :
     ∃ b : AdmissibleKptNode family,
       (admissibleKptSTree family).succ a p c = some b := by
   let rho := kptShapeLastIndexAtNode family F a
