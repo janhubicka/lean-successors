@@ -55,8 +55,19 @@ theorem e1PaddedOrdinaryLinked_of_old_and_validNew
       have hNoAge :
           Q.ageModel.binary u n r = false ∧
           Q.ageModel.binary n u r = false := by
-        simpa [PartialTypeWithE.ageModel, typeAgeIndex,
-          Nat.lt_succ_of_lt hu] using hNo
+        have hU : typeAgeIndex (n + 1) u =
+            some (⟨u, Nat.lt_succ_of_lt hu⟩ : Fin (n + 1)) := by
+          simp [typeAgeIndex, Nat.lt_succ_of_lt hu]
+        have hN : typeAgeIndex (n + 1) n =
+            some (Fin.last n) := by
+          simp [typeAgeIndex, Fin.last]
+        change
+          Q.lReduct.binary (typeAgeIndex (n + 1) u)
+            (typeAgeIndex (n + 1) n) r = false ∧
+          Q.lReduct.binary (typeAgeIndex (n + 1) n)
+            (typeAgeIndex (n + 1) u) r = false
+        rw [hU, hN]
+        exact hNo
       rcases hRel with hRel | hRel
       · simp [hNoAge.1] at hRel
       · simp [hNoAge.2] at hRel
