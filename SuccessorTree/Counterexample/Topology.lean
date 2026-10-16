@@ -32,8 +32,10 @@ theorem incompatible_family_isNowhereDense
   change interior (closure N) = (∅ : Set (MMap H))
   apply Set.eq_empty_of_subset_empty
   intro x hx
-  have hOpen : R.IsEllentuckOpen (interior (closure N)) :=
-    (R.isOpen_ellentuck_iff _).mp isOpen_interior
+  let U : Set (MMap H) := interior (closure N)
+  have hOpen : R.IsEllentuckOpen U := by
+    apply (R.isOpen_ellentuck_iff U).mp
+    exact isOpen_interior
   obtain ⟨n, a, B, hxAB, hsub⟩ := hOpen hx
   let a1 : RamseyApprox H (n + 1) := ramseyApprox H (n + 1) x
   have hne : (R.neighborhood (n := n + 1) a1 x).Nonempty := by
