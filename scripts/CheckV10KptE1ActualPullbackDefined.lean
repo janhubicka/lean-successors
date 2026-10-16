@@ -1,0 +1,7 @@
+import SuccessorTree.V10.KptE1ActualPullbackDefined
+
+#print axioms SuccessorTree.V10.PartialTypeWithE.reindexOrdinary_lastOrdinaryParameter
+#print axioms SuccessorTree.V10.kptShapeReindex_parameter_atNode
+#print axioms SuccessorTree.V10.kptShapeReindex_parameter_recovers_atNode
+#print axioms SuccessorTree.V10.normalizedKpt_oneLevelPullback
+#print axioms SuccessorTree.V10.normalizedKptSMTree_oneLevelPullback
