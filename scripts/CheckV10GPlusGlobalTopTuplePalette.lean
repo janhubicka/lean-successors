@@ -1,0 +1,4 @@
+import SuccessorTree.V10.GPlusGlobalTopTuplePalette
+
+#print axioms SuccessorTree.V10.numericKFixedGOmegaTopTuples_uniform_palette_cover
+#print axioms SuccessorTree.V10.numericKFixedGOmegaTopTuples_uniform_colour_bound
