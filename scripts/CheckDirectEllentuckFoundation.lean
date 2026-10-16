@@ -1,0 +1,7 @@
+import SuccessorTree.RamseySpace.Closed
+
+#print axioms SuccessorTree.SMTree.ramseyFinitization
+#print axioms SuccessorTree.SMTree.fusionNeighborhood_nonempty
+#print axioms SuccessorTree.SMTree.ramseyApproximation_isMetricallyClosed
+#print axioms SuccessorTree.SMTree.ramseyApproximation_isTychonoffClosed
+#print axioms SuccessorTree.SMTree.ramseyApproximation_fusionComplete
