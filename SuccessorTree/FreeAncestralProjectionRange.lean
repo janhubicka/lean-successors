@@ -35,6 +35,7 @@ theorem zeroGap_last_parameter_ne_zero
   rcases a with ⟨n, h⟩
   cases n with
   | zero =>
+      change 0 < 0 at ha
       omega
   | succ n =>
       cases h with
@@ -45,6 +46,9 @@ theorem zeroGap_last_parameter_ne_zero
           rw [gapNode_child_of_ge 0 choose
             (⟨n, p⟩ : Node Label arity) tuple lab (Nat.zero_le n)]
           rw [lastParamLevelsNode_child]
+          change (0 : Nat) ∉ levelList
+            (gapShiftParamTuple 0 choose (⟨n, p⟩ : Node Label arity)
+              tuple (Nat.zero_le n))
           rw [levelList_gapShiftParamTuple]
           intro hm
           obtain ⟨j, hj, hzero⟩ := List.mem_map.mp hm
@@ -84,15 +88,18 @@ theorem projectionRootGap_avoids_zero (a : Node Unit 1) :
       change (0 : Nat) ∉ lastParamLevelsNode
         (gapNode 0 (fun _ => projectionEmptyCode)
           (⟨0, History.root⟩ : Node Unit 1))
-      rw [gapNode_at_level]
-      simp [projectionEmptyCode, levelList]
+      rw [gapNode_at_level, lastParamLevelsNode_child]
+      decide
   | succ n =>
       change (0 : Nat) ∉ lastParamLevelsNode
         (gapNode 0 (fun _ => projectionEmptyCode)
           (⟨n + 1, h⟩ : Node Unit 1))
+      have hpositive : 0 < (⟨n + 1, h⟩ : Node Unit 1).level := by
+        change 0 < n + 1
+        omega
       exact zeroGap_last_parameter_ne_zero
         (fun _ => projectionEmptyCode)
-        ⟨n + 1, h⟩ (by omega)
+        ⟨n + 1, h⟩ hpositive
 
 /-- The two-gap composite creates a parameter at forbidden
 ancestral level zero. -/
@@ -106,7 +113,6 @@ theorem projectionParamGap_creates_zero :
     rw [gapNode_level]
     decide
   rcases heq : projectionRootGap projectionSource with ⟨n, h⟩
-  rw [heq] at hlev ⊢
   change n = 2 at hlev
   subst n
   change (0 : Nat) ∈ lastParamLevelsNode
