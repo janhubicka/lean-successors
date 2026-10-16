@@ -1,0 +1,3 @@
+import SuccessorTree.V10.KptE1CanonicalSourceStep
+
+#print axioms SuccessorTree.V10.kptE1_source_successor_of_parameter_record
