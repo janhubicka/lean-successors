@@ -9,9 +9,10 @@ Start with the [successor formalization wiki](docs/wiki/Home.md), the
 [theorem/manuscript scope table](docs/wiki/Theorems-and-Manuscript.md) and the
 [performance/adversarial audit](docs/wiki/Audit-and-Performance.md).
 The abstract successor-tree Ramsey theorem, fat-tree A4/Ellentuck and finite
-corollaries are verified at their stated Lean interfaces. The Section 6
-finite normalized H+ envelope bound is verified; the final universal
-K→H+→G+ transfer and Theorem 6.26 remain in progress.
+corollaries are verified at their stated Lean interfaces. The normalized
+Kpt (S,M)-tree also has a verified concrete E1/OneLevelPullback theorem,
+and the Section 6 finite normalized H+ envelope bound is checked. The
+final universal K→H+→G+ transfer and Theorem 6.26 remain in progress.
 
 The current audit uses a bounded-parallel V10 checker with exact
 transitive-dependency selection on pushes/PRs and a daily full check.
@@ -92,6 +93,14 @@ M1, corrected finite L-age M2, and literal M3 in the normalized
 Boolean-record model. This does not yet establish the adapter for the
 full original-language signature of Section 6.3.
 
+The actual root-preserving Kpt monoid satisfies Section 5's
+`PullbackDefined` E1 property (module `V10.KptE1ActualPullbackDefined`,
+theorem `V10.normalizedKpt_oneLevelPullback`), and the concrete
+`SMTree` meets the envelope algorithm's exact `OneLevelPullback`
+hypothesis (module `V10.KptE1EnvelopeIntegration`, theorem
+`V10.normalizedKpt_oneLevelPullback_for_envelopes`). These were proved
+from genuine admissible finite L+ types, without augmenting any
+forbidden L-only age witness by a fictitious E relation.
 
 ### Successor v10: normalized finite-\(H^+\) upper-bound endpoint
 
