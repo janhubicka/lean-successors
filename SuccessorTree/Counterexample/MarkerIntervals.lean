@@ -44,7 +44,8 @@ theorem markerGap_has_root_at_level (m : Nat) (hm : 0 < m)
     subst n
     change 0 ∈ lastParamLevelsNode
       (gapNode m (fun _ => rootMarkerCode m hm) ⟨m, h⟩)
-    rw [gapNode_at_level, lastParamLevelsNode_child]
+    rw [gapNode_at_level]
+    change 0 ∈ levelList (rootMarkerCode m hm).params
     exact rootMarkerCode_has_root m hm
 
 /-- A block of k consecutive root-marker gaps marks *every*
@@ -122,7 +123,8 @@ theorem markedFusion_root_interval
   let v : Node Unit 1 :=
     LevelTree.ancestor x (n + 1) (by exact hx)
   have hvlev : v.level = n + 1 := by
-    exact LevelTree.level_ancestor _ _ _
+    change LevelTree.lev (LevelTree.ancestor x (n + 1) hx) = n + 1
+    exact LevelTree.level_ancestor x (n + 1) hx
   have hvx : v ≤ x := LevelTree.ancestor_le _ _ _
   have hstage := markedStage_root_interval levels mono hroot
     n v hvlev m hlo hhi
