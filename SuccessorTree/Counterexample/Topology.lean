@@ -64,7 +64,7 @@ theorem incompatible_family_isNowhereDense
       ((ramseyApproximationSystem H).neighborhood (n := n + 1) a1 G) hopenG hy
   have hzempty : z ∈ (∅ : Set (MMap H)) :=
     (disjoint_iff_inf_le.mp hGdis) ⟨hzG, hzN⟩
-  exact False.elim (Set.not_mem_empty z hzempty)
+  simp at hzempty
 
 end SuccessorTree.SMTree
 
