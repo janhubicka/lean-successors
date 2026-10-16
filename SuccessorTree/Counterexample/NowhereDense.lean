@@ -111,8 +111,9 @@ theorem incompatible_family_local_escape
           (⟨D, fun _ => rfl⟩ : RamseyReduction H G K)
       have hJKeq : J = K :=
         hN hJN hKN ⟨J, H.ramseyReduction_refl J, hJK⟩
+      have hJGred : RamseyReduction H J G := hJG.1
       have hKG : RamseyReduction H K G := by
-        simpa [hJKeq] using hJG.1
+        simpa only [hJKeq] using hJGred
       exact (H.not_reduction_self_comp_of_not_surjective
         K D hDsurj) hKG
 
