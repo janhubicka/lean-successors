@@ -16,6 +16,7 @@ without changing these mathematical statements.
 | Shape Ramsey via fat Ellentuck | `ShapeEllentuckRamsey` | `SMTree.shapePreservingRamsey_viaFatEllentuck` |
 | Fat-tree A4 | `FatTree.A4ReviewComplete` | `SMTree.FatTree.fatTreeA4` |
 | Fat-tree Ellentuck | `FatTree.A4ReviewComplete` | `SMTree.FatTree.fatTreeEllentuck` |
+| Direct monoid M-map A.2, A.3(1), Tychonoff closedness | `RamseySpace.Finitization`, `RamseySpace.Nonempty`, `RamseySpace.Closed` | `SMTree.ramseyFinitization`, `SMTree.fusionNeighborhood_nonempty`, `SMTree.ramseyApproximation_isTychonoffClosed` (new) |
 | Bounded-terminal finite corollary | `ShapeFiniteCorollaries` | `SMTree.shapeRamsey_bounded` |
 | Exact-terminal finite corollary | `ShapeFiniteCorollaries` | `SMTree.shapeRamsey_exact` |
 | Minimal nonempty top-level envelopes | `EnvelopeTheorem` | `SMTree.Envelope.exists_minimalEnvelope` |
@@ -38,6 +39,16 @@ not additional mathematical assumptions. More lower-level reusable
 statements are available in `SMTree`, `Envelope`, `FatTree`,
 `HalesJewett`, `V10` and `FreeAncestral`; the public smoke test
 checks representative principal endpoints, not every helper lemma.
+
+## Theorem 1.11 is an independent outstanding statement
+
+The source Ellentuck topology on the **monoid of shape-preserving maps**
+is not the verified fat-tree Ellentuck topology. The inverse-neighborhood
+projection in printed Lemma 4.1 is not proved, nor are the direct monoid
+Ramsey-space A.3(2) refinement and A.4 pigeonhole axioms. The new
+closedness theorem removes the metric/Tychonoff closedness obstacle
+using only M1 fusion; it does not discharge the other two obligations.
+See [the precise monoid Ellentuck audit](Shape-Ellentuck-Validation.md).
 
 ## Definition 6.25 packaged as a reusable proposition
 
