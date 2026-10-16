@@ -59,3 +59,13 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 #print axioms SuccessorTree.FreeAncestral.markerGap_fixes_below
 #print axioms SuccessorTree.FreeAncestral.markerBlock_fixes_below
 #print axioms SuccessorTree.FreeAncestral.markerBlock_level_above
+
+#check @SuccessorTree.FreeAncestral.markedStage_level
+#check @SuccessorTree.FreeAncestral.markedStage_fusionStable
+#check @SuccessorTree.FreeAncestral.markedFusion
+#check @SuccessorTree.FreeAncestral.markedFusion_level
+#check @SuccessorTree.FreeAncestral.markedFusion_root
+#print axioms SuccessorTree.FreeAncestral.markedStage_level
+#print axioms SuccessorTree.FreeAncestral.markedStage_fusionStable
+#print axioms SuccessorTree.FreeAncestral.markedFusion_level
+#print axioms SuccessorTree.FreeAncestral.markedFusion_root
