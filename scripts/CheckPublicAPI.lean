@@ -35,5 +35,7 @@ axiom reports; do not duplicate hundreds of V10 axiom checks here.
 #check @SuccessorTree.V10.originalBinaryUnary_GOmega_allEmbeddings_bigRamsey_bound
 #check @SuccessorTree.V10.universalNormalizedModel_bigRamsey_bound
 #check @SuccessorTree.V10.universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound
+#check @SuccessorTree.V10.AgeTestModel.HasOriginalFiniteBigRamseyDegrees
+#check @SuccessorTree.V10.AgeTestModel.hasOriginalFiniteBigRamseyDegrees_of_universal
 
 #check @SuccessorTree.FreeAncestral.finiteShapeRamsey
