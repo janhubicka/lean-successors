@@ -1,121 +1,100 @@
 # lean-successors
 
-Lean 4 formalisation of **Ramsey theorem for trees with successor operation**
-(Balko–Chodounský–Dobrinen–Hubička–Konečný–Nešetřil–Zucker).
+Lean 4 formalization of **Ramsey theorem for trees with a successor operation**
+(Balko–Chodounský–Dobrinen–Hubička–Konečný–Nešetřil–Zucker), including
+Hales–Jewett, shape-preserving Ramsey, fat-tree Ellentuck, envelopes
+and finite big-Ramsey applications.
 
-## Documentation and active status
+## Verified Lean status (16 October 2026)
 
-Start with the [successor formalization wiki](docs/wiki/Home.md), the
-[theorem/manuscript scope table](docs/wiki/Theorems-and-Manuscript.md) and the
-[performance/adversarial audit](docs/wiki/Audit-and-Performance.md).
-The abstract successor-tree Ramsey theorem, fat-tree A4/Ellentuck and finite
-corollaries are verified at their stated Lean interfaces. The normalized
-Kpt (S,M)-tree also has a verified concrete E1/OneLevelPullback theorem,
-and the Section 6 finite normalized H+ envelope bound is checked. The
-final universal K→H+→G+ transfer and Theorem 6.26 remain in progress.
+At [main commit `1e084eb47aee`](https://github.com/janhubicka/lean-successors/commit/1e084eb47aee283f94ced58290455baf882a5285)
+the [full Lean workflow](https://github.com/janhubicka/lean-successors/actions/runs/38916948261)
+and the [dedicated V10 transitive-axiom audit](https://github.com/janhubicka/lean-successors/actions/runs/38916948218)
+both passed. The verified endpoints now include the *original unary/binary
+all-induced-embeddings* big-Ramsey formulation for any countable normalized
+age-universal model. This supersedes earlier status notes that the universal
+Gω/K transfer remains open.
 
-The current audit uses a bounded-parallel V10 checker with exact
-transitive-dependency selection on pushes/PRs and a daily full check.
-`scripts/audit-import-graph.py` identifies **candidates for review**, not
-automatically safe-to-delete Lean files. Proposed weakening of the M3
-duplication axiom belongs to a later, separate phase.
+**Proof vs. manuscript:** the named Lean statements are checked; the
+correspondence to the author's latest external editable `main.tex`
+still requires a direct definitions-and-hypotheses comparison.
+In particular, the forbidden-family singleton/irreducibility
+normalization, countable universality of the target, and the original
+set-theoretic tree-to-`LevelTree` interface must match. The current
+authorial TeX is not stored in this repository. See
+[the adversarial referee record](docs/wiki/Adversarial-referee-record.md)
+and [manuscript review ledger](manuscript/v10-final-validation-referee-20261016.md).
 
-## Import only the reusable core
-
-For abstract M1–M3 successor trees, Hales–Jewett, the two verified
-shape-Ramsey routes, fat-tree A4/Ellentuck and envelope machinery, use:
+## Import the theorem library
 
 ```lean
-import SuccessorTree.Core
+import SuccessorTree.Library.Abstract      -- M1–M3, HJ, shape Ramsey, fat A4, envelopes
+-- or:
+import SuccessorTree.Library.Applications  -- Kpt, concrete E1, H+ bound, big Ramsey
+-- or:
+import SuccessorTree.Library.Examples      -- free-ancestral instance
 ```
 
-The focused build is `lake build SuccessorTree.Core`. Unlike the root
-`SuccessorTree` umbrella, this entry point does **not** import the ongoing
-`V10` Section 6 application, free-ancestral examples applications. The existing default full-library build is unchanged.
+`import SuccessorTree.Library` combines all three. Abstract clients can
+continue to import `SuccessorTree.Core` directly. The historical root
+`import SuccessorTree` deliberately compiles the **whole research development**,
+including implementation and verification material; it is not the
+recommended downstream public API.
 
-## Main endpoints
+There are no active clients depending on old public signatures, so we
+do not preserve obsolete wrappers. The mathematical statements and
+their axiom certificates remain under regression checks.
 
-The public results are theorems of the `LevelTree`, `STree` and `SMTree`
-interfaces. The distinguished monoid satisfies M1–M3; no global pruning,
-extra amalgamation axiom, or unproved pigeonhole premise is imposed by the
-endpoints below.
+## Main public endpoints
 
-| Result | Module | Declaration |
-| --- | --- | --- |
-| Starred Hales–Jewett | `HalesJewett.AlphabetInduction` | `starHJ_finite` |
-| Fat-tree A4 | `FatTree.A4ReviewComplete` | `fatTreeA4` |
-| Fat-tree Ellentuck | `FatTree.A4ReviewComplete` | `fatTreeEllentuck` |
-| Finite-dimensional shape Ramsey, direct fusion | `ShapeFiniteRamsey` | `shapePreservingRamsey` |
-| The same theorem from fat-tree Ellentuck | `ShapeEllentuckRamsey` | `shapePreservingRamsey_viaFatEllentuck` |
-| Bounded-terminal finite corollary | `ShapeFiniteCorollaries` | `shapeRamsey_bounded` |
-| Exact-terminal finite corollary | `ShapeFiniteCorollaries` | `shapeRamsey_exact` |
+| Result | Lean declaration |
+| --- | --- |
+| Finite starred Hales–Jewett | `SuccessorTree.HalesJewett.starHJ_finite` |
+| Direct shape Ramsey | `SuccessorTree.SMTree.shapePreservingRamsey` |
+| Fat-tree Ellentuck shape Ramsey | `SuccessorTree.SMTree.shapePreservingRamsey_viaFatEllentuck` |
+| Fat-tree A4 / Ellentuck | `SuccessorTree.SMTree.FatTree.fatTreeA4` / `fatTreeEllentuck` |
+| Finite bounded/exact corollaries | `SuccessorTree.SMTree.shapeRamsey_bounded` / `shapeRamsey_exact` |
+| Minimal envelopes | `SuccessorTree.SMTree.Envelope.exists_minimalEnvelope` |
+| Concrete normalized M1–M3 | `SuccessorTree.V10.normalizedKptSMTree` |
+| Concrete envelope E1 | `SuccessorTree.V10.normalizedKpt_oneLevelPullback_for_envelopes` |
+| Sharp actual-run finite H+ bound | `SuccessorTree.V10.numericH_actualRun_uniform_sharp_envelope_bound` |
+| Canonical Gω big Ramsey | `SuccessorTree.V10.canonicalNormalizedGOmega_bigRamsey` |
+| Original unary/binary all-Emb(A,K) theorem | `SuccessorTree.V10.universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound` |
+| Free-ancestral finite Ramsey | `SuccessorTree.FreeAncestral.finiteShapeRamsey` |
 
-Module paths are relative to `SuccessorTree`. Both shape proofs share the
-relative reduction and dimension induction in `ShapeFiniteInduction`, but use
-different one-dimensional Ramsey inputs. Their public statements are unchanged.
-See [the proof-route guide](docs/shape-proof-routes.md) before strengthening them.
+The final countable application requires a finite normalized
+irreducible forbidden family and a full-carrier, forbidden-free target
+`K` satisfying `K.UniversalForNormalizedFamily family`: every
+countable model of that age embeds inducedly into `K`. All induced
+finite pattern embeddings (not just increasing enumerations) are
+coloured. The original unary/binary encoding preserves absent and
+present directed atoms, unary relations and binary diagonals.
+**Higher relation arities and weakened M3 are future projects**, not
+claims of this theorem.
 
-## Validation boundary
+## Build and proof audit
 
-The set-theoretic definition of a tree in the manuscript still needs a formal
-adapter to `LevelTree`. The stronger neighbourhood projection to the monoid's
-composition-Ellentuck topology is not established by the finite shape theorem
-or by the ordinary correspondence between fat trees and shape maps. Later
-manuscript applications must be checked separately. The manuscript's TODOs
-record these distinctions; a formal endpoint does not certify surrounding prose.
-
-## Build and regression checks
-
-```bash
-lake update
+```sh
 lake exe cache get
+lake build SuccessorTree.Core
+lake build SuccessorTree.Library
+lake env lean scripts/CheckPublicAPI.lean
 lake build
-lake env lean scripts/CheckShapeRamsey.lean
-lake env lean scripts/CheckShapeProofRoutes.lean
+python3 scripts/check-successor-proof-integrity.py
 ```
 
-The normal root build includes both finite corollaries. CI also checks fat-tree
-statements, the transitive axioms of the endpoints, and the independence of the
-two shape-proof inputs by inspecting elaborated proof dependencies. Axiom checks
-allow only `propext`, `Classical.choice` and `Quot.sound`.
+Full CI checks both shape-proof routes and their independence, fat-tree
+A4, exact/finite terminal and envelope statements, with separate named
+V10 reports. The transitive `#print axioms` reports permit only
+`propext`, `Classical.choice` and `Quot.sound`. V10 performs a
+dependency-aware incremental check on changes, plus a scheduled
+exhaustive audit. Source reachability is inventoried before any
+deletion; a short import list is **not** proof that a module is dead.
 
-The toolchain is Lean `v4.35.0-rc3`. Dependencies are pinned in `lakefile.toml`:
-mathlib at `5bd58ac291422a21f412ae354c91e7d172255a2c` and
-`lean-ramsey-space-todorcevic` at `bb29d1f3f36ff37a35857247ca9fae581fa1fa43`.
-CI artifacts retain the resolved manifest and proof-audit logs. The manifest is currently gitignored; see the
-[audit notes](docs/wiki/Audit-and-Performance.md) before changing dependency
-pinning or cache keys.
-
-## Normalized Kpt (S,M)-tree
-
-`SuccessorTree.V10.normalizedKptSMTree` (module `V10.KptCompleteSMTree`) assembles
-M1, corrected finite L-age M2, and literal M3 in the normalized
-Boolean-record model. This does not yet establish the adapter for the
-full original-language signature of Section 6.3.
-
-The actual root-preserving Kpt monoid satisfies Section 5's
-`PullbackDefined` E1 property (module `V10.KptE1ActualPullbackDefined`,
-theorem `V10.normalizedKpt_oneLevelPullback`), and the concrete
-`SMTree` meets the envelope algorithm's exact `OneLevelPullback`
-hypothesis (module `V10.KptE1EnvelopeIntegration`, theorem
-`V10.normalizedKpt_oneLevelPullback_for_envelopes`). These were proved
-from genuine admissible finite L+ types, without augmenting any
-forbidden L-only age witness by a fictitious E relation.
-
-### Successor v10: normalized finite-\(H^+\) upper-bound endpoint
-
-`SuccessorTree.V10.numericH_actualRun_uniform_sharp_envelope_bound`
-is the kernel-checked end-to-end **normalized** finite-\(H^+\)
-envelope-height bound \(2(q+1+M)+R(M)+1\), with \(M\) computed by the
-paper's exact descending numerical recurrence. The theorem uses
-the actual finite-\(H^+\) construction and Algorithm 5.4 run,
-including the sharp \(2N\) forest meet bound; no age-change witness
-is given a fictional \(E\)-expansion. PR #447 passed full Lean,
-transitive axiom and source-snapshot CI before merging.
-
-**Scope:** this is not yet the unqualified original Proposition 6.44
-or Theorem 6.26. The outstanding work is the uniform \(K\to H^+\to
-G^+\) embedding/enumeration transfer, the paper's *finite unary and
-binary* relational-language adapter, the big Ramsey application
-and the boundary cases. See
-[the final Section 6 ledger](docs/v10-section6-final-assembly-20261015.md).
+The toolchain is Lean `v4.35.0-rc3`; mathlib and
+`lean-ramsey-space-todorcevic` revisions are pinned in `lakefile.toml`.
+For proof details see [wiki home](docs/wiki/Home.md),
+[using the library](docs/wiki/Using-the-library.md),
+[theorem/manuscript map](docs/wiki/Theorems-and-Manuscript.md),
+[referee audit](docs/wiki/Adversarial-referee-record.md)
+and [axiom-relaxation dependencies](docs/wiki/M1-M3-Dependency-Map.md).
