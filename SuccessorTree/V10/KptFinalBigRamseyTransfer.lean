@@ -85,6 +85,7 @@ noncomputable def numericKToFixedGOmega_after_shape
   have hSourceSizesStrict :
       StrictMono (fun i : Nat => (source i).val.size) := by
     intro i j hij
+    change (source i).val.size < (source j).val.size
     rw [hSourceSize i, hSourceSize j]
     exact Nat.add_lt_add_right (hTopStrict hij) 1
   have hRankStrict : StrictMono targetRank := by
