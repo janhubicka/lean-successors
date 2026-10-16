@@ -103,3 +103,19 @@ Do not promote the validated fat-tree Theorem 1.17 to the monoid
 Theorem 1.11 without completing one of the two routes above.
 The finite-dimensional Theorem 1.6 is fully checked and independent
 of the missing topological step.
+
+## Full direct A.4 proof candidate (PR #559)
+
+The direct one-dimensional proof already supplies `shapeLocalPigeonhole`
+for every **positive** finitization depth. The staged theorem
+`directPigeonhole_positiveDepth` converts this into the literal A.4
+binary partition. The only remaining case has depth zero and the unique
+empty approximation. Here `directPigeonhole_zeroDepth` colours the source
+`AM H 0 1` through the ambient map B, applies the genuine one-dimensional
+Ramsey theorem, and proves that **all** right-factor one-step extensions are
+captured by its action. `directPigeonhole` combines these cases.
+
+This A.4 implementation is an **unverified candidate** pending exact-head
+Lean and transitive-axiom checks on PR #559. Until those succeed, do not
+mark monoid A.4 fully proved. The independent A.3(2) refinement is still
+outstanding even if A.4 succeeds.

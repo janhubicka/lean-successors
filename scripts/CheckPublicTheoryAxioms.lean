@@ -1,4 +1,5 @@
 import SuccessorTree.Library.Structures
+import SuccessorTree.RamseySpace.ZeroPigeonhole
 
 /-!
 # Transitive axiom audit for new general-purpose library exports
@@ -15,3 +16,7 @@ declarations, and the forbidden `sorryAx`.
 #print axioms SuccessorTree.RamseyExpansion.copyRamseyDegreeLE_card_expansionTypes
 #print axioms SuccessorTree.ShapeMap.mapEvent_injective
 #print axioms SuccessorTree.ShapeMap.mapPointed_injective
+
+#print axioms SuccessorTree.SMTree.directPigeonhole_positiveDepth
+#print axioms SuccessorTree.SMTree.directPigeonhole_zeroDepth
+#print axioms SuccessorTree.SMTree.directPigeonhole

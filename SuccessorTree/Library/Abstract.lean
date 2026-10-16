@@ -1,6 +1,7 @@
 import SuccessorTree.Library.Structures
 import SuccessorTree.Core
 import SuccessorTree.Library.TopologyFoundation
+import SuccessorTree.RamseySpace.ZeroPigeonhole
 
 /-!
 # Public abstract Ramsey theory

@@ -29,6 +29,9 @@ axiom reports; do not duplicate hundreds of V10 axiom checks here.
 #check @SuccessorTree.SMTree.ramseyApproximationSystem
 #check @SuccessorTree.SMTree.ramseyFinitization
 #check @SuccessorTree.SMTree.fusionNeighborhood_nonempty
+#check @SuccessorTree.SMTree.directPigeonhole_positiveDepth
+#check @SuccessorTree.SMTree.directPigeonhole_zeroDepth
+#check @SuccessorTree.SMTree.directPigeonhole
 #check @SuccessorTree.SMTree.ramseyApproximation_isTychonoffClosed
 #check @SuccessorTree.SMTree.ramseyApproximation_fusionComplete
 
