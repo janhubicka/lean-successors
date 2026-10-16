@@ -16,7 +16,7 @@ The finite stages and gap blocks are separate reusable M-map operations.
 
 namespace SuccessorTree.FreeAncestral
 
-private noncomputable def markerMonoid :
+noncomputable def markerMonoid :
     SMTree (freeSTree (Label := Unit) (arity := 1)) :=
   freeSMTree (Label := Unit) (arity := 1)
 
@@ -113,5 +113,134 @@ noncomputable def markedStage
             omega)
           (levels (n + 1) - (levels n + 1)))
         (markedStage levels mono hroot n)
+
+
+/-- The level function of each finite stage: retained levels through
+stage n agree with the target sequence; all later source levels are
+shifted by a constant until the next block is inserted. -/
+theorem markedStage_level
+    (levels : Nat → Nat) (mono : StrictMono levels)
+    (hroot : levels 0 = 1) :
+    ∀ (n : Nat) (x : Node Unit 1),
+      (markedStage levels mono hroot n x).level =
+        if x.level ≤ n then levels x.level
+        else levels n + (x.level - n) := by
+  intro n
+  induction n with
+  | zero =>
+      intro x
+      change (initialRootGap x).level =
+        (if x.level ≤ 0 then levels x.level
+         else levels 0 + (x.level - 0))
+      rw [initialRootGap_level]
+      by_cases hx : x.level = 0
+      · simp [hx, hroot]
+      · have hp : 0 < x.level := Nat.pos_of_ne_zero hx
+        have hn : ¬x.level ≤ 0 := by omega
+        simp [hn, hroot]
+  | succ n ih =>
+      intro x
+      let start : Nat := levels n + 1
+      let length : Nat := levels (n + 1) - start
+      have hmono : start ≤ levels (n + 1) := by
+        dsimp [start]
+        exact mono (Nat.lt_succ_self n)
+      have hstart : 0 < start := by dsimp [start]; omega
+      change
+        (markerBlock start hstart length
+          (markedStage levels mono hroot n x)).level =
+        (if x.level ≤ n + 1 then levels x.level
+         else levels (n + 1) + (x.level - (n + 1)))
+      by_cases hx : x.level ≤ n
+      · have hprevious :
+            (markedStage levels mono hroot n x).level =
+              levels x.level := by
+          simpa [hx] using ih x
+        have hbelow :
+            (markedStage levels mono hroot n x).level < start := by
+          rw [hprevious]
+          have hlev := mono.monotone hx
+          dsimp [start]
+          omega
+        rw [markerBlock_fixes_below start hstart length _ hbelow, hprevious]
+        simp [Nat.le_trans hx (Nat.le_succ n)]
+      · have hprevious :
+            (markedStage levels mono hroot n x).level =
+              levels n + (x.level - n) := by
+          simpa [hx] using ih x
+        have hge :
+            start ≤ (markedStage levels mono hroot n x).level := by
+          rw [hprevious]
+          dsimp [start]
+          omega
+        rw [markerBlock_level_above start hstart length _ hge, hprevious]
+        by_cases heq : x.level = n + 1
+        · simp [heq, length, start]
+          omega
+        · have hgt : n + 1 < x.level := by omega
+          have hn : ¬ x.level ≤ n + 1 := by omega
+          simp [hn, length, start]
+          omega
+
+/-- Stage n already stabilizes its source levels ≤ n; consequently
+the stage sequence meets exactly the verified M1 fusion-stability
+hypothesis. -/
+theorem markedStage_fusionStable
+    (levels : Nat → Nat) (mono : StrictMono levels)
+    (hroot : levels 0 = 1) :
+    ShapeMap.FusionStable
+      (fun n => (markedStage levels mono hroot n).map) := by
+  intro n x hx
+  change x.level ≤ n at hx
+  have hprevious :
+      (markedStage levels mono hroot n x).level =
+        levels x.level := by
+    simpa [hx] using markedStage_level levels mono hroot n x
+  have hbelow :
+      (markedStage levels mono hroot n x).level <
+        levels n + 1 := by
+    rw [hprevious]
+    have hlevels := mono.monotone hx
+    omega
+  change
+    markedStage levels mono hroot n x =
+      markerBlock (levels n + 1) _
+        (levels (n + 1) - (levels n + 1))
+        (markedStage levels mono hroot n x)
+  exact (markerBlock_fixes_below _ _ _ _ hbelow).symm
+
+/-- The complete marked map Q_A, obtained from *verified*
+one-gap shape maps by an honest M1 fusion. -/
+noncomputable def markedFusion
+    (levels : Nat → Nat) (mono : StrictMono levels)
+    (hroot : levels 0 = 1) :
+    SMTree.MMap markerMonoid :=
+  ⟨ShapeMap.fusionLimit
+      (fun n => (markedStage levels mono hroot n).map)
+      (markedStage_fusionStable levels mono hroot),
+    by simp [markerMonoid, freeSMTree]⟩
+
+/-- Image levels of the complete fusion are precisely the supplied
+strictly increasing sequence. -/
+theorem markedFusion_level
+    (levels : Nat → Nat) (mono : StrictMono levels)
+    (hroot : levels 0 = 1) (x : Node Unit 1) :
+    (markedFusion levels mono hroot x).level = levels x.level := by
+  change
+    (markedStage levels mono hroot x.level x).level = levels x.level
+  simpa using markedStage_level levels mono hroot x.level x
+
+/-- The original root is mapped to the empty-parameter node at level one. -/
+theorem markedFusion_root
+    (levels : Nat → Nat) (mono : StrictMono levels)
+    (hroot : levels 0 = 1) :
+    markedFusion levels mono hroot (rootNode (Label := Unit) (arity := 1)) =
+      (⟨1, History.step History.root initialEmptyCode⟩ : Node Unit 1) := by
+  change initialRootGap (rootNode (Label := Unit) (arity := 1)) =
+    (⟨1, History.step History.root initialEmptyCode⟩ : Node Unit 1)
+  change gapNode 0 (fun _ => initialEmptyCode)
+    (⟨0, History.root⟩ : Node Unit 1) = _
+  rw [gapNode_at_level]
+  rfl
 
 end SuccessorTree.FreeAncestral
