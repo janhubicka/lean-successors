@@ -82,8 +82,7 @@ theorem kptShapeReindex_parameter_atNode
     (hg : kptShapeLevelMap family F f ≤ (F a).1.1) :
     (Q.reindexOrdinary
       (kptShapeLastIndexAtNode family F a)).lastOrdinaryParameter f hf =
-      (Q.lastOrdinaryParameter (kptShapeLevelMap family F f) hg).
-        reindexOrdinary (kptShapeOldRetainedIndex family F f) := by
+      (Q.lastOrdinaryParameter (kptShapeLevelMap family F f) hg).reindexOrdinary (kptShapeOldRetainedIndex family F f) := by
   exact Q.reindexOrdinary_lastOrdinaryParameter
     (kptShapeLastIndexAtNode family F a)
     (kptShapeOldRetainedIndex family F f)
@@ -118,8 +117,7 @@ theorem kptShapeReindex_parameter_recovers_atNode
       (kptShapeLastIndexAtNode family F a)).lastOrdinaryParameter
         (LevelTree.lev x) hx =
       (Q.lastOrdinaryParameter
-        (kptShapeLevelMap family F (LevelTree.lev x)) hg).
-          reindexOrdinary
+        (kptShapeLevelMap family F (LevelTree.lev x)) hg).reindexOrdinary
             (kptShapeOldRetainedIndex family F (LevelTree.lev x)) :=
       kptShapeReindex_parameter_atNode family F a
         (LevelTree.lev x) hx Q hg
