@@ -1,40 +1,69 @@
-# Lean successors — formalization wiki
+# Successor trees — Lean research library
 
-**Status:** 15 October 2026. This is the maintained entry point for the reusable library `janhubicka/lean-successors` and the verification of the successor-tree manuscript. It records **theorems and their exact scope**, not merely which sections have received Lean files.
+**Lean validation checkpoint: 16 October 2026.** On
+[`main` commit `1e084eb47aee`](https://github.com/janhubicka/lean-successors/commit/1e084eb47aee283f94ced58290455baf882a5285),
+the [full Lean workflow](https://github.com/janhubicka/lean-successors/actions/runs/38916948261)
+and [V10 transitive-axiom workflow](https://github.com/janhubicka/lean-successors/actions/runs/38916948218)
+both succeeded. This supersedes earlier pages that described the
+universal Gω / age-universal K big-Ramsey transfer as unproved.
 
-## Start here
+This wiki documents the precise *verified Lean statements*, the
+human mathematical proof architecture, maintenance and refactoring,
+and the distinction between a checked normalized statement and
+its identification with the author's current external manuscript.
 
-- [Architecture and dependency boundaries](Architecture.md): `LevelTree`, `STree`, `SMTree`, Hales–Jewett, two independent Ramsey proof routes, and the `V10` application.
-- [Verified theorems and manuscript correspondence](Theorems-and-Manuscript.md): named public declarations, additional Lean lemmas, proof adjustments, and unproved final transfers.
-- [Adversarial audit and build performance](Audit-and-Performance.md): proof-assumption checks, removal policy for abandoned branches, CI commands, benchmark baseline, and practical profiling.
-- [Axioms and future generalizations](Axioms-and-Future-Work.md): how to preserve the existing theorem while eventually weakening duplication assumptions.
-- [M1–M3 source dependency map](M1-M3-Dependency-Map.md): audited direct axiom uses, replay/padding clients and a staged weakening plan.
-- [Compiler warning triage](Compiler-Warnings.md): measured warning categories and safe incremental-import cleanup.
-- [Adversarial fat-tree A4 checks](A4-Adversarial-Verification.md): unconditional endpoints, root/trace edge cases and the circularity firewall.
+## Chapters
 
-The proof routes are explained in [`docs/shape-proof-routes.md`](../shape-proof-routes.md). The precise Section 6 validation ledger is [`docs/v10-section6-final-assembly-20261015.md`](../v10-section6-final-assembly-20261015.md). These are part of the audit trail, not a substitute for compiled declarations and transitive axiom checks.
+| Chapter | Purpose |
+| --- | --- |
+| [Using the library](Using-the-library.md) | Install/import public theorem modules; copyable `#check` statements; hypotheses |
+| [Theorems and manuscript](Theorems-and-Manuscript.md) | Exhaustive principal theorem index, source scope, formalized repairs |
+| [Architecture](Architecture.md) | Successor monoids, two independent shape-Ramsey routes, fat trees and Kpt |
+| [Adversarial referee record](Adversarial-referee-record.md) | Mathematical scope, transitive axioms and dependency/maintenance scrutiny |
+| [Audit and performance](Audit-and-Performance.md) | Actual workflow evidence, import audit, CI speed improvements |
+| [M1–M3 dependency map](M1-M3-Dependency-Map.md) | Exact replay, habitation, padding and fusion clients |
+| [Axioms and future work](Axioms-and-Future-Work.md) | Controlled replay and future M3 relaxation, not yet claimed |
+| [Fat-tree A4 review](A4-Adversarial-Verification.md) | Edge cases, unconditional A4 and circularity firewall |
+| [Compiler warnings](Compiler-Warnings.md) | Categorized warnings and import improvement strategy |
+| [Wiki publishing](Publishing.md) | Source-controlled documentation sync instructions |
 
-## Status at a glance
+## Verified theorem families
 
-| Component | Status | What is established |
-| --- | --- | --- |
-| Finite starred Hales–Jewett | Verified | `starHJ_finite` is proved, not postulated as a theorem input. |
-| Abstract successor tree | Verified at the Lean `SMTree` interface | M1–M3, canonical maps and shape-preserving Ramsey. |
-| Fat-tree Ramsey space | Verified | Unconditional typed A4 and abstract Ellentuck endpoints. |
-| Finite Ramsey corollaries | Verified | Bounded/exact terminal variants, including common-terminal padding. |
-| `V10` normalized finite-type tree | Verified | `normalizedKptSMTree` instantiates M1, corrected M2, literal M3. |
-| Section 6 finite `H^+` envelope bound | Verified at its stated normalized, parameterized scope | Actual Algorithm 5.4 run and sharp finite bound. |
-| Section 6 universal `K → H^+ → G^+` transfer and Theorem 6.26 | **In progress** | Do not mark the source theorem as completely formalized on the strength of the finite envelope bound. |
-| Arbitrary relation arities / weakened duplication axioms | **Deliberately deferred** | Not part of the validation of the current v10 draft. |
+| Result | Scope and status |
+| --- | --- |
+| Starred Hales–Jewett | Kernel checked |
+| Abstract M1–M3 shape Ramsey | Kernel checked by two independent one-dimensional inputs |
+| Fat-tree Ramsey-space A4 and Ellentuck | Kernel checked at typed interfaces |
+| Finite bounded and exact-terminal corollaries | Kernel checked, including common-terminal padding |
+| Envelope minimality | Kernel checked with explicit E1 and nonempty-top assumptions |
+| Normalized finite unary/binary Kpt monoid | Kernel checked M1, M2, M3 and concrete E1 |
+| Finite H+ sharp actual-run level bound | Kernel checked |
+| Big Ramsey in canonical Gω and arbitrary countable age-universal K | Kernel checked at normalized unary/binary all-Emb(A,K) scope |
+| Arbitrary higher arity / weakened M3 | Deliberately deferred |
+| Literal full author `main.tex` equivalence | Requires direct manuscript source comparison |
 
-`V10` source and its checking scripts are sizeable; a passing compilation is **not** an assertion that every English prose statement is literally equivalent to the Lean theorem. The [theorem index](Theorems-and-Manuscript.md) lists the remaining adapters and hypotheses.
+The final checked
+`V10.universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound` includes
+*all* injective induced pattern embeddings, not just increasing
+finite enumerations. Its original language retains unary predicates,
+both directed binary orientations, binary diagonal facts and all
+negative relations. The countable target is required to satisfy
+`UniversalForNormalizedFamily`, rather than just avoiding forbidden
+patterns.
 
-## Policy
+## Library design
 
-1. Keep the current v10 theorem, the four manuscript repairs, and their reviewed annotations distinct from prospective axiom changes.
-2. Clean the Lean library, its workflows and auxiliary documentation freely; do **not** silently alter the frozen authorial manuscript prose.
-3. Retain genuine mathematical results and proof routes. Delete a development experiment only after checking references and downstream users; Git history remains the archive.
-4. Before claiming a result is checked, record the precise declaration, all explicit hypotheses, `#print axioms` output, successful exact-head CI and any unproved manuscript adapter.
-5. Favor small stable lemmas and module import boundaries over one large application-specific theorem file.
+`SuccessorTree.Library.Abstract` exposes application-neutral
+M1–M3/shape/Hales–Jewett/fat-tree/envelope results.
+`SuccessorTree.Library.Applications` exposes normalized Kpt and
+finite big-Ramsey theorems.
+`SuccessorTree.Library.Examples` exposes the free-ancestral model.
+The top-level `SuccessorTree.Library` combines them, but the
+historical `SuccessorTree` remains a complete *research-development*
+build. There are no active downstream API users, so implementation
+aliases and wrappers need not be maintained.
 
-This directory is repository-hosted wiki source so its updates can be reviewed and checked in PRs. It can be copied into the separate GitHub Wiki repository without changing the documentation links or theorem statements.
+The author mathematical text remains frozen except approved
+TODO/validation annotations. The author-edited TeX is not hosted in
+this Lean repository; do not silently replace a source-fidelity
+check with a passing Lean kernel report.
