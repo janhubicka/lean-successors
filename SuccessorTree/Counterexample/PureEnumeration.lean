@@ -1,4 +1,5 @@
 import SuccessorTree.FreeAncestralSMTree
+import SuccessorTree.Approximation
 import Mathlib.SetTheory.Cardinal.Continuum
 import Mathlib.Tactic
 
@@ -52,7 +53,8 @@ theorem freeNode_functions_cardinality :
 theorem cantorFunction_cardinality :
     Cardinal.mk (ℕ → Bool) = Cardinal.continuum := by
   rw [Cardinal.mk_arrow]
-  simp [Cardinal.continuum]
+  simpa only [Cardinal.lift_id, Cardinal.mk_bool, Cardinal.mk_nat] using
+    Cardinal.two_power_aleph0
 
 /-- The entire distinguished full free-ancestral shape-map monoid
 has at most continuum many elements. -/
@@ -119,7 +121,7 @@ theorem exists_pureFree_enumeration :
   have hb : ∃ G : PureFreeMap, emb G = emb H := ⟨H, rfl⟩
   change (if h : ∃ G : PureFreeMap, emb G = emb H then
     Classical.choose h else pureFreeIdentity) = H
-  rw [dif_pos hb]
+  rw [dite_eq_left hb]
   exact emb.injective (Classical.choose_spec hb)
 
 end SuccessorTree.Counterexample
