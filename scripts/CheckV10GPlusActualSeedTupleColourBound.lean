@@ -1,0 +1,4 @@
+import SuccessorTree.V10.GPlusActualSeedTupleColourBound
+
+#print axioms SuccessorTree.V10.numericKptAlgorithmRun_seed_tuples_finiteApprox_cover
+#print axioms SuccessorTree.V10.numericKptAlgorithmRun_seed_tuples_finiteColour_bound
