@@ -1,0 +1,6 @@
+import SuccessorTree.V10.KptOriginalBinaryUnaryBigRamsey
+
+#print axioms SuccessorTree.V10.binaryUnary_originalCopy_iff_normalized
+#print axioms SuccessorTree.V10.originalBinaryUnary_GOmega_pattern_bigRamsey_bound
+#print axioms SuccessorTree.V10.binaryUnaryAllEmbeddings_preserved
+#print axioms SuccessorTree.V10.originalBinaryUnary_GOmega_allEmbeddings_bigRamsey_bound
