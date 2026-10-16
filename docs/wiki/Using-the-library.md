@@ -27,6 +27,8 @@ recommended downstream dependency.
 import SuccessorTree.Library
 
 #check SuccessorTree.HalesJewett.starHJ_finite
+#check SuccessorTree.RamseyExpansion.copyRamseyDegreeLE_card_expansionTypes
+#check SuccessorTree.ShapeMap.mapEvent_injective
 #check SuccessorTree.SMTree.shapePreservingRamsey
 #check SuccessorTree.SMTree.shapePreservingRamsey_viaFatEllentuck
 #check SuccessorTree.SMTree.shapeRamsey_bounded
@@ -51,7 +53,12 @@ correctness of the mathematical translation from a paper.
 
 ## Assumption boundaries
 
-The abstract theorems require `[PartialOrder T]`, `[LevelTree T]`
+The generic `CopyRamsey` interface proves the finite copy-degree bound
+from a finite-type hereditary Ramsey expansion without assuming rigid
+embeddings. The `ShapeEvents` module provides intrinsic successor
+occurrences and functorial transport independent of the concrete V10 age.
+
+The abstract successor theorems require `[PartialOrder T]`, `[LevelTree T]`
 and an `SMTree S` with the original M1–M3 contract. The minimal-envelope
 statement additionally requires `SMTree.Envelope.OneLevelPullback`; this
 is **not** an SMTree axiom. The normalized Kpt instance has a separate
