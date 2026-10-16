@@ -2,6 +2,7 @@ import SuccessorTree.Counterexample.NowhereDense
 import SuccessorTree.Counterexample.MaskCodes
 import SuccessorTree.Counterexample.SupportRigidity
 import SuccessorTree.Counterexample.Topology
+import SuccessorTree.Counterexample.StretchHistory
 
 /-!
 Exact-name audit: only the declarations below have been proved so far.
@@ -35,3 +36,15 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 #check @SuccessorTree.FreeAncestral.freeAncestral_incompatible_isNowhereDense
 #print axioms SuccessorTree.SMTree.incompatible_family_isNowhereDense
 #print axioms SuccessorTree.FreeAncestral.freeAncestral_incompatible_isNowhereDense
+
+#check @SuccessorTree.FreeAncestral.appendRootMarkers
+#check @SuccessorTree.FreeAncestral.prefix_appendRootMarkers
+#check @SuccessorTree.FreeAncestral.appendRootMarkers_injective
+#check @SuccessorTree.FreeAncestral.markedHistoryAux
+#check @SuccessorTree.FreeAncestral.markedNode_level
+#check @SuccessorTree.FreeAncestral.markedNode_root
+
+#print axioms SuccessorTree.FreeAncestral.prefix_appendRootMarkers
+#print axioms SuccessorTree.FreeAncestral.appendRootMarkers_injective
+#print axioms SuccessorTree.FreeAncestral.markedNode_level
+#print axioms SuccessorTree.FreeAncestral.markedNode_root
