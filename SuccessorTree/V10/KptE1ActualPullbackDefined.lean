@@ -1,5 +1,6 @@
 import SuccessorTree.V10.KptE1ActualParameterTransport
 import SuccessorTree.EnvelopePullback
+import SuccessorTree.V10.KptCompleteSMTree
 import Mathlib.Tactic
 
 /-!
@@ -69,8 +70,7 @@ theorem normalizedKpt_oneLevelPullback
     have hSourceParameter :
         (([] : List (AdmissibleKptNode family)).map (fun x => x.1)) =
           ((Q.reindexOrdinary
-            (kptShapeLastIndexAtNode family F a)).
-              canonicalParameterRecord 0 (Nat.zero_le a.1.1)).toList := by
+            (kptShapeLastIndexAtNode family F a)).canonicalParameterRecord 0 (Nat.zero_le a.1.1)).toList := by
       simp [PartialTypeWithE.canonicalParameterRecord]
     exact kptE1_source_successor_of_parameter_record
       family F a [] c Q hTargetPred hTargetAd hLetter
@@ -119,8 +119,7 @@ theorem normalizedKpt_oneLevelPullback
         ([x] : List (AdmissibleKptNode family)).map
           (fun y => y.1) =
           ((Q.reindexOrdinary
-            (kptShapeLastIndexAtNode family F a)).
-              canonicalParameterRecord (LevelTree.lev x) hf).toList := by
+            (kptShapeLastIndexAtNode family F a)).canonicalParameterRecord (LevelTree.lev x) hf).toList := by
       have hxNonzero : LevelTree.lev x ≠ 0 :=
         Nat.ne_of_gt hxPos
       simp [PartialTypeWithE.canonicalParameterRecord,
