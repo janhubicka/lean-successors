@@ -26,11 +26,10 @@ theorem kptShapeReindex_parameter_commutes
     (n f : Nat) (hf : f ≤ n)
     (Q : PartialTypeWithE
       (kptShapeLevelMap family F n + 1) db du dd) :
-    (Q.reindexOrdinary (kptShapeLastRetainedIndex family F n)).
-      lastOrdinaryParameter f hf =
+    (Q.reindexOrdinary (kptShapeLastRetainedIndex family F n)).lastOrdinaryParameter f hf =
     (Q.lastOrdinaryParameter (kptShapeLevelMap family F f)
-        ((kptShapeLevelMap_strictMono family F).monotone hf)).
-      reindexOrdinary (kptShapeOldRetainedIndex family F f) := by
+        ((kptShapeLevelMap_strictMono family F).monotone hf)).reindexOrdinary
+      (kptShapeOldRetainedIndex family F f) := by
   let rho := kptShapeLastRetainedIndex family F n
   let eta := kptShapeOldRetainedIndex family F f
   let hfImage : kptShapeLevelMap family F f ≤
