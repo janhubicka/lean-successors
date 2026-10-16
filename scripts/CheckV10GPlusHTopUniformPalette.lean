@@ -1,0 +1,5 @@
+import SuccessorTree.V10.GPlusHTopUniformPalette
+
+#print axioms SuccessorTree.V10.boundedGPlusTuplePalette_mono
+#print axioms SuccessorTree.V10.boundedGPlusPaletteIndices_card_mono
+#print axioms SuccessorTree.V10.numericH_actualRun_topPrefix_tuples_uniform_colour_bound
