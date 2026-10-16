@@ -1,4 +1,5 @@
 import Mathlib.Tactic
+import Mathlib.SetTheory.Ordinal.Basic
 
 /-!
 # Choice-theoretic greedy selection from almost-disjoint candidates
@@ -147,5 +148,41 @@ theorem greedySelection_pairwise
       hunique hsmall i j hgt) (hsymm _ _ h)
 
 end Greedy
+
+/-!
+## Minimal-ordinal schedules
+
+The abstract smaller-initial-segment assumption above is automatic
+when the well-order on the stage type has the **least ordinal**
+of that cardinality. The result is exactly why the greedy argument
+does not need CH or regularity of the continuum.
+-/
+
+/-- Every strict initial segment of a well-order of minimal ordinal
+type has strictly smaller cardinality; hence the full index type
+cannot inject into it. -/
+theorem no_embedding_earlier_of_minimal_ord
+    {Index : Type u} [LinearOrder Index] [WellFoundedLT Index]
+    (hminimal : Cardinal.ord (Cardinal.mk Index) =
+      Ordinal.type (fun i j : Index => i < j))
+    (stage : Index) :
+    ¬ Nonempty (Index ↪ {j : Index // j < stage}) := by
+  intro he
+  obtain ⟨f⟩ := he
+  have hle :
+      Cardinal.mk Index ≤ Cardinal.mk {j : Index // j < stage} :=
+    Cardinal.mk_le_of_injective f.injective
+  have hordinal :
+      Ordinal.typein (fun i j : Index => i < j) stage <
+        Cardinal.ord (Cardinal.mk Index) := by
+    rw [hminimal]
+    exact Ordinal.typein_lt_type _ stage
+  have hsmall :
+      Cardinal.mk {j : Index // j < stage} <
+        Cardinal.mk Index := by
+    have hh := Cardinal.lt_ord.mp hordinal
+    simpa only [Ordinal.card_typein] using hh
+  exact (not_le_of_gt hsmall) hle
+
 
 end SuccessorTree.Counterexample
