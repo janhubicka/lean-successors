@@ -127,6 +127,46 @@ important parts of that program. They do **not yet** establish
 the exact arbitrary-\(Q\), prescribed-\(x\), all-level assertion
 (FR1); that is an explicit remaining proof obligation.
 
+### A sharper route to FR1 (and its remaining obstacle)
+
+The existing Lean identity
+\[
+ \operatorname{partialMap}(U,i+1)
+       =\operatorname{canonicalExtension}(P(U),i)
+\]
+(\`FatTree.canonicalExtension_associatedMap\`) is useful.
+If two finite fat stems represent **the same** finite
+shape map through source level i, their canonical partial
+products are identical as *total monoid maps*, not merely
+on the original source nodes. Thus a **geometrically legal**
+replacement of one such stem by the other, with unchanged
+boundary cut and unchanged future fat rows, also preserves
+the final associated shape map.
+
+One could therefore try to prove FR1 in two stages:
+
+1. For any right factor \(Q\) construct a fat \(W_0\le V\)
+   with \(P(W_0)=P(V)\circ Q\), initially without protecting
+   x. This is a **right action of M on fat trees** and
+   could be built by the checked one-row tail-coordinate
+   realization and fusion.
+2. If \(P(W_0)\) extends g, prove that the **chosen finite
+   stem** x occurs geometrically in \(W_0\) at the appropriate
+   terminal cut, then use fat A.3/splicing to place x at the
+   beginning. The canonical-extension identity ensures
+   that a successful splice does not alter \(P(W_0)\).
+
+The second step is **not automatic**. Equality of a finite
+projected map does not imply equality, or even occurrence,
+of finite fat stems: each fat row acts on **the entire
+target-cut level**, including unused nodes and non-ancestral
+successor parameters. A row of x can be incompatible with
+the lifts of \(W_0\) on those nodes. A genuinely *universal
+finite stem* x, or a proof that all such x are absorbable,
+is needed. This is the precise point to test adversarially
+before asserting FR1. It is preferable to vague phrases
+such as "replace a suitable initial segment".
+
 ## 3. A replacement theorem with a complete *conditional* proof
 
 **Conditional fat transfer.** Assume (FR0) and (FR1) for the
