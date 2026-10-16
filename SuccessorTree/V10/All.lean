@@ -32,6 +32,7 @@ import SuccessorTree.V10.KptE1FiniteAgePullback
 import SuccessorTree.V10.KptE1ReindexedNewColumn
 import SuccessorTree.V10.KptE1ShapeLevelCut
 import SuccessorTree.V10.KptE1TargetParameterCut
+import SuccessorTree.V10.KptE1OldNewColumnConsequences
 import SuccessorTree.V10.GPlusFiniteApproxAction
 import SuccessorTree.V10.GPlusFiniteColourNaturality
 import SuccessorTree.V10.GPlusPaletteRamseyStabilization
