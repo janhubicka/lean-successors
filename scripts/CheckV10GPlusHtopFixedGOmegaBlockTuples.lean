@@ -1,0 +1,4 @@
+import SuccessorTree.V10.GPlusHtopFixedGOmegaBlockTuples
+
+#print axioms SuccessorTree.V10.numericHTop_fixedGOmega_tuple_mem_prefixTuples
+#print axioms SuccessorTree.V10.numericHTop_indices_common_later_root
