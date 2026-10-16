@@ -21,6 +21,16 @@ passed at the exact same commit.
 
 ## Outstanding manuscript-fidelity verification
 
+The [whole-manuscript coverage inventory](docs/wiki/Manuscript-Coverage.md)
+identifies Section 6.1/6.2 applications that are **not yet standalone
+named Lean exports** in this repository (including Graham–Rothschild,
+finite dual Ramsey and the Nešetřil–Rödl specialisation). These
+cannot be advertised as literally formally validated simply because
+the abstract theorem is proved. Exact Section 6.44 quantifier
+assembly is also not separately exported, although the stronger final
+normalized big-Ramsey application is checked.
+
+
 1. Compare the **current editable author v10 `main.tex`**, not stored
    in this repository, to exact Lean theorem types. Preserve approved
    proof repairs and authorial prose; add only TODO/validation markers.
