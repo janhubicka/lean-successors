@@ -42,7 +42,11 @@ theorem image_root_successor_has_marker
     rw [← map_level_paramNodes]
     exact congrArg (List.map Node.level) ht
   rw [hlevels]
-  simp [hroot, rootNode]
+  have hlev : (H (rootNode (Label := Unit) (arity := 1))).level = 0 := by
+    rw [hroot]
+    rfl
+  simp only [List.map_singleton, List.mem_singleton]
+  exact hlev.symm
 
 /-- Transport a marked outgoing source edge into the image of
 any sufficiently high node under a root-fixing shape map. -/
