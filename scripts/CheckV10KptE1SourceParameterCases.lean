@@ -1,0 +1,5 @@
+import SuccessorTree.V10.KptE1SourceParameterCases
+
+#print axioms SuccessorTree.V10.kptE1_reindexed_empty_parameter_record
+#print axioms SuccessorTree.V10.kptE1_reindexed_singleton_parameter_record
+#print axioms SuccessorTree.V10.kptE1_source_parameter_length_le_one
