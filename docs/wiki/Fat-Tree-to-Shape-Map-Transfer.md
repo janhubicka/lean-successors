@@ -87,6 +87,101 @@ the **forward one-row realization** in
 `FatTree.ShapeRealization`; those results prove important, but
 strictly weaker, facts.
 
+## Explicit free-ancestral obstruction to the forward inclusion
+
+**Important adversarial finding (mathematically explicit; Lean instance
+proof still pending).** The geometric-to-algebraic implication in item 1
+appears to be **false for the unrestricted fat-tree reduction**. A
+small witness exists in the already verified `FreeAncestral.freeSMTree`
+with one ancestral parameter and one label; its monoid is the full
+set of shape maps. Denote histories by their successive parameter
+lists. The empty list `[]` is a successor code without a parameter,
+and `[j]` is the single ancestral parameter at level `j`.
+
+Let `E₀` insert an empty code at target level 0, and let `E₂`
+insert code `[0]` at level 2. Both are existing
+`FreeAncestral.oneGapShapeMap` instances, and hence elements of the
+full monoid. Construct the infinite fat trees
+
+```text
+  U.cut = (0, 2, 3, 4, 5, ...)
+  U.rows = (E₀, id, id, id, ...)
+
+  V.cut = (0, 2, 4, 5, 6, ...)
+  V.rows = (E₀, E₂, id, id, ...).
+```
+
+Here `rows` denotes the finite one-row approximations induced by
+the displayed maps at each prescribed source cut, with their
+canonical extensions; in particular, `E₀` is canonical at
+source cut 0 and `E₂` at source cut 2. The natural index map
+witnessing `V ≤_fat U` is
+
+```text
+  φ(0)=0, φ(1)=1, φ(i)=i+1 for every i≥2.
+```
+
+It matches the cuts at **all** indices. At row 0 the two one-lifts
+are equal. At row 1, the ambient U rows are identities: its lift
+from cut 2 to cut 4 contains **every** level-4 successor history
+above a level-2 history, so it contains the V one-lift regardless
+of the E₂ insertion. At every row `i≥2`, both sides are the
+same identity one-lift across consecutive cuts. Therefore the
+geometric reduction witness satisfies all the required one-lift
+inclusions, not merely a bounded-depth test.
+
+But the associated shape maps are
+
+```text
+  π(U) = E₀,       π(V) = E₂ ∘ E₀.
+```
+
+Let `a` be the unique source history at level 1: `a = ([]) `.
+Then
+
+```text
+  E₀(a)       = ([], [])
+  E₂(E₀(a))   = ([], [], [0]).
+```
+
+Every `E₀` image at level 3 comes from a level-2 source
+history. The only possibilities (one label, one ancestral
+parameter) are
+
+```text
+  ([], [], [])    or    ([], [], [1]).
+```
+
+In fact, *every* parameter appearing after the first inserted
+code in any E₀ image is shifted to a strictly positive index.
+Thus `([],[],[0])` is **not in the range of E₀**, so no
+`G`—not even an arbitrary function, let alone an M-map—can satisfy
+`E₂∘E₀ = E₀∘G`.
+
+This is an obstruction to even the **forward** set containment
+`π([∅,U]) ⊆ [∅,π(U)]` claimed in Lemma 4.1. It is not an
+objection to the independently checked fat-tree Ellentuck theorem.
+It shows that the paper's specific projection formula cannot
+simply be adopted unchanged as a Lean theorem for this geometric
+reduction relation. A *different* map, a restricted/cofinal
+fat-tree order, or another transfer proof would be needed.
+
+The standalone
+[`check-fat-projection-free-ancestral-witness.py`](https://github.com/janhubicka/lean-successors/blob/main/scripts/check-fat-projection-free-ancestral-witness.py)
+enumerates free-history levels and verifies the geometric inclusions
+on the first five rows and the excluded target image. **The
+full infinite reduction and nonfactorization have an English proof
+above but are not yet a Lean-kernel-certified counterexample.**
+The test is diagnostic, not a substitute for formalization.
+
+The immediate next mathematical task is to formalize this small
+counterexample in the actual `FreeAncestral.freeSMTree` instance
+and to audit whether a **cofinal aligned subclass** of fat-tree
+refinements suffices for the Ellentuck argument. Merely changing
+`range(F_U) ⊆ T_U` to equality without proof would be incorrect:
+fat lifts include additional parameter choices not represented
+by the canonical shape-map image.
+
 ## Correct topological transfer once the bridge is available
 
 Suppose `π` is a surjective, continuous and open map satisfying
