@@ -1,6 +1,5 @@
+import SuccessorTree.Library.Structures
 import SuccessorTree.Core
-import SuccessorTree.CopyRamsey
-import SuccessorTree.ShapeEvents
 
 /-!
 # Public abstract Ramsey theory
