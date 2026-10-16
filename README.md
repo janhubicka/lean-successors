@@ -117,3 +117,21 @@ For proof details see [wiki home](docs/wiki/Home.md),
 [whole-manuscript coverage audit](docs/wiki/Manuscript-Coverage.md),
 [referee audit](docs/wiki/Adversarial-referee-record.md)
 and [axiom-relaxation dependencies](docs/wiki/M1-M3-Dependency-Map.md).
+
+## Section 4 projection audit
+
+The original fat-tree-to-shape-map transfer is not formally
+verified. The verified generic theorem
+`FatTree.projected_rightFactorCone_not_neighborhood`
+reduces its topological obstruction to a family of genuinely
+bad fat geometric reductions at every finite depth.
+The concrete arity-one free-ancestral instance already
+satisfies the **Lean-verified algebraic obstruction**
+`FreeAncestral.projectionComposite_not_rightFactor`:
+the two real one-gap shape maps `E₂∘E₀` do not factor
+through `E₀`, even with an arbitrary set-theoretic factor.
+The remaining geometric infinite witness must be proved
+with genuine fat-tree `Reduces` and the actual row lift
+operations before the noncontinuity claim itself can be
+called kernel certified. See
+[the fat-to-shape transfer audit](docs/wiki/Fat-Tree-to-Shape-Map-Transfer.md).

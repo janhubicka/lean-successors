@@ -302,3 +302,41 @@ topological proof for the shape-map space. Imposing
 `F_V=F_U∘G` as an extra condition in the fat reduction would
 change that Ramsey space, so its A.3/A.4 and Ellentuck must
 be reverified rather than inherited from the old proof.
+
+## Lean audit update — free-ancestral algebra verified
+
+PR #561 has now passed the **focused Lean and named-axiom audit**
+for the following two reusable components, at its pre-export head:
+
+- `FatTree.not_projectedReduction_of_missing_image`,
+  `FatTree.badProjectedDepthCones_meet_every_fat_neighborhood`,
+  and `FatTree.projected_rightFactorCone_not_neighborhood`.
+  These establish that a concrete all-depth bad-refinement family
+  gives basis-level noncontinuity. They do **not** assume the
+  existence of such a family.
+- `FreeAncestral.zeroGap_last_parameter_ne_zero`,
+  `projectionRootGap_avoids_zero`,
+  `projectionParamGap_creates_zero`,
+  `projectionComposite_no_function_factor`, and
+  `projectionComposite_not_rightFactor`.
+  The last theorem is **unconditional** for the actual verified
+  arity-one, singleton-letter free-ancestral monoid:
+  `E₂ ∘ E₀` admits no right factor through `E₀`—
+  indeed, no factor that is even an arbitrary function.
+
+What remains unproved in Lean is precisely the **geometric**
+statement that a fat U with `associatedMap U = E₀` admits
+arbitrarily late refinements `V_q` with
+`associatedMap V_q = E_(q+1) ∘ E₀` and preserved fat stems.
+The shortest planned implementation uses
+`FatTree.tailCoordinateRow_oneBlockOccurs`
+and `FatTree.splice_reduces`. It requires a normalization
+lemma identifying the identity tail of the canonical widening
+of `E₀`. Once this constructs
+`FatTree.BadProjectedDepthCones H U`, the generic
+topology lemma supplies the basis-level conclusion immediately.
+
+**Important:** the finite q=1,2,3 script remains a diagnostic.
+The unconditional algebraic nonfactorization, not the
+infinite geometric reduction, is what the newly checked
+Lean file establishes. Theorem 1.11 is still OPEN.

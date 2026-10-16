@@ -1,0 +1,7 @@
+import SuccessorTree.FreeAncestralProjectionRange
+
+#print axioms SuccessorTree.FreeAncestral.zeroGap_last_parameter_ne_zero
+#print axioms SuccessorTree.FreeAncestral.projectionRootGap_avoids_zero
+#print axioms SuccessorTree.FreeAncestral.projectionParamGap_creates_zero
+#print axioms SuccessorTree.FreeAncestral.projectionComposite_no_function_factor
+#print axioms SuccessorTree.FreeAncestral.projectionComposite_not_rightFactor

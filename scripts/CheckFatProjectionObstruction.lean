@@ -1,0 +1,5 @@
+import SuccessorTree.FatTree.ProjectionObstruction
+
+#print axioms SuccessorTree.SMTree.FatTree.not_projectedReduction_of_missing_image
+#print axioms SuccessorTree.SMTree.FatTree.badProjectedDepthCones_meet_every_fat_neighborhood
+#print axioms SuccessorTree.SMTree.FatTree.projected_rightFactorCone_not_neighborhood

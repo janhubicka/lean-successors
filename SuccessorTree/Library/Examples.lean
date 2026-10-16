@@ -1,4 +1,5 @@
 import SuccessorTree.FreeAncestralFiniteRamsey
+import SuccessorTree.FreeAncestralProjectionRange
 
 /-!
 # Public concrete examples

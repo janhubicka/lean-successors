@@ -31,6 +31,8 @@ axiom reports; do not duplicate hundreds of V10 axiom checks here.
 #check @SuccessorTree.SMTree.fusionNeighborhood_nonempty
 #check @SuccessorTree.SMTree.ramseyApproximation_isTychonoffClosed
 #check @SuccessorTree.SMTree.ramseyApproximation_fusionComplete
+#check @SuccessorTree.SMTree.FatTree.BadProjectedDepthCones
+#check @SuccessorTree.SMTree.FatTree.projected_rightFactorCone_not_neighborhood
 
 #check @SuccessorTree.V10.normalizedKptSMTree
 #check @SuccessorTree.V10.normalizedKpt_oneLevelPullback
@@ -44,3 +46,4 @@ axiom reports; do not duplicate hundreds of V10 axiom checks here.
 #check @SuccessorTree.V10.AgeTestModel.hasOriginalFiniteBigRamseyDegrees_of_universal
 
 #check @SuccessorTree.FreeAncestral.finiteShapeRamsey
+#check @SuccessorTree.FreeAncestral.projectionComposite_not_rightFactor

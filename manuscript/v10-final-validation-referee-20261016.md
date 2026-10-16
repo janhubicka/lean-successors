@@ -158,3 +158,23 @@ remains Lean verified. No claim that Theorem 1.11 itself
 is false is justified solely by this proof counterexample.
 A revised transfer construction or a new proof is needed.
 The mathematical manuscript text remains frozen.
+
+## Formalization milestone for the Section 4 counterexample
+
+At PR #561 the Lean kernel and transitive-axiom checker
+prove `FreeAncestral.projectionComposite_not_rightFactor`
+in the actual one-parameter free-ancestral monoid. Thus
+the code-level missing-range argument is now an
+**unconditional formal theorem**, not merely finite
+enumeration. The generic conditional noncontinuity
+criterion `FatTree.projected_rightFactorCone_not_neighborhood`
+is also checked.
+
+The remaining obligation is strictly the construction
+of genuinely reducing fat trees `V_q ≤_fat U` for
+all q with matching projected maps. Suggested existing
+lemmas: `tailCoordinateRow_oneBlockOccurs`,
+`splice_reduces`, and the canonical row-extension
+identity for the identity tail. Until that is proved
+in Lean, mark the infinite counterexample and the
+status of source Theorem 1.11 explicitly OPEN.
