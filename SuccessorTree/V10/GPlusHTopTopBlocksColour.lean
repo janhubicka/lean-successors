@@ -1,5 +1,6 @@
 import SuccessorTree.V10.GPlusHTopUniformPalette
 import SuccessorTree.V10.HTopRootStrictPrefix
+import SuccessorTree.EnvelopeRunExistence
 
 /-!
 # Explicit top-root H+ construction and a uniform finite G+ colour bound
@@ -67,7 +68,9 @@ theorem numericHTop_priorBlocks_uniform_tuple_colour_bound
       hPosition k i k ≤
         (finiteNumericH K k N).freeLevel c.val := by
     intro i hi
-    have hs := hStrict i hi
+    have hs : hPosition k i k + 1 ≤
+        (finiteNumericH K k N).freeLevel c.val := by
+      simpa only [N] using (hStrict i hi)
     omega
   let hAvoidH : ∀ bad, bad ∈ family →
       bad.Avoids (finiteNumericHL K k N) :=
