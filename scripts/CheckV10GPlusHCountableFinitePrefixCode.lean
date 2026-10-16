@@ -1,0 +1,6 @@
+import SuccessorTree.V10.GPlusHCountableFinitePrefixCode
+
+#print axioms SuccessorTree.V10.infiniteNumericHPlus_finitePrefix_eq_finiteNumericH
+#print axioms SuccessorTree.V10.infiniteNumericHPlusToGPlus_finitePrefix_code
+#print axioms SuccessorTree.V10.infiniteNumericHPlusToGOmega_finitePrefix_code
+#print axioms SuccessorTree.V10.infiniteNumericHPlusToFixedGOmega_finitePrefix_code
