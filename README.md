@@ -117,3 +117,14 @@ For proof details see [wiki home](docs/wiki/Home.md),
 [whole-manuscript coverage audit](docs/wiki/Manuscript-Coverage.md),
 [referee audit](docs/wiki/Adversarial-referee-record.md)
 and [axiom-relaxation dependencies](docs/wiki/M1-M3-Dependency-Map.md).
+
+The generally reusable identity-fat-tail results
+`FatTree.identityFatTree_rowExtension_id`,
+`identityFatTree_oneLift_full` and
+`identityFatTree_liftTo_full` are part of the
+abstract theorem import. They formalize that every
+finite identity fat block lifts full source levels
+onto full target levels, retaining *all* successor
+parameter choices. These will be used to complete
+the genuinely geometric half of the Section 4
+counterexample; no direct monoid A.3(2) is assumed.

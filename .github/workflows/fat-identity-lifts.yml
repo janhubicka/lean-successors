@@ -1,0 +1,72 @@
+name: Fat-tree identity lifts
+
+on:
+  pull_request:
+    paths:
+      - 'SuccessorTree/FatTree/IdentityLifts.lean'
+      - 'scripts/CheckFatTreeIdentityLifts.lean'
+      - '.github/workflows/fat-identity-lifts.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'SuccessorTree/FatTree/IdentityLifts.lean'
+      - 'scripts/CheckFatTreeIdentityLifts.lean'
+      - '.github/workflows/fat-identity-lifts.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  identity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Cache Lean toolchain
+        uses: actions/cache@v5
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
+      - name: Restore pinned Lake workspace
+        uses: actions/cache/restore@v5
+        with:
+          path: .lake
+          key: lake-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}
+          restore-keys: |
+            lake-v2-${{ runner.os }}-${{ runner.arch }}-
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve pinned dependencies
+        run: |
+          if test -s lake-manifest.json; then
+            echo 'Using pinned Lake manifest'
+          else
+            lake update
+          fi
+      - name: Retrieve mathlib cache
+        run: lake exe cache get
+      - name: Check source integrity
+        run: python3 scripts/check-successor-proof-integrity.py
+      - name: Build identity-tail helper
+        run: lake build SuccessorTree.FatTree.IdentityLifts
+      - name: Audit exact named transitive axioms
+        run: |
+          mkdir -p proof-audit
+          lake env lean scripts/CheckFatTreeIdentityLifts.lean > proof-audit/identity-lifts-axioms.log 2>&1 || {
+            cat proof-audit/identity-lifts-axioms.log
+            exit 1
+          }
+          python3 scripts/check-axiom-log.py proof-audit/identity-lifts-axioms.log scripts/CheckFatTreeIdentityLifts.lean
+      - name: Preserve proof audit
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: fat-identity-lifts-proof-audit
+          path: proof-audit/
+          if-no-files-found: ignore

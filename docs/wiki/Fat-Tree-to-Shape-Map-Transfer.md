@@ -302,3 +302,31 @@ topological proof for the shape-map space. Imposing
 `F_V=F_U∘G` as an extra condition in the fat reduction would
 change that Ramsey space, so its A.3/A.4 and Ellentuck must
 be reverified rather than inherited from the old proof.
+
+## Verified identity-tail lift lemma
+
+The next independent reusable ingredient is now proved in Lean
+(PR #562, focused CI green at the pre-export head). For **every**
+`SMTree H` and source cut `i`, the row extension of the
+identity fat tree is *literally* `MMap.id H`.
+Moreover, `identityFatTree_liftTo_full H i k` proves that
+the geometric lift of the **entire** source level `i`
+through any block of identity rows is the **entire**
+target level `k`.
+
+This is the exact reason the delayed parameter code
+`[0]` remains geometrically legal in `V_q ≤fat U`:
+the identity tail of U admits **all** ambient successor
+codes, not only those in `range(F_U)`. The proof
+uses `canonicalExtension_unique` to remove the
+noncanonical representative of `AM.id1`, then the
+unique predecessor at each later tree level.
+
+The remaining Lean obligation is now a **relative**
+identity-tail normalization for U with first row E₀,
+followed by the already verified
+`tailCoordinateRow_oneBlockOccurs` and
+`splice_reduces`. This geometric construction must
+still be completed to certify the actual infinite
+noncontinuity witness and is **not** claimed by the
+identity-tail lemma alone.

@@ -1,0 +1,8 @@
+import SuccessorTree.FatTree.IdentityLifts
+
+#print axioms SuccessorTree.SMTree.FatTree.identityWord_rowExtension_id
+#print axioms SuccessorTree.SMTree.FatTree.identityFatTree_rowExtension_id
+#print axioms SuccessorTree.SMTree.FatTree.immediateSuccessors_full_level
+#print axioms SuccessorTree.SMTree.FatTree.identityFatTree_oneLift_full
+#print axioms SuccessorTree.SMTree.FatTree.identityFatTree_liftSteps_full
+#print axioms SuccessorTree.SMTree.FatTree.identityFatTree_liftTo_full
