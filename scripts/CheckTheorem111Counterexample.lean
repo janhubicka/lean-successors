@@ -3,6 +3,7 @@ import SuccessorTree.Counterexample.MaskCodes
 import SuccessorTree.Counterexample.SupportRigidity
 import SuccessorTree.Counterexample.Topology
 import SuccessorTree.Counterexample.StretchHistory
+import SuccessorTree.Counterexample.MarkedFusion
 
 /-!
 Exact-name audit: only the declarations below have been proved so far.
@@ -48,3 +49,13 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 #print axioms SuccessorTree.FreeAncestral.appendRootMarkers_injective
 #print axioms SuccessorTree.FreeAncestral.markedNode_level
 #print axioms SuccessorTree.FreeAncestral.markedNode_root
+
+#check @SuccessorTree.FreeAncestral.markerGap
+#check @SuccessorTree.FreeAncestral.markerGap_fixes_below
+#check @SuccessorTree.FreeAncestral.markerBlock
+#check @SuccessorTree.FreeAncestral.markerBlock_fixes_below
+#check @SuccessorTree.FreeAncestral.markerBlock_level_above
+#check @SuccessorTree.FreeAncestral.markedStage
+#print axioms SuccessorTree.FreeAncestral.markerGap_fixes_below
+#print axioms SuccessorTree.FreeAncestral.markerBlock_fixes_below
+#print axioms SuccessorTree.FreeAncestral.markerBlock_level_above
