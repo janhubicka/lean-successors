@@ -1,0 +1,76 @@
+import SuccessorTree.Counterexample.NowhereDense
+import RamseySpace.Ellentuck
+import Mathlib.Topology.GDelta.Basic
+
+/-!
+# Right-incompatible families are nowhere dense in the direct Ellentuck topology
+
+This theorem converts the proved *local escape* lemma into the genuine
+topological assertion. The topology is that of the **direct M-map
+approximation system**, not the separate fat-tree topology.
+
+No application of the (false) direct shape-map Ellentuck theorem is made.
+-/
+
+namespace SuccessorTree.SMTree
+
+universe u v
+variable {T : Type u} {Label : Type v}
+variable [PartialOrder T] [LevelTree T] {S : STree T Label}
+
+/-- Under late proper gaps, every family of pairwise incompatible
+right-composition maps is nowhere dense in the *actual direct monoid
+Ellentuck topology*. -/
+theorem incompatible_family_isNowhereDense
+    (H : SMTree S) (N : Set (MMap H))
+    (hN : PairwiseRightIncompatible H N)
+    (hGap : HasLateProperGaps H) :
+    @IsNowhereDense (MMap H)
+      (ramseyApproximationSystem H).ellentuckTopology N := by
+  let R := ramseyApproximationSystem H
+  letI : TopologicalSpace (MMap H) := R.ellentuckTopology
+  change interior (closure N) = (∅ : Set (MMap H))
+  apply Set.eq_empty_of_subset_empty
+  intro x hx
+  have hOpen : R.IsEllentuckOpen (interior (closure N)) :=
+    (R.isOpen_ellentuck_iff _).mp isOpen_interior
+  obtain ⟨n, a, B, hxAB, hsub⟩ := hOpen hx
+  let a1 : RamseyApprox H (n + 1) := ramseyApprox H (n + 1) x
+  have hne : (R.neighborhood (n := n + 1) a1 x).Nonempty := by
+    exact ⟨x, H.ramseyReduction_refl x, rfl⟩
+  obtain ⟨G, hGne, hGsub, hGdis⟩ :=
+    H.incompatible_family_local_escape N hN hGap a1 x hne
+  obtain ⟨y, hy⟩ := hGne
+  have hyx : y ∈ R.neighborhood (n := n + 1) a1 x := hGsub hy
+  have hyAB : y ∈ R.neighborhood (n := n) a B := by
+    have hprefix : R.approx n y = R.approx n x :=
+      R.coherent hyx.2 n (Nat.lt_succ_self n)
+    exact ⟨R.le_trans hyx.1 hxAB.1, hprefix.trans hxAB.2⟩
+  have hyClosed : y ∈ closure N := interior_subset (hsub hyAB)
+  have hopenG : IsOpen (R.neighborhood (n := n + 1) a1 G) :=
+    R.isOpen_neighborhood a1 G
+  obtain ⟨z, hzG, hzN⟩ :=
+    (mem_closure_iff.mp hyClosed)
+      (R.neighborhood (n := n + 1) a1 G) hopenG hy
+  exact (disjoint_iff_inf_le.mp hGdis) ⟨hzG, hzN⟩
+
+end SuccessorTree.SMTree
+
+namespace SuccessorTree.FreeAncestral
+
+/-- An antichain of free-ancestral shape maps, if supplied, is
+automatically nowhere dense in the correct shape-map monoid topology. -/
+theorem freeAncestral_incompatible_isNowhereDense
+    (N : Set (SMTree.MMap
+      (freeSMTree (Label := Unit) (arity := 1))))
+    (hN : SMTree.PairwiseRightIncompatible
+      (freeSMTree (Label := Unit) (arity := 1)) N) :
+    @IsNowhereDense
+      (SMTree.MMap (freeSMTree (Label := Unit) (arity := 1)))
+      ((SMTree.ramseyApproximationSystem
+        (freeSMTree (Label := Unit) (arity := 1))).ellentuckTopology)
+      N :=
+  SMTree.incompatible_family_isNowhereDense _
+    N hN freeAncestral_hasLateProperGaps
+
+end SuccessorTree.FreeAncestral
