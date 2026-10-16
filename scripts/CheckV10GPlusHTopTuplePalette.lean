@@ -1,0 +1,4 @@
+import SuccessorTree.V10.GPlusHTopTuplePalette
+
+#print axioms SuccessorTree.V10.numericHTopRun_prefixTuples_finiteApprox_cover
+#print axioms SuccessorTree.V10.numericHTopRun_prefixTuples_finiteColour_bound
