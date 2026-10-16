@@ -4,6 +4,7 @@ import SuccessorTree.FatTree.A4ReviewComplete
 import SuccessorTree.ShapeEllentuckRamsey
 import SuccessorTree.ShapeFiniteCorollaries
 import SuccessorTree.EnvelopeTheorem
+import SuccessorTree.RamseySpace.Closed
 
 /-!
 # Reusable successor-tree Ramsey core

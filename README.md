@@ -57,6 +57,7 @@ their axiom certificates remain under regression checks.
 | Shape event transport | `SuccessorTree.ShapeMap.mapEvent_injective` |
 | Direct shape Ramsey | `SuccessorTree.SMTree.shapePreservingRamsey` |
 | Fat-tree Ellentuck shape Ramsey | `SuccessorTree.SMTree.shapePreservingRamsey_viaFatEllentuck` |
+| Direct M-map A.2/A.3(1) and closedness | `SuccessorTree.SMTree.ramseyFinitization`, `fusionNeighborhood_nonempty`, `ramseyApproximation_isTychonoffClosed` |
 | Fat-tree A4 / Ellentuck | `SuccessorTree.SMTree.FatTree.fatTreeA4` / `fatTreeEllentuck` |
 | Finite bounded/exact corollaries | `SuccessorTree.SMTree.shapeRamsey_bounded` / `shapeRamsey_exact` |
 | Minimal envelopes | `SuccessorTree.SMTree.Envelope.exists_minimalEnvelope` |
@@ -100,6 +101,12 @@ V10 reports. The transitive `#print axioms` reports permit only
 dependency-aware incremental check on changes, plus a scheduled
 exhaustive audit. Source reachability is inventoried before any
 deletion; a short import list is **not** proof that a module is dead.
+
+**Theorem 1.11 remains open at the topological monoid level.** The
+checked fat-tree Ellentuck theorem does not establish the exact
+projection of its neighborhoods onto M. We have direct A.1/A.2/A.3(1)
+and are verifying closedness; A.3(2) and A.4 are separate missing
+steps. See [the topology audit](docs/wiki/Shape-Ellentuck-Validation.md).
 
 The toolchain is Lean `v4.35.0-rc3`; mathlib and
 `lean-ramsey-space-todorcevic` revisions are pinned in `lakefile.toml`.

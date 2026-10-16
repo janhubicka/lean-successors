@@ -26,6 +26,11 @@ axiom reports; do not duplicate hundreds of V10 axiom checks here.
 #check @SuccessorTree.SMTree.FatTree.fatTreeA4
 #check @SuccessorTree.SMTree.FatTree.fatTreeEllentuck
 #check @SuccessorTree.SMTree.Envelope.exists_minimalEnvelope
+#check @SuccessorTree.SMTree.ramseyApproximationSystem
+#check @SuccessorTree.SMTree.ramseyFinitization
+#check @SuccessorTree.SMTree.fusionNeighborhood_nonempty
+#check @SuccessorTree.SMTree.ramseyApproximation_isTychonoffClosed
+#check @SuccessorTree.SMTree.ramseyApproximation_fusionComplete
 
 #check @SuccessorTree.V10.normalizedKptSMTree
 #check @SuccessorTree.V10.normalizedKpt_oneLevelPullback

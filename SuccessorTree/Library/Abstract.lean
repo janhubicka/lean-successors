@@ -1,5 +1,6 @@
 import SuccessorTree.Library.Structures
 import SuccessorTree.Core
+import SuccessorTree.Library.TopologyFoundation
 
 /-!
 # Public abstract Ramsey theory
@@ -8,7 +9,8 @@ A stable *import boundary*, not a second copy of any proof. It exposes
 starred Hales–Jewett, generic finite copy-Ramsey expansion bounds,
 intrinsic successor events and pointed occurrences, successor shape maps and M1–M3, the two finite
 shape-Ramsey proof routes, fat-tree A4/Ellentuck, the finite terminal
-corollaries and the minimal-envelope theorem.
+corollaries, the minimal-envelope theorem, and the directly verified
+Ramsey-space A.1/A.2/A.3(1)/closedness foundations.
 
 This module does not depend on V10's finite relational age, on the
 free-ancestral example or on applications. Future experiments weakening

@@ -118,6 +118,16 @@ jobs:
             cat proof-audit/public-library-axioms.log
             exit 1
           }
+      - name: Audit direct monoid Ramsey-space A1/A2/A3(1) and closedness
+        run: |
+          if ! lake env lean scripts/CheckDirectEllentuckFoundation.lean > proof-audit/direct-ellentuck-axioms.log 2>&1; then
+            cat proof-audit/direct-ellentuck-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/direct-ellentuck-axioms.log scripts/CheckDirectEllentuckFoundation.lean || {
+            cat proof-audit/direct-ellentuck-axioms.log
+            exit 1
+          }
       - name: Check shape Ramsey statement and axioms
         run: |
           set -o pipefail
