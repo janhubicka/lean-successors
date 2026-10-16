@@ -148,6 +148,44 @@ pointwise-Borel theorem. FR0+FR1+RC-open+RC-null
 does yield the **full** theorem, but the category
 assertions are a major, currently unresolved problem.
 
+## Positive result that survives every objection
+
+The companion note's **Section 4A** gives an **unconditional**
+Borel fat-image Ramsey theorem:
+\[
+  X\subseteq\mathcal M\text{ pointwise-Borel}
+  \Longrightarrow
+  \forall[x,U]\ne\varnothing\ \exists
+     V\in[\operatorname{depth}_U(x),U]
+  \quad P([x,V])\subseteq X
+     \ \text{or}\ P([x,V])\cap X=\varnothing.
+\]
+This uses only the checked fat-tree Ellentuck theorem and
+the checked *metric* finite-prefix continuity of \(P\).
+Both are independent of the disproved monoid-Ellentuck
+continuity claim. The proof needs **neither FR1 nor
+RC-open/RC-null**, so is a valid immediate target for
+Lean statement validation.
+
+**Extra audit of this unconditional theorem:**
+
+- Metric-open finite-prefix cylinders in the fat space
+  are Ellentuck-open, since each point has a fat basic
+  neighbourhood preserving its finite prefix. Thus
+  "pointwise-Borel pullback is fat Ellentuck-Baire" is valid.
+- Sequential finite-colour stabilization retains the fat
+  stem and depth using fat A.3(2) and transitivity;
+  each resulting fat neighbourhood is nonempty by A.3(1).
+- The conclusion is *not* that
+  \([F_x,P(V)]_{\mathcal M}\) is monochromatic.
+  The geometric image \(P([x,V])\) can contain maps
+  which do not factor through \(P(V)\). Confusing
+  these outputs would reintroduce the false Lemma 4.1.
+
+**Disposition:** English proof accepted at its **weaker,
+fat-image** statement. Formalize this before investing in
+the more speculative full Theorem 1.11 transfer.
+
 ## Additional adversarial alternatives
 
 **Alternative A: reverse composition of fat rows.**
@@ -199,7 +237,7 @@ not refute Theorem 1.11.
 | --- | --- | --- |
 | 1 | Prove FR0, with terminal cut d+1 | Detailed finite \`LeFin\` proof, no "obvious inclusion" |
 | 2 | Prove/disprove FR1 for identity ambient and fixed x | Inductive finite-row construction covering *all* nodes; exact splice and fusion |
-| 3 | Obtain full pointwise-Borel conclusion | Apply conditional proof after tasks 1–2 |
+| 3 | Obtain Borel monoid-neighbourhood conclusion | Apply conditional proof after tasks 1–2; **separate** from already proved Borel fat-image theorem |
 | 4 | Independently check the nowhere-dense Z candidate | Closedness, meagreness and all-pure unavoidability proved, or explicit flaw |
 | 5 | Prove/disprove RC-open and RC-null by *fat* decision/fusion | No appeal to shape-map A.3(2), no circular pullback argument |
 | 6 | Only then validate full Theorem 1.11 | Complete unconditional English proof, adversarially reviewed, with hypotheses exactly as printed |
