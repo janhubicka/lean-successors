@@ -22,6 +22,20 @@ size-nondecreasing enumeration of G-omega.
 
 namespace SuccessorTree.V10
 
+/-- Equality of complete finite on-carrier tables commutes with
+dependent prefix restriction. The two bounds can be different
+proofs: their proof irrelevance is handled when eliminating the
+structure equality, rather than by ill-typed rewriting. -/
+theorem FinitePartialCode.restrict_eq_of_eq
+    {db du dd : Nat}
+    {A B : FinitePartialCode db du dd}
+    (h : A = B)
+    (n : Nat) (hA : n ≤ A.size) (hB : n ≤ B.size) :
+    A.restrict n hA = B.restrict n hB := by
+  cases h
+  rfl
+
+
 /-- The finite prefix of the actual countable numerical H+ is
 literally the existing finite numerical H+ constructor. All
 non-data proof fields are definitionally irrelevant. -/
@@ -54,13 +68,23 @@ theorem infiniteNumericHPlusToGPlus_finitePrefix_code
       (C.prefixCode_restrict (v + 1) N hv).symm
     _ = (FinitePartialCode.ofEnumerated (C.finitePrefix N)).restrict
           (v + 1) hv := by
-      rw [C.ofEnumerated_finitePrefix N]
+      exact FinitePartialCode.restrict_eq_of_eq
+        (C.ofEnumerated_finitePrefix N).symm
+        (v + 1) hv hv
     _ = FinitePartialCode.ofEnumerated
           ((C.finitePrefix N).initialSegment (v + 1) hv) :=
       FinitePartialCode.ofEnumerated_initialSegment _ _ _
     _ = FinitePartialCode.ofEnumerated
           ((finiteNumericH K k N).initialSegment (v + 1) hv) := by
-      rw [infiniteNumericHPlus_finitePrefix_eq_finiteNumericH]
+      have hSame :
+          C.finitePrefix N = finiteNumericH K k N :=
+        infiniteNumericHPlus_finitePrefix_eq_finiteNumericH K k N
+      have hSegment :
+          (C.finitePrefix N).initialSegment (v + 1) hv =
+            (finiteNumericH K k N).initialSegment (v + 1) hv := by
+        cases hSame
+        rfl
+      exact congrArg FinitePartialCode.ofEnumerated hSegment
 
 /-- Evaluation in the actual exhaustive size-ordered G-omega
 enumeration is the same genuine finite H+ prefix code. -/
@@ -81,6 +105,10 @@ theorem infiniteNumericHPlusToGOmega_finitePrefix_code
   let C := infiniteNumericHPlus K k
   let hAvoid : ∀ bad, bad ∈ family → bad.Avoids C.L :=
     infiniteNumericHL_avoids_family family K hCarrier hAvoidK k
+  change (GPlusEnumeration.enumerate C family hAvoid
+    (C.toGOmega family hAvoid v)).val =
+      FinitePartialCode.ofEnumerated
+        ((finiteNumericH K k N).initialSegment (v + 1) hv)
   rw [C.toGOmega_eval family hAvoid v]
   exact infiniteNumericHPlusToGPlus_finitePrefix_code
     family K hCarrier hAvoidK k N v hv
@@ -113,6 +141,10 @@ theorem infiniteNumericHPlusToFixedGOmega_finitePrefix_code
       GPlusEnumeration.enumerate H family hAvoidH :=
     GPlusEnumeration.enumerate_independent_of_witness family C H
       hAvoidC hAvoidH
+  change (GPlusEnumeration.enumerate C family hAvoidC
+    (H.toGOmega family hAvoidH v)).val =
+      FinitePartialCode.ofEnumerated
+        ((finiteNumericH K k N).initialSegment (v + 1) hv)
   rw [hEnum]
   exact infiniteNumericHPlusToGOmega_finitePrefix_code
     family K hCarrier hAvoidK k N v hv
