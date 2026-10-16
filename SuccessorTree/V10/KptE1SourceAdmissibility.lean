@@ -1,4 +1,5 @@
 import SuccessorTree.V10.KptE1ParameterReindex
+import SuccessorTree.V10.KptE1FiniteAgePullback
 
 /-!
 # Concrete admissibility of a retained Kpt successor candidate
@@ -138,8 +139,8 @@ theorem kptE1_reindexed_target_admissible
   have hPrefix :
       Qsource.restrict (Nat.le_succ n) = A.partialTypeAt n w := by
     change
-      (Q.reindexOrdinary (kptShapeLastIndexAtNode family F a)).
-        restrict (Nat.le_succ a.1.1) = A.partialTypeAt a.1.1 w
+      (Q.reindexOrdinary (kptShapeLastIndexAtNode family F a)).restrict
+        (Nat.le_succ a.1.1) = A.partialTypeAt a.1.1 w
     rw [kptShapeReindex_recovers_old_predecessor
       family F a Q hTargetPred]
     exact hRecord
@@ -164,8 +165,8 @@ theorem kptE1_reindexed_target_admissible
       f hGate hValidSource hNewLoop
   have hAvoid :
       ∀ bad, bad ∈ family → bad.Avoids Qsource.ageModel :=
-    Q.reindexOrdinary_age_avoids family Q (n + 1) rho
-      hMono hTargetAd
+    PartialTypeWithE.reindexOrdinary_age_avoids family Q
+      (n + 1) rho hMono hTargetAd
   exact e1PaddedSourceStructure_isAdmissible
     family Qsource A.freeLevel f hOld hGate
     hLinked hColumns hType hReverse hTypeLoop hAvoid
