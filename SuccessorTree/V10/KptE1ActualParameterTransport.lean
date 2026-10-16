@@ -122,9 +122,22 @@ theorem kptShapeReindex_parameter_recovers_atNode
       kptShapeReindex_parameter_atNode family F a
         (LevelTree.lev x) hx Q hg
     _ = shapeMapRetainedRecord family F x := by
-      unfold shapeMapRetainedRecord
-      rw [hTargetParameter]
-      rfl
+      change
+        (Q.lastOrdinaryParameter
+          (kptShapeLevelMap family F (LevelTree.lev x)) hg).reindexOrdinary
+            (kptShapeOldRetainedIndex family F (LevelTree.lev x)) =
+        (F x).1.2.reindexOrdinary (retainedSocleIndex family F x)
+      exact (rawPartialType_reindex_eq_of_sigma
+        (F x).1
+        (Q.lastOrdinaryParameter
+          (kptShapeLevelMap family F (LevelTree.lev x)) hg)
+        hTargetParameter
+        (retainedSocleIndex family F x)
+        (kptShapeOldRetainedIndex family F (LevelTree.lev x))
+        (by
+          intro i
+          apply Fin.ext
+          rfl)).symm
     _ = x.1.2 := shapeMap_recovers_complete_record family F x
 
 end SuccessorTree.V10
