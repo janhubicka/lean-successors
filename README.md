@@ -101,5 +101,6 @@ The toolchain is Lean `v4.35.0-rc3`; mathlib and
 For proof details see [wiki home](docs/wiki/Home.md),
 [using the library](docs/wiki/Using-the-library.md),
 [theorem/manuscript map](docs/wiki/Theorems-and-Manuscript.md),
+[whole-manuscript coverage audit](docs/wiki/Manuscript-Coverage.md),
 [referee audit](docs/wiki/Adversarial-referee-record.md)
 and [axiom-relaxation dependencies](docs/wiki/M1-M3-Dependency-Map.md).
