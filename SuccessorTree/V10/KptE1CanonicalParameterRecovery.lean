@@ -42,16 +42,13 @@ theorem kptShapeReindex_parameter_recovers_source
             ((kptShapeLevelMap_strictMono family F).monotone hx)⟩ :
           RawPartialTypeNode db du dd)) :
     (Q.reindexOrdinary
-      (kptShapeLastRetainedIndex family F n)).
-        lastOrdinaryParameter x.1.1 hx = x.1.2 := by
+      (kptShapeLastRetainedIndex family F n)).lastOrdinaryParameter x.1.1 hx = x.1.2 := by
   calc
     (Q.reindexOrdinary
-      (kptShapeLastRetainedIndex family F n)).
-        lastOrdinaryParameter x.1.1 hx =
+      (kptShapeLastRetainedIndex family F n)).lastOrdinaryParameter x.1.1 hx =
       (Q.lastOrdinaryParameter
         (kptShapeLevelMap family F x.1.1)
-        ((kptShapeLevelMap_strictMono family F).monotone hx)).
-          reindexOrdinary
+        ((kptShapeLevelMap_strictMono family F).monotone hx)).reindexOrdinary
             (kptShapeOldRetainedIndex family F x.1.1) :=
       kptShapeReindex_parameter_commutes
         family F n x.1.1 hx Q
