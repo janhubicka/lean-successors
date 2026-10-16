@@ -17,7 +17,8 @@ its identification with the author's current external manuscript.
 | Chapter | Purpose |
 | --- | --- |
 | [Using the library](Using-the-library.md) | Install/import public theorem modules; copyable `#check` statements; hypotheses |
-| [Theorems and manuscript](Theorems-and-Manuscript.md) | Exhaustive principal theorem index, source scope, formalized repairs |
+| [Theorems and manuscript](Theorems-and-Manuscript.md) | Principal checked Lean exports, source scope, formalized repairs |
+| [Whole-manuscript coverage](Manuscript-Coverage.md) | Section-by-section proof coverage, unexported Section 6 specializations and exact TODOs |
 | [Architecture](Architecture.md) | Successor monoids, two independent shape-Ramsey routes, fat trees and Kpt |
 | [Adversarial referee record](Adversarial-referee-record.md) | Mathematical scope, transitive axioms and dependency/maintenance scrutiny |
 | [Audit and performance](Audit-and-Performance.md) | Actual workflow evidence, import audit, CI speed improvements |
