@@ -1,0 +1,4 @@
+import SuccessorTree.V10.KptUniversalAgeBigRamsey
+
+#print axioms SuccessorTree.V10.universalNormalizedModel_contains_canonicalGOmega
+#print axioms SuccessorTree.V10.universalNormalizedModel_bigRamsey_bound
