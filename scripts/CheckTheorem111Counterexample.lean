@@ -6,6 +6,7 @@ import SuccessorTree.Counterexample.StretchHistory
 import SuccessorTree.Counterexample.MarkedFusion
 import SuccessorTree.Counterexample.RootMarkerRigidity
 import SuccessorTree.Counterexample.RootMarkerTransport
+import SuccessorTree.Counterexample.MarkerIntervals
 
 /-!
 Exact-name audit: only the declarations below have been proved so far.
@@ -88,3 +89,14 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 
 #check @SuccessorTree.FreeAncestral.root_marker_transported_from_code
 #print axioms SuccessorTree.FreeAncestral.root_marker_transported_from_code
+
+#check @SuccessorTree.FreeAncestral.markerGap_extends_at_level
+#check @SuccessorTree.FreeAncestral.markerGap_has_root_at_level
+#check @SuccessorTree.FreeAncestral.markerBlock_root_interval
+#check @SuccessorTree.FreeAncestral.markedStage_root_interval
+#check @SuccessorTree.FreeAncestral.markedFusion_root_interval
+#print axioms SuccessorTree.FreeAncestral.markerGap_extends_at_level
+#print axioms SuccessorTree.FreeAncestral.markerGap_has_root_at_level
+#print axioms SuccessorTree.FreeAncestral.markerBlock_root_interval
+#print axioms SuccessorTree.FreeAncestral.markedStage_root_interval
+#print axioms SuccessorTree.FreeAncestral.markedFusion_root_interval
