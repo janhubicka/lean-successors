@@ -184,16 +184,20 @@ Therefore
 \]
 All such \(W\) have the same membership in \(Y_F\), hence
 \([f,F']_{\mathcal M}\) is contained in \(X\) or disjoint from
-\(X\). The fat A.3(1) theorem also guarantees that this
-refined finite-stem neighbourhood is nonempty. This proves
-the Ramsey assertion.
+\(X\). **Nonemptiness** is checked independently rather than
+inferred from the one-sided inclusion (FR1): choose a total
+\(G\in\mathcal M\) extending the finite quotient \(g\).
+Because \(P(V)\) fixes all nodes through target level \(d\),
+\(P(V)\circ G\) still extends \(g\). Consequently
+\(F'\circ G=F\circ P(V)\circ G\) extends \(f\), so
+\([f,F']\ne\varnothing\). This proves the Ramsey assertion.
 
 If \(X\) is meagre, (RC-null) says that \(Y_F\) is fat meagre.
 Apply the *Ramsey-null* half of fat Ellentuck to obtain the
 disjoint alternative. Use exactly (2) and (FR1) again to
 conclude \([f,F']\cap X=\varnothing\). QED.
 
-The proof is complete **given the three named ingredients**.
+The proof is complete **given the four named ingredients** (FR0, FR1, RC-open, RC-null).
 No step invokes \(P([x,V])\subseteq[g,P(V)]\), or any
 direct shape-map A.3(2).
 
