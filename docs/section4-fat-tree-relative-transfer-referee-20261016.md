@@ -77,6 +77,18 @@ strictly increasing, and the infinite tail rows must
 respect the reduction witness. M1 fusion of shape maps
 alone is insufficient.
 
+**Danger G3b: non-ancestral parameter dependencies.** The concrete
+free-ancestral example is *not* by itself a sufficient test of FR1
+for general S-trees. In that example all parameters are ancestors
+on the same history spine, so unused branches can often be
+completed independently. The abstract axioms S1--S3 allow
+parameters to be nodes on *other* branches below the base
+level. A row extension prescribed on the visible source image
+may then force values on unused cut-level nodes which conflict
+with a previously fixed row of x. The global extension of those
+side-branch parameters is an indispensable check, not an
+artifact of Lean's dependent types.
+
 **Danger G4: identity reservoir.** The finite fat tree
 x realizing quotient g must occur *at ambient identity
 cut d+1*; it is not enough that x merely projects to g
@@ -85,7 +97,7 @@ in some unrelated fat tree.
 **Disposition 2:** FR0 is likely accessible with
 \`ofShapeMap\`, identity fat rows, M2 and the finite
 reduction lemmas. FR1 is plausible but still contains
-a nontrivial **global unused-node** obstruction.
+a nontrivial **global unused-node / non-ancestral parameter** obstruction.
 Do not promote the one-row theorem to FR1 without
 the explicit induction and splice proof.
 
