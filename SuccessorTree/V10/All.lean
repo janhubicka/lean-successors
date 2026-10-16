@@ -41,6 +41,8 @@ import SuccessorTree.V10.KptE1CanonicalSourceStep
 import SuccessorTree.V10.KptE1CanonicalParameterRecovery
 import SuccessorTree.V10.KptE1SourceParameterCases
 import SuccessorTree.V10.KptE1ImageParameterCases
+import SuccessorTree.V10.KptE1ActualParameterTransport
+import SuccessorTree.V10.KptE1ActualPullbackDefined
 import SuccessorTree.V10.GPlusFiniteApproxAction
 import SuccessorTree.V10.GPlusFiniteColourNaturality
 import SuccessorTree.V10.GPlusPaletteRamseyStabilization
