@@ -69,16 +69,12 @@ private theorem rowExtension_eq_of_common_prefix
     (hstem : V.initialSegment H n = U.initialSegment H n) :
     V.rowExtension H i = U.rowExtension H i := by
   let j : Fin n := ⟨i, hi⟩
-  let k : Fin (n + 1) := ⟨i, by omega⟩
-  have hcut : V.cut i = U.cut i := by
-    have hc := FiniteFatTree.cut_eq_of_eq H hstem k
-    simpa [FatTree.initialSegment, k] using hc
-  have hrow : HEq (V.row i) (U.row i) := by
-    have hr := FiniteFatTree.row_heq_of_eq H hstem j
-    simpa [FatTree.initialSegment, j] using hr
-  cases hcut
-  have hrow' : V.row i = U.row i := eq_of_heq hrow
-  simp only [FatTree.rowExtension, hrow']
+  calc
+    V.rowExtension H i =
+        (V.initialSegment H n).rowExtension H j := rfl
+    _ = (U.initialSegment H n).rowExtension H j := by
+      rw [hstem]
+    _ = U.rowExtension H i := rfl
 
 /-- Equality of a finite fat-tree prefix fixes every partial row
 product through that prefix, including the canonical tail. -/
