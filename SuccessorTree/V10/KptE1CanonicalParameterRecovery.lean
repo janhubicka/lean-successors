@@ -19,6 +19,28 @@ abstract E1 assumption is introduced.
 
 namespace SuccessorTree.V10
 
+/-- Transport a reindexed complete L+ record across the equality
+of two dependent raw Sigma nodes.  The explicit Fin.cast coordinate
+identity keeps both the record and its indexing map well-typed; a
+direct `rw` on the Sigma equality would not. -/
+theorem rawPartialType_reindex_eq_of_sigma
+    {n m db du dd : Nat}
+    (S : RawPartialTypeNode db du dd)
+    (T : PartialTypeWithE m db du dd)
+    (hRaw : S = (⟨m, T⟩ : RawPartialTypeNode db du dd))
+    (rho : Fin n → Fin S.1)
+    (eta : Fin n → Fin m)
+    (hCoord : ∀ i : Fin n,
+      Fin.cast (congrArg Sigma.fst hRaw) (rho i) = eta i) :
+    S.2.reindexOrdinary rho = T.reindexOrdinary eta := by
+  cases hRaw
+  have hMap : rho = eta := by
+    funext i
+    simpa using hCoord i
+  subst eta
+  rfl
+
+
 /-- If the image of a genuine source Kpt node is the target's
 canonical last-ordinary-vertex parameter at its actual shape level,
 then the canonical parameter of the *retained* successor is
@@ -53,9 +75,24 @@ theorem kptShapeReindex_parameter_recovers_source
       kptShapeReindex_parameter_commutes
         family F n x.1.1 hx Q
     _ = shapeMapRetainedRecord family F x := by
-      unfold shapeMapRetainedRecord
-      rw [hTargetParameter]
-      rfl
+      change
+        (Q.lastOrdinaryParameter
+          (kptShapeLevelMap family F x.1.1)
+          ((kptShapeLevelMap_strictMono family F).monotone hx)).reindexOrdinary
+            (kptShapeOldRetainedIndex family F x.1.1) =
+        (F x).1.2.reindexOrdinary (retainedSocleIndex family F x)
+      exact (rawPartialType_reindex_eq_of_sigma
+        (F x).1
+        (Q.lastOrdinaryParameter
+          (kptShapeLevelMap family F x.1.1)
+          ((kptShapeLevelMap_strictMono family F).monotone hx))
+        hTargetParameter
+        (retainedSocleIndex family F x)
+        (kptShapeOldRetainedIndex family F x.1.1)
+        (by
+          intro i
+          apply Fin.ext
+          rfl)).symm
     _ = x.1.2 :=
       shapeMap_recovers_complete_record family F x
 
