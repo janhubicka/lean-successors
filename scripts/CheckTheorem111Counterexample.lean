@@ -8,6 +8,7 @@ import SuccessorTree.Counterexample.RootMarkerRigidity
 import SuccessorTree.Counterexample.RootMarkerTransport
 import SuccessorTree.Counterexample.MarkerIntervals
 import SuccessorTree.Counterexample.MarkerTransfer
+import SuccessorTree.Counterexample.CompatibilityLevels
 
 /-!
 Exact-name audit: only the declarations below have been proved so far.
@@ -108,3 +109,10 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 #print axioms SuccessorTree.FreeAncestral.root_marker_transported
 #print axioms SuccessorTree.FreeAncestral.retained_levels_bracket
 #print axioms SuccessorTree.FreeAncestral.markedFusion_skipped_level
+
+#check @SuccessorTree.FreeAncestral.compatible_outer_factor
+#check @SuccessorTree.FreeAncestral.meetingLevels_infinite_of_common_multiple
+#check @SuccessorTree.FreeAncestral.meetingLevels_infinite_of_compatible
+#print axioms SuccessorTree.FreeAncestral.compatible_outer_factor
+#print axioms SuccessorTree.FreeAncestral.meetingLevels_infinite_of_common_multiple
+#print axioms SuccessorTree.FreeAncestral.meetingLevels_infinite_of_compatible
