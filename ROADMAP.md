@@ -19,6 +19,16 @@ passed at the exact same commit.
   copies include all induced `Emb(A,K)`, not merely ordered `OEmb`.
 - Free-ancestral history-tree instance.
 
+## Genuine unfinished monoid-topology theorem
+
+**Theorem 1.11** is not yet verified. Fat-tree Ellentuck (1.17) and
+finite-dimensional shape Ramsey (1.6) are checked, but cannot
+substitute for the continuous/open projection and exact basic
+neighborhood identity in Section 4. Direct M-map A.1/A.2/A.3(1)
+are checked; a new M1-fusion Tychonoff closedness proof is staged.
+The direct A.3(2) refinement and A.4 full front pigeonhole remain.
+See [theorem-specific plan](docs/wiki/Shape-Ellentuck-Validation.md).
+
 ## Outstanding manuscript-fidelity verification
 
 The [whole-manuscript coverage inventory](docs/wiki/Manuscript-Coverage.md)
