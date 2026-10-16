@@ -207,3 +207,52 @@ Theorem 6.26. Do not promote a scoped lemma to the unqualified original
 Proposition 6.44 or Theorem 6.26 merely because Lean checked a conditional
 candidate. Preserve the author manuscript prose; review-only notes and
 truthfully scoped validation markers are the allowed manuscript edits.
+
+
+## 16 October 2026: concrete Section 5 E1 verified
+
+**GREEN at the precise normalized finite unary/directed-binary/diagonal
+Kpt scope.** This checkpoint supersedes the older *E1 is still open*
+statements above; they document the previous state of the proof rather
+than the current one.
+
+- [PR #538](https://github.com/janhubicka/lean-successors/pull/538)
+  merged `V10.normalizedKpt_oneLevelPullback`: every genuine
+  root-preserving Kpt shape map `F ∈ KptM` pulls back a **defined**
+  target successor `succ (F a) (p.map F) c` to a defined source
+  successor `succ a p c`.
+- [PR #539](https://github.com/janhubicka/lean-successors/pull/539)
+  merged `V10.normalizedKpt_oneLevelPullback_for_envelopes`, the
+  *exact* `SMTree.Envelope.OneLevelPullback` proposition used by the
+  abstract Algorithm 5.4 invariant.
+- The underlying concrete PRs #529–#537 establish genuine target
+  canonical parameter cuts, typed complete-L+ reindexing,
+  old-predecessor and final-letter recovery, and admissible source
+  witnesses through neutral-spacer padding and induced **L-only**
+  forbidden-age avoidance.
+
+Both final E1 PR heads passed full Lean builds and named transitive-axiom
+checks before merging. The source theorem proves **existence** of a
+successor; it does **not** demand that the particular displayed target
+successor be the `F`-image of that source successor. The latter
+stronger statement is neither an E1 premise nor used in the algorithm.
+
+[PR #540](https://github.com/janhubicka/lean-successors/pull/540)
+subsequently removes the obsolete explicit E1 parameters from two
+concrete actual-run G+ seed-palette bounds, with exact-head
+validation required before merging. This is an API cleanup, not a
+proof of the remaining universal coverage premise.
+
+### Still not the original unqualified Theorem 6.26
+
+The verified E1 theorem applies to the current normalized finite
+relational encoding. The source paper's final application still needs
+the uniform induced `K → H+ → G+` mapping and finite approximation
+coverage for **every** required copy of A, the author-language
+unary/binary adapter, final colour evaluation and embedding
+composition, and the stated boundary cases. The checked finite-H+
+envelope bound is not by itself the universal Proposition 6.44.
+Higher-arity generalizations and weakening M3 are deferred.
+
+Author v10 mathematical prose remains frozen; apply only separately
+reviewed TODOs and validation marks there.
