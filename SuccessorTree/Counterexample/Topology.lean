@@ -27,33 +27,35 @@ theorem incompatible_family_isNowhereDense
     (hGap : HasLateProperGaps H) :
     @IsNowhereDense (MMap H)
       (ramseyApproximationSystem H).ellentuckTopology N := by
-  let R := ramseyApproximationSystem H
-  letI : TopologicalSpace (MMap H) := R.ellentuckTopology
+  letI : TopologicalSpace (MMap H) := (ramseyApproximationSystem H).ellentuckTopology
   change interior (closure N) = (∅ : Set (MMap H))
   apply Set.eq_empty_of_subset_empty
   intro x hx
   let U : Set (MMap H) := interior (closure N)
-  have hOpen : R.IsEllentuckOpen U := by
-    apply (R.isOpen_ellentuck_iff U).mp
-    exact isOpen_interior
+  have hOpen : (ramseyApproximationSystem H).IsEllentuckOpen U := by
+    have hIsOpen :
+        @IsOpen (MMap H)
+          (ramseyApproximationSystem H).ellentuckTopology U := by
+      exact isOpen_interior
+    exact ((ramseyApproximationSystem H).isOpen_ellentuck_iff U).mp hIsOpen
   obtain ⟨n, a, B, hxAB, hsub⟩ := hOpen hx
   let a1 : RamseyApprox H (n + 1) := ramseyApprox H (n + 1) x
-  have hne : (R.neighborhood (n := n + 1) a1 x).Nonempty := by
+  have hne : ((ramseyApproximationSystem H).neighborhood (n := n + 1) a1 x).Nonempty := by
     exact ⟨x, H.ramseyReduction_refl x, rfl⟩
   obtain ⟨G, hGne, hGsub, hGdis⟩ :=
     H.incompatible_family_local_escape N hN hGap a1 x hne
   obtain ⟨y, hy⟩ := hGne
-  have hyx : y ∈ R.neighborhood (n := n + 1) a1 x := hGsub hy
-  have hyAB : y ∈ R.neighborhood (n := n) a B := by
-    have hprefix : R.approx n y = R.approx n x :=
-      R.coherent hyx.2 n (Nat.lt_succ_self n)
-    exact ⟨R.le_trans hyx.1 hxAB.1, hprefix.trans hxAB.2⟩
+  have hyx : y ∈ (ramseyApproximationSystem H).neighborhood (n := n + 1) a1 x := hGsub hy
+  have hyAB : y ∈ (ramseyApproximationSystem H).neighborhood (n := n) a B := by
+    have hprefix : (ramseyApproximationSystem H).approx n y = (ramseyApproximationSystem H).approx n x :=
+      (ramseyApproximationSystem H).coherent hyx.2 n (Nat.lt_succ_self n)
+    exact ⟨(ramseyApproximationSystem H).le_trans hyx.1 hxAB.1, hprefix.trans hxAB.2⟩
   have hyClosed : y ∈ closure N := interior_subset (hsub hyAB)
-  have hopenG : IsOpen (R.neighborhood (n := n + 1) a1 G) :=
-    R.isOpen_neighborhood a1 G
+  have hopenG : IsOpen ((ramseyApproximationSystem H).neighborhood (n := n + 1) a1 G) :=
+    (ramseyApproximationSystem H).isOpen_neighborhood (n := n + 1) a1 G
   obtain ⟨z, hzG, hzN⟩ :=
     (mem_closure_iff.mp hyClosed)
-      (R.neighborhood (n := n + 1) a1 G) hopenG hy
+      ((ramseyApproximationSystem H).neighborhood (n := n + 1) a1 G) hopenG hy
   exact (disjoint_iff_inf_le.mp hGdis) ⟨hzG, hzN⟩
 
 end SuccessorTree.SMTree
