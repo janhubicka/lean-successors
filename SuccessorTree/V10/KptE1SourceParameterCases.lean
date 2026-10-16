@@ -25,8 +25,7 @@ theorem kptE1_reindexed_empty_parameter_record
     (([] : List (AdmissibleKptNode family)).map
       (fun x => x.1)) =
       ((Q.reindexOrdinary
-        (kptShapeLastRetainedIndex family F n)).
-        canonicalParameterRecord 0 (Nat.zero_le n)).toList := by
+        (kptShapeLastRetainedIndex family F n)).canonicalParameterRecord 0 (Nat.zero_le n)).toList := by
   simp [PartialTypeWithE.canonicalParameterRecord]
 
 /-- A *real* singleton source parameter is exactly the canonical
@@ -51,8 +50,7 @@ theorem kptE1_reindexed_singleton_parameter_record
     ([x] : List (AdmissibleKptNode family)).map
         (fun y => y.1) =
       ((Q.reindexOrdinary
-        (kptShapeLastRetainedIndex family F n)).
-        canonicalParameterRecord x.1.1 hx).toList := by
+        (kptShapeLastRetainedIndex family F n)).canonicalParameterRecord x.1.1 hx).toList := by
   have hRecovered :=
     kptShapeReindex_parameter_recovers_source
       family F n x hx Q hImageParameter
