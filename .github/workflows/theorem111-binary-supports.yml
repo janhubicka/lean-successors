@@ -5,6 +5,7 @@ on:
     paths:
       - 'SuccessorTree/Counterexample/BinarySupports.lean'
       - 'SuccessorTree/Counterexample/GreedySelection.lean'
+      - 'SuccessorTree/Counterexample/PureEnumeration.lean'
       - 'scripts/CheckTheorem111BinarySupports.lean'
       - '.github/workflows/theorem111-binary-supports.yml'
   push:
@@ -12,6 +13,7 @@ on:
     paths:
       - 'SuccessorTree/Counterexample/BinarySupports.lean'
       - 'SuccessorTree/Counterexample/GreedySelection.lean'
+      - 'SuccessorTree/Counterexample/PureEnumeration.lean'
       - 'scripts/CheckTheorem111BinarySupports.lean'
       - '.github/workflows/theorem111-binary-supports.yml'
   workflow_dispatch:
@@ -48,7 +50,7 @@ jobs:
           lake exe cache get
       - name: Prove explicit binary almost-disjoint supports
         run: |
-          lake build SuccessorTree.Counterexample.BinarySupports SuccessorTree.Counterexample.GreedySelection
+          lake build SuccessorTree.Counterexample.BinarySupports SuccessorTree.Counterexample.GreedySelection SuccessorTree.Counterexample.PureEnumeration
           lake env lean scripts/CheckTheorem111BinarySupports.lean > /tmp/binary-supports-axioms.log
           cat /tmp/binary-supports-axioms.log
           python3 scripts/check-axiom-log.py /tmp/binary-supports-axioms.log scripts/CheckTheorem111BinarySupports.lean
