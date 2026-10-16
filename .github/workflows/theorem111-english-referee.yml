@@ -6,6 +6,7 @@ on:
       - 'docs/theorem111-zfc-counterexample-20261016.md'
       - 'docs/theorem111-zfc-counterexample-referee-20261016.md'
       - 'scripts/check-theorem111-free-ancestral-mask.py'
+      - 'manuscript/v10-theorem111-counterexample-review-20261016.md'
       - '.github/workflows/theorem111-english-referee.yml'
   push:
     branches: [main]
@@ -13,6 +14,7 @@ on:
       - 'docs/theorem111-zfc-counterexample-20261016.md'
       - 'docs/theorem111-zfc-counterexample-referee-20261016.md'
       - 'scripts/check-theorem111-free-ancestral-mask.py'
+      - 'manuscript/v10-theorem111-counterexample-review-20261016.md'
       - '.github/workflows/theorem111-english-referee.yml'
   workflow_dispatch:
 
@@ -30,3 +32,4 @@ jobs:
         run: |
           grep -F 'not yet been formalized' docs/theorem111-zfc-counterexample-20261016.md
           grep -F 'NOT YET LEAN-CERTIFIED' docs/theorem111-zfc-counterexample-referee-20261016.md
+          grep -F 'Theorem 1.11' manuscript/v10-theorem111-counterexample-review-20261016.md
