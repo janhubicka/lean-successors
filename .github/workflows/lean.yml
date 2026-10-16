@@ -98,6 +98,16 @@ jobs:
           print(f"PASS: full build ({warnings} warning lines, {hints} hints; full log in artifact)")
           PY
 
+      - name: Build public theorem library and check exports
+        run: |
+          if ! lake build SuccessorTree.Library > proof-audit/public-library-build.log 2>&1; then
+            cat proof-audit/public-library-build.log
+            exit 1
+          fi
+          if ! lake env lean scripts/CheckPublicAPI.lean > proof-audit/public-api.log 2>&1; then
+            cat proof-audit/public-api.log
+            exit 1
+          fi
       - name: Check shape Ramsey statement and axioms
         run: |
           set -o pipefail
