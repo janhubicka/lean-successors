@@ -1,5 +1,6 @@
 import SuccessorTree.Counterexample.BinarySupports
 import SuccessorTree.Counterexample.GreedySelection
+import SuccessorTree.Counterexample.PureEnumeration
 
 /-! Axiom audit of the completely explicit ZFC almost-disjoint support family. -/
 
@@ -32,3 +33,15 @@ import SuccessorTree.Counterexample.GreedySelection
 
 #check @SuccessorTree.Counterexample.no_embedding_earlier_of_minimal_ord
 #print axioms SuccessorTree.Counterexample.no_embedding_earlier_of_minimal_ord
+
+#check @SuccessorTree.Counterexample.freeNode_cardinality
+#check @SuccessorTree.Counterexample.freeNode_functions_cardinality
+#check @SuccessorTree.Counterexample.cantorFunction_cardinality
+#check @SuccessorTree.Counterexample.freeMMap_card_le_cantor
+#check @SuccessorTree.Counterexample.pureFree_card_le_cantor
+#check @SuccessorTree.Counterexample.exists_pureFree_enumeration
+#print axioms SuccessorTree.Counterexample.freeNode_cardinality
+#print axioms SuccessorTree.Counterexample.freeNode_functions_cardinality
+#print axioms SuccessorTree.Counterexample.cantorFunction_cardinality
+#print axioms SuccessorTree.Counterexample.freeMMap_card_le_cantor
+#print axioms SuccessorTree.Counterexample.exists_pureFree_enumeration
