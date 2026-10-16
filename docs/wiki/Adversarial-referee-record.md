@@ -1,4 +1,4 @@
-# Independent adversarial referee record — 16 October 2026
+# Adversarial referee audit — 16 October 2026
 
 **Audited reference:** `main` commit
 [`1e084eb47aee`](https://github.com/janhubicka/lean-successors/commit/1e084eb47aee283f94ced58290455baf882a5285).
@@ -8,6 +8,8 @@ both completed successfully. These are actual GitHub checks, not a claim
 that this review ran a local Lean compiler. The subsequent library/API
 branch needs **its own exact-head CI** before merging.
 
+The following are three **independent review criteria**, not a claim
+that three external mathematicians signed off on this code.
 This review separates (A) mathematical statement fidelity,
 (B) formal proof trust, and (C) library dependencies and maintenance.
 A checked theorem is not automatically identical to uninspected
