@@ -107,4 +107,58 @@ theorem universalNormalizedModel_bigRamsey_bound
   intro indices
   exact hAll indices
 
+
+/-- **Theorem 6.26 in the exact original Emb(A,K) formulation** for
+finite unary/binary languages and normalized finite irreducible
+forbidden families. The target K is countable, full-carrier,
+forbidden-free and age-universal.
+
+The coloured maps are ALL injective induced binary/unary embeddings
+of A, not just order-preserving OEmb(A,K); their tuples may enumerate
+vertices in any order. The resulting K self-embedding is genuinely
+strictly ordered and induced. The finite degree depends only on
+the forbidden family and |A|, never on the colouring or choice of
+universal K. -/
+theorem universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound
+    {db du : Nat}
+    {κ : Type*} [Fintype κ] [Inhabited κ]
+    (family : List (NormalizedForbidden db du db))
+    (K : AgeTestModel db du db)
+    (hCarrier : ∀ i, i ∈ K.carrier)
+    (hAvoidK : ∀ bad, bad ∈ family → bad.Avoids K)
+    (hUniversal : K.UniversalForNormalizedFamily family)
+    {q : Nat}
+    (PB : Fin q → Fin q → Fin db → Bool)
+    (PU : Fin q → Fin du → Bool)
+    (χ : {f : Fin q → Nat //
+      f ∈ binaryUnaryAllEmbeddings K PB PU} → κ) :
+    ∃ (e : K.InducedEmbedding K)
+      (colours : Finset κ),
+      colours.card ≤ Fintype.card
+        (boundedGPlusPaletteIndices family
+          (numericHTopUniformPaletteHeight family
+            (normalizedKptGeneration family) q) q) ∧
+      ∀ (f : Fin q → Nat)
+        (hf : f ∈ binaryUnaryAllEmbeddings K PB PU),
+        ∃ hImage : (fun i => e.toFun (f i)) ∈
+            binaryUnaryAllEmbeddings K PB PU,
+          χ ⟨(fun i => e.toFun (f i)), hImage⟩ ∈ colours := by
+  classical
+  let χFull : (Fin q → Nat) → κ :=
+    fun f => if h : f ∈ binaryUnaryAllEmbeddings K PB PU
+      then χ ⟨f,h⟩ else default
+  obtain ⟨e,colours,hCard,hAll⟩ :=
+    universalNormalizedModel_bigRamsey_bound
+      family K hCarrier hAvoidK hUniversal q χFull
+  refine ⟨e,colours,hCard,?_⟩
+  intro f hf
+  have hImage :
+      (fun i => e.toFun (f i)) ∈
+        binaryUnaryAllEmbeddings K PB PU :=
+    binaryUnaryAllEmbeddings_preserved K K e PB PU f hf
+  refine ⟨hImage,?_⟩
+  have hColour := hAll f
+  change χFull (fun i => e.toFun (f i)) ∈ colours at hColour
+  simpa only [χFull,dif_pos hImage] using hColour
+
 end SuccessorTree.V10
