@@ -62,7 +62,9 @@ theorem incompatible_family_isNowhereDense
   obtain ⟨z, hzG, hzN⟩ :=
     (mem_closure_iff.mp hyClosed)
       ((ramseyApproximationSystem H).neighborhood (n := n + 1) a1 G) hopenG hy
-  exact (disjoint_iff_inf_le.mp hGdis) ⟨hzG, hzN⟩
+  have hzempty : z ∈ (∅ : Set (MMap H)) :=
+    (disjoint_iff_inf_le.mp hGdis) ⟨hzG, hzN⟩
+  exact False.elim (Set.not_mem_empty z hzempty)
 
 end SuccessorTree.SMTree
 
