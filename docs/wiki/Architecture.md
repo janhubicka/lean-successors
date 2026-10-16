@@ -82,3 +82,18 @@ adding model-specific assumptions to `SMTree`.
   mathematical generalization is undertaken separately.
 
 For the detailed two-route dependency and conventions see [shape proof routes](../shape-proof-routes.md).
+
+## Additional application-neutral exports
+
+The abstract public import also includes `SuccessorTree.CopyRamsey`:
+the `FiniteCopySystem`, `AmalgamationSystem` and `RamseyExpansion`
+interfaces, with `RamseyExpansion.copyRamseyDegreeLE_card_expansionTypes`.
+Unlike a rigid-embedding treatment, copies and embeddings are distinct;
+several embeddings may have the same range. The module also includes
+simultaneous finite expansion-colouring and abstract copy-degree estimates.
+
+`SuccessorTree.ShapeEvents` adds the `IntrinsicEvent` and
+`PointedOccurrence` interfaces with injective transport by shape maps.
+A map may stretch a successor step, so the first transported successor
+and the later history address are recorded distinctly. These are
+reusable outside the concrete free-ancestral and Kpt instances.
