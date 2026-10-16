@@ -50,6 +50,7 @@ import SuccessorTree.V10.GPlusPaletteRamseyStabilization
 import SuccessorTree.V10.GPlusFiniteBigRamseyTransfer
 import SuccessorTree.V10.GPlusActualSeedTupleColourBound
 import SuccessorTree.V10.GPlusHTopTuplePalette
+import SuccessorTree.V10.GPlusHTopUniformPalette
 import SuccessorTree.V10.GPlusIrreducibleChain
 
 /-!
