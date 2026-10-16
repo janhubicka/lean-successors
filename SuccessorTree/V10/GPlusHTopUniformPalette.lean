@@ -55,8 +55,10 @@ theorem boundedGPlusPaletteIndices_card_mono
       boundedGPlusTuplePalette_mono family h e.property⟩
   have hInj : Function.Injective lift := by
     intro e f hef
-    apply Subtype.ext
-    exact congrArg Subtype.val hef
+    have hVal : e.val = f.val :=
+      congrArg
+        (fun z : boundedGPlusPaletteIndices family B q => z.val) hef
+    exact Subtype.ext hVal
   exact Fintype.card_le_of_injective lift hInj
 
 /-- The *actual* Algorithm 5.4 on the numerical HTop seeds gives
