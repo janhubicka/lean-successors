@@ -108,6 +108,16 @@ jobs:
             cat proof-audit/public-api.log
             exit 1
           fi
+      - name: Check transitive axioms of generic public library results
+        run: |
+          if ! lake env lean scripts/CheckPublicTheoryAxioms.lean > proof-audit/public-library-axioms.log 2>&1; then
+            cat proof-audit/public-library-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/public-library-axioms.log scripts/CheckPublicTheoryAxioms.lean || {
+            cat proof-audit/public-library-axioms.log
+            exit 1
+          }
       - name: Check shape Ramsey statement and axioms
         run: |
           set -o pipefail
