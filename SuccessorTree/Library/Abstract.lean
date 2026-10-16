@@ -1,6 +1,7 @@
 import SuccessorTree.Library.Structures
 import SuccessorTree.Core
 import SuccessorTree.Library.TopologyFoundation
+import SuccessorTree.FatTree.ProjectionObstruction
 
 /-!
 # Public abstract Ramsey theory
