@@ -55,6 +55,7 @@ import SuccessorTree.V10.GPlusFinitePaletteCoverageMono
 import SuccessorTree.V10.GPlusHTopBudgetMono
 import SuccessorTree.V10.GPlusGlobalTopTuplePalette
 import SuccessorTree.V10.KptFinalBigRamseyTransfer
+import SuccessorTree.V10.KptBigRamseyNormalizedTheorem
 import SuccessorTree.V10.GPlusHTopTopBlocksColour
 import SuccessorTree.V10.GPlusIrreducibleChain
 import SuccessorTree.V10.KptBaseToGOmega

@@ -1,0 +1,7 @@
+import SuccessorTree.V10.KptBigRamseyNormalizedTheorem
+
+#print axioms SuccessorTree.V10.normalizedKptGeneration_pos
+#print axioms SuccessorTree.V10.normalizedKptGeneration_bounds_family
+#print axioms SuccessorTree.V10.normalizedKpt_bigRamsey_bound_fixedGOmega
+#print axioms SuccessorTree.V10.normalizedKpt_GOmega_self_bigRamsey_bound
+#print axioms SuccessorTree.V10.normalizedKpt_GOmega_pattern_bigRamsey_bound
