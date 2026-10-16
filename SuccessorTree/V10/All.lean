@@ -37,6 +37,7 @@ import SuccessorTree.V10.KptE1OldPrefixGeometry
 import SuccessorTree.V10.KptE1ReindexPrefix
 import SuccessorTree.V10.KptE1ParameterReindex
 import SuccessorTree.V10.KptE1SourceAdmissibility
+import SuccessorTree.V10.KptE1CanonicalSourceStep
 import SuccessorTree.V10.GPlusFiniteApproxAction
 import SuccessorTree.V10.GPlusFiniteColourNaturality
 import SuccessorTree.V10.GPlusPaletteRamseyStabilization
