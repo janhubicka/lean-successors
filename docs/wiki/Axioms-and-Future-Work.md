@@ -33,7 +33,7 @@ This is a design agenda, not a formally established equivalence to M1–M3 or a 
    still requires a separate proof/statement audit.
 6. Do not touch the proof prose of successor v10 in this phase. Future stronger paper and its Lean theory can live on a separate branch.
 
-The safest approach is to **extract a reusable core first**, then generalize it, rather than weaken assumptions inside an unfinished Section 6 application.
+The new tiered public imports have extracted the reusable theorem-facing core without changing the existing axioms. The safest approach is to **keep that verified core stable**, then generalize it, rather than weaken assumptions inside the now-checked normalized unary/binary Section 6 proof; exact manuscript correspondence remains a separate review.
 
 ## Known invariants worth preserving
 

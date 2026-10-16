@@ -3,8 +3,8 @@
 **Purpose.** This is a source-driven inventory for future generalizations of
 the successor-tree Ramsey theorem to variable words, finite sums and related
 combinatorics. It is not itself a proof that weakened axioms suffice. The
-current verified M1–M3 theorems and the unfinished original v10 Section 6
-proof remain unchanged.
+current verified M1–M3 theorems and the now-checked normalized unary/binary Section 6
+Lean transfer remain unchanged; literal external manuscript correspondence remains separately reviewable.
 
 ## Abstract axioms presently packaged in `SMTree`
 

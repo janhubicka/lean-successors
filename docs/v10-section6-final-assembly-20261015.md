@@ -256,3 +256,37 @@ Higher-arity generalizations and weakening M3 are deferred.
 
 Author v10 mathematical prose remains frozen; apply only separately
 reviewed TODOs and validation marks there.
+
+## 16 October 2026: universal big-Ramsey proof is now a checked Lean endpoint
+
+**This supersedes the historical OPEN transfer status above.**
+On `main` commit
+[`1e084eb47aee`](https://github.com/janhubicka/lean-successors/commit/1e084eb47aee283f94ced58290455baf882a5285),
+both [full Lean](https://github.com/janhubicka/lean-successors/actions/runs/38916948261)
+and [V10 counting/named axiom audit](https://github.com/janhubicka/lean-successors/actions/runs/38916948218)
+passed. Merged PRs #553–#555 provide the exact original
+unary/binary all-induced-`Emb(A,K)` and canonical Gω endpoints, and
+the countable K self-big-Ramsey universality transfer.
+
+`V10.universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound`
+covers all finite induced embeddings, *not just ordered*
+enumerations, with an ordered induced K self-embedding and an explicit
+colour bound. It assumes a finite normalized irreducible forbidden
+family with the correct singleton convention and
+`K.UniversalForNormalizedFamily family`: **countable**
+universality, not merely K avoiding the family.
+The source-language adapter includes unary, diagonal, both directed
+binary atoms and absence of relations.
+
+The mathematical **formal transfer** is therefore now checked,
+not in progress. The separate remaining task is *literal source
+correspondence* to the latest author-edited external `main.tex`.
+That source is not included in this Lean repository; check its
+set-theoretic tree-to-`LevelTree` and age-normalization adapters,
+countable Fraïssé universality, q=0/empty-family cases and the
+distinction between finite H+ actual-run Proposition 6.44 and
+final Theorem 6.26. See
+[referee record](wiki/Adversarial-referee-record.md) and
+[authorial-review checklist](../manuscript/v10-final-validation-referee-20261016.md).
+Do not silently edit frozen mathematical prose. Higher arity and
+weakening M3 remain separate future work.
