@@ -1,0 +1,4 @@
+import SuccessorTree.V10.GPlusHTopBudgetMono
+
+#print axioms SuccessorTree.V10.descendingCumulativeBudget_mono_initial
+#print axioms SuccessorTree.V10.numericHTopUniformPaletteHeight_mono_q

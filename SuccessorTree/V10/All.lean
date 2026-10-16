@@ -52,6 +52,7 @@ import SuccessorTree.V10.GPlusActualSeedTupleColourBound
 import SuccessorTree.V10.GPlusHTopTuplePalette
 import SuccessorTree.V10.GPlusHTopUniformPalette
 import SuccessorTree.V10.GPlusFinitePaletteCoverageMono
+import SuccessorTree.V10.GPlusHTopBudgetMono
 import SuccessorTree.V10.GPlusHTopTopBlocksColour
 import SuccessorTree.V10.GPlusIrreducibleChain
 import SuccessorTree.V10.KptBaseToGOmega
