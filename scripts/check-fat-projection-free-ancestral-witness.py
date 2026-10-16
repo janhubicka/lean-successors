@@ -116,8 +116,42 @@ def main() -> None:
     # source level can witness image_v ∈ range(e0).
     assert all(len(e0(h)) == len(h) + 1 for n in range(5) for h in all_level(n))
     print("PASS: pi(V)(a1) is not in range(pi(U)); no right factor exists")
-    print("NOTE: finite model regression only; infinite fat reduction "
-          "and Lean statement remain to be formalized")
+
+    # Strengthen the witness: move the noncanonical parameter
+    # insertion to arbitrarily late rows q. The English all-q proof
+    # shows that the preimage of [empty,E0] is not open at U.
+    for q in (1, 2, 3):
+        def late_cut(i: int) -> int:
+            return 0 if i == 0 else i + (1 if i <= q else 2)
+
+        def late_index(i: int) -> int:
+            return i if i <= q else i + 1
+
+        def late_row(i: int, h: History) -> History:
+            if i == 0:
+                return e0(h)
+            if i == q:
+                return one_gap(h, q + 1, (0,))
+            return h
+
+        for i in range(q + 3):
+            assert late_cut(i) == ucut(late_index(i))
+            assert late_index(i) < late_index(i + 1)
+
+        for i in range(q + 2):
+            lhs = one_lift(late_row, late_cut, i, set(all_level(late_cut(i))))
+            rhs = ambient_lift(late_index(i), late_index(i + 1),
+                               set(all_level(ucut(late_index(i)))))
+            assert lhs <= rhs, (q, i)
+
+        source: History = tuple(() for _ in range(q))
+        image = one_gap(e0(source), q + 1, (0,))
+        assert len(image) == q + 2 and image[-1] == (0,)
+        assert image not in {e0(x) for x in all_level(q + 1)}
+        print(f"PASS: delayed q={q} reduction and excluded projected image")
+
+    print("NOTE: finite model regressions only; the all-q all-row "
+          "argument is in the wiki and awaits a Lean kernel proof.")
 
 
 if __name__ == "__main__":
