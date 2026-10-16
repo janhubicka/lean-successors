@@ -6,13 +6,19 @@ Import the narrowest theorem-facing interface that supplies the required results
 ## Imports
 
 ```lean
-import SuccessorTree.Library.Abstract
+import SuccessorTree.Library.Structures
+-- Add only if needed:
+-- import SuccessorTree.Library.Abstract
 -- Add only if needed:
 -- import SuccessorTree.Library.Applications
 -- import SuccessorTree.Library.Examples
 ```
 
-`SuccessorTree.Core` remains the implementation-neutral abstract umbrella.
+`SuccessorTree.Library.Structures` is the smallest library import:
+`LevelTree`, `STree`, `ShapeMap`, current `SMTree`/M1–M3,
+`FiniteCopySystem`, `RamseyExpansion` and intrinsic successor events.
+This avoids importing Hales–Jewett, Ellentuck and the full proof.
+`SuccessorTree.Core` remains the application-neutral abstract proof umbrella.
 `SuccessorTree.Library.Abstract` gives it a documented public import;
 `SuccessorTree.Library.Applications` imports the normalized unary/binary Kpt
 results, and `SuccessorTree.Library.Examples` imports the free-ancestral
