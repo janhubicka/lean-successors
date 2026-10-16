@@ -1,0 +1,4 @@
+import SuccessorTree.V10.KptFinalBigRamseyTransfer
+
+#print axioms SuccessorTree.V10.numericKToFixedGOmega_after_shape
+#print axioms SuccessorTree.V10.normalizedKpt_fixedGOmega_finite_bigRamsey_transfer
