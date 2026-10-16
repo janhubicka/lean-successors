@@ -61,4 +61,48 @@ theorem root_marker_transported_along_successor
   exact ⟨d, hdb.trans (H.map_le_of_le hbz), hdlev,
     image_root_successor_has_marker H hroot a d hd⟩
 
+
+/-- A root marker on the *intrinsic code* of any source edge
+survives through every root-fixing shape map. The code may have
+other parameters as well; no singleton assumption is needed. -/
+theorem root_marker_transported_from_code
+    (H : ShapeMap (freeSTree (Label := Unit) (arity := 1)))
+    (hroot : H (rootNode (Label := Unit) (arity := 1)) =
+      rootNode (Label := Unit) (arity := 1))
+    {a b z : Node Unit 1} {p : List (Node Unit 1)} {c : Unit}
+    (hstep : freeSucc a p c = some b)
+    (hmarked : 0 ∈ lastParamLevelsNode b)
+    (hbz : b ≤ z) :
+    HasRootMarkerAt (H z) (H a).level := by
+  obtain ⟨t, htp, hbEq⟩ := freeSucc_eq_some_data hstep
+  have hlevel : 0 ∈ levelList t := by
+    simpa only [hbEq, lastParamLevelsNode_child] using hmarked
+  have hmem : 0 ∈ p.map Node.level := by
+    have ht : levelList t = p.map Node.level := by
+      rw [← map_level_paramNodes]
+      rw [htp]
+    rwa [ht] at hlevel
+  obtain ⟨x, hx, hxzero⟩ := List.mem_map.mp hmem
+  have hxroot : x = rootNode (Label := Unit) (arity := 1) :=
+    level_zero_eq_root hxzero
+  have hrootMember :
+      rootNode (Label := Unit) (arity := 1) ∈ p := by
+    simpa only [hxroot] using hx
+  obtain ⟨d, hd, hdb⟩ := H.weak_succ' hstep
+  have hcode : 0 ∈ lastParamLevelsNode d := by
+    obtain ⟨u, hup, hdEq⟩ := freeSucc_eq_some_data hd
+    rw [hdEq, lastParamLevelsNode_child]
+    have huLevels : levelList u = (p.map H).map Node.level := by
+      rw [← map_level_paramNodes]
+      rw [hup]
+    rw [huLevels]
+    apply List.mem_map.mpr
+    refine ⟨rootNode (Label := Unit) (arity := 1), ?_, rfl⟩
+    apply List.mem_map.mpr
+    exact ⟨rootNode (Label := Unit) (arity := 1),
+      hrootMember, hroot⟩
+  have hdlev : d.level = (H a).level + 1 :=
+    node_covBy_level (freeSucc_s1 hd).1
+  exact ⟨d, hdb.trans (H.map_le_of_le hbz), hdlev, hcode⟩
+
 end SuccessorTree.FreeAncestral
