@@ -54,7 +54,7 @@ theorem mapped_successor_avoids_root
   obtain ⟨y, hy, hyzero⟩ := List.mem_map.mp hz
   obtain ⟨x, hx, hxy⟩ := List.mem_map.mp hy
   have hpos := shapeMap_image_level_pos G hroot x
-  rw [← hxy] at hpos
+  rw [← hxy] at hyzero
   omega
 
 /-- In the rooted free history tree, prefixes on equal levels of
