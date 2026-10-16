@@ -5,6 +5,7 @@ import SuccessorTree.Counterexample.Topology
 import SuccessorTree.Counterexample.StretchHistory
 import SuccessorTree.Counterexample.MarkedFusion
 import SuccessorTree.Counterexample.RootMarkerRigidity
+import SuccessorTree.Counterexample.RootMarkerTransport
 
 /-!
 Exact-name audit: only the declarations below have been proved so far.
@@ -78,3 +79,9 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 #print axioms SuccessorTree.FreeAncestral.shapeMap_image_level_pos
 #print axioms SuccessorTree.FreeAncestral.mapped_successor_avoids_root
 #print axioms SuccessorTree.FreeAncestral.retained_level_avoids_root
+
+#check @SuccessorTree.FreeAncestral.HasRootMarkerAt.mono
+#check @SuccessorTree.FreeAncestral.image_root_successor_has_marker
+#check @SuccessorTree.FreeAncestral.root_marker_transported_along_successor
+#print axioms SuccessorTree.FreeAncestral.image_root_successor_has_marker
+#print axioms SuccessorTree.FreeAncestral.root_marker_transported_along_successor
