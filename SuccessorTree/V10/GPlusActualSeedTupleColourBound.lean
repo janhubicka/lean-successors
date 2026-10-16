@@ -1,6 +1,7 @@
 import SuccessorTree.V10.GPlusFiniteBigRamseyTransfer
 import SuccessorTree.V10.GPlusAlgorithmFinitePalette
 import SuccessorTree.ShapeFiniteProduct
+import SuccessorTree.V10.KptE1EnvelopeIntegration
 
 /-!
 # Actual Algorithm 5.4 seed tuples satisfy finite approximation palette coverage
@@ -12,9 +13,8 @@ be the image of a genuinely finite AM approximation. These are equivalent
 on a bounded source palette, because the canonical AM of R.F 0 agrees with
 R.F 0 on every source Kpt node at or below the palette bound.
 
-This is the finite-approximation bridge, not a new Ramsey axiom. The only
-hypotheses are the already explicit Section 5 E1, seed-height/top-original
-conditions, and that every target tuple's coordinates are represented by
+This is the finite-approximation bridge, not a new Ramsey axiom. The hypotheses are the seed-height/top-original conditions, together with
+representation of every target tuple's coordinates by
 actual strict Kpt pairs whose two endpoints lie in the chosen seed set.
 The last requirement is *not* asserted for all copies of A in G omega.
 -/
@@ -31,8 +31,6 @@ theorem numericKptAlgorithmRun_seed_tuples_finiteApprox_cover
     (X : Set (AdmissibleKptNode family)) (ell : Nat)
     (R : SuccessorTree.SMTree.Envelope.AlgorithmRun
       (normalizedKptSMTree family) X ell)
-    (hE1 : SuccessorTree.SMTree.Envelope.OneLevelPullback
-      (normalizedKptSMTree family))
     (hBound : X ⊆ SuccessorTree.SMTree.Envelope.levelLe
       (T := AdmissibleKptNode family) ell)
     (hTop : ∃ x ∈ X, LevelTree.lev x = ell)
@@ -59,7 +57,9 @@ theorem numericKptAlgorithmRun_seed_tuples_finiteApprox_cover
   intro t ht
   obtain ⟨sources, hPalette, hImage⟩ :=
     numericKptAlgorithmRun_GPlus_seed_tuple_from_finite_palette
-      family X ell R hE1 hBound hTop q t (hPairs t ht)
+      family X ell R
+      (normalizedKpt_oneLevelPullback_for_envelopes family)
+      hBound hTop q t (hPairs t ht)
   have hTuple :=
     gPlusShapeImage_eq_of_agree_bounded_tuple
       family R.selectedLevels.card q
@@ -78,8 +78,6 @@ theorem numericKptAlgorithmRun_seed_tuples_finiteColour_bound
     (X : Set (AdmissibleKptNode family)) (ell : Nat)
     (R : SuccessorTree.SMTree.Envelope.AlgorithmRun
       (normalizedKptSMTree family) X ell)
-    (hE1 : SuccessorTree.SMTree.Envelope.OneLevelPullback
-      (normalizedKptSMTree family))
     (hBound : X ⊆ SuccessorTree.SMTree.Envelope.levelLe
       (T := AdmissibleKptNode family) ell)
     (hTop : ∃ x ∈ X, LevelTree.lev x = ell)
@@ -99,6 +97,6 @@ theorem numericKptAlgorithmRun_seed_tuples_finiteColour_bound
   exact normalizedKpt_GPlus_finite_colour_bound_of_cover
     family R.selectedLevels.card q targets χ
     (numericKptAlgorithmRun_seed_tuples_finiteApprox_cover
-      family X ell R hE1 hBound hTop q targets hPairs)
+      family X ell R hBound hTop q targets hPairs)
 
 end SuccessorTree.V10
