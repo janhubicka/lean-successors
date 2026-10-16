@@ -52,6 +52,7 @@ import SuccessorTree.V10.GPlusActualSeedTupleColourBound
 import SuccessorTree.V10.GPlusHTopTuplePalette
 import SuccessorTree.V10.GPlusHTopUniformPalette
 import SuccessorTree.V10.GPlusIrreducibleChain
+import SuccessorTree.V10.KptBaseToGOmega
 
 /-!
 # Complete V10 proof-assembly import frontier
