@@ -62,6 +62,26 @@ that keeps the first \(|x|\) rows *literally* unchanged
 while refining the **whole target cut level**, including
 nodes not used by the visible source map.
 
+**Constructive subroute and precise gap.** The already verified
+\`canonicalExtension_associatedMap\` says that any two fat
+stems with the same projected finite map have the same
+*total canonical partial product*. This is useful: if
+we can first lift \(P(V)\circ Q\) to some fat \(W_0\le V\),
+and subsequently splice the prescribed x onto a tail of
+\(W_0\), the associated map will remain unchanged,
+provided the cuts match and the splice is legitimate.
+
+But **projected-prefix equality does not imply
+finite-fat occurrence**. An unused target-cut node,
+possibly referenced as an external successor parameter
+later, may be mapped differently by x and \(W_0\).
+Before invoking \`splice_reduces\`, one must prove
+x is a genuine finite reduction of \(W_0\) (or build
+a common V-reduction from scratch). The existence of
+a *universal stem* x for all total extensions of g
+is the likely central obstruction. This is a useful,
+much sharper referee test for FR1.
+
 **Danger G2: prescribed stem.** The manuscript's instruction
 to replace an already built fat refinement's initial
 segment by x can destroy its oneLift inclusions at the
