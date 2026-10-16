@@ -73,9 +73,8 @@ noncomputable def markedHistoryAux
   | 0, h => by
       have hz : h = History.root := history_zero_unique h
       subst h
-      simpa only [hroot] using
-        (History.step History.root
-          (initialEmptyCode) : History Unit 1 1)
+      exact hroot.symm ▸
+        (History.step History.root initialEmptyCode : History Unit 1 1)
   | n + 1, h => by
       cases h with
       | step p c =>
