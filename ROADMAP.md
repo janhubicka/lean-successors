@@ -21,13 +21,14 @@ passed at the exact same commit.
 
 ## Genuine unfinished monoid-topology theorem
 
-**Theorem 1.11** is not yet verified. Fat-tree Ellentuck (1.17) and
-finite-dimensional shape Ramsey (1.6) are checked, but cannot
-substitute for the continuous/open projection and exact basic
-neighborhood identity in Section 4. Direct M-map A.1/A.2/A.3(1)
-are checked; a new M1-fusion Tychonoff closedness proof is staged.
-The direct A.3(2) refinement and A.4 full front pigeonhole remain.
-See [theorem-specific plan](docs/wiki/Shape-Ellentuck-Validation.md).
+**Theorem 1.11** is not yet verified. Fat-tree Ellentuck (1.17)
+and finite-dimensional shape Ramsey (1.6) are checked. The
+shape-map space **does not satisfy A.3(2) in general**; the original
+paper deliberately proves Ellentuck on fat trees and transfers it
+by the projection U ↦ F_U. The transfer's claimed exact
+neighbourhood image, relative lift and depth correspondence are
+the outstanding tasks, not direct A.3(2). See the
+[fat-tree projection audit](docs/wiki/Fat-Tree-to-Shape-Map-Transfer.md).
 
 ## Outstanding manuscript-fidelity verification
 
