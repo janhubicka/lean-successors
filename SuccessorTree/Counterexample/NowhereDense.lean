@@ -80,7 +80,7 @@ theorem incompatible_family_local_escape
   · have hmeet : ∃ K : MMap H, K ∈ R.neighborhood (n := n + 1) a F ∧ K ∈ N := by
       by_contra hm
       apply hdis
-      change (R.neighborhood (n := n + 1) a F ∩ N) ⊆ ∅
+      apply disjoint_iff_inf_le.mpr
       intro K hK
       exact hm ⟨K, hK.1, hK.2⟩
     obtain ⟨K, hKF, hKN⟩ := hmeet
@@ -103,7 +103,7 @@ theorem incompatible_family_local_escape
     · exact ⟨G, H.ramseyReduction_refl G, hGapprox⟩
     · intro J hJG
       exact ⟨H.ramseyReduction_trans hJG.1 hGF, hJG.2⟩
-    · change (R.neighborhood (n := n + 1) a G ∩ N) ⊆ ∅
+    · apply disjoint_iff_inf_le.mpr
       intro J hJ
       rcases hJ with ⟨hJG, hJN⟩
       have hJK : RamseyReduction H J K :=
