@@ -113,8 +113,9 @@ theorem kptShapeReindex_restrict_last
     (Q.reindexOrdinary
         (kptShapeLastRetainedIndex family F n)).restrict
           (Nat.le_succ n) =
-      (Q.restrict (Nat.le_succ (kptShapeLevelMap family F n))).
-        reindexOrdinary (kptShapeOldRetainedIndex family F n) := by
+      (Q.restrict (Nat.le_succ
+        (kptShapeLevelMap family F n))).reindexOrdinary
+          (kptShapeOldRetainedIndex family F n) := by
   exact Q.reindexOrdinary_restrict_last
     (kptShapeOldRetainedIndex family F n)
     (kptShapeLastRetainedIndex family F n)
@@ -198,8 +199,13 @@ noncomputable def kptShapeLastIndexAtNode
   fun i =>
     ⟨kptShapeLevelMap family F i.val, by
       have hi : i.val ≤ a.1.1 := by omega
-      have hmon := (kptShapeLevelMap_strictMono family F).monotone hi
-      have hLevel := kptShapeLevelMap_eq family F a
+      have hmon :
+          kptShapeLevelMap family F i.val ≤
+            kptShapeLevelMap family F a.1.1 :=
+        (kptShapeLevelMap_strictMono family F).monotone hi
+      have hLevel :
+          kptShapeLevelMap family F a.1.1 = (F a).1.1 :=
+        kptShapeLevelMap_eq family F a
       omega⟩
 
 /-- On the old coordinates this is *exactly* the existing
