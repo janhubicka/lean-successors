@@ -37,6 +37,7 @@ theorem pow_two_monotone : Monotone (fun n : ℕ => 2 ^ n) := by
   apply monotone_nat_of_le_succ
   intro n
   rw [pow_two_succ]
+  have hpos : 0 < 2 ^ n := by positivity
   omega
 
 /-- The prefix value occupies at most n binary places. -/
