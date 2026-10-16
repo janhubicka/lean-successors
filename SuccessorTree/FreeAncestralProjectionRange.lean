@@ -45,14 +45,16 @@ theorem zeroGap_last_parameter_ne_zero
             (gapNode 0 choose (child (⟨n, p⟩ : Node Label arity) tuple lab))
           rw [gapNode_child_of_ge 0 choose
             (⟨n, p⟩ : Node Label arity) tuple lab (Nat.zero_le n)]
-          rw [lastParamLevelsNode_child]
-          change (0 : Nat) ∉ levelList
-            (gapShiftParamTuple 0 choose (⟨n, p⟩ : Node Label arity)
-              tuple (Nat.zero_le n))
-          rw [levelList_gapShiftParamTuple]
+          change (0 : Nat) ∉
+            List.ofFn (fun j : Fin tuple.len.val =>
+              (shiftFin 0 n (tuple.value j)).val)
           intro hm
-          obtain ⟨j, hj, hzero⟩ := List.mem_map.mp hm
-          have hs : shiftNat 0 j = j + 1 := by simp [shiftNat]
+          simp only [List.mem_ofFn] at hm
+          obtain ⟨j, hj⟩ := hm
+          have hs :
+              (shiftFin 0 n (tuple.value j)).val =
+                (tuple.value j).val + 1 := by
+            simp [shiftFin]
           omega
 
 /-- The empty root insertion code (arity one, singleton label). -/
@@ -88,13 +90,14 @@ theorem projectionRootGap_avoids_zero (a : Node Unit 1) :
       change (0 : Nat) ∉ lastParamLevelsNode
         (gapNode 0 (fun _ => projectionEmptyCode)
           (⟨0, History.root⟩ : Node Unit 1))
-      rw [gapNode_at_level, lastParamLevelsNode_child]
+      rw [gapNode_at_level]
+      change (0 : Nat) ∉ levelList projectionEmptyCode.params
       decide
   | succ n =>
       change (0 : Nat) ∉ lastParamLevelsNode
         (gapNode 0 (fun _ => projectionEmptyCode)
           (⟨n + 1, h⟩ : Node Unit 1))
-      have hpositive : 0 < (⟨n + 1, h⟩ : Node Unit 1).level := by
+      have hpositive : 0 < Node.level (⟨n + 1, h⟩ : Node Unit 1) := by
         change 0 < n + 1
         omega
       exact zeroGap_last_parameter_ne_zero
@@ -113,12 +116,14 @@ theorem projectionParamGap_creates_zero :
     rw [gapNode_level]
     decide
   rcases heq : projectionRootGap projectionSource with ⟨n, h⟩
+  rw [heq] at hlev
   change n = 2 at hlev
   subst n
   change (0 : Nat) ∈ lastParamLevelsNode
     (gapNode 2 (fun _ => projectionRefZeroCode)
       (⟨2, h⟩ : Node Unit 1))
-  rw [gapNode_at_level, lastParamLevelsNode_child]
+  rw [gapNode_at_level]
+  change (0 : Nat) ∈ levelList projectionRefZeroCode.params
   decide
 
 /-- This is stronger than failure of a shape-preserving
