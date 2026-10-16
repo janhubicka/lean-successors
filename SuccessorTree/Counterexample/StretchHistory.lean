@@ -103,12 +103,34 @@ noncomputable def markedNode
     (hroot : levels 0 = 1) (x : Node Unit 1) :
     (markedNode levels mono hroot x).level = levels x.level := rfl
 
+/-- Changing the dependent history index in a sigma pair does
+not change the represented total node. -/
+private theorem totalNode_cast
+    {a b : Nat} (hab : a = b) (x : History Unit 1 b) :
+    (⟨a, hab.symm ▸ x⟩ : Node Unit 1) = ⟨b, x⟩ := by
+  cases hab
+  rfl
+
 /-- Root image is precisely the empty-code child at target level one. -/
 theorem markedNode_root
     (levels : Nat → Nat) (mono : StrictMono levels)
     (hroot : levels 0 = 1) :
     markedNode levels mono hroot (rootNode (Label := Unit) (arity := 1)) =
     (⟨1, History.step History.root initialEmptyCode⟩ : Node Unit 1) := by
-  simpa only [markedNode, rootNode, markedHistoryAux, hroot]
+  change (⟨levels 0, markedHistoryAux levels mono hroot 0 History.root⟩ :
+      Node Unit 1) =
+    ⟨1, History.step History.root initialEmptyCode⟩
+  have haux :
+      markedHistoryAux levels mono hroot 0 History.root =
+        hroot.symm ▸ (History.step History.root initialEmptyCode :
+          History Unit 1 1) := by
+    rfl
+  calc
+    (⟨levels 0, markedHistoryAux levels mono hroot 0 History.root⟩ :
+        Node Unit 1) =
+        ⟨levels 0, hroot.symm ▸
+          (History.step History.root initialEmptyCode : History Unit 1 1)⟩ := by
+          rw [haux]
+    _ = _ := totalNode_cast hroot _
 
 end SuccessorTree.FreeAncestral
