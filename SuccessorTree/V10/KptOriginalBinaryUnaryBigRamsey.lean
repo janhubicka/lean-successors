@@ -75,20 +75,20 @@ theorem binaryUnary_originalCopy_iff_normalized
     intro a b t
     by_cases hab : a = b
     · subst b
-      simpa [AgeTestModel.originalBinary] using hDiagonal a t
+      simpa [AgeTestModel.originalBinary, binaryUnaryForbiddenPattern] using hDiagonal a t
     · have hfne : f a ≠ f b :=
         fun heq => hab (hMono.injective heq)
-      simpa [AgeTestModel.originalBinary, hfne] using
+      simpa [AgeTestModel.originalBinary, binaryUnaryForbiddenPattern, hfne] using
         hBinary a b hab t
   · rintro ⟨hMono, hCarrier, hOriginal, hUnary⟩
     refine ⟨hMono, hCarrier, ?_, hUnary, ?_⟩
     · intro a b hab t
       have hfne : f a ≠ f b :=
         fun heq => hab (hMono.injective heq)
-      simpa [AgeTestModel.originalBinary, hfne] using
+      simpa [AgeTestModel.originalBinary, binaryUnaryForbiddenPattern, hfne] using
         hOriginal a b t
     · intro a t
-      simpa [AgeTestModel.originalBinary] using hOriginal a a t
+      simpa [AgeTestModel.originalBinary, binaryUnaryForbiddenPattern] using hOriginal a a t
 
 /-- The literal original finite unary/binary induced-pattern colouring
 theorem for the SAME fixed Gω. Copies are not assumed to be just
