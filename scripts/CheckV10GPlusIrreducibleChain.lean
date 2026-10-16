@@ -27,6 +27,7 @@ import SuccessorTree.V10.KptE1ShapeLevelCut
 import SuccessorTree.V10.KptE1TargetParameterCut
 import SuccessorTree.V10.KptE1OldNewColumnConsequences
 import SuccessorTree.V10.KptE1OldPrefixGeometry
+import SuccessorTree.V10.KptE1ReindexPrefix
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_pairwise_comparable
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_mono
 #print axioms SuccessorTree.V10.finiteGPlus_irreducible_copy_prefix_top
@@ -350,3 +351,16 @@ import SuccessorTree.V10.KptE1OldPrefixGeometry
 #print axioms SuccessorTree.V10.e1OldPrefix_E_profile
 #print axioms SuccessorTree.V10.e1OldPrefix_linked
 #print axioms SuccessorTree.V10.e1PaddedOldNew_from_admissible_prefix
+#print axioms SuccessorTree.V10.PartialTypeWithE.reindexOrdinary_restrict_last
+#print axioms SuccessorTree.V10.kptShapeOldRetainedIndex
+#print axioms SuccessorTree.V10.kptShapeRetainedIndices_compatible
+#print axioms SuccessorTree.V10.kptShapeReindex_restrict_last
+#print axioms SuccessorTree.V10.PartialTypeWithE.reindexOrdinary_terminalLetter
+#print axioms SuccessorTree.V10.kptShapeReindex_terminalLetter
+#print axioms SuccessorTree.V10.kptShapeLastIndexAtNode
+#print axioms SuccessorTree.V10.kptShapeLastIndexAtNode_compatible
+#print axioms SuccessorTree.V10.kptShapeLastIndexAtNode_last
+#print axioms SuccessorTree.V10.kptShapeReindex_recovers_old_predecessor
+#print axioms SuccessorTree.V10.kptShapeReindex_terminalLetter_atNode
+#print axioms SuccessorTree.V10.PartialTypeWithE.admissible_typeESocle
+#print axioms SuccessorTree.V10.PartialTypeWithE.reindexOrdinary_typeESocle

@@ -1,0 +1,16 @@
+% Review-only E1 validation marker; manuscript mathematical prose frozen.
+\todo[inline]{\textbf{Literal reindexing of Kpt successor and predecessor.}
+The candidate \texttt{KptE1ReindexPrefix.lean} proves a full
+\texttt{PartialTypeWithE} identity: restricting the complete
+source record pulled back from a target successor agrees
+\emph{literally} with pulling back the target's actual old predecessor
+record. It preserves every old binary L atom in both directions,
+all unary/diagonal facts, and the whole E matrix, including
+negative entries. The actual Kpt shape level map's strictness
+constructs compatible old and extended retained coordinate maps,
+so the generic reindex/restrict identity applies to real Kpt
+ShapeMaps. The next step is to identify the target old predecessor
+with \(F(a)\) in the genuine canonical successor graph, then apply
+\texttt{shapeMap\_recovers\_complete\_record} to identify the pulled
+back prefix with the actual source \(a\). This does NOT yet
+prove the source successor or unconditional E1/6.26.}
