@@ -1,0 +1,4 @@
+import SuccessorTree.V10.KptE1SourceAdmissibility
+
+#print axioms SuccessorTree.V10.PartialTypeWithE.admissible_lastOrdinary_noLoop
+#print axioms SuccessorTree.V10.kptE1_reindexed_target_admissible
