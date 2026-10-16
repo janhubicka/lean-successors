@@ -59,7 +59,9 @@ theorem retained_levels_bracket
     induction n with
     | zero => exact Nat.zero_le _
     | succ n ih =>
-        have hs := mono (Nat.lt_succ_self n)
+        change n + 1 ≤ levels (n + 1)
+        have hs : levels n < levels (n + 1) :=
+          mono (Nat.lt_succ_self n)
         omega
   have hex : ∃ k : Nat, m < levels k := by
     refine ⟨m + 1, ?_⟩
