@@ -6,6 +6,7 @@ on:
       - 'SuccessorTree/FatTree/ProjectionTransfer.lean'
       - 'scripts/CheckFatToMonoidProjection.lean'
       - '.github/workflows/fat-to-monoid-projection.yml'
+      - 'scripts/check-fat-projection-free-ancestral-witness.py'
   push:
     branches: [main]
     paths:
@@ -53,6 +54,8 @@ jobs:
         run: lake exe cache get
       - name: Check source integrity
         run: python3 scripts/check-successor-proof-integrity.py
+      - name: Check finite free-ancestral obstruction
+        run: python3 scripts/check-fat-projection-free-ancestral-witness.py
       - name: Build only projection endpoints
         run: lake build SuccessorTree.FatTree.ProjectionTransfer
       - name: Audit named transitive axioms
