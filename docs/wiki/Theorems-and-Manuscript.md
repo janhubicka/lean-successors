@@ -28,6 +28,7 @@ without changing these mathematical statements.
 | Canonical Gω without user-supplied countable C+ | `V10.KptCanonicalGomegaBigRamsey` | `V10.canonicalNormalizedGOmega_bigRamsey` |
 | Normalized age-universal K big Ramsey | `V10.KptUniversalAgeBigRamsey` | `V10.universalNormalizedModel_bigRamsey_bound` |
 | Original all-Emb(A,K) big Ramsey | `V10.KptUniversalAgeBigRamsey` | `V10.universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound` |
+| Paper-facing finite big Ramsey predicate and universal instance | `V10.FiniteBigRamseyDegrees` | `V10.AgeTestModel.HasOriginalFiniteBigRamseyDegrees`, `V10.AgeTestModel.hasOriginalFiniteBigRamseyDegrees_of_universal` |
 | Free-ancestral history finite Ramsey | `FreeAncestralFiniteRamsey` | `FreeAncestral.finiteShapeRamsey` |
 
 The `Library.Abstract`, `Library.Applications` and
@@ -37,6 +38,18 @@ not additional mathematical assumptions. More lower-level reusable
 statements are available in `SMTree`, `Envelope`, `FatTree`,
 `HalesJewett`, `V10` and `FreeAncestral`; the public smoke test
 checks representative principal endpoints, not every helper lemma.
+
+## Definition 6.25 packaged as a reusable proposition
+
+`V10.AgeTestModel.HasOriginalFiniteBigRamseyDegrees K` quantifies
+uniformly over every finite original unary/binary pattern and every finite
+colouring of **all** induced `Emb(A,K)`, yielding one self-embedding and
+at most `t` colours, with `t` chosen before the colouring. The theorem
+`K.hasOriginalFiniteBigRamseyDegrees_of_universal family hCarrier hAvoidK hUniversal`
+proves this paper-facing predicate from the fully formalized countable
+universal-model transfer. The bound is the explicit
+`normalizedOriginalBigRamseyBound family q`, independent of the pattern.
+This added theorem introduces no further mathematical assumptions.
 
 ## Exact final Theorem 6.26-style formal statement
 
