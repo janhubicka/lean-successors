@@ -267,4 +267,78 @@ theorem kptShapeReindex_terminalLetter_atNode
     (kptShapeLastIndexAtNode family F a)
     (kptShapeLastIndexAtNode_last family F a)
 
+
+/-- Genuine Kpt admissibility also fixes all auxiliary E atoms
+touching the distinguished type vertex: its entire ordinary socle
+is linked TO the type vertex, never from it, and the loop is absent.
+These are theorems of its actual partial-structure witness, not
+separate E1 assumptions. -/
+theorem PartialTypeWithE.admissible_typeESocle
+    {m db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (T : PartialTypeWithE m db du dd)
+    (hAd : IsAdmissibleRawType family
+      (⟨m,T⟩ : RawPartialTypeNode db du dd)) :
+    (∀ i : Fin m, T.eRelation (some i) none = true) ∧
+    (∀ i : Fin m, T.eRelation none (some i) = false) ∧
+    T.eRelation none none = false := by
+  obtain ⟨A,v,hv,hAvoid,hRaw⟩ := hAd
+  have hCut : m = A.freeLevel v := by
+    have hh := congrArg Sigma.fst hRaw
+    exact hh
+  have hRecord : T = A.partialTypeAt m v := by
+    have hSigma :
+        (⟨m,T⟩ : RawPartialTypeNode db du dd) =
+          (⟨m,A.partialTypeAt m v⟩ :
+            RawPartialTypeNode db du dd) := by
+      calc
+        (⟨m,T⟩ : RawPartialTypeNode db du dd) =
+            A.rawTypeAtFree v := hRaw
+        _ = (⟨m,A.partialTypeAt m v⟩ :
+              RawPartialTypeNode db du dd) := by
+          change
+            (⟨A.freeLevel v,
+              A.partialTypeAt (A.freeLevel v) v⟩ :
+              RawPartialTypeNode db du dd) =
+            (⟨m,A.partialTypeAt m v⟩ :
+              RawPartialTypeNode db du dd)
+          rw [←hCut]
+    exact eq_of_heq (Sigma.mk.inj_iff.mp hSigma).2
+  refine ⟨?_, ?_, ?_⟩
+  · intro i
+    rw [hRecord]
+    exact A.partialTypeAt_fullESocle m v (by omega) i
+  · intro i
+    rw [hRecord]
+    exact A.partialTypeAt_no_reverseE m v (by omega) i
+  · rw [hRecord]
+    exact A.partialTypeAt_no_typeE_loop m v
+
+/-- Retaining any genuine subset of ordinary coordinates therefore
+preserves all three canonical distinguished-type E conditions.
+This includes the last source successor coordinate under the
+actual shape-level retained map. -/
+theorem PartialTypeWithE.reindexOrdinary_typeESocle
+    {n m db du dd : Nat}
+    (family : List (NormalizedForbidden db du dd))
+    (T : PartialTypeWithE m db du dd)
+    (hAd : IsAdmissibleRawType family
+      (⟨m,T⟩ : RawPartialTypeNode db du dd))
+    (rho : Fin n → Fin m) :
+    (∀ i : Fin n,
+      (T.reindexOrdinary rho).eRelation (some i) none = true) ∧
+    (∀ i : Fin n,
+      (T.reindexOrdinary rho).eRelation none (some i) = false) ∧
+    (T.reindexOrdinary rho).eRelation none none = false := by
+  obtain ⟨hFor,hBack,hLoop⟩ :=
+    T.admissible_typeESocle family hAd
+  refine ⟨?_, ?_, ?_⟩
+  · intro i
+    change T.eRelation (some (rho i)) none = true
+    exact hFor (rho i)
+  · intro i
+    change T.eRelation none (some (rho i)) = false
+    exact hBack (rho i)
+  · exact hLoop
+
 end SuccessorTree.V10
