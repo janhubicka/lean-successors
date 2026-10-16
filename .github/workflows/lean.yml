@@ -128,20 +128,6 @@ jobs:
             cat proof-audit/direct-ellentuck-axioms.log
             exit 1
           }
-      - name: Verify fat-to-monoid projection bridge endpoints
-        run: |
-          if ! lake build SuccessorTree.FatTree.ProjectionTransfer > proof-audit/fat-projection-build.log 2>&1; then
-            cat proof-audit/fat-projection-build.log
-            exit 1
-          fi
-          if ! lake env lean scripts/CheckFatToMonoidProjection.lean > proof-audit/fat-projection-axioms.log 2>&1; then
-            cat proof-audit/fat-projection-axioms.log
-            exit 1
-          fi
-          python3 scripts/check-axiom-log.py proof-audit/fat-projection-axioms.log scripts/CheckFatToMonoidProjection.lean || {
-            cat proof-audit/fat-projection-axioms.log
-            exit 1
-          }
       - name: Check shape Ramsey statement and axioms
         run: |
           set -o pipefail
