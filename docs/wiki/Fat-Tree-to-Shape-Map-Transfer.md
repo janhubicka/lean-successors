@@ -249,3 +249,56 @@ fact and does not add an axiom or alter M1–M3.
 
 The mathematics above is an **adversarial proof inventory**,
 not a claim that the transfer has been validated.
+
+## Arbitrarily delayed obstruction: why the projection is not continuous
+
+The same witness works **after any prescribed finite fat-tree stem**.
+For each integer `q≥1`, let `V_q` agree with the fat tree U above
+in its first `q` rows, and then insert a single extra target level
+at target cut `q+1` using an ancestral parameter `[0]`;
+all subsequent rows are identities. Its cuts are those of U
+through index `q`, followed by U's cuts shifted up by one.
+The geometric reduction index is
+
+```text
+  φ_q(i) = i        for i≤q,
+           i+1      for i>q.
+```
+
+Before row q the fat lifts agree. At row q the ambient U is
+already the identity fat tail: its lift across two ambient rows
+reaches **every** successor history on the required later level,
+and hence contains the V_q lift. After row q, both tails are
+identity and all the one-lift inclusions are equalities.
+Thus `V_q ≤_fat U` at every index and
+`V_q.initialSegment q = U.initialSegment q`.
+
+For the source history of level q with only empty parameter
+codes, `F_{V_q}` appends code `[0]` after applying E₀.
+No such history lies in `range(E₀)`, since E₀ shifts every
+parameter of every old transition from `j` to `j+1`.
+Therefore **none** of `F_{V_q}` factors through `F_U=E₀`.
+
+This shows more than the failure of one neighbourhood equality:
+**the original projection is discontinuous at U**, with the
+fat-tree reduction/topology and shape-map right-composition
+topology currently specified. The monoid basic neighbourhood
+`[empty,E₀]` contains `π(U)`. Every fat basic neighbourhood
+`[x,W]` containing U has a finite prefix `x=U|n`
+and `U≤W`. Choose q≥max(1,n). Then `V_q≤U≤W`,
+`V_q` extends `x`, yet `π(V_q)∉[empty,E₀]`.
+So `π⁻¹([empty,E₀])` is not open around U.
+
+The finite regression script checks the genuine lift inclusions
+and excluded images for `q=1,2,3`. The argument for all q is
+mathematically explicit above, but **is not yet an elaborated
+Lean theorem**. No conclusion about the truth of Theorem 1.11
+itself follows from this: it invalidates the current *proof route*
+via this `π`.
+
+Possible replacements include a newly proved transfer on a
+suitably aligned cofinal fat-tree system, or a different
+topological proof for the shape-map space. Imposing
+`F_V=F_U∘G` as an extra condition in the fat reduction would
+change that Ramsey space, so its A.3/A.4 and Ellentuck must
+be reverified rather than inherited from the old proof.
