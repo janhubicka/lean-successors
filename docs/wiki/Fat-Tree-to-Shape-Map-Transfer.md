@@ -167,7 +167,7 @@ reduction relation. A *different* map, a restricted/cofinal
 fat-tree order, or another transfer proof would be needed.
 
 The standalone
-[`check-fat-projection-free-ancestral-witness.py`](https://github.com/janhubicka/lean-successors/blob/main/scripts/check-fat-projection-free-ancestral-witness.py)
+[`check-fat-projection-free-ancestral-witness.py`](https://github.com/janhubicka/lean-successors/blob/successor-fat-projection-transfer-audit-20261016/scripts/check-fat-projection-free-ancestral-witness.py)
 enumerates free-history levels and verifies the geometric inclusions
 on the first five rows and the excluded target image. **The
 full infinite reduction and nonfactorization have an English proof
