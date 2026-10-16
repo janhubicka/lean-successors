@@ -1,45 +1,112 @@
-# Theorems, additional lemmas, and manuscript scope
+# Verified theorems and manuscript correspondence
 
-## Established exported endpoints
+This table references actual Lean declarations at the successfully
+audited [16 October `main` checkpoint](https://github.com/janhubicka/lean-successors/commit/1e084eb47aee283f94ced58290455baf882a5285).
+The newer public-library branch adds import and smoke-test scaffolding
+without changing these mathematical statements.
 
-| Mathematical content | Module (prefix `SuccessorTree.`) | Exact declaration |
+## Principal exported theorem families
+
+| Mathematical statement | Module (prefix `SuccessorTree.`) | Exact declaration |
 | --- | --- | --- |
-| Finite starred Hales–Jewett | `HalesJewett.AlphabetInduction` | `starHJ_finite` |
-| Fat-tree Todorčević A4 | `FatTree.A4ReviewComplete` | `SMTree.FatTree.fatTreeA4` |
-| Fat-tree Ellentuck theorem | `FatTree.A4ReviewComplete` | `SMTree.FatTree.fatTreeEllentuck` |
-| Direct shape Ramsey theorem | `ShapeFiniteRamsey` | `SMTree.shapePreservingRamsey` |
-| Shape Ramsey by fat-tree Ellentuck | `ShapeEllentuckRamsey` | `SMTree.shapePreservingRamsey_viaFatEllentuck` |
+| Finite starred Hales–Jewett | `HalesJewett.AlphabetInduction` | `HalesJewett.starHJ_finite` |
+| Direct finite shape Ramsey | `ShapeFiniteRamsey` | `SMTree.shapePreservingRamsey` |
+| Shape Ramsey via fat Ellentuck | `ShapeEllentuckRamsey` | `SMTree.shapePreservingRamsey_viaFatEllentuck` |
+| Fat-tree A4 | `FatTree.A4ReviewComplete` | `SMTree.FatTree.fatTreeA4` |
+| Fat-tree Ellentuck | `FatTree.A4ReviewComplete` | `SMTree.FatTree.fatTreeEllentuck` |
 | Bounded-terminal finite corollary | `ShapeFiniteCorollaries` | `SMTree.shapeRamsey_bounded` |
 | Exact-terminal finite corollary | `ShapeFiniteCorollaries` | `SMTree.shapeRamsey_exact` |
-| Concrete normalized model of M1–M3 | `V10.KptCompleteSMTree` | `V10.normalizedKptSMTree` |
-| Concrete Kpt source-successor pullback (E1) | `V10.KptE1ActualPullbackDefined` | `V10.normalizedKpt_oneLevelPullback` |
-| Envelope algorithm E1 for normalized Kpt | `V10.KptE1EnvelopeIntegration` | `V10.normalizedKpt_oneLevelPullback_for_envelopes` |
-| Sharp finite numerical `H^+` envelope bound | `V10.HUniformEnvelopeBound` | `V10.numericH_actualRun_uniform_sharp_envelope_bound` |
+| Minimal nonempty top-level envelopes | `EnvelopeTheorem` | `SMTree.Envelope.exists_minimalEnvelope` |
+| Normalized concrete M1–M3 | `V10.KptCompleteSMTree` | `V10.normalizedKptSMTree` |
+| Kpt successor one-level pullback | `V10.KptE1ActualPullbackDefined` | `V10.normalizedKpt_oneLevelPullback` |
+| Envelope E1 for concrete Kpt | `V10.KptE1EnvelopeIntegration` | `V10.normalizedKpt_oneLevelPullback_for_envelopes` |
+| Sharp finite H+ envelope bound | `V10.HUniformEnvelopeBound` | `V10.numericH_actualRun_uniform_sharp_envelope_bound` |
+| Uniform fixed Gω theorem | `V10.KptBigRamseyNormalizedTheorem` | `V10.normalizedKpt_GOmega_self_bigRamsey_bound` |
+| Original all-Emb(A,Gω) unary/binary | `V10.KptOriginalBinaryUnaryBigRamsey` | `V10.originalBinaryUnary_GOmega_allEmbeddings_bigRamsey_bound` |
+| Canonical Gω without user-supplied countable C+ | `V10.KptCanonicalGomegaBigRamsey` | `V10.canonicalNormalizedGOmega_bigRamsey` |
+| Normalized age-universal K big Ramsey | `V10.KptUniversalAgeBigRamsey` | `V10.universalNormalizedModel_bigRamsey_bound` |
+| Original all-Emb(A,K) big Ramsey | `V10.KptUniversalAgeBigRamsey` | `V10.universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound` |
+| Free-ancestral history finite Ramsey | `FreeAncestralFiniteRamsey` | `FreeAncestral.finiteShapeRamsey` |
 
-The last theorem is explicitly parameterized by a finite normalized forbidden family, finite model `K` avoiding that family, a positive `k`, root and admissible top seed blocks, a **genuine AlgorithmRun**, and the stated forbidden-pattern size constraint. Its inequality bounds selected levels in that concrete run. It is not the complete universal statement of Proposition 6.44. Read its Lean type before using it as an external premise.
+The `Library.Abstract`, `Library.Applications` and
+`Library.Examples` entry points collect the reusable endpoints.
+`V10.All` and the old root import are *proof assembly* targets,
+not additional mathematical assumptions. More lower-level reusable
+statements are available in `SMTree`, `Envelope`, `FatTree`,
+`HalesJewett`, `V10` and `FreeAncestral`; the public smoke test
+checks representative principal endpoints, not every helper lemma.
 
-The library also contains finite-type and model verification modules not listed here. Successful local files are not automatically exported manuscript theorems; `V10/All.lean` is an assembly/test umbrella, not the place to hide missing hypotheses.
+## Exact final Theorem 6.26-style formal statement
 
-## Added proof structure beyond the printed text
+`V10.universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound` has
+parameters for a finite signature (`db` binary and `du` unary
+predicates), a finite `List (NormalizedForbidden db du db)`, and a
+model `K : AgeTestModel db du db`. The hypotheses are:
 
-- **Supported starred HJ / alphabet induction:** explicit combinatorial forcing/fusion with a support prefix. This replaces treating starred HJ as a tacit input.
-- **Fat-tree A4:** a typed fixed-stem pigeonhole theorem with its history/replay/trace transfer, giving unconditional A4 and Ellentuck instead of assuming A4.
-- **Two one-dimensional inputs, one induction:** both finite shape proofs use `ShapeFiniteInduction`. An axiom/dependency audit distinguishes them rather than relying merely on textual import inspection.
-- **Finite terminal cases:** coherent bad-colouring compactness and exact-terminal padding based on a common positive terminal level.
-- **M2 repair:** use the actual finite common-socle `L`-age condition for the corrected prescribed B3; nonedges must be handled in induced copies. Do not assume an arbitrary `E` expansion on an `L`-only age witness.
-- **M3 and Section 6 record precision:** keep directed binary bits, unary and diagonal data and the absence of edges; linked-clone projection is not indiscriminate upper-column copying.
-- **Actual Algorithm 5.4 counting:** isolate original-name addresses, selected generations, I1/I2 real meet charges, I3 failed-B3 signatures and the sharp forest meet closure. This makes the numerical `H^+` estimate checkable independently of the final universal transfer.
-- **Concrete E1 pullback:** the canonical target parameter has an empty/singleton source preimage, and complete L+ type reindexing preserves predecessor, canonical source parameter, all E and L atoms, and the terminal letter. The source successor uses an actual neutral-spacer admissibility witness; source *existence* is what E1 requires, not equality of the chosen target with an F-image.
+- **Full carrier:** `∀ i, i ∈ K.carrier`;
+- **Forbidden age:** every listed forbidden pattern avoids `K`;
+- **Countable universality:**
+  `K.UniversalForNormalizedFamily family`, meaning every
+  forbidden-free full-carrier countable model `W` admits an induced
+  embedding `W → K`.
 
-These are proof engineering and repair notes, not a claim that every such addition has already been written into the frozen manuscript.
+For every finite `q`, original unary and directed binary pattern,
+and finite colouring of **all induced embeddings**
+`binaryUnaryAllEmbeddings K PB PU`, a single ordered induced
+self-embedding `e : K.InducedEmbedding K` reduces the colours to
+an explicitly finite bound derived from
+`boundedGPlusPaletteIndices` and
+`numericHTopUniformPaletteHeight`. **The original coloured finite
+embedding need not be order-preserving.** The binary diagonal
+`B(x,x,r)` is stored separately from off-diagonal directed relations;
+positive, negative and reversed tuples, and unary atoms, are
+all tested.
 
-## Manuscript comparison: what remains
+A countable Fraïssé limit of the matching free forbidden age supplies
+the required age-universality under the usual hypotheses, but the
+**exact author's age-to-`NormalizedForbidden` dictionary** must be
+checked before claiming literal equivalence with the source theorem.
+The model's mere forbidden-freeness does *not* imply countable
+universality. Neutral forbidden singleton patterns and reducible
+forbidden patterns are outside the normalized canonical all-false
+construction unless reduced to the checked class.
 
-- The set-theoretic tree definition still needs a precise adapter to the Lean `LevelTree` representation where used.
-- The normalised finite model currently handles **unary, directed binary and diagonal** records, not arbitrary arities.
-- Section 6 requires the uniform induced `K → H^+ → G^+` embedding/enumeration and bounded-envelope transfer **for all finite source copies**, including exact source-target quantifier order.
-- The `G^+` canonical representations, induced relation preservation, finite prefix/upper-node representation and colouring pullback must be assembled at the *actual* Algorithm 5.4 seeds and sufficiently long finite approximants.
-- Check empty structures, forbidden-free family, singleton conventions, and any equality assumptions separately rather than inheriting a nonempty case by silence.
-- The final big-Ramsey Theorem 6.26 is **open at the exact manuscript scope** until all those adapters and transfer steps are discharged and audited.
+## Additional proof work beyond printed prose
 
-For changing status at the level of named PRs or check runs, consult [the Section 6 ledger](../v10-section6-final-assembly-20261015.md) and current [repository PRs](https://github.com/janhubicka/lean-successors/pulls), not historical summaries in comments.
+- Starred HJ was proved by an explicit forcing/alphabet induction rather
+  than assumed as an unverified one-dimensional input.
+- The fat-tree A4 proof uses typed history/trace replay and independent
+  source fusion. An elaborated-dependency check guards independence
+  of the two shape Ramsey proofs, which share only the finite
+  dimensional induction.
+- Exact finite terminal bounds require common M3 padding; zero
+  terminal level is separate.
+- M2's corrected non-edge/compatible B3 age test uses an actual
+  **finite L-only** forbidden witness; no fictional E expansion.
+- The finite H+ bound counts actual selected I1/I2/I3 events,
+  original vertex addresses and the sharp forest-meet closure.
+- Concrete Kpt E1 proves existence of a pulled-back **source**
+  successor; it does not claim equality with an arbitrary target
+  successor under F.
+- Canonical Gω is realized using an honest all-false forbidden-free
+  countable witness. The universal K result transfers via induced
+  embeddings and preserves the finite palette.
+
+## Remaining literal manuscript-fidelity checks
+
+The current author-edited v10 `main.tex` is not part of this
+repository, so CI cannot directly compare its text to theorem types.
+Before marking the *entire paper* GREEN, review the exact
+set-theoretic tree-to-`LevelTree` adapter; the original
+finite-language-to-normalized Boolean representation; forbidden
+singleton and irreducibility hypotheses; the Fraïssé model's
+countable universality; q=0/empty-forbidden-list conventions; and
+the distinction between the finite-H+ actual-run proposition
+and the final countable Emb(A,K) theorem.
+
+The latest final Lean transfer is **checked**, not “still open”.
+Higher relation arities, weaker replay axioms, and alternative
+forbidden families are deferred. The author manuscript should
+remain frozen except reviewed TODOs and validation markers.
+See [the adversarial report](Adversarial-referee-record.md) and
+[manuscript validation note](../../manuscript/v10-final-validation-referee-20261016.md).
