@@ -1,0 +1,4 @@
+import SuccessorTree.V10.KptE1ImageParameterCases
+
+#print axioms SuccessorTree.V10.kptShapeLevelMap_zero_of_mem
+#print axioms SuccessorTree.V10.kptE1_image_parameter_cases
