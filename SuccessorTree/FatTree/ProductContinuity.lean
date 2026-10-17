@@ -27,7 +27,7 @@ local instance fatApproxDiscreteTopology (n : Nat) :
     DiscreteTopology ((approximationSystem H).Approx n) := ⟨rfl⟩
 
 /-- Product topology of the discrete finite-approximation coordinates. -/
-def approximationProductTopology : TopologicalSpace (FatTree H) :=
+noncomputable def approximationProductTopology : TopologicalSpace (FatTree H) :=
   TopologicalSpace.induced
     (fun U : FatTree H => fun n : Nat => (approximationSystem H).approx n U)
     (inferInstance : TopologicalSpace

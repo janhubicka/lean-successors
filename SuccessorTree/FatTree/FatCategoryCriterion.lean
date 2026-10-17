@@ -141,6 +141,8 @@ end SuccessorTree.RelativeCategory
 
 namespace SuccessorTree.SMTree.FatTree
 
+noncomputable section
+
 universe u v
 
 variable {T : Type u} {Label : Type v}
@@ -148,10 +150,13 @@ variable [PartialOrder T] [LevelTree T]
 variable {S : STree T Label}
 variable (H : SMTree S)
 
-local instance : TopologicalSpace (FatTree H) :=
+local instance fatCategoryTopology : TopologicalSpace (FatTree H) :=
   (approximationSystem H).ellentuckTopology
 
-local instance : TopologicalSpace (MMap H) :=
+local instance fatCategoryPointTopology : TopologicalSpace (approximationSystem H).Point :=
+  (approximationSystem H).ellentuckTopology
+
+local instance fatCategoryMapTopology : TopologicalSpace (MMap H) :=
   (ramseyApproximationSystem H).ellentuckTopology
 
 /-- In the actual fat-tree Ellentuck topology, every meagre set is
@@ -284,5 +289,7 @@ theorem relativeImage_test_iff_basic
     rintro Y ⟨Z, hZ, rfl⟩
     obtain ⟨z, hz, hzZ⟩ := hSub hZ
     exact ⟨z, hz, congrArg rho hzZ⟩
+
+end
 
 end SuccessorTree.SMTree.FatTree
