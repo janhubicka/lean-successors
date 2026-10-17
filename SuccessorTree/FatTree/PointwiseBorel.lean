@@ -36,17 +36,19 @@ theorem rowExtension_eq_of_samePrefix
     (U V : FatTree H) (i : Nat)
     (h : U.initialSegment H (i + 1) = V.initialSegment H (i + 1)) :
     U.rowExtension H i = V.rowExtension H i := by
-  have hh : HEq
-      ((U.initialSegment H (i + 1)).rowExtension H
-        (⟨i, by change i < i + 1; omega⟩ :
-          Fin (U.initialSegment H (i + 1)).height))
-      ((V.initialSegment H (i + 1)).rowExtension H
-        (⟨i, by change i < i + 1; omega⟩ :
-          Fin (V.initialSegment H (i + 1)).height)) := by
-    cases h
-    rfl
-  change HEq (U.rowExtension H i) (V.rowExtension H i) at hh
-  exact eq_of_heq hh
+  let rowAt (A : FiniteFatTree H) : MMap H :=
+    if hi : i < A.height then A.rowExtension H ⟨i, hi⟩ else MMap.id H
+  have hh : rowAt (U.initialSegment H (i + 1)) =
+      rowAt (V.initialSegment H (i + 1)) := congrArg rowAt h
+  have hU : rowAt (U.initialSegment H (i + 1)) =
+      U.rowExtension H i := by
+    simp [rowAt, FatTree.initialSegment,
+      FiniteFatTree.rowExtension, FatTree.rowExtension]
+  have hV : rowAt (V.initialSegment H (i + 1)) =
+      V.rowExtension H i := by
+    simp [rowAt, FatTree.initialSegment,
+      FiniteFatTree.rowExtension, FatTree.rowExtension]
+  exact hU.symm.trans (hh.trans hV)
 
 /-- Finite products of canonical rows are determined by their finite
 fat-tree stem, even though total right-composition reductions are not. -/
@@ -158,7 +160,7 @@ theorem associatedMap_pointwiseContinuous :
       (fun F : MMap H => (fun x : T => F x))
       (inferInstance : TopologicalSpace (T → T)))
     (associatedMap H)
-  rw [continuous_induced_rng]
+  apply continuous_induced_rng.mpr
   exact continuous_pi (fun x => continuous_associatedMap_eval H x)
 
 /-- The induced Borel sigma algebra of pointwise convergence. -/
