@@ -12,6 +12,7 @@ import SuccessorTree.Counterexample.CompatibilityLevels
 import SuccessorTree.Counterexample.CompatibilityMarker
 import SuccessorTree.Counterexample.ConcreteAntichain
 import SuccessorTree.Counterexample.Final
+import SuccessorTree.Counterexample.OpenDense
 
 /-!
 Exact-name audit: only the declarations below have been proved so far.
@@ -146,3 +147,6 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 
 #check @SuccessorTree.Counterexample.exists_meagre_not_avoidable
 #print axioms SuccessorTree.Counterexample.exists_meagre_not_avoidable
+
+#check @SuccessorTree.Counterexample.exists_open_dense_no_pure_homogeneous_root
+#print axioms SuccessorTree.Counterexample.exists_open_dense_no_pure_homogeneous_root
