@@ -90,7 +90,25 @@ theorem exists_nowhereDense_hits_every_pure :
   intro F hF
   exact hne ⟨F, hF⟩
 
+/-- Literal meagreness formulation of the paper's failure:
+in the direct monoid Ellentuck topology there is a meagre set
+which no depth-preserving pure refinement of the selected root
+neighborhood can avoid.
 
+The proof is only a topological corollary of the already checked
+closed nowhere-dense counterexample. The author's pure-refinement
+definition is deliberately retained, rather than silently replaced
+by the weaker arbitrary-basic-neighborhood definition. -/
+theorem exists_meagre_not_avoidable :
+    ∃ Z : Set ExampleMap,
+      @IsMeagre ExampleMap
+        (SMTree.ramseyApproximationSystem markerMonoid).ellentuckTopology Z ∧
+      ¬ AvoidableAtRoot Z := by
+  letI : TopologicalSpace ExampleMap :=
+    (SMTree.ramseyApproximationSystem markerMonoid).ellentuckTopology
+  obtain ⟨Z, _, hNowhereDense, hNotAvoidable⟩ :=
+    exists_closed_nowhereDense_not_avoidable
+  exact ⟨Z, hNowhereDense.isMeagre, hNotAvoidable⟩
 
 /-!
 ## Exact depth and the printed Ramsey predicates

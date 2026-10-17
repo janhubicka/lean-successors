@@ -1,32 +1,69 @@
-# Formalization status: direct-monoid Theorem 1.11 counterexample
+# Theorem 1.11 direct-monoid counterexample — complete Lean verification
 
-Working branch: `formalize-theorem111-counterexample-20261017` (PR #565).
-Reference mathematical argument: `docs/theorem111-zfc-counterexample-20261016.md`.
-No manuscript source has been changed.
+**Status:** all mathematical parts of the ZFC counterexample are checked
+by the Lean kernel. The full formal proof merged on 17 October 2026 as
+[PR #565](https://github.com/janhubicka/lean-successors/pull/565)
+(commit [2b3fb28a](https://github.com/janhubicka/lean-successors/commit/2b3fb28a871f89282c6ad8d899d7014cf0223010)).
+Its focused exact-head compilation and named transitive-axiom checks
+[passed](https://github.com/janhubicka/lean-successors/actions/runs/38986241498).
+No `sorry`, `admit`, new mathematical axiom, CH or regularity
+assumption on continuum was used.
 
-## Kernel-checked foundation (focused CI 38975937763)
+## Checked mathematical modules
 
-- `Counterexample/NowhereDense.lean`: right compatibility (common algebraic right multiple), pairwise right-incompatible families, proper late gaps, the no-self-factorization lemma, and the local-escape lemma giving a disjoint nonempty basic subneighborhood.
-- Same module: proved existence of late proper gaps for the verified free-ancestral one-letter arity-one SMTree.
-- `Counterexample/MaskCodes.lean`: strict level-map transport of ancestral parameters, mandatory code avoidance of root index 0, root-marker existence and code remapping injectivity.
-- `Counterexample/SupportRigidity.lean`: generic proof that a fixed infinite support witness is contained in **at most one** support of an almost-disjoint family.
-- The exact-name `CheckTheorem111Counterexample.lean` transitive-axiom audit passed.
+| Module (`SuccessorTree.Counterexample`) | Mathematical content |
+| --- | --- |
+| `NowhereDense` | Right compatibility; incompatible antichain; late proper gaps; nonempty basic local escape |
+| `Topology` | Upgrade to `IsNowhereDense` in the **direct monoid** Ellentuck topology |
+| `MaskCodes`, `StretchHistory` | Explicit root-marker codes, source-level parameter remapping and raw history model |
+| `MarkedFusion` | Genuine infinite `Q_A` shape maps from M1 fusion of verified one-gap maps, level-range and root-image laws |
+| `RootMarkerRigidity`, `RootMarkerTransport`, `MarkerIntervals`, `MarkerTransfer` | Mandatory successor codes cannot carry original-root markers at retained levels; every omitted target level of `Q_A` carries one, and root-fixing outer maps preserve them |
+| `CompatibilityLevels`, `CompatibilityMarker` | A common algebraic right multiple forces an **infinite** fixed meeting-level set into the retained-level range of `Q_A` |
+| `BinarySupports`, `SupportRigidity` | Continuum many explicit binary-prefix almost-disjoint supports and unique-compatible-candidate lemma |
+| `PureEnumeration`, `GreedySelection` | Enumerate all pure shape maps by binary sequences, ZFC greedy recursion along a minimal continuum well-order, no CH |
+| `ConcreteAntichain` | Incompatible transversal meeting every pure same-depth root neighbourhood |
+| `Final` | **Closed nowhere-dense, meagre, non-avoidable** witness for the original depth-preserving Theorem 1.11 |
 
-## Extensions being compiled (do not count as verified before CI succeeds)
+## Source-facing exact endpoint
 
-- `Counterexample/Topology.lean`: upgrade local escape to actual `IsNowhereDense` in the **monoid Ellentuck topology**, via the ordinary topological closure criterion.
-- `Counterexample/StretchHistory.lean`: recursively define every finite history of the candidate infinite marked map at any increasing prescribed levels `levels : ℕ → ℕ` with `levels 0=1`, padding gaps with the root-parameter marker. Prove marker padding is injective and the original history is its prefix. At present this is the raw function on all histories, **not yet a certified ShapeMap**.
-- The focused CI workflow compiles every module and audits all exported theorem axioms; previous compiler passes found only dependent-index/topology-elaboration issues, corrected locally on the branch.
+`SuccessorTree.Counterexample.exists_closed_nowhereDense_not_avoidable` asserts
+the existence of `Z` that is *closed nowhere dense in the actual
+monoid Ellentuck topology* and satisfies `¬ AvoidableAtRoot Z`.
+Here `AvoidableAtRoot Z` means precisely
+\[
+\exists H\in[1,\mathrm{Id}]\quad [f,H]\cap Z=\varnothing,
+\qquad f(\text{root})=s.
+\]
+The new literal topological corollary
+`SuccessorTree.Counterexample.exists_meagre_not_avoidable` asserts
+meagreness rather than just nowhere density.
 
-## Unfinished proof obligations (essential to the counterexample)
+**Crucial convention:** the manuscript's pure neighbourhood
+`[1,Id]` fixes source levels 0 and 1, although the corresponding
+abstract Ramsey-space finite-approximation index is 2. This
+depth-preserving definition is *stronger* than a variant allowing
+arbitrary finite-stem end-extensions; the latter has not been
+refuted by this counterexample.
 
-1. Show `markedNode` is an injective full shape-preserving map of the free-ancestral tree, including weak-successor preservation and the level law.
-2. Prove retained successor codes cannot use original-root parameter and every skipped level has the root marker, even after a pure outer shape map.
-3. Formalize the **concrete compatibility lemma**: if `G(r)=s` and G has a common right-composition multiple with `H ∘ Q_A` (H pure), the infinite set `D_G^H` lies in A.
-4. Construct continuum many pairwise almost-disjoint supports via binary-sequence prefixes, and prove the fixed-G uniqueness lemma using (3).
-5. Formalize ZFC transfinite recursion enumerating all pure maps and selecting a pairwise right-incompatible transversal hitting each pure cone, with no CH assumption.
-6. Apply the checked nowhere-density bridge to close the non-Ramsey-null and open-not-Ramsey conclusions at the actual direct monoid neighborhood definition. This cannot be inferred from the already validated **fat-tree** Ellentuck theorem.
+The positive Theorem 1.17 (fat-tree Ellentuck) and finite shape
+Ramsey Theorem 1.6 stay checked. The manuscript remains frozen:
+only source-facing TODOs and validation status are to be updated
+after author review.
 
-Do not confuse these obligations with the previously found fat-to-monoid projection counterexample, which refutes a **proof** but not by itself the Theorem 1.11 **statement**.
+## Test and public API
 
-**Validation policy:** No `sorry`/new axioms; exact-name audit at each stage; do not change frozen manuscript prose. Do not call the complete Theorem 1.11 counterexample *Lean verified* until all six obligations have kernel proofs.
+- Exact-name audit: `scripts/CheckTheorem111Counterexample.lean`
+  with `#print axioms` for all principal lemmas, including the final theorem.
+- Focused CI: `.github/workflows/theorem111-counterexample-lean.yml`.
+- Binary-prefix support independent CI:
+  `.github/workflows/theorem111-binary-supports.yml`.
+- The finite history-code regression remains a separate *diagnostic*,
+  not a substitute for the complete infinite Lean proof.
+- Exported via `SuccessorTree.Library.Examples`, not the
+  lightweight abstract library import boundary.
+
+The proof is the **original counterexample itself**, not a conditional
+interface that assumes the missing compatibility or almost-disjointness
+lemma. The English [standalone note](theorem111-zfc-counterexample-20261016.md)
+and [adversarial referee audit](theorem111-zfc-counterexample-referee-20261016.md)
+remain useful independent explanations.

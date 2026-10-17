@@ -14,7 +14,8 @@ import SuccessorTree.Counterexample.ConcreteAntichain
 import SuccessorTree.Counterexample.Final
 
 /-!
-Exact-name and transitive-axiom audit of the full ZFC counterexample,\nincluding the depth-based Ramsey-null and Ramsey predicates.
+Exact-name audit: only the declarations below have been proved so far.
+The Q_A infinite marker and antichain recursion are separate tasks.
 -/
 
 #check @SuccessorTree.SMTree.RightCompatible
@@ -143,6 +144,8 @@ Exact-name and transitive-axiom audit of the full ZFC counterexample,\nincluding
 #print axioms SuccessorTree.Counterexample.exists_closed_nowhereDense_not_avoidable
 #print axioms SuccessorTree.Counterexample.exists_nowhereDense_hits_every_pure
 
+#check @SuccessorTree.Counterexample.exists_meagre_not_avoidable
+#print axioms SuccessorTree.Counterexample.exists_meagre_not_avoidable
 
 -- Exact depth and direct monoid Ramsey predicates, without A.3(2).
 #check @SuccessorTree.Counterexample.rootApprox_depth_two

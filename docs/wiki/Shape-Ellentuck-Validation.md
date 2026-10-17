@@ -1,94 +1,47 @@
-# Theorem 1.11: use the fat-tree projection, not direct A.3(2)
+# Theorem 1.11: checked counterexample, and the surviving fat-tree theorem
 
-**Corrected strategy (16 October 2026):** the original paper
-introduces fat trees precisely because the approximation space
-of shape-preserving maps need not satisfy Todorčević A.3(2).
-Trying to prove A.3(2) unconditionally for that direct space
-is therefore not a viable validation route.
+**Status (17 October 2026): REFUTED under the manuscript's original M1–M3 assumptions and depth-preserving pure-refinement definition.** The construction is now **proved in Lean**, rather than only an English counterexample or a gap in the fat-tree transfer proof.
 
-The concrete fat-tree space *does* satisfy A.1–A.4,
-Tychonoff closedness, and the topological Ellentuck theorem,
-all already checked in Lean (`FatTree.fatTreeEllentuck`).
-The remaining Theorem 1.11 proof obligation is the **projection
-and neighborhood transfer** in Section 4, not another fat-tree
-pigeonhole argument.
+The example is the already verified full shape-preserving monoid of the free-ancestral history tree with one label and one ancestral parameter. The *same* concrete tree satisfies M1–M3. It has a finite root approximation `f(root)=s` of depth 1 (level convention) such that a set `Z` can be:
 
-## Original map and the missing bridge
+- **closed nowhere dense** in the genuine **monoid Ellentuck topology** defined from right-composition basic neighbourhoods;
+- **meagre** in that topology;
+- nevertheless **unavoidable** by every pure `H∈[1,Id]`: `[f,H]∩Z ≠ ∅`.
 
-Let `π(U) := FatTree.associatedMap H U`.
-The source proves surjectivity (Observation 2.8), implemented
-by `FatTree.associatedMap_ofShapeMap`. It claims in Lemma 4.1:
+Thus the manuscript's unqualified claim that every Ellentuck-meagre monoid set is *Ramsey null under depth-preserving pure refinements* is false. Its open dense complement is not Ramsey for the same pure-refinement definition.
 
-```text
-π([x,U] in fat trees) = [F_x,F_U] in the M-map space.
-```
+## Exact Lean theorems
 
-This formula needs actual proofs of:
-(a) factoring the projections of geometric refinements by
-right-composition, (b) compatibility of finite fat-tree stems
-with projected finite M-map approximations, (c) lifting
-arbitrary right factors while preserving **literal** fat
-stems, and (d) realizing arbitrary monoid prefixes by such
-fat stems with the correct source/target depth.
+* `SuccessorTree.FreeAncestral.freeSMTree` — the underlying free-ancestral instance has M1–M3 (unchanged).
+* `SuccessorTree.FreeAncestral.markedFusion` — total shape maps `Q_A`, constructed by *verified one-gap maps and pointwise M1 fusion*, not an unproved raw-history assertion.
+* `SuccessorTree.FreeAncestral.compatible_marked_has_infinite_support` — the **key lemma**: a common algebraic right multiple of `G` and `H ∘ Q_A` gives a fixed infinite meeting-level witness set contained in A, when `G(root)` lies above the root and `H(root)=root`.
+* `SuccessorTree.Counterexample.branchLevel_almostDisjoint` — explicit continuum-sized family of pairwise almost-disjoint retained-level sets, indexed by infinite binary sequences.
+* `SuccessorTree.Counterexample.greedySelection` and `exists_pure_meeting_incompatible_family` — a ZFC well-founded greedy recursion selects a pairwise right-incompatible family N meeting *every* pure right-composition cone. Proper initial segments of the minimal continuum well-order are smaller regardless of CH or regularity of continuum.
+* `SuccessorTree.SMTree.incompatible_family_isNowhereDense` — a generic theorem: a pairwise right-incompatible family is nowhere dense when sufficiently late proper gaps exist. This is proved for the **actual direct monoid topology**, not a fat-tree substitute.
+* `SuccessorTree.Counterexample.exists_closed_nowhereDense_not_avoidable` — the original counterexample as an exact topological Lean theorem, taking `Z = closure N`.
+* `SuccessorTree.Counterexample.exists_meagre_not_avoidable` — literal meagre-but-not-pure-Ramsey-null corollary, exported from `SuccessorTree.Library.Examples`.
 
-The currently proved range fact `F_U ≤° U` is a geometric
-containment. It does not by itself supply the algebraic
-right factor `F_V = F_U ∘ G` for `V ≤_fat U`.
-Also, replacing the first rows of a newly constructed fat
-refinement by `x` must preserve its oneLift inclusions.
-That is not automatic from equality of partial projected maps.
+All the principal endpoint lemmas have exact-name **transitive-axiom checks**, and the focused CI forbids sorry/admit/new mathematical axioms. The full counterexample passed [the focused proof CI](https://github.com/janhubicka/lean-successors/actions/runs/38986241498) and was merged in [PR #565](https://github.com/janhubicka/lean-successors/pull/565).
 
-In the continuity argument, inverse images of monoid basic
-neighborhoods must be open around **each actual fat-tree
-point in the inverse image**; global surjectivity is not
-enough. The claimed union of fat basics assumes this
-fibrewise lifting property.
+## A crucial distinction between Ramsey definitions
 
-## The genuinely verified pieces
+The manuscript's **depth-preserving** definition requires a refinement `H ∈ [depth_F(f),F]` keeping the original depth. For `f(root)=s`, this is exactly the pure family `[1,Id]`, meaning `H` fixes source levels **0 and 1**. The abstract approximation-space index for this level neighbourhood is **2**, not 1.
 
-- Fat-tree typed A.3(2), A.4, and full Ellentuck:
-  `FatTree.A3Typed`, `FatTree.A4ReviewComplete`.
-- Canonical projection and widening:
-  `FatTree.ShapeCorrespondence`, with
-  `associatedMap_ofShapeMap`.
-- One-row *forward* realization inside fat trees:
-  `FatTree.ShapeRealization.tailCoordinateRow_oneBlockOccurs`.
-- The direct M-map approximation A.1/A.2/A.3(1), plus
-  the separately verified M1 Tychonoff closedness.
-  These are useful results but **do not** repair the failure
-  of direct A.3(2).
+The weaker **textbook/basic-neighbourhood** convention permits the finite stem itself to be end-extended and allows any refinement `B ∈ [f,F]`. Without direct A.3(2), the two conventions need not coincide; **this counterexample is expressly about the manuscript's depth-preserving convention**. It must not be presented as a refutation of every textbook variant. The Lean endpoint `AvoidableAtRoot` records the exact quantified pure-refinement property, rather than silently using a stronger/unavailable A.3(2) equivalence.
 
-## Original topological transfer after the bridge
+## Original Section 4 projection issue remains independently real
 
-If `π` is shown to be a continuous open surjection, and
-each required monoid basic neighborhood `[f,F]` has a
-fat stem lift `[x,U]` of matching depth satisfying the
-exact neighborhood image formula, the proof is standard:
+The original proof of Theorem 1.11 attempted to transfer the checked fat-tree Ellentuck theorem by projecting fat trees to shape maps. That transfer requires a projected-neighbourhood identity `π([x,U])=[F_x,F_U]`. The free-ancestral E₀/E₂ algebraic witness already shows that even the claimed forward inclusion fails; the delayed witnesses expose a discontinuity in the relevant Ellentuck topologies. Those facts originally showed **a faulty proof**, not a false statement. The new, separate **fully formalized** nowhere-dense construction establishes that the *statement itself* fails.
 
-1. Continuous and open maps pull back nowhere dense
-   subsets to nowhere dense subsets; hence meagre sets
-   to meagre sets and Baire-property sets to Baire-property sets.
-2. Lift `[f,F]` to `[x,U]`, and apply the verified
-   fat-tree Ellentuck theorem to `π⁻¹(X)`.
-3. Project a fat-tree homogeneous refinement `[x,V]`
-   to the whole shape-map neighborhood `[f,π(V)]`,
-   preserving its required depth.
+## What remains correct
 
-This proves Theorem 1.11 *if and only if the missing
-lifting/projection claims are supplied in the needed form*.
-It does not introduce direct A.3(2) into the assumptions.
+- **Theorem 1.17 (fat-tree Ellentuck): CHECKED**. Fat trees satisfy the relevant A.3(2); the counterexample does not affect them.
+- **Theorem 1.6 (finite shape Ramsey): CHECKED** via two independent routes, including the fat-tree Ellentuck route. The construction does not give a bad finite colouring.
+- **Direct monoid A.1/A.2/A.3(1), finite neighbourhood nonemptiness and Tychonoff closedness: CHECKED**; A.3(2) is deliberately **not** claimed.
+- The unconditional **pointwise-Borel fat-image Ramsey theorem** described in the separate English Section 4 note remains a valid weaker positive statement. It is **not** a monoid-neighbourhood Ramsey theorem.
 
-## Validation status
+## Manuscript review policy
 
-Theorem 1.11 remains **OPEN**, while the fat-tree
-Ellentuck Theorem 1.17 and finite-dimensional
-shape-preserving Theorem 1.6 are **CHECKED**.
-The current Lean work is PR #560, which isolates the
-projection obligations and attempts the finite-prefix
-part directly from the canonical row products.
-See the full [adversarial transfer audit](Fat-Tree-to-Shape-Map-Transfer.md).
+The author-edited v10 manuscript is frozen. Do not rewrite Theorem 1.11 or Section 4 automatically. Record the refutation in **TODO/validation markers**, propose a localized correction to the authors, and separately audit any downstream use of the shape-map *topological* theorem. The validated finite shape-Ramsey, fat-tree Ellentuck and final finite big-Ramsey arguments should retain their independent verification markers.
 
-The printed Ramsey-null proof must avoid `[f,F_V]`,
-not `[n,F_V]`. Also ensure the last-image-level
-convention and finite approximation length `d+1`
-are not confused when identifying `depth_U(x)`.
+The standalone [English counterexample](../theorem111-zfc-counterexample-20261016.md), [adversarial audit](../theorem111-zfc-counterexample-referee-20261016.md), and [Lean validation progress](../theorem111-counterexample-lean-progress-20261017.md) give the full mathematical and formal proof record.
