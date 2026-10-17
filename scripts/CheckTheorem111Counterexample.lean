@@ -14,8 +14,7 @@ import SuccessorTree.Counterexample.ConcreteAntichain
 import SuccessorTree.Counterexample.Final
 
 /-!
-Exact-name audit: only the declarations below have been proved so far.
-The Q_A infinite marker and antichain recursion are separate tasks.
+Exact-name and transitive-axiom audit of the full ZFC counterexample,\nincluding the depth-based Ramsey-null and Ramsey predicates.
 -/
 
 #check @SuccessorTree.SMTree.RightCompatible
@@ -143,3 +142,25 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 
 #print axioms SuccessorTree.Counterexample.exists_closed_nowhereDense_not_avoidable
 #print axioms SuccessorTree.Counterexample.exists_nowhereDense_hits_every_pure
+
+
+-- Exact depth and direct monoid Ramsey predicates, without A.3(2).
+#check @SuccessorTree.Counterexample.rootApprox_depth_two
+#check @SuccessorTree.Counterexample.rootNeighborhood_eq_neighborhood
+#check @SuccessorTree.Counterexample.levelTwo_refinement_is_pure
+#check @SuccessorTree.Counterexample.DirectIsRamseyNull
+#check @SuccessorTree.Counterexample.DirectIsRamsey
+#check @SuccessorTree.Counterexample.rootNeighborhood_isOpen
+#check @SuccessorTree.Counterexample.pure_rootNeighborhood_nonempty
+#check @SuccessorTree.Counterexample.pure_rootNeighborhood_not_subset_nowhereDense
+#check @SuccessorTree.Counterexample.exists_closed_nowhereDense_not_directRamseyNull
+#check @SuccessorTree.Counterexample.exists_open_not_directRamsey
+
+#print axioms SuccessorTree.Counterexample.rootApprox_depth_two
+#print axioms SuccessorTree.Counterexample.rootNeighborhood_eq_neighborhood
+#print axioms SuccessorTree.Counterexample.levelTwo_refinement_is_pure
+#print axioms SuccessorTree.Counterexample.rootNeighborhood_isOpen
+#print axioms SuccessorTree.Counterexample.pure_rootNeighborhood_nonempty
+#print axioms SuccessorTree.Counterexample.pure_rootNeighborhood_not_subset_nowhereDense
+#print axioms SuccessorTree.Counterexample.exists_closed_nowhereDense_not_directRamseyNull
+#print axioms SuccessorTree.Counterexample.exists_open_not_directRamsey
