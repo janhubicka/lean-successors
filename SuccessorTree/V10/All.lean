@@ -1,3 +1,4 @@
+import SuccessorTree.V10.EmptyKptAmbientDecode
 import SuccessorTree.V10.EmptyKptAdmissible
 import SuccessorTree.V10.EmptyKptPartialType
 import SuccessorTree.V10.EmptyKptCutHistory
