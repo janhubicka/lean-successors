@@ -202,7 +202,7 @@ theorem levelTwo_refinement_is_pure
 /-- The printed depth-based Ramsey-null predicate, without imposing
 the invalid direct A.3(2) as a field of AbstractRamseySpace. -/
 def DirectIsRamseyNull (X : Set ExampleMap) : Prop :=
-  ∀ {n : Nat} (a : SMTree.RamseyApprox markerMonoid n)
+  ∀ {n : Nat} (a : (SMTree.ramseyApproximationSystem markerMonoid).Approx n)
     (B : ExampleMap) {d : Nat},
     (SMTree.ramseyFinitization markerMonoid).HasDepth a B d →
     ∃ C : ExampleMap,
@@ -212,7 +212,7 @@ def DirectIsRamseyNull (X : Set ExampleMap) : Prop :=
 
 /-- The corresponding printed depth-based Ramsey predicate. -/
 def DirectIsRamsey (X : Set ExampleMap) : Prop :=
-  ∀ {n : Nat} (a : SMTree.RamseyApprox markerMonoid n)
+  ∀ {n : Nat} (a : (SMTree.ramseyApproximationSystem markerMonoid).Approx n)
     (B : ExampleMap) {d : Nat},
     (SMTree.ramseyFinitization markerMonoid).HasDepth a B d →
     ∃ C : ExampleMap,
@@ -312,7 +312,8 @@ theorem exists_open_not_directRamsey :
       have hFneigh :
           F ∈ (SMTree.ramseyApproximationSystem markerMonoid).neighborhood
             rootApprox C := by
-        simpa only [rootNeighborhood_eq_neighborhood] using hF
+        have hF' : F ∈ RootNeighborhood C := hF
+        simpa only [rootNeighborhood_eq_neighborhood] using hF'
       exact (Set.disjoint_left.mp hdis) hFneigh hz
 
 end SuccessorTree.Counterexample
