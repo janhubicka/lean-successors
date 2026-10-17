@@ -54,8 +54,8 @@ theorem baire_image_val_of_isOpen
   obtain ⟨O, hO, hEq⟩ := hS.residualEq_isOpen
   let M : Set C := {z | ¬ (z ∈ S ↔ z ∈ O)}
   have hm : IsMeagre M := by
-    change {z : C | z ∈ S ↔ z ∈ O} ∈ residual C
-    exact Filter.eventuallyEqSet_iff.mp hEq
+    change Mᶜ ∈ residual C
+    simpa [M] using (Filter.eventuallyEqSet_iff.mp hEq)
   have hmAmbient :
       IsMeagre ((Subtype.val : C → α) '' M : Set α) :=
     IsMeagre.image_val hm
@@ -116,7 +116,9 @@ theorem meagre_preimage_of_nowhereDense
   apply hBig.mono
   intro x hx
   have hxUnion : f x ∈ ⋃₀ S := by
-    simpa only [hUnion] using hx
+    change f x ∈ X at hx
+    rw [hUnion] at hx
+    exact hx
   rcases Set.mem_sUnion.mp hxUnion with ⟨N, hNS, hxN⟩
   exact Set.mem_iUnion.mpr
     ⟨N, Set.mem_iUnion.mpr ⟨hNS, hxN⟩⟩
@@ -134,13 +136,16 @@ theorem baire_preimage_of_open_and_nowhereDense
     BaireMeasurableSet (f ⁻¹' X) := by
   obtain ⟨O, hO, hEq⟩ := hX.residualEq_isOpen
   have hm : IsMeagre {y : β | ¬ (y ∈ X ↔ y ∈ O)} := by
-    change {y : β | y ∈ X ↔ y ∈ O} ∈ residual β
-    exact Filter.eventuallyEqSet_iff.mp hEq
+    change {y : β | ¬ (y ∈ X ↔ y ∈ O)}ᶜ ∈ residual β
+    simpa only [Set.compl_setOf, not_not] using
+      (Filter.eventuallyEqSet_iff.mp hEq)
   have hmp := meagre_preimage_of_nowhereDense f hND _ hm
   have hRes :
       {z : α | z ∈ (f ⁻¹' X) ↔ z ∈ (f ⁻¹' O)} ∈ residual α := by
     change {z : α | ¬ ¬ (f z ∈ X ↔ f z ∈ O)} ∈ residual α at hmp
-    simpa only [not_not] using hmp
+    have hPlain : {z : α | f z ∈ X ↔ f z ∈ O} ∈ residual α := by
+      simpa only [not_not] using hmp
+    simpa only [Set.mem_preimage] using hPlain
   have hEqPre : (f ⁻¹' X) =ᵇ (f ⁻¹' O) :=
     Filter.eventuallyEqSet_iff.mpr hRes
   exact (hOpen O hO).congr hEqPre.symm
