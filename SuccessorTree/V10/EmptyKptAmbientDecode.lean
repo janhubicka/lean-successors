@@ -130,11 +130,15 @@ theorem admissible_positive_has_history {n : Nat}
     have hh := congrArg Sigma.fst hEq
     simpa [EnumeratedPartialStructure.rawTypeAtFree] using hh.symm
   have hPart : T = A.partialTypeAt (n + 1) v := by
-    have hh : (⟨n + 1, T⟩ : RawPartialTypeNode 0 0 0) =
+    have hRaw : A.rawTypeAtFree v =
         (⟨n + 1, A.partialTypeAt (n + 1) v⟩ :
           RawPartialTypeNode 0 0 0) := by
-      simp only [EnumeratedPartialStructure.rawTypeAtFree, hCut] at hEq
-      exact hEq
+      change (⟨A.freeLevel v, A.partialTypeAt (A.freeLevel v) v⟩ :
+        RawPartialTypeNode 0 0 0) = _
+      rw [hCut]
+    have hh : (⟨n + 1, T⟩ : RawPartialTypeNode 0 0 0) =
+        (⟨n + 1, A.partialTypeAt (n + 1) v⟩ :
+          RawPartialTypeNode 0 0 0) := hEq.trans hRaw
     have hHeq : HEq T (A.partialTypeAt (n + 1) v) :=
       (Sigma.mk.inj_iff.mp hh).2
     exact eq_of_heq hHeq
