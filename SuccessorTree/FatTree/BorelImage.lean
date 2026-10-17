@@ -34,9 +34,9 @@ theorem associatedMap_eq_stage_of_level_le
     (hx : LevelTree.lev x ≤ n) :
     associatedMap H U x = partialMap H U (n + 1) x := by
   rw [associatedMap_apply H U x]
-  exact ShapeMap.fusion_stable_of_le
+  exact (ShapeMap.fusion_stable_of_le
     (fun i => (partialMap H U (i + 1)).map)
-    (partialMap_fusionStable H U) x hx
+    (partialMap_fusionStable H U) x hx).symm
 
 /-- The fixed-stem finite-colour fat-image theorem given Baire pullback
 fibres. This uses only the unconditional fat-tree Ellentuck theorem. -/
