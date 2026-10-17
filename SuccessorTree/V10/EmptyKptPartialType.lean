@@ -33,7 +33,7 @@ def ordinaryCutAt : {n : Nat} → (h : CutHistory n) → Fin (n + 1) → Nat
   induction h with
   | root => rfl
   | @step n h p ih =>
-      simp [ordinaryCutAt, ih]
+      simpa [ordinaryCutAt] using ih
 
 /-- On positive columns the free cut is strictly smaller than the
 column position, as required by the E spacing axiom. -/
