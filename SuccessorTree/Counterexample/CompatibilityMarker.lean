@@ -115,8 +115,12 @@ theorem meetingLevels_subset_marked_range
     exact LevelTree.level_ancestor _ _ _
   have hbR : b ≤ R x := LevelTree.ancestor_le _ _ _
   let a : Node Unit 1 :=
-    LevelTree.ancestor b k (by rw [hbLevel]; omega)
-  have haLevel : a.level = k := LevelTree.level_ancestor _ _ _
+    LevelTree.ancestor b k (by
+      change k ≤ b.level
+      omega)
+  have haLevel : a.level = k := by
+    change LevelTree.lev a = k
+    exact LevelTree.level_ancestor b k _
   have hab : a ≤ b := LevelTree.ancestor_le _ _ _
   have hcover : a ⋖ b := by
     apply LevelTree.covBy_of_le_level_succ hab
