@@ -22,3 +22,10 @@ import SuccessorTree.ShapeEllentuckRamsey
 
 #print axioms SuccessorTree.SMTree.FatTree.coneRamsey_of_relativeEA2
 #print axioms SuccessorTree.SMTree.FatTree.coneNull_of_relativeEA2
+
+#print axioms SuccessorTree.SMTree.FatTree.rowExtension_eq_of_samePrefix
+#print axioms SuccessorTree.SMTree.FatTree.partialMap_eq_of_samePrefix
+#print axioms SuccessorTree.SMTree.FatTree.associatedMap_pointwiseContinuous
+#print axioms SuccessorTree.SMTree.FatTree.fatImageHomogeneous_of_pointwiseBorel
+#print axioms SuccessorTree.SMTree.FatTree.relativeAssociatedMap_pointwiseContinuous
+#print axioms SuccessorTree.SMTree.FatTree.coneHomogeneous_of_pointwiseBorel_and_EA1
