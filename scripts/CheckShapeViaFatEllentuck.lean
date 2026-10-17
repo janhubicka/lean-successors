@@ -12,3 +12,10 @@ import SuccessorTree.ShapeEllentuckRamsey
 #print axioms SuccessorTree.SMTree.FatTree.coneHomogeneous_of_BairePullback_and_lifting
 #print axioms SuccessorTree.SMTree.FatTree.coneRamsey_of_BairePullback_and_lifting
 #print axioms SuccessorTree.SMTree.FatTree.coneNull_of_meagrePullback_and_lifting
+
+#print axioms SuccessorTree.RelativeCategory.baire_image_val_of_isOpen
+#print axioms SuccessorTree.RelativeCategory.meagre_preimage_of_nowhereDense
+#print axioms SuccessorTree.RelativeCategory.baire_preimage_of_open_and_nowhereDense
+#print axioms SuccessorTree.RelativeCategory.meagre_of_relative_preimage
+#print axioms SuccessorTree.RelativeCategory.baire_of_relative_EA2
+#print axioms SuccessorTree.RelativeCategory.meagre_of_relative_EA2
