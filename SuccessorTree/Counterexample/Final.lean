@@ -90,4 +90,228 @@ theorem exists_nowhereDense_hits_every_pure :
   intro F hF
   exact hne ⟨F, hF⟩
 
+
+
+/-!
+## Exact depth and the printed Ramsey predicates
+
+The preceding counterexample deliberately did not appeal to any false
+direct-monoid A.3(2). This section verifies that its root neighborhood is
+precisely the depth-two instance of the *published* Ramsey and Ramsey-null
+quantifiers (the approximation index is one, the finitization depth two).
+The predicates below are those of RamseySpace.Ramsey with the unnecessary
+AbstractRamseySpace bundle removed: assuming that bundle here would beg
+the question, because its A.3(2) axiom fails for these M-maps.
+-/
+
+/-- A representative of the one-node approximation f(root)=first child. -/
+noncomputable def rootBase : ExampleMap :=
+  (raisedCandidate pureFreeIdentity (fun _ : Nat => false)).val
+
+theorem rootBase_root :
+    rootBase (rootNode (Label := Unit) (arity := 1)) =
+      markedFirstNode := by
+  exact raisedCandidate_root pureFreeIdentity (fun _ : Nat => false)
+
+noncomputable def rootApprox : SMTree.RamseyApprox markerMonoid 1 :=
+  SMTree.ramseyApprox markerMonoid 1 rootBase
+
+noncomputable def idExample : ExampleMap := SMTree.MMap.id markerMonoid
+
+/-- The number two is the *approximation-space* depth; in the
+manuscript's level convention the root image has depth one. -/
+theorem rootApprox_depth_two :
+    (SMTree.ramseyFinitization markerMonoid).HasDepth
+      rootApprox idExample 2 := by
+  constructor
+  · change Nonempty (SMTree.RamseyFiniteFactor markerMonoid
+      (SMTree.ramseyApprox markerMonoid 1 rootBase)
+      (SMTree.ramseyApprox markerMonoid 2 idExample))
+    refine ⟨{ map := rootBase, bound := ?_, agrees := ?_ }⟩
+    · intro x
+      have hxroot : x.1 = rootNode (Label := Unit) (arity := 1) :=
+        level_zero_eq_root (Nat.eq_zero_of_le_zero x.2)
+      change (rootBase x.1).level ≤ 1
+      rw [hxroot, rootBase_root]
+      decide
+    · intro x
+      rfl
+  · intro e he
+    have he01 : e = 0 ∨ e = 1 := by omega
+    rcases he01 with rfl | rfl
+    · intro hbad
+      exact hbad
+    · intro hbad
+      change Nonempty (SMTree.RamseyFiniteFactor markerMonoid
+        (SMTree.ramseyApprox markerMonoid 1 rootBase)
+        (SMTree.ramseyApprox markerMonoid 1 idExample)) at hbad
+      obtain ⟨fac⟩ := hbad
+      let x : SMTree.InitialNode (Node Unit 1) 0 :=
+        ⟨rootNode (Label := Unit) (arity := 1), by decide⟩
+      have hbound : (fac.map x.1).level ≤ 0 := fac.bound x
+      have heq := congrArg Node.level (fac.agrees x)
+      have hone : 1 = (fac.map x.1).level := by
+        change (rootBase (rootNode (Label := Unit) (arity := 1))).level =
+          (fac.map (rootNode (Label := Unit) (arity := 1))).level at heq
+        simpa only [rootBase_root, markedFirstNode_level] using heq
+      omega
+
+/-- The custom root neighborhood used above is exactly the basic
+neighborhood of its genuine finite approximation in the direct system. -/
+theorem rootNeighborhood_eq_neighborhood (H : ExampleMap) :
+    RootNeighborhood H =
+      (SMTree.ramseyApproximationSystem markerMonoid).neighborhood rootApprox H := by
+  ext G
+  constructor
+  · rintro ⟨hred, hroot⟩
+    refine ⟨hred, ?_⟩
+    apply Subtype.ext
+    funext x
+    have hxroot : x.1 = rootNode (Label := Unit) (arity := 1) :=
+      level_zero_eq_root (Nat.eq_zero_of_le_zero x.2)
+    change G x.1 = rootBase x.1
+    rw [hxroot, rootBase_root]
+    exact hroot
+  · rintro ⟨hred, happrox⟩
+    refine ⟨hred, ?_⟩
+    have hh := congrArg Subtype.val happrox
+    have hroot := congrFun hh
+      (⟨rootNode (Label := Unit) (arity := 1), by decide⟩ :
+        SMTree.InitialNode (Node Unit 1) 0)
+    change G (rootNode (Label := Unit) (arity := 1)) =
+      rootBase (rootNode (Label := Unit) (arity := 1)) at hroot
+    rw [rootBase_root] at hroot
+    exact hroot
+
+/-- Every depth-two refinement of the identity fixes the whole initial
+tree through level one. This is precisely the pure-map class used in
+the almost-disjoint transfinite recursion. -/
+theorem levelTwo_refinement_is_pure
+    (C : ExampleMap)
+    (hC : C ∈ (SMTree.ramseyApproximationSystem markerMonoid).levelNeighborhood
+      2 idExample) :
+    ∀ x : Node Unit 1, x.level ≤ 1 → C x = x := by
+  intro x hx
+  have hh := congrArg Subtype.val hC.2
+  have hxEq := congrFun hh
+    (⟨x, hx⟩ : SMTree.InitialNode (Node Unit 1) 1)
+  change C x = x at hxEq
+  exact hxEq
+
+/-- The printed depth-based Ramsey-null predicate, without imposing
+the invalid direct A.3(2) as a field of AbstractRamseySpace. -/
+def DirectIsRamseyNull (X : Set ExampleMap) : Prop :=
+  ∀ {n : Nat} (a : SMTree.RamseyApprox markerMonoid n)
+    (B : ExampleMap) {d : Nat},
+    (SMTree.ramseyFinitization markerMonoid).HasDepth a B d →
+    ∃ C : ExampleMap,
+      C ∈ (SMTree.ramseyApproximationSystem markerMonoid).levelNeighborhood d B ∧
+      Disjoint
+        ((SMTree.ramseyApproximationSystem markerMonoid).neighborhood a C) X
+
+/-- The corresponding printed depth-based Ramsey predicate. -/
+def DirectIsRamsey (X : Set ExampleMap) : Prop :=
+  ∀ {n : Nat} (a : SMTree.RamseyApprox markerMonoid n)
+    (B : ExampleMap) {d : Nat},
+    (SMTree.ramseyFinitization markerMonoid).HasDepth a B d →
+    ∃ C : ExampleMap,
+      C ∈ (SMTree.ramseyApproximationSystem markerMonoid).levelNeighborhood d B ∧
+      (((SMTree.ramseyApproximationSystem markerMonoid).neighborhood a C ⊆ X) ∨
+       Disjoint
+         ((SMTree.ramseyApproximationSystem markerMonoid).neighborhood a C) X)
+
+/-- A direct monoid basic neighborhood is open in its actual Ellentuck
+topology, independently of any A.3(2). -/
+theorem rootNeighborhood_isOpen (H : ExampleMap) :
+    @IsOpen ExampleMap
+      (SMTree.ramseyApproximationSystem markerMonoid).ellentuckTopology
+      (RootNeighborhood H) := by
+  rw [rootNeighborhood_eq_neighborhood]
+  exact (SMTree.ramseyApproximationSystem markerMonoid).isOpen_neighborhood
+    rootApprox H
+
+theorem pure_rootNeighborhood_nonempty (H : PureFreeMap) :
+    (RootNeighborhood H.val).Nonempty := by
+  refine ⟨(raisedCandidate H (fun _ : Nat => false)).val, ?_⟩
+  exact ⟨raisedCandidate_reduces H _, raisedCandidate_root H _⟩
+
+/-- No nonempty pure root neighborhood can be contained in a
+nowhere-dense subset: this uses the *direct* Ellentuck topology. -/
+theorem pure_rootNeighborhood_not_subset_nowhereDense
+    (Z : Set ExampleMap)
+    (hND : @IsNowhereDense ExampleMap
+      (SMTree.ramseyApproximationSystem markerMonoid).ellentuckTopology Z)
+    (H : PureFreeMap) :
+    ¬ RootNeighborhood H.val ⊆ Z := by
+  letI : TopologicalSpace ExampleMap :=
+    (SMTree.ramseyApproximationSystem markerMonoid).ellentuckTopology
+  intro hsub
+  have hcl : RootNeighborhood H.val ⊆ closure Z :=
+    hsub.trans subset_closure
+  have hin : RootNeighborhood H.val ⊆ interior (closure Z) :=
+    interior_maximal hcl (rootNeighborhood_isOpen H.val)
+  obtain ⟨F, hF⟩ := pure_rootNeighborhood_nonempty H
+  have hEmpty : interior (closure Z) = (∅ : Set ExampleMap) := hND
+  have hbad := hin hF
+  rw [hEmpty] at hbad
+  exact hbad
+
+/-- The *actual* Ramsey-null conclusion of Theorem 1.11 fails:
+the designated root approximation has depth two in the identity,
+and every permitted depth-two refinement is among the pure maps
+hit by the closed nowhere-dense family. -/
+theorem exists_closed_nowhereDense_not_directRamseyNull :
+    ∃ Z : Set ExampleMap,
+      @IsClosed ExampleMap
+        (SMTree.ramseyApproximationSystem markerMonoid).ellentuckTopology Z ∧
+      @IsNowhereDense ExampleMap
+        (SMTree.ramseyApproximationSystem markerMonoid).ellentuckTopology Z ∧
+      ¬ DirectIsRamseyNull Z := by
+  obtain ⟨Z, hclosed, hnd, hno⟩ :=
+    exists_closed_nowhereDense_not_avoidable
+  refine ⟨Z, hclosed, hnd, ?_⟩
+  intro hnull
+  obtain ⟨C, hC, hdis⟩ :=
+    hnull rootApprox idExample rootApprox_depth_two
+  apply hno
+  refine ⟨⟨C, levelTwo_refinement_is_pure C hC⟩, ?_⟩
+  simpa only [rootNeighborhood_eq_neighborhood] using hdis
+
+/-- Even an Ellentuck-open set of direct M-maps need not be Ramsey:
+the complement of the constructed closed nowhere-dense Z is open,
+and no permitted depth-two root refinement is homogeneous for it. -/
+theorem exists_open_not_directRamsey :
+    ∃ O : Set ExampleMap,
+      @IsOpen ExampleMap
+        (SMTree.ramseyApproximationSystem markerMonoid).ellentuckTopology O ∧
+      ¬ DirectIsRamsey O := by
+  classical
+  obtain ⟨Z, hclosed, hnd, hno⟩ :=
+    exists_closed_nowhereDense_not_avoidable
+  refine ⟨Zᶜ, ?_, ?_⟩
+  · letI : TopologicalSpace ExampleMap :=
+      (SMTree.ramseyApproximationSystem markerMonoid).ellentuckTopology
+    exact isOpen_compl_iff.mpr hclosed
+  · intro hramsey
+    obtain ⟨C, hC, hhom⟩ :=
+      hramsey rootApprox idExample rootApprox_depth_two
+    let H : PureFreeMap :=
+      ⟨C, levelTwo_refinement_is_pure C hC⟩
+    rcases hhom with hsub | hdis
+    · have hsubRoot : RootNeighborhood H.val ⊆ Zᶜ := by
+        simpa only [rootNeighborhood_eq_neighborhood] using hsub
+      apply hno
+      refine ⟨H, ?_⟩
+      apply Set.disjoint_left.mpr
+      intro F hF hFZ
+      exact (hsubRoot hF) hFZ
+    · apply pure_rootNeighborhood_not_subset_nowhereDense Z hnd H
+      intro F hF
+      by_contra hz
+      have hFneigh :
+          F ∈ (SMTree.ramseyApproximationSystem markerMonoid).neighborhood
+            rootApprox C := by
+        simpa only [rootNeighborhood_eq_neighborhood] using hF
+      exact (Set.disjoint_left.mp hdis) hFneigh hz
+
 end SuccessorTree.Counterexample
