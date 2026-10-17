@@ -1,4 +1,5 @@
-import SuccessorTree.FatTree.BorelImage
+import SuccessorTree.FatTree.ProductContinuity
+import SuccessorTree.FatTree.FatCategoryCriterion
 import SuccessorTree.ShapeEllentuckRamsey
 
 #print axioms SuccessorTree.SMTree.FatTree.shapeOneDimensionalRamsey_viaFatEllentuck
@@ -29,3 +30,43 @@ import SuccessorTree.ShapeEllentuckRamsey
 #print axioms SuccessorTree.SMTree.FatTree.fatImageHomogeneous_of_pointwiseBorel
 #print axioms SuccessorTree.SMTree.FatTree.relativeAssociatedMap_pointwiseContinuous
 #print axioms SuccessorTree.SMTree.FatTree.coneHomogeneous_of_pointwiseBorel_and_EA1
+
+#print axioms SuccessorTree.RelativeCategory.nowhereDense_preimage_test_iff_closed
+#print axioms SuccessorTree.RelativeCategory.meagre_preimage_of_closedNowhereDense
+#print axioms SuccessorTree.RelativeCategory.closedNowhereDense_preimage_test_iff_meagre
+#print axioms SuccessorTree.RelativeCategory.baire_preimage_of_open_and_closedNowhereDense
+#print axioms SuccessorTree.RelativeCategory.open_and_closedNowhereDense_iff_baire_and_meagre
+#print axioms SuccessorTree.RelativeCategory.closedNowhereDense_preimage_of_continuous_and_image
+#print axioms SuccessorTree.RelativeCategory.open_and_closedNowhereDense_of_continuous_and_image
+#print axioms SuccessorTree.SMTree.FatTree.hasRelativeEA2_iff_closed
+
+#print axioms SuccessorTree.SMTree.FatTree.ramseyApprox_comp_eq_of_eq
+#print axioms SuccessorTree.SMTree.FatTree.associatedMap_approx_eq_carriedApprox
+#print axioms SuccessorTree.SMTree.FatTree.ramseyApprox_comp_eq_leftComposeApprox
+#print axioms SuccessorTree.SMTree.FatTree.source_finiteDepth_iff_nonempty
+#print axioms SuccessorTree.SMTree.FatTree.source_depth_comp
+#print axioms SuccessorTree.SMTree.FatTree.source_depth_comp_iff
+#print axioms SuccessorTree.SMTree.FatTree.source_depth_empty
+#print axioms SuccessorTree.SMTree.FatTree.SourceEA1Witness.sourceStem
+#print axioms SuccessorTree.SMTree.FatTree.HasSourceEA.toEA1
+#print axioms SuccessorTree.SMTree.FatTree.fatImageHomogeneous_pure_of_pointwiseBorel
+#print axioms SuccessorTree.SMTree.FatTree.shapeMapBorelCone_of_EA1
+#print axioms SuccessorTree.SMTree.FatTree.shapeMapRamsey_of_EA
+#print axioms SuccessorTree.SMTree.FatTree.shapeMapRamseyNull_of_EA
+#print axioms SuccessorTree.SMTree.FatTree.shapeMapEllentuck_of_EA
+
+#print axioms SuccessorTree.SMTree.FatTree.continuous_fatApprox_product
+#print axioms SuccessorTree.SMTree.FatTree.associatedMap_eval_productContinuous
+#print axioms SuccessorTree.SMTree.FatTree.associatedMap_productContinuous
+#print axioms SuccessorTree.SMTree.FatTree.relativeAssociatedMap_productContinuous
+
+#print axioms SuccessorTree.RelativeCategory.meagre_of_baire_emptyInterior
+#print axioms SuccessorTree.RelativeCategory.meagre_nowhereDense_open_subtype
+#print axioms SuccessorTree.RelativeCategory.open_and_closedNowhereDense_iff_open_and_image
+#print axioms SuccessorTree.SMTree.FatTree.fatTree_isNowhereDense_of_isMeagre
+#print axioms SuccessorTree.SMTree.FatTree.fatTree_isMeagre_iff_isNowhereDense
+#print axioms SuccessorTree.SMTree.FatTree.fatWitness_isMeagre_iff_isNowhereDense
+#print axioms SuccessorTree.SMTree.FatTree.fatWitness_meagre_of_baire_emptyInterior
+#print axioms SuccessorTree.SMTree.FatTree.hasRelativeEA2Closed_iff_open_and_image
+#print axioms SuccessorTree.SMTree.FatTree.hasRelativeEA2_iff_open_and_image
+#print axioms SuccessorTree.SMTree.FatTree.relativeImage_test_iff_basic
