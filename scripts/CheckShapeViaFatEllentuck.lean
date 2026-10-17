@@ -7,3 +7,10 @@ import SuccessorTree.ShapeEllentuckRamsey
 
 #print axioms SuccessorTree.SMTree.FatTree.associatedMap_eq_stage_of_level_le
 #print axioms SuccessorTree.SMTree.FatTree.fatImageHomogeneous_of_BaireFibres
+
+#print axioms SuccessorTree.SMTree.FatTree.rowExtension_eq_of_samePrefix
+#print axioms SuccessorTree.SMTree.FatTree.partialMap_eq_of_samePrefix
+#print axioms SuccessorTree.SMTree.FatTree.associatedMap_eq_of_samePrefix
+#print axioms SuccessorTree.SMTree.FatTree.isOpen_associatedMap_eval_fibre
+#print axioms SuccessorTree.SMTree.FatTree.associatedMap_pointwiseContinuous
+#print axioms SuccessorTree.SMTree.FatTree.fatImageHomogeneous_of_pointwiseBorel
