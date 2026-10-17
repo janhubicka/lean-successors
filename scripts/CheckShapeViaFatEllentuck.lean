@@ -1,4 +1,5 @@
 import SuccessorTree.FatTree.ProductContinuity
+import SuccessorTree.FatTree.FatCategoryCriterion
 import SuccessorTree.ShapeEllentuckRamsey
 
 #print axioms SuccessorTree.SMTree.FatTree.shapeOneDimensionalRamsey_viaFatEllentuck
@@ -58,3 +59,14 @@ import SuccessorTree.ShapeEllentuckRamsey
 #print axioms SuccessorTree.SMTree.FatTree.associatedMap_eval_productContinuous
 #print axioms SuccessorTree.SMTree.FatTree.associatedMap_productContinuous
 #print axioms SuccessorTree.SMTree.FatTree.relativeAssociatedMap_productContinuous
+
+#print axioms SuccessorTree.RelativeCategory.meagre_of_baire_emptyInterior
+#print axioms SuccessorTree.RelativeCategory.meagre_nowhereDense_open_subtype
+#print axioms SuccessorTree.RelativeCategory.open_and_closedNowhereDense_iff_open_and_image
+#print axioms SuccessorTree.SMTree.FatTree.fatTree_isNowhereDense_of_isMeagre
+#print axioms SuccessorTree.SMTree.FatTree.fatTree_isMeagre_iff_isNowhereDense
+#print axioms SuccessorTree.SMTree.FatTree.fatWitness_isMeagre_iff_isNowhereDense
+#print axioms SuccessorTree.SMTree.FatTree.fatWitness_meagre_of_baire_emptyInterior
+#print axioms SuccessorTree.SMTree.FatTree.hasRelativeEA2Closed_iff_open_and_image
+#print axioms SuccessorTree.SMTree.FatTree.hasRelativeEA2_iff_open_and_image
+#print axioms SuccessorTree.SMTree.FatTree.relativeImage_test_iff_basic

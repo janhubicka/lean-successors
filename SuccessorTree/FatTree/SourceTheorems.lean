@@ -102,7 +102,7 @@ theorem source_finiteDepth_iff_nonempty
 G's last image level plus one. This is the manuscript's numeric depth
 convention with the empty approximation counted as length zero. -/
 theorem source_depth_comp (F G : MMap H) (n : Nat) :
-    (ramseyFinitization H).HasDepth
+    (ramseyFinitization H).HasDepth (n := n + 1)
       (ramseyApprox H (n + 1) (MMap.comp H F G)) F
       (H.levelMap G.map n + 1) := by
   constructor
@@ -139,7 +139,7 @@ theorem source_depth_comp (F G : MMap H) (n : Nat) :
 
 /-- Both directions of the source/approximation depth correspondence. -/
 theorem source_depth_comp_iff (F G : MMap H) (n d : Nat) :
-    (ramseyFinitization H).HasDepth
+    (ramseyFinitization H).HasDepth (n := n + 1)
       (ramseyApprox H (n + 1) (MMap.comp H F G)) F d ↔
       d = H.levelMap G.map n + 1 := by
   constructor
@@ -152,7 +152,7 @@ theorem source_depth_comp_iff (F G : MMap H) (n d : Nat) :
 /-- The empty stem has formal depth zero, corresponding to the
 manuscript's empty-stem level -1. -/
 theorem source_depth_empty (F : MMap H) (f : RamseyApprox H 0) :
-    (ramseyFinitization H).HasDepth f F 0 := by
+    (ramseyFinitization H).HasDepth (n := 0) f F 0 := by
   constructor
   · change True
     trivial

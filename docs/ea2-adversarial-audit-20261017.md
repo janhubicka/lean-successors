@@ -8,7 +8,7 @@ The audit began from the actual diffs of PRs [572](https://github.com/janhubicka
 
 **The mathematical category bridge and conditional transfer are correct.** They use a common fat-tree witness, preserve the source stem, apply A3(2) only to fat trees, and obtain the entire target cone from an explicit covering hypothesis. They do not infer monoid Ellentuck continuity from pointwise continuity.
 
-There are useful exact simplifications. The category test may be restricted to **closed** nowhere dense target sets. On a fixed witness, the two resulting tests are equivalent to preserving both Baire sets and meager sets under inverse image. The stronger geometric sufficient condition may ask that images of nonempty open sets have closure with nonempty interior. Requiring the images themselves to have interior is stronger than necessary.
+There are useful exact simplifications. The category test may be restricted to **closed** nowhere dense target sets. On a fixed witness, the two resulting tests are equivalent to preserving both Baire sets and meager sets under inverse image. On the actual fat Ellentuck witness there is a further exact formulation: **EA2 is equivalent to Baire inverse images of all open target sets, together with somewhere dense images of every nonempty relatively open subset of the witness. Continuity is unnecessary for this equivalence.** The image test may be restricted to nonempty fat basic neighbourhoods contained in the witness, including those with deeper stems. Requiring the images themselves to have interior is stronger than necessary.
 
 The audit does **not** establish that EA2 is necessary for the Ramsey conclusion among all successor-tree monoids. The established equivalence concerns a specified pullback method on one fixed source witness. Further weakening is possible if one changes the desired conclusion, permits witnesses depending on the target set, or strengthens the geometric lifting information. Claims of absolute minimality would therefore exceed the proof.
 
@@ -84,7 +84,7 @@ This refinement concerns only the extension direction. Ambient meagerness does n
 
 At the audited commit, the relevant declarations are `baire_image_val_of_isOpen`, `meagre_of_relative_preimage`, `baire_of_relative_EA2`, and `meagre_of_relative_EA2` in `RelativeCategory.lean`. The restricted pullback is exactly $C\cap q^{-1}(A)$; no regularity is asserted outside $C$.
 
-## 3. A weaker geometric sufficient condition
+## 3. A weaker generic geometric condition and the exact fat-witness criterion
 
 Suppose $q:C\to Y$ is continuous and that
 
@@ -108,7 +108,7 @@ is continuous. Every nonempty relatively open subset of the irrational numbers h
 
 There is an exact minimality statement within this continuous-map criterion. For a continuous map, the displayed image condition is equivalent to requiring that inverse images of nowhere dense sets be nowhere dense. The forward implication was proved above. For the converse, if a nonempty open $V$ had nowhere dense image, the inverse image of $q[V]$ would contain $V$ and could not be nowhere dense. If the source $C$ is Baire, one can replace “nowhere dense inverse images” in this equivalence by “meager inverse images”: the inverse image of a closed nowhere dense target is closed, and a closed meager set in a Baire space has empty interior. Thus for continuous maps on Baire sources, the somewhere-dense image criterion is exactly the meager pullback requirement. This is a precise restricted equivalence, not a necessity claim for the full Ramsey theorem.
 
-Continuity must remain part of this sufficient criterion. Define
+For general source spaces, the preceding sufficient argument cannot simply replace continuity by Baire inverse images of open sets. Define
 
 $$
 q(x)=\begin{cases}x,&x\in\mathbb Q,\\0,&x\notin\mathbb Q.\end{cases}
@@ -120,11 +120,42 @@ $$
 q^{-1}(\{0\})=(\mathbb R\setminus\mathbb Q)\cup\{0\}
 $$
 
-is not meager. Thus Baire inverse images of open sets, even combined with the displayed image condition, do not replace continuity in this geometric argument.
+is not meager. Thus Baire inverse images of open sets, even combined with the displayed image condition, do not suffice on arbitrary source spaces. **This obstruction does not apply to fat Ellentuck witnesses**, which have the stronger category property proved next.
+
+### Every meager set is nowhere dense on a fat witness
+
+Let $\mathcal R$ carry the fat-tree Ellentuck topology. If $M\subseteq\mathcal R$ is meager, the fat-tree Ellentuck theorem makes $M$ Ramsey null. Consequently every nonempty basic neighbourhood contains a nonempty basic refinement disjoint from $M$. Every nonempty open set contains a basic neighbourhood, so it too contains a nonempty open subset disjoint from $M$.
+
+If $\operatorname{int}_{\mathcal R}\operatorname{cl}_{\mathcal R}(M)$ were nonempty, apply this conclusion inside that open set. The resulting nonempty open refinement would be disjoint from $M$ while contained in its closure. This is impossible: every nonempty open subset meeting the closure of $M$ meets $M$. Therefore $M$ is nowhere dense. The converse holds in every topological space, so meagerness and nowhere denseness coincide in $\mathcal R$.
+
+They also coincide in the open subspace $C=[\mathbf x,\mathbf U]$. A relatively meager subset of $C$ is ambient meager by Section 2, hence ambient nowhere dense by the preceding paragraph. Restricting an ambient nowhere dense set to an open subspace preserves nowhere denseness. Conversely every relatively nowhere dense set is relatively meager.
+
+It follows that every nonmeager Baire subset of $C$ has nonempty relative interior. Indeed, write such a subset as $A=O\triangle M$, with $O$ relatively open and $M$ relatively meager. The set $O$ is nonempty, since otherwise $A=M$. The set $M$ is nowhere dense, so $O\setminus\operatorname{cl}_C(M)$ is a nonempty relatively open subset of $A$. Equivalently, a relatively Baire set with empty relative interior is meager.
+
+### Exact EA2 without continuity
+
+Fix the original fat witness $C$ and the prescribed map $q=\rho_F|_C$. The following are equivalent:
+
+1. The two EA2 tests on $C$.
+2. Baire inverse images of every open target set, and
+
+   $$
+   \operatorname{int}_{\mathcal M}\operatorname{cl}_{\mathcal M}(q[V])\ne\varnothing
+   $$
+
+   for every nonempty relatively open $V\subseteq C$.
+
+For necessity, suppose a nonempty relatively open $V$ had nowhere dense image. Its closure $N=\operatorname{cl}_{\mathcal M}(q[V])$ is closed and nowhere dense. EA2 makes $q^{-1}(N)$ meager in $C$, hence nowhere dense there. But it contains the nonempty relatively open set $V$, a contradiction.
+
+For sufficiency, retain the open inverse-image Baire test and assume the displayed image condition. Let $N$ be closed nowhere dense in the target. Its inverse image $P=q^{-1}(N)$ has the Baire property: the complement of $N$ is open, its inverse image has the Baire property, and Baire sets are closed under complements. If $P$ had nonempty relative interior, that interior would be a nonempty relatively open set whose image lies in $N$, contradicting the image condition. Thus $P$ has empty relative interior, and the preceding subsection makes it meager. This proves the closed nowhere dense test, which is equivalent to the original EA2b by Section 1. No continuity assertion about $q$ is used.
+
+The image condition can equivalently test just the nonempty fat basic neighbourhoods $D\subseteq C$, with **arbitrary deeper stems** allowed. One direction is immediate because such $D$ is relatively open. For the other, every nonempty relatively open $V\subseteq C$ contains a nonempty fat basic neighbourhood $D$. Then $q[D]\subseteq q[V]$, and a set containing a somewhere dense subset is itself somewhere dense. This basis reduction concerns images of source basic sets; it does not justify reducing EA2a to inverse images of target basic opens.
+
+The new module `SuccessorTree/FatTree/FatCategoryCriterion.lean` states these exact conclusions as `fatTree_isMeagre_iff_isNowhereDense`, `fatWitness_isMeagre_iff_isNowhereDense`, `fatWitness_meagre_of_baire_emptyInterior`, `hasRelativeEA2Closed_iff_open_and_image`, `hasRelativeEA2_iff_open_and_image`, and `relativeImage_test_iff_basic`. Its generic core only assumes that every meager source set is nowhere dense. The fat-tree theorem supplies that property; no topological Ramsey or Baire property of the shape-map target is assumed. The new declarations remain subject to the final compilation and transitive axiom gate.
 
 ## 4. Strict examples and simplifications that fail
 
-### Continuity and nowhere dense inverse images are stronger than EA2
+### Generic examples do not establish strictness on a fat witness
 
 Define $q:\mathbb R\to\mathbb R$ by $q(x)=x$ for irrational $x$ and $q(x)=0$ for rational $x$. For every set $A$, the symmetric difference between $q^{-1}(A)$ and $A$ is contained in $\mathbb Q$. Thus inverse images preserve the Baire property and meagerness. The map satisfies both EA2 tests, but is discontinuous at every nonzero point. Moreover,
 
@@ -132,7 +163,7 @@ $$
 q^{-1}(\{0\})=\mathbb Q
 $$
 
-is meager and dense, so it is not nowhere dense. EA2 legitimately asks for meager inverse images, rather than nowhere dense ones.
+is meager and dense, so it is not nowhere dense. Thus on general source spaces continuity and nowhere dense inverse images are stronger requirements than the EA2 tests. **The second strictness assertion is false on the actual fat witness:** there every meager inverse image is already nowhere dense, as Section 3 proves. The example does not have a fat Ellentuck source. Likewise, the preceding example showing that continuity cannot be dropped from the generic geometric argument does not contradict the exact criterion without continuity on a fat witness.
 
 ### The two tests are independent as topological conditions
 
@@ -179,6 +210,8 @@ The printed EA1 specifies the particular choice $F'=\rho_F(\mathbf V)$. This is 
 
 At the initial audited commit, `pure` and `cone` in the generic Lean endpoints are arbitrary parameters. Exact source wrappers must instantiate these with the manuscript's genuine monoid depth and composition neighbourhoods, including the empty-stem convention. The new source-facing wrapper work is therefore a substantive correspondence check, not merely a new name for an already literal manuscript theorem.
 
+The exact image criterion in Section 3 clarifies a further quantifier issue. EA1 controls the images of fixed-stem neighbourhoods $[\mathbf x,\mathbf V]$ for pure refinements $\mathbf V\in[d,\mathbf U]$. It does not state the corresponding property for every deeper basic neighbourhood $[\mathbf y,\mathbf W]\subseteq C$. Such a neighbourhood need not contain a neighbourhood with the original stem $\mathbf x$. Reapplying the uniformly quantified EA1 at another target neighbourhood supplies another fat witness; the assertion does not place that witness inside the prescribed $[\mathbf y,\mathbf W]$ or supply a commuting comparison with the original map $\rho_F|_C$. Moreover a fat reduction need not project to a right factor, so the candidate projected target neighbourhood is not automatically available. Thus the tempting derivation of EA2 from EA1 lacks precisely the compatible all-deeper-neighbourhood information required by the exact image test, as well as the open-pullback Baire assertion. This audit proves neither an EA1-to-EA2 implication nor its impossibility; an argument providing that missing compatibility could change the conclusion.
+
 The follow-up audit read the new `SourceTheorems.lean`. Its `SourceEA1Witness` retains the prescribed map $F'=\rho_F(\mathbf V)$, the actual monoid neighbourhoods, and the finite-stem equation. `HasSourceEA` uses `HasRelativeEA2Closed` on that same witness. The numerical depth correspondence is supplied by `source_depth_comp`, `source_depth_comp_iff`, and `source_depth_empty`: for $f=(F\circ G)\restriction_{T({\leq}n)}$, formal depth is $\widetilde G(n)+1$, while the empty stem has formal depth zero. A finite factor supplied by $G$ gives the upper bound. Any factor through a shorter prefix must agree with $G$ on the source nodes, by injectivity of $F$; a node on level $n$ contradicts that shorter bound. This argument is mathematically correct and makes the indexing correspondence explicit. Compilation of the new declarations remains part of the final CI gate.
 
 ## 6. Full English proof of the Borel transfer
@@ -203,7 +236,7 @@ $$
 
 Every member of this cone has a preimage in the homogeneous fat neighbourhood. Therefore the entire cone has one colour. EA2 is not used in this proof.
 
-The audited `PointwiseBorel.lean` proves coordinate dependence and continuity from the fat Ellentuck topology; `BorelCone.lean` handles the actual relative projection after fixed left composition. The manuscript explicitly states product-source continuity, so the source-facing product-topology lemma must be checked separately before attaching an unrestricted validation marker to that statement.
+The audited `PointwiseBorel.lean` proves coordinate dependence and continuity from the fat Ellentuck topology; `BorelCone.lean` handles the actual relative projection after fixed left composition. `ProductContinuity.lean` separately formalizes the manuscript's product-source continuity assertion; its named endpoints and transitive axioms are included in the mandatory PR #577 certificate.
 
 The follow-up audit also read the new `ProductContinuity.lean`. Its topology is explicitly induced by the sequence of discrete finite approximations. Each carried-map evaluation factors through one approximation via `carriedApprox`; this establishes the required continuity from the product topology, first for $\pi$ and then for $\rho_F$. The argument is correct and supplies the missing exact source-topology statement, subject to the final compilation gate.
 
@@ -233,4 +266,4 @@ The October 17 patch is mathematically sound after the corrections above. It pre
 
 Recommended final wording changes are small: use “a bound for their levels” when describing a finite set of coordinates, and explicitly identify the two sets whose symmetric difference is taken in the category proof. A one-sentence proof of relative nowhere dense implies ambient nowhere dense makes the fragile bridge fully self-contained.
 
-The initial proof audit accepts the mathematics independently of CI. New equivalence declarations and source wrappers still require successful compilation and transitive axiom checks at their final commit before the associated validation markers are upgraded. Concrete EA instances remain separate mathematical tasks.
+The initial proof audit accepts the mathematics independently of CI. Kernel validation is recorded by the exact-head run and the named axiom report linked from PR #577. Those records bind certification to the source commit; concrete EA instances remain separate mathematical tasks.

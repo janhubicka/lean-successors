@@ -155,7 +155,7 @@ jobs:
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
       - name: Check Borel and relative Ellentuck transfer axioms
         run: |
-          if ! lake build SuccessorTree.FatTree.SourceTheorems SuccessorTree.FatTree.ProductContinuity > proof-audit/shape-via-fat-ellentuck-build.log 2>&1; then
+          if ! lake build SuccessorTree.FatTree.SourceTheorems SuccessorTree.FatTree.ProductContinuity SuccessorTree.FatTree.FatCategoryCriterion > proof-audit/shape-via-fat-ellentuck-build.log 2>&1; then
             cat proof-audit/shape-via-fat-ellentuck-build.log
             exit 1
           fi
