@@ -31,6 +31,7 @@ without changing these mathematical statements.
 | Original all-Emb(A,K) big Ramsey | `V10.KptUniversalAgeBigRamsey` | `V10.universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound` |
 | Paper-facing finite big Ramsey predicate and universal instance | `V10.FiniteBigRamseyDegrees` | `V10.AgeTestModel.HasOriginalFiniteBigRamseyDegrees`, `V10.AgeTestModel.hasOriginalFiniteBigRamseyDegrees_of_universal` |
 | Free-ancestral history finite Ramsey | `FreeAncestralFiniteRamsey` | `FreeAncestral.finiteShapeRamsey` |
+| Shape-map monoid depth-preserving Ellentuck counterexample (Theorem 1.11 refuted) | `Counterexample.Final` | `Counterexample.exists_closed_nowhereDense_not_avoidable`, `Counterexample.exists_meagre_not_avoidable` |
 
 The `Library.Abstract`, `Library.Applications` and
 `Library.Examples` entry points collect the reusable endpoints.
@@ -40,23 +41,42 @@ statements are available in `SMTree`, `Envelope`, `FatTree`,
 `HalesJewett`, `V10` and `FreeAncestral`; the public smoke test
 checks representative principal endpoints, not every helper lemma.
 
-## Theorem 1.11 is an independent outstanding statement
+## Theorem 1.11: its unqualified depth-preserving form is refuted in Lean
 
-The source Ellentuck topology on the **monoid of shape-preserving maps**
-is not the verified fat-tree Ellentuck topology. Direct monoid A.3(2)
-fails in general, which is why the paper introduces fat trees.
-More seriously, the proposed Section 4 neighborhood transfer
-`π([x,U])=[F_x,F_U]` appears **false even in its forward inclusion**:
-the free-ancestral one-parameter example has `V_q≤_fat U`
-agreeing on arbitrarily many rows, but its associated map cannot
-factor through `F_U`. This also obstructs continuity of `π`
-under the printed topologies. A detailed all-depth mathematical
-argument and finite `q=1,2,3` regression checks are in
-[the fat-tree projection audit](Fat-Tree-to-Shape-Map-Transfer.md).
-The infinite counterexample is **not yet Lean certified**.
-The already verified Tychonoff closedness of the monoid does not
-repair this failure. Theorem 1.11 remains independently OPEN;
-its truth is not refuted by a gap in the Section 4 proof.
+The manuscript's topological Ellentuck assertion for the **monoid of
+shape-preserving maps** is stronger than the separately checked fat-tree
+Ellentuck theorem. The full shape-map monoid need not have A.3(2).
+The original projected-neighbourhood identity from Section 4 fails
+in the free-ancestral one-parameter example; that defect refutes
+the *projection argument* only.
+
+The decisive further result is now **CHECKED**, not just an English
+counterexample: in the full free-ancestral M1–M3 monoid there is
+a closed nowhere-dense (hence meagre) set intersecting
+`[f,H]` for **every** pure `H ∈ [1,Id]`, for the finite
+approximation `f(root)=s` with depth 1. Therefore Theorem 1.11's
+depth-preserving pure-refinement Ramsey-null assertion is **FALSE**.
+The open dense complement is likewise not Ramsey under that definition.
+
+Exact endpoints in `Counterexample.Final`:
+`Counterexample.exists_closed_nowhereDense_not_avoidable`,
+`Counterexample.exists_nowhereDense_hits_every_pure`, and
+`Counterexample.exists_meagre_not_avoidable`.
+The construction includes the fully checked
+`FreeAncestral.compatible_marked_has_infinite_support` lemma,
+the explicit binary almost-disjoint supports, and the ZFC
+greedy antichain (without CH). The meagre endpoint is exported
+from `Library.Examples` and audited by name.
+
+**Definition caveat:** this refutes the manuscript's **same-depth
+pure-refinement** property, not automatically every variant that
+allows arbitrary end-extension of the finite stem. Those definitions
+need not coincide without A.3(2).
+
+The positive fat-tree Ellentuck Theorem 1.17 and the finite shape
+Ramsey Theorem 1.6 remain verified and unaffected. See the
+[fully updated Theorem 1.11 audit](Shape-Ellentuck-Validation.md)
+and [standalone counterexample](../theorem111-zfc-counterexample-20261016.md).
 
 ## Definition 6.25 packaged as a reusable proposition
 
