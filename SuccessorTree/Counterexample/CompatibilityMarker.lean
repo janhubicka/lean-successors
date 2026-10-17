@@ -39,7 +39,10 @@ theorem root_fixed_levelMap_zero
     markerMonoid.levelMap H.map 0 = 0 := by
   have h := markerMonoid.levelMap_eq H.map
     (a := rootNode (Label := Unit) (arity := 1))
-  simpa only [rootNode, Node.level, hfix] using h
+  change markerMonoid.levelMap H.map 0 =
+    (H (rootNode (Label := Unit) (arity := 1))).level at h
+  rw [hfix] at h
+  exact h
 
 /-- The decisive support inclusion: any meeting H-coordinate level
 with G is retained by the marked inner map Q_A, provided G maps the
@@ -64,8 +67,11 @@ theorem meetingLevels_subset_marked_range
     have hk0 := (markerMonoid.levelMap_strictMono G.map).monotone
       (Nat.zero_le k)
     have hg0 : 0 < markerMonoid.levelMap G.map 0 := by
-      rw [markerMonoid.levelMap_eq G.map
-        (a := rootNode (Label := Unit) (arity := 1))]
+      have h := markerMonoid.levelMap_eq G.map
+        (a := rootNode (Label := Unit) (arity := 1))
+      change markerMonoid.levelMap G.map 0 =
+        (G (rootNode (Label := Unit) (arity := 1))).level at h
+      rw [h]
       exact hgroot
     omega
   have hjpos : 1 ≤ j := by
@@ -104,7 +110,9 @@ theorem meetingLevels_subset_marked_range
   rw [← heqX] at hHmark
   let b : Node Unit 1 :=
     LevelTree.ancestor (R x) (k + 1) (by exact hRhigh)
-  have hbLevel : b.level = k + 1 := LevelTree.level_ancestor _ _ _
+  have hbLevel : b.level = k + 1 := by
+    change LevelTree.lev (LevelTree.ancestor (R x) (k + 1) hRhigh) = k + 1
+    exact LevelTree.level_ancestor _ _ _
   have hbR : b ≤ R x := LevelTree.ancestor_le _ _ _
   let a : Node Unit 1 :=
     LevelTree.ancestor b k (by rw [hbLevel]; omega)
