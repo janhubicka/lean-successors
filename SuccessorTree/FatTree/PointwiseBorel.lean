@@ -38,9 +38,9 @@ theorem rowExtension_eq_of_samePrefix
     U.rowExtension H i = V.rowExtension H i := by
   have hh :
       (U.initialSegment H (i + 1)).rowExtension H
-        (⟨i, by omega⟩ : Fin (U.initialSegment H (i + 1)).height) =
+        (⟨i, by change i < i + 1; omega⟩ : Fin (U.initialSegment H (i + 1)).height) =
       (V.initialSegment H (i + 1)).rowExtension H
-        (⟨i, by omega⟩ : Fin (V.initialSegment H (i + 1)).height) := by
+        (⟨i, by change i < i + 1; omega⟩ : Fin (V.initialSegment H (i + 1)).height) := by
     rw [h]
   change U.rowExtension H i = V.rowExtension H i at hh
   exact hh
@@ -112,7 +112,7 @@ theorem continuous_associatedMap_eval (x : T) :
       (fun U => associatedMap H U x) := by
   letI : TopologicalSpace (FatTree H) :=
     (approximationSystem H).ellentuckTopology
-  apply continuous_iff_isOpen.mpr
+  apply continuous_def.mpr
   intro A _
   have hUnion :
       {U : FatTree H | associatedMap H U x ∈ A} =
@@ -147,8 +147,9 @@ theorem associatedMap_pointwiseContinuous :
       (pointwiseTopology H) (associatedMap H) := by
   letI : TopologicalSpace (FatTree H) :=
     (approximationSystem H).ellentuckTopology
-  change Continuous ((fun F : MMap H => (fun x : T => F x)) ∘
-    associatedMap H)
+  rw [continuous_induced_rng]
+  change Continuous (fun U : FatTree H =>
+    fun x : T => associatedMap H U x)
   exact continuous_pi (fun x => continuous_associatedMap_eval H x)
 
 /-- The induced Borel sigma algebra of pointwise convergence. -/
@@ -181,6 +182,8 @@ theorem fatImageHomogeneous_of_pointwiseBorel
     letI : TopologicalSpace (MMap H) := pointwiseTopology H
     letI : MeasurableSpace (FatTree H) := borel (FatTree H)
     letI : MeasurableSpace (MMap H) := pointwiseBorel H
+    letI : BorelSpace (FatTree H) := ⟨rfl⟩
+    letI : BorelSpace (MMap H) := ⟨rfl⟩
     have hmeas : Measurable (associatedMap H) :=
       (associatedMap_pointwiseContinuous H).measurable
     have hBorelC : MeasurableSet {F : MMap H | colour F = c} :=
