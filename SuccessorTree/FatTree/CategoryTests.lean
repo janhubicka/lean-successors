@@ -104,7 +104,7 @@ theorem closedNowhereDense_preimage_of_continuous_and_image
   apply hImage (interior (f ⁻¹' N)) isOpen_interior ⟨x, hx⟩
   apply IsNowhereDense.mono ?_ hND
   rintro y ⟨z, hz, rfl⟩
-  exact interior_subset hz
+  exact (interior_subset : interior (f ⁻¹' N) ⊆ f ⁻¹' N) hz
 
 /-- The weakened geometric sufficient condition printed after EA2:
 continuity and somewhere-dense images of nonempty open source sets. -/
