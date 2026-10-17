@@ -294,7 +294,8 @@ theorem exists_closed_nowhereDense_not_directRamseyNull :
     hnull rootApprox idExample rootApprox_depth_two
   apply hno
   refine ⟨⟨C, levelTwo_refinement_is_pure C hC⟩, ?_⟩
-  simpa only [rootNeighborhood_eq_neighborhood] using hdis
+  rw [rootNeighborhood_eq_neighborhood C]
+  exact hdis
 
 /-- Even an Ellentuck-open set of direct M-maps need not be Ramsey:
 the complement of the constructed closed nowhere-dense Z is open,
@@ -318,7 +319,9 @@ theorem exists_open_not_directRamsey :
       ⟨C, levelTwo_refinement_is_pure C hC⟩
     rcases hhom with hsub | hdis
     · have hsubRoot : RootNeighborhood H.val ⊆ Zᶜ := by
-        simpa only [rootNeighborhood_eq_neighborhood] using hsub
+        change RootNeighborhood C ⊆ Zᶜ
+        rw [rootNeighborhood_eq_neighborhood C]
+        exact hsub
       apply hno
       refine ⟨H, ?_⟩
       apply Set.disjoint_left.mpr
@@ -331,7 +334,8 @@ theorem exists_open_not_directRamsey :
           F ∈ (SMTree.ramseyApproximationSystem markerMonoid).neighborhood
             rootApprox C := by
         have hF' : F ∈ RootNeighborhood C := hF
-        simpa only [rootNeighborhood_eq_neighborhood] using hF'
+        rw [rootNeighborhood_eq_neighborhood C] at hF'
+        exact hF'
       exact (Set.disjoint_left.mp hdis) hFneigh hz
 
 end SuccessorTree.Counterexample
