@@ -142,6 +142,10 @@ theorem exists_pure_meeting_incompatible_family :
   obtain ⟨ord, wfInst, hminimal⟩ :=
     Cardinal.exists_ord_eq_type_lt BinaryBranch
   letI : LinearOrder BinaryBranch := ord
+  -- The function type carries a pre-existing pointwise Pi.preorder.
+  -- Fix the precedence explicitly: the transfinite recursion must use
+  -- the *well-order* supplied by ord, never the pointwise function order.
+  letI : Preorder BinaryBranch := ord.toPreorder
   letI : WellFoundedLT BinaryBranch := wfInst
   let wf : WellFounded (fun a b : BinaryBranch => a < b) :=
     wellFounded_lt
