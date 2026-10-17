@@ -44,7 +44,7 @@ theorem relativeAssociatedMap_pointwiseContinuous (F : MMap H) :
       (fun G : MMap H => (fun x : T => G x))
       (inferInstance : TopologicalSpace (T → T)))
     (fun U => MMap.comp H F (associatedMap H U))
-  rw [continuous_induced_rng]
+  apply continuous_induced_rng.mpr
   apply continuous_pi
   intro x
   change Continuous (fun U : FatTree H => F (associatedMap H U x))
