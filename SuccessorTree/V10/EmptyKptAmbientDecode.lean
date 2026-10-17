@@ -31,7 +31,7 @@ theorem freeLevel_lt_positive
 
 /-- Recover the unique free-ancestral successor parameter from an
 actual ordinary E-column. -/
-def ambientStepParam
+noncomputable def ambientStepParam
     (A : EnumeratedPartialStructure 0 0 0) (n : Nat) :
     SuccessorTree.FreeAncestral.ParamTuple 1 n :=
   parameterOfCut ⟨A.freeLevel (n + 1), by
@@ -39,7 +39,7 @@ def ambientStepParam
     omega⟩
 
 /-- Read every ordinary E-column as a finite ancestral history. -/
-def historyOfAmbient
+noncomputable def historyOfAmbient
     (A : EnumeratedPartialStructure 0 0 0) :
     (n : Nat) → CutHistory n
   | 0 => CutHistory.root
@@ -133,9 +133,11 @@ theorem admissible_positive_has_history {n : Nat}
     have hh : (⟨n + 1, T⟩ : RawPartialTypeNode 0 0 0) =
         (⟨n + 1, A.partialTypeAt (n + 1) v⟩ :
           RawPartialTypeNode 0 0 0) := by
-      simpa [EnumeratedPartialStructure.rawTypeAtFree, hCut] using hEq
-    cases hh
-    rfl
+      simp only [EnumeratedPartialStructure.rawTypeAtFree, hCut] at hEq
+      exact hEq
+    have hHeq : HEq T (A.partialTypeAt (n + 1) v) :=
+      (Sigma.mk.inj_iff.mp hh).2
+    exact eq_of_heq hHeq
   refine ⟨historyOfAmbient A n, ?_⟩
   exact hPart.trans (decodedType_correct A n v (by omega)).symm
 
