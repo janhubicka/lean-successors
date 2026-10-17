@@ -20,7 +20,7 @@ is not independently replayed here.
 | --- | --- | --- |
 | 1.6 | Main abstract successor-tree Ramsey theorem | **CHECKED**: `SMTree.shapePreservingRamsey`, with independent fat-tree route |
 | 1.7–1.8 | Finite bounded/exact-terminal corollaries | **CHECKED**: `shapeRamsey_bounded`, `shapeRamsey_exact` |
-| 1.11 | Ellentuck topology on **shape-map monoid M** | **OPEN**: direct A.3(2) is not valid in general. Requires the original fat-tree projection and exact neighbourhood transfer of Section 4; fat-tree Ellentuck itself is CHECKED |
+| 1.11 | Ellentuck theorem on **shape-map monoid M** | **REFUTED (CHECKED Lean counterexample)** in its printed depth-preserving pure-refinement form; `Counterexample.exists_closed_nowhereDense_not_avoidable` and `exists_meagre_not_avoidable`. The fat-tree Ellentuck theorem remains CHECKED. |
 | 1.12 | Canonical extension of finite shape maps | **CHECKED**: `SMTree.canonicalExtension_unique` |
 | 1.17 | Fat-tree Ellentuck | **CHECKED**: `SMTree.FatTree.fatTreeEllentuck` |
 | §2–§4 | Fat-tree structure, A1–A4, one-level combinatorial forcing | **CHECKED core**: A4 from independent source-fusion proof; two proof routes audited |
@@ -38,14 +38,26 @@ is not independently replayed here.
 | 6.41–6.42 | Ordered age of Gω / induced G+ action | **CHECKED normalized implementations**: G+ enumeration and action modules; source-language bridge review remains |
 | 6.44 | Arbitrary-K bounded envelope embedding | **PARTIAL literal match**: concrete numerical actual-run H+ bound CHECKED, plus final global big-Ramsey consequence CHECKED; exact `∀K ∀A ∃b ∀A' ∃C` printed proposition not separately identified as a named export |
 
-## Theorem 1.11: original fat-tree transfer required
+## Theorem 1.11: a checked counterexample, not merely a transfer gap
 
-The direct shape-map space does not satisfy A.3(2) in general;
-this motivates fat trees. The fat-tree Ellentuck theorem (1.17)
-is verified, but Lemma 4.1 has not yet been checked at its
-claimed exact neighbourhood image and depth correspondence.
-Proving direct A.3(2) is **not** a permissible shortcut.
-See [the original transfer audit](Fat-Tree-to-Shape-Map-Transfer.md).
+The original proof's fat-to-monoid projection does not respect the
+claimed basic neighbourhoods. **More importantly**, a separately
+constructed pairwise right-incompatible family is verified in Lean
+for the full free-ancestral M1–M3 shape-map monoid. Its closure is
+a **closed nowhere-dense/meagre** set which intersects **every pure**
+same-depth refinement `[f,H]` of the root-stem neighbourhood.
+
+This refutes the theorem's **depth-preserving** Ramsey-null claim
+under the printed M1–M3 assumptions. The counterexample does
+*not* claim to refute a weaker textbook convention permitting
+arbitrary end-extensions of finite stems; these definitions differ
+without A.3(2).
+
+Checked proof: `SuccessorTree.Counterexample.exists_meagre_not_avoidable`,
+via `exists_closed_nowhereDense_not_avoidable`. See
+[the updated detailed status](Shape-Ellentuck-Validation.md).
+Theorem 1.17 (fat-tree Ellentuck) and Theorem 1.6 (finite shape
+Ramsey) remain independent and checked.
 
 ## Adversarial discrepancies requiring manuscript TODOs
 

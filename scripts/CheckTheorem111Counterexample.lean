@@ -143,3 +143,6 @@ The Q_A infinite marker and antichain recursion are separate tasks.
 
 #print axioms SuccessorTree.Counterexample.exists_closed_nowhereDense_not_avoidable
 #print axioms SuccessorTree.Counterexample.exists_nowhereDense_hits_every_pure
+
+#check @SuccessorTree.Counterexample.exists_meagre_not_avoidable
+#print axioms SuccessorTree.Counterexample.exists_meagre_not_avoidable
