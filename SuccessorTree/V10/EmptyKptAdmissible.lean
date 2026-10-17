@@ -63,7 +63,8 @@ theorem ambientCut_lt_of_pos {n : Nat}
     ambientCut h v < v := by
   by_cases hv : v < n + 1
   · rw [ambientCut_old h v hv] at hpos ⊢
-    have hle := ordinaryCutAt_le h ⟨v, hv⟩
+    have hle : ordinaryCutAt h ⟨v, hv⟩ ≤ v := by
+      simpa using (ordinaryCutAt_le h ⟨v, hv⟩)
     have hvpos : 0 < v := by omega
     exact ordinaryCutAt_lt_of_pos h ⟨v,hv⟩ hvpos
   · by_cases hcap : v = n + 2
