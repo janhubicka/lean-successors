@@ -113,8 +113,9 @@ theorem rootBase_root :
       markedFirstNode := by
   exact raisedCandidate_root pureFreeIdentity (fun _ : Nat => false)
 
-noncomputable def rootApprox : SMTree.RamseyApprox markerMonoid 1 :=
-  SMTree.ramseyApprox markerMonoid 1 rootBase
+noncomputable def rootApprox :
+    (SMTree.ramseyApproximationSystem markerMonoid).Approx 1 :=
+  (SMTree.ramseyApproximationSystem markerMonoid).approx 1 rootBase
 
 noncomputable def idExample : ExampleMap := SMTree.MMap.id markerMonoid
 
