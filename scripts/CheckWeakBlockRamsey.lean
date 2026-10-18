@@ -35,3 +35,7 @@ import SuccessorTree.FatTree.GappedBasic
 #print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.visible_strictMono
 #print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.cut_strictMono
 #print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.toMarkedLevelSchedule
+
+#print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.rowExtension_right_cut
+#print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.rowExtension_fixesBelow
+#print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.oneLift_subset_right_cut
