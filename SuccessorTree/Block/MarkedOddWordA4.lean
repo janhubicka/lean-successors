@@ -58,7 +58,6 @@ theorem firstColour_flip (U : OddMarkedWord) :
       · intro i
         simp [V, Nat.add_assoc]
     · dsimp [firstColour, V]
-      simp
       dsimp [g]
       rw [grouped12_vars]
       exact same_odd_pair_flips _ _ _ h1 h2 h12
@@ -79,7 +78,6 @@ theorem firstColour_flip (U : OddMarkedWord) :
       · intro i
         simp [V, Nat.add_assoc]
     · dsimp [firstColour, V]
-      simp
       dsimp [g]
       rw [grouped13_vars]
       exact same_odd_pair_flips _ _ _ h1 h3 h13
@@ -100,7 +98,6 @@ theorem firstColour_flip (U : OddMarkedWord) :
       · intro i
         simp [V, Nat.add_assoc]
     · dsimp [firstColour, V]
-      simp
       dsimp [g]
       rw [grouped23_vars]
       exact same_odd_pair_flips _ _ _ h2 h3 h23
