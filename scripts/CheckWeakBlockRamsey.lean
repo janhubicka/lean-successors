@@ -1,6 +1,7 @@
 import SuccessorTree.Block.SeededPigeonhole
 import SuccessorTree.Block.ParityFatObstruction
 import SuccessorTree.Block.BranchFirstParityObstruction
+import SuccessorTree.Block.MarkedCuts
 
 #print axioms SuccessorTree.Block.seededPigeonhole
 #print axioms SuccessorTree.Block.seededPigeonhole_pairwise
@@ -22,3 +23,8 @@ import SuccessorTree.Block.BranchFirstParityObstruction
 #print axioms SuccessorTree.Block.ParityFat.grouped13_span
 #print axioms SuccessorTree.Block.ParityFat.grouped23_span
 #print axioms SuccessorTree.Block.ParityFat.four_blocks_flip
+
+#print axioms SuccessorTree.Block.MarkedLevelSchedule.between_next
+#print axioms SuccessorTree.Block.MarkedIndexReduction.refl
+#print axioms SuccessorTree.Block.MarkedIndexReduction.comp
+#print axioms SuccessorTree.Block.SeparatedOccurrenceSchedule.toMarked
