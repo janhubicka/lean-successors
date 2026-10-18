@@ -51,7 +51,7 @@ theorem oneLift_mono (U : GappedFatTree H) (i : Nat)
     U.oneLift i X ⊆ U.oneLift i Y := by
   intro z hz
   rcases hz with ⟨w, hw, rfl⟩
-  exact ⟨w, FatTree.immediateSuccessors_mono H hXY hw, rfl⟩
+  exact ⟨w, FatTree.immediateSuccessors_mono hXY hw, rfl⟩
 
 theorem liftSteps_mono (U : GappedFatTree H)
     (i steps : Nat) {X Y : Set T} (hXY : X ⊆ Y) :
