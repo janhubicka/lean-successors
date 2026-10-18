@@ -39,3 +39,6 @@ import SuccessorTree.FatTree.GappedBasic
 #print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.rowExtension_right_cut
 #print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.rowExtension_fixesBelow
 #print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.oneLift_subset_right_cut
+
+#print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.ofOld
+#print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.ofOld_cut
