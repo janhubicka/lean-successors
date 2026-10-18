@@ -1,0 +1,114 @@
+% Reference snapshot from revised nthm.tex, 18 October 2026.
+% This excerpt uses the author's manuscript macros and is not an extra input.
+% It is stored here so the experimental hypotheses can be read on the branch
+% without recovering conversation attachments. It introduces no new Lean axiom.
+\begin{definition}
+	Let $\Stree$ be an $\S$-tree, $F\colon T\to T$ a shape-preserving function, and $m\geq0$ an integer. We say that $F$ \emph{skips level $m$} if $m\notin\ell[F[T]]$, and that $F$ \emph{skips only level $m$} if $\ell[F[T]]=\omega\setminus\{m\}$.
+\end{definition}
+A shape-preserving function skipping only level $m$ fixes $T({<}m)$.
+It sends level $m$ to level $m+1$ and has consecutive image levels
+thereafter. Thus it is determined by its restriction to $T(m)$.
+
+\begin{definition}[Successor monoid]\label{def:successor-monoid}
+Given an $\S$-tree $\Stree$ and a set $\M$ of shape-preserving functions
+$T\to T$, we call $\SNtree$ a \emph{successor monoid} if the following
+condition holds.
+\begin{enumerate}[label=(M\arabic*)]
+		\item\label{item:Nmonoid}
+		\emph{The set $\M$ forms a closed monoid}: $\M$ contains the identity function $\mathrm{Id}\colon T\to T$,
+		for every $F,F'\in \M$ it holds that $F\circ F'\in \M$, and every sequence $(F_i)_{i\in \omega}$ of functions in $\M$
+		satisfying
+		$(\forall_{i\in \omega})F_i\restriction_{T({\leq}i)}=F_{i+1}\restriction_{T({\leq}i)}$ has a limit in $\M$, that is, a function $F_\infty \in \M$ such that $(\forall_{i\in \omega})F_\infty\restriction_{T({\leq}i)} = F_i\restriction_{T({\leq}i)}$. Equivalently, one can define the \emph{pointwise convergence topology} on the set of shape-preserving functions in the typical way, and then we demand that $\M$ is closed in this topology.
+\end{enumerate}
+\end{definition}
+The monoid and its pointwise topology will be kept throughout. Blocks
+are restrictions of its functions, not replacements for the functions
+or extra annotations on them. We use the following notation:
+
+$$\begin{aligned}
+ \M^n&=\{F\in\M:F\restriction_{T({<}n)}\text{ is the identity}\},\\
+ \AM&=\{F\restriction_{T({<}k)}:F\in\M,\ k\in\omega\},\\
+ \AM^n_k&=\{F\restriction_{T({<}n+k)}:F\in\M^n\}.
+\end{aligned}$$
+Thus $\AM^n_k$ consists of realised approximations with $n$ levels
+fixed and $k$ levels moving. For $n+k>0$, write $\AM^n_k(m)$ for
+those whose last image level is $m$. The empty approximation belongs
+to $\AM$.
+
+We separate the local operations needed for completed blocks from the
+stronger one-level operations used in the applications. To describe a
+line over a finite alphabet $\Gamma$, take a word $L$ over
+$\Gamma\cup\{\lambda\}$ in which $\lambda$ occurs. Write $L(e)$ for
+substitution of $e$ at every occurrence of $\lambda$, and $L(*)$ for
+the prefix before its first occurrence. We write $u\conc v$ for
+concatenation.
+
+\begin{definition}[$(\S,\M)$-tree]\label{def:block-monoid}
+Let $\SNtree$ be a successor monoid with every level inhabited.
+Fix finite alphabets $\Gamma_p\subseteq\AM^p_1(p+1)$ for $p\in\omega$.
+We call it an \emph{$(\S,\M)$-tree}, relative to these alphabets,
+if the following conditions hold.
+\begin{enumerate}[label=(M\arabic*)]
+\setcounter{enumi}{1}
+\item\label{item:Mcompletion}\emph{Canonical completion.}
+Every $f\in\AM$ with domain $T({\leq}n)$ has an extension $f^+\in\M$ such that
+$$
+ \widetilde{f^+}(n+i)=\widetilde f(n)+i\qquad(i\geq0).
+$$
+We put $\emptyset^+=\mathrm{Id}$.
+
+\item\label{item:Mendpoint}\emph{Block factorisation.}
+If $f,g\in\AM$ and $g$ extends $f$ by one source level, then
+$$
+ g^+=D\circ f^+\qquad\text{for some }D\in\M.
+$$
+
+\item\label{item:Mseeded}\emph{Realisation after a recording prefix.}
+For $w=e_0\cdots e_{k-1}\in\Gamma_p^{<\omega}$ put
+$$
+ g_w=(e_0^+\circ\cdots\circ e_{k-1}^+)
+           \restriction_{T({\leq}p)},
+$$
+where the empty product is $\mathrm{Id}$.
+There is $s_p\in\Gamma_p^{<\omega}$ such that every line $L$ over
+$\Gamma_p$ admits one $h\in\AM^p_2$ with
+$$
+ h\restriction_{T({\leq}p)}=g_{s_p\conc L(*)},\qquad
+ h\circ e=g_{s_p\conc L(e)}\quad(e\in\Gamma_p).
+$$
+\end{enumerate}
+\end{definition}
+Canonical completions are unique by the successor equation; see
+Proposition~\ref{prop:canonical}. In~\ref{item:Mendpoint}, $D$ acts
+\emph{after} $f^+$; this is not the right-composition reduction used
+below. The fixed prefix and exact endpoints of $D$ follow automatically
+(Proposition~\ref{prop:block-extraction}). Iterating gives the same
+factorisation for every finite extension $f\subseteq g$.
+
+The recording word is fixed before the line is chosen, and a single
+$h$ works for every letter. When $\Gamma_p=\emptyset$, take $s_p=()$
+and $h$ the identity restriction, so no additional condition is imposed.
+The alphabets are designated families, not necessarily all one-level
+maps. For ordered words they consist of constant appendings; the strong
+axioms below permit the full alphabet. Proposition~\ref{prop:block-local-equivalence}
+shows that the completion--factorisation pair is equivalent to the
+local completion--extraction formulation: no extra uniform choice of
+factors or completion of arbitrary partial maps is required.
+
+\begin{definition}[Strong $(\S,\M)$-tree]\label{def:sntree}
+A successor monoid $\SNtree$ is a \emph{strong $(\S,\M)$-tree} if it
+satisfies the following two additional conditions. These are the
+original decomposition and duplication axioms, now distinguished by
+primes.
+\begin{enumerate}[label={(M\arabic*$'$)}]
+\setcounter{enumi}{1}
+		\item\label{item:Ndecomposition} \emph{The set $\M$ admits decompositions}:
+			For every $n\in \omega$ and $F\in \M$ such that $\tilde{F}(n)>0$ and $F$ skips level $\tilde{F}(n)-1$,
+		there exist $F_1, F_2\in \M$ such that $F_2$ skips only level $\tilde{F}(n)-1$ and $$F_2\circ F_1\restriction_{T({\leq} n)}=F\restriction_{T({\leq} n)}.$$
+
+		\item\label{item:Nduplication} \emph{The set $\M$ is closed under duplication}: For all $n$ and $m$ with $n<m\in \omega$, there exists a function $F_m^n\in \M$
+		skipping only level $m$ such that
+		for every $a\in T(n)$, $b\in T(m)$, $\bar{p}\in T^{<\omega}$, and $c\in \Sigma$, where $\S(a,\bar{p},c)$ is defined and $\S(a,\bar{p},c)\preceq b$,
+		we have $F^n_m(b)=\S(b,\bar{p},c)$.
+\end{enumerate}
+\end{definition}
