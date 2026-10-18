@@ -1,5 +1,6 @@
 import SuccessorTree.Block.SeededPigeonhole
 import SuccessorTree.Block.ParityFatObstruction
+import SuccessorTree.Block.BranchFirstParityObstruction
 
 #print axioms SuccessorTree.Block.seededPigeonhole
 #print axioms SuccessorTree.Block.seededPigeonhole_pairwise
@@ -14,3 +15,10 @@ import SuccessorTree.Block.ParityFatObstruction
 #print axioms SuccessorTree.Block.ParityFat.oneRowLift_subset_twoStep
 #print axioms SuccessorTree.Block.ParityFat.two_first_rows_opposite
 #print axioms SuccessorTree.Block.ParityFat.firstRowHomogeneity_false_of_splitting
+
+#print axioms SuccessorTree.Block.ParityFat.equal_residue_among_three_odds
+#print axioms SuccessorTree.Block.ParityFat.same_odd_pair_flips
+#print axioms SuccessorTree.Block.ParityFat.grouped12_span
+#print axioms SuccessorTree.Block.ParityFat.grouped13_span
+#print axioms SuccessorTree.Block.ParityFat.grouped23_span
+#print axioms SuccessorTree.Block.ParityFat.four_blocks_flip
