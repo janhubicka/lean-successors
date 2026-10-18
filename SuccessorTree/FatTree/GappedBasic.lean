@@ -49,14 +49,14 @@ structure GappedFatTree where
   cut : Nat → Nat
   cut_zero : cut 0 = 0
   row : (i : Nat) → AM H (cut i) 2
-  row_cut : ∀ i : Nat, (row i).markedEnd H = cut (i + 1)
+  row_cut : ∀ i : Nat, AM.markedEnd H (row i) = cut (i + 1)
 
 namespace GappedFatTree
 
 variable {H}
 
 def visible (U : GappedFatTree H) (i : Nat) : Nat :=
-  (U.row i).internalLevel H
+  AM.internalLevel H (U.row i)
 
 theorem cut_le_visible (U : GappedFatTree H) (i : Nat) :
     U.cut i ≤ U.visible i := by
