@@ -55,7 +55,7 @@ namespace GappedFatTree
 
 variable {H}
 
-def visible (U : GappedFatTree H) (i : Nat) : Nat :=
+noncomputable def visible (U : GappedFatTree H) (i : Nat) : Nat :=
   AM.internalLevel H (U.row i)
 
 theorem cut_le_visible (U : GappedFatTree H) (i : Nat) :
@@ -89,7 +89,7 @@ theorem cut_strictMono (U : GappedFatTree H) :
 
 /-- Forget the certified rows and retain their two-dimensional schedule.
 This reuses the SAME cuts and derives all distinguished levels from rows. -/
-def toMarkedLevelSchedule (U : GappedFatTree H) :
+noncomputable def toMarkedLevelSchedule (U : GappedFatTree H) :
     SuccessorTree.Block.MarkedLevelSchedule where
   level := U.visible
   cut := U.cut
