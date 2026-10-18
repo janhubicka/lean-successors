@@ -175,14 +175,14 @@ noncomputable def ofOld (U : FatTree H) : GappedFatTree H := by
     H.levelMap (a.representative H).map (p + 1) =
         LevelTree.lev ((a.representative H) x) := by
       simpa [hx] using
-        (H.levelMap_eq (a.representative H).map (a := x)).symm
+        H.levelMap_eq (a.representative H).map (a := x)
     _ = LevelTree.lev (F x) := by rw [hOnNode]
     _ = H.levelMap F.map (p + 1) := by
-      simpa [hx] using H.levelMap_eq F.map (a := x)
+      simpa [hx] using (H.levelMap_eq F.map (a := x)).symm
     _ = U.cut (i + 1) := U.rowExtension_level_succ H i
 
 @[simp] theorem ofOld_cut (U : FatTree H) (i : Nat) :
-    (U.ofOld).cut i = U.cut i := rfl
+    (ofOld U).cut i = U.cut i := rfl
 
 end GappedFatTree
 end FatTree
