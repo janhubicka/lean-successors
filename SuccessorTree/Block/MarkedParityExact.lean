@@ -26,9 +26,12 @@ def selector13 : List (Option Bool) :=
 def selector23 : List (Option Bool) :=
   [none, some false, none, none]
 
-theorem selector12_allowed : AllowedParity selector12 := by decide
-theorem selector13_allowed : AllowedParity selector13 := by decide
-theorem selector23_allowed : AllowedParity selector23 := by decide
+theorem selector12_allowed : AllowedParity selector12 := by
+  simp [AllowedParity, selector12, selector13, selector23, varCount, weight, evaluate]
+theorem selector13_allowed : AllowedParity selector13 := by
+  simp [AllowedParity, selector12, selector13, selector23, varCount, weight, evaluate]
+theorem selector23_allowed : AllowedParity selector23 := by
+  simp [AllowedParity, selector12, selector13, selector23, varCount, weight, evaluate]
 
 /-- The selected 4-block word is obtained by substituting the
 selector symbols into the original consecutive marked blocks. -/
