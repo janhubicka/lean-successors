@@ -1,4 +1,4 @@
-import SuccessorTree.Block.ParityFatObstruction
+import SuccessorTree.Block.BranchFirstParityObstruction
 
 /-!
 # Independent extendibility is too strong for arbitrary marks
