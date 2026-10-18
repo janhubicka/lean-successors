@@ -1,6 +1,7 @@
 import SuccessorTree.Block.SeededPigeonhole
 import SuccessorTree.Block.ParityFatObstruction
 import SuccessorTree.Block.BranchFirstParityObstruction
+import SuccessorTree.Block.MarkedParityExact
 import SuccessorTree.Block.MarkedCuts
 import SuccessorTree.FatTree.GappedBasic
 
@@ -42,3 +43,8 @@ import SuccessorTree.FatTree.GappedBasic
 
 #print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.ofOld
 #print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.ofOld_cut
+
+#print axioms SuccessorTree.Block.ParityFat.selector12_allowed
+#print axioms SuccessorTree.Block.ParityFat.selector13_allowed
+#print axioms SuccessorTree.Block.ParityFat.selector23_allowed
+#print axioms SuccessorTree.Block.ParityFat.four_marked_blocks_flip
