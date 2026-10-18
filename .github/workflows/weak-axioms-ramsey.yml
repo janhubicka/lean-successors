@@ -60,7 +60,7 @@ jobs:
       - name: Build Ramsey core without the strong-tree import
         run: |
           set -o pipefail
-          lake build SuccessorTree.Block.SeededPigeonhole SuccessorTree.Block.ParityFatObstruction SuccessorTree.Block.BranchFirstParityObstruction SuccessorTree.Block.MarkedCuts SuccessorTree.FatTree.GappedBasic SuccessorTree.Block.MarkedParityExact SuccessorTree.FatTree.GappedReduction 2>&1 | tee proof-audit/build.log
+          lake build SuccessorTree.Block.SeededPigeonhole SuccessorTree.Block.ParityFatObstruction SuccessorTree.Block.BranchFirstParityObstruction SuccessorTree.Block.MarkedCuts SuccessorTree.FatTree.GappedBasic SuccessorTree.Block.MarkedParityExact SuccessorTree.FatTree.GappedReduction SuccessorTree.Block.MarkedOddWordA4 2>&1 | tee proof-audit/build.log
       - name: Check exact theorem axioms
         run: |
           set -o pipefail
