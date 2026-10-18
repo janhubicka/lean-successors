@@ -3,6 +3,7 @@ import SuccessorTree.Block.ParityFatObstruction
 import SuccessorTree.Block.BranchFirstParityObstruction
 import SuccessorTree.Block.MarkedParityExact
 import SuccessorTree.Block.MarkedOddWordA4
+import SuccessorTree.Block.MarkedCutNonlocality
 import SuccessorTree.FatTree.GappedReduction
 import SuccessorTree.Block.MarkedCuts
 import SuccessorTree.FatTree.GappedBasic
@@ -59,3 +60,8 @@ import SuccessorTree.FatTree.GappedBasic
 
 #print axioms SuccessorTree.Block.ParityFat.firstColour_flip
 #print axioms SuccessorTree.Block.ParityFat.no_A4Root_of_fourBlockReduces
+
+#print axioms SuccessorTree.Block.ParityFat.globally_admissible_x11
+#print axioms SuccessorTree.Block.ParityFat.split_preserves_global_word
+#print axioms SuccessorTree.Block.ParityFat.split_first_not_admissible
+#print axioms SuccessorTree.Block.ParityFat.split_next_not_admissible
