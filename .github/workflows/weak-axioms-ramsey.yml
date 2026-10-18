@@ -6,6 +6,7 @@ on:
     paths:
       - 'SuccessorTree/Block/**'
       - 'SuccessorTree/FatTree/GappedBasic.lean'
+      - 'SuccessorTree/FatTree/GappedReduction.lean'
       - 'scripts/CheckWeakBlockRamsey.lean'
       - '.github/workflows/weak-axioms-ramsey.yml'
       - 'lean-toolchain'
@@ -14,6 +15,7 @@ on:
     paths:
       - 'SuccessorTree/Block/**'
       - 'SuccessorTree/FatTree/GappedBasic.lean'
+      - 'SuccessorTree/FatTree/GappedReduction.lean'
       - 'scripts/CheckWeakBlockRamsey.lean'
       - '.github/workflows/weak-axioms-ramsey.yml'
   workflow_dispatch:
@@ -58,7 +60,7 @@ jobs:
       - name: Build Ramsey core without the strong-tree import
         run: |
           set -o pipefail
-          lake build SuccessorTree.Block.SeededPigeonhole SuccessorTree.Block.ParityFatObstruction SuccessorTree.Block.BranchFirstParityObstruction SuccessorTree.Block.MarkedCuts SuccessorTree.FatTree.GappedBasic SuccessorTree.Block.MarkedParityExact 2>&1 | tee proof-audit/build.log
+          lake build SuccessorTree.Block.SeededPigeonhole SuccessorTree.Block.ParityFatObstruction SuccessorTree.Block.BranchFirstParityObstruction SuccessorTree.Block.MarkedCuts SuccessorTree.FatTree.GappedBasic SuccessorTree.Block.MarkedParityExact SuccessorTree.FatTree.GappedReduction 2>&1 | tee proof-audit/build.log
       - name: Check exact theorem axioms
         run: |
           set -o pipefail
