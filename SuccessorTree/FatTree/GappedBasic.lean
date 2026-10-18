@@ -140,6 +140,50 @@ theorem oneLift_subset_right_cut (U : GappedFatTree H) (i : Nat)
     _ = H.levelMap (U.rowExtension i).map (U.cut i + 1) := by rw [hzlev]
     _ = U.cut (i + 1) := U.rowExtension_right_cut i
 
+/-- Original width-one fat rows embed into the gapped row geometry
+without moving a single cut. This is an object-level inclusion;
+it does not claim a reduction-order equivalence or weak A4. -/
+noncomputable def ofOld (U : FatTree H) : GappedFatTree H := by
+  classical
+  let rowTwo (i : Nat) : AM H (U.cut i) 2 :=
+    (U.rowExtension H i).toAM H (U.cut i) 2
+      (U.rowExtension_fixesBelow H i)
+  refine {
+    cut := U.cut
+    cut_zero := U.cut_zero
+    row := rowTwo
+    row_cut := ?_
+  }
+  intro i
+  let p : Nat := U.cut i
+  let F : MMap H := U.rowExtension H i
+  let a : AM H p 2 := F.toAM H p 2
+    (U.rowExtension_fixesBelow H i)
+  change H.levelMap (a.representative H).map (p + 1) = U.cut (i + 1)
+  obtain ⟨x, hx⟩ := H.level_nonempty (p + 1)
+  have hFinite :
+      ramseyApprox H (p + 2) (a.representative H) =
+      ramseyApprox H (p + 2) F := by
+    change ramseyApprox H (p + 2) (a.representative H) = a.1
+    exact a.representative_top H
+  have hOnNode : (a.representative H) x = F x := by
+    have hval := congrArg Subtype.val hFinite
+    have happ := congrFun hval
+      (⟨x, by omega⟩ : InitialNode T (p + 1))
+    exact happ
+  calc
+    H.levelMap (a.representative H).map (p + 1) =
+        LevelTree.lev ((a.representative H) x) := by
+      simpa [hx] using
+        (H.levelMap_eq (a.representative H).map (a := x)).symm
+    _ = LevelTree.lev (F x) := by rw [hOnNode]
+    _ = H.levelMap F.map (p + 1) := by
+      simpa [hx] using H.levelMap_eq F.map (a := x)
+    _ = U.cut (i + 1) := U.rowExtension_level_succ H i
+
+@[simp] theorem ofOld_cut (U : FatTree H) (i : Nat) :
+    (U.ofOld).cut i = U.cut i := rfl
+
 end GappedFatTree
 end FatTree
 end SMTree
