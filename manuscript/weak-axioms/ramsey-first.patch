@@ -1,0 +1,282 @@
+diff --git a/main.tex b/main.tex
+index d36c4b8..65064aa 100644
+--- a/main.tex
++++ b/main.tex
+@@ -451,7 +451,7 @@ outer factor cannot be asserted for general block successor monoids.
+ \begin{prop}
+ 	\label{prop:shape-split}
+ \leanverified{SuccessorTree/ShapeSplit.lean}{exists_shapeSplit_factor}
+-	Let $\SNtree$ be an $(\S,\M)$-tree, $n\in \omega$ an integer, $f\in \AM_{n+1}^0$ a shape-preserving function, and $m\in \omega$ an integer satisfying one of the following two conditions:
++	Let $\SNtree$ be a strong $(\S,\M)$-tree, $n\in \omega$ an integer, $f\in \AM_{n+1}^0$ a shape-preserving function, and $m\in \omega$ an integer satisfying one of the following two conditions:
+ 	\begin{enumerate}
+ 		\item $n=0$ and $0\leq m\leq \tilde{f}(n)$, or
+ 		\item $n>0$ and $\tilde{f}(n-1)<m\leq \tilde{f}(n)$.
+@@ -529,11 +529,11 @@ $\widetilde{F_{\fat{x}}}(j)=\fatc{x}(j+1)-1$ for $j<q$.
+ \begin{proof}
+ 	Let $\fat{U}=(u_i)_{i\in \omega}$. From the definition of a fat subtree it follows that $u_i$ is the identity on $T({<} \fatc{U}(i))$ for every $i\in \omega$. It follows that the limit defining $\fatfn{U}{n}$ exists, and by~\ref{item:Nmonoid}, this limit is in $\M$. The second point is immediate.
+ \end{proof}
+-In the opposite direction, every shape-preserving function can be widened to a fat subtree by a repeated application of Proposition~\ref{prop:shape-split} (note that this widening is not necessarily unique):
++For a strong $(\S,\M)$-tree, every shape-preserving function can be widened to a fat subtree by a repeated application of Proposition~\ref{prop:shape-split} (note that this widening is not necessarily unique):
+ \begin{observation}
+ 	\label{obs:shapetofat}
+ \leanvthirteenverified{SuccessorTree/FatTree/ShapeCorrespondence.lean}{associatedMap\_ofShapeMap}
+-	For every $F\in \M$ there exists $\fat{U}\in \mathcal{R}$ such that $\fatf{U}=F$.
++	For a strong $(\S,\M)$-tree and every $F\in \M$ there exists $\fat{U}\in \mathcal{R}$ such that $\fatf{U}=F$.
+ \end{observation}
+ \begin{proof}
+ 	Fix $F\in \M$. We construct $\fat{U}=(u_i)_{i\in \omega}$ as follows.
+@@ -559,6 +559,9 @@ and put
+ ($\mathcal L$ stands for \emph{line} since it generalizes the combinatorial line of the Hales--Jewett theorem.)
+ The local statement only needs completion and seeded realisation.
+ \begin{lemma}[Local block pigeonhole]\label{lem:bl-HJ}
++\begingroup\renewcommand{\leancommit}{70ae3b4e71de18d16dae2276a389574fc05da7d9}
++\leaninterface{SuccessorTree/Block/SeededPigeonhole.lean}{seededPigeonhole}
++\endgroup
+ Let $\M$ be a monoid of shape-preserving functions on an $\S$-tree
+ with inhabited levels, and fix a nonempty finite
+ $\Gamma_n\subseteq\AM^n_1(n+1)$.
+@@ -571,7 +574,7 @@ $$
+ is monochromatic. No completion outside the chosen alphabet, block
+ factorisation or fusion is used.
+ \end{lemma}
+-For the strong axioms, the full one-level alphabet can be used.
++For a strong $(\S,\M)$-tree, the full one-level alphabet can be used.
+ This gives the following original form.
+ \begin{lemma}[1-dimensional pigeonhole]
+ 	\label{lem:pigeonhole1}
+@@ -579,7 +582,7 @@ This gives the following original form.
+ % The strong-interface replay theorem is Lean-checked. The alphabet
+ % identification and the new abstract M2/M4 proof above are English
+ % source arguments; no weaker-interface Lean certificate is claimed.
+-	For every $n$ and every finite colouring $\chi$ of~$\AM^n_1$, there exists $h\in \mathcal \AM^n_2$ such that $\chi\restriction_{\{h\circ g:g\in \mathcal L_n\}}$ is constant.
++	Assume that $\SNtree$ is strong. For every $n$ and every finite colouring $\chi$ of~$\AM^n_1$, there exists $h\in \mathcal \AM^n_2$ such that $\chi\restriction_{\{h\circ g:g\in \mathcal L_n\}}$ is constant.
+ \end{lemma}
+ This lemma is proved by an application of the $*$-version of the Hales--Jewett theorem which we now briefly recall.
+ Given a finite alphabet $\Sigma$ not containing symbols $*$ and $\lambda$, a \emph{combinatorial line} is a finite word (sequence) $L\in (\Sigma \cup \{\lambda\})^{<\omega}$ such that $\lambda$ occurs at least once ($\lambda$ is called the \emph{parameter}).
+@@ -608,6 +611,7 @@ The resulting line $L$ makes $g_{s_n\conc L(*)}$ and every
+ $g_{s_n\conc L(e)}$ the same colour. The single witness $h_L$ supplied
+ by~\ref{item:Mseeded} gives exactly the required set.
+ \end{proof}
++\input{weak-ramsey-progress.tex}
+ \begin{proof}[Proof of Lemma~\ref{lem:pigeonhole1}]
+ Put $\Gamma_n=\AM^n_1(n+1)$, which is finite because the initial
+ levels are finite. A member of $\AM^n_1$ ending on level $n$ is the
+@@ -627,7 +631,7 @@ the canonical one-level letters used in the original replay proof.
+ \end{proof}
+ \subsection{Fat subtrees and Todorcevic's axiomatization of Ramsey spaces}
+ \label{sec:ramseyspace}
+-We fix an $(\S,\M)$-tree $\SNtree$,
++We fix a strong $(\S,\M)$-tree $\SNtree$,
+ consider the topological space $\mathcal R$ and set $\mathcal{AR}$ introduced in Definition~\ref{defn:R} and the triple $(\mathcal R,{\leq},\allowbreak r)$
+ where $\leq$ is the order of fat subtrees introduced in
+ Definition~\ref{def:subfatsubtrees} restricted to $\mathcal R$, and $r$
+@@ -992,7 +996,7 @@ is pointwise-continuous and proves the assertion for $\rho_F$.
+ 
+ \begin{theorem}[Borel fat-image Ramsey theorem]\label{thm:shapeborel}
+ \leaneaverified{SuccessorTree/FatTree/SourceTheorems.lean}{fatImageHomogeneous\_pure\_of\_pointwiseBorel}
+-Let $\SNtree$ be an $(\S,\M)$-tree and let
++Let $\SNtree$ be a strong $(\S,\M)$-tree and let
+ $\chi\colon\M\to r$ be a finite colouring which is Borel in the
+ pointwise convergence topology. For every nonempty fat-tree
+ neighbourhood $[\fat{x},\fat{U}]$ there is
+@@ -1155,7 +1159,7 @@ colouring statement to a whole algebraic cone:
+ \begin{corollary}[Borel colourings of composition cones]
+ \label{cor:shape-borel-cone}
+ \leaneaverified{SuccessorTree/FatTree/SourceTheorems.lean}{shapeMapBorelCone\_of\_EA1}
+-Let $\SNtree$ be an $(\S,\M)$-tree satisfying (EA1), and let
++Let $\SNtree$ be a strong $(\S,\M)$-tree satisfying (EA1), and let
+ $\chi$ be a pointwise-Borel finite colouring of $\M$.
+ For every nonempty $[f,F]$ there is
+ $F'\in[\depth_F(f),F]$ such that $[f,F']$ is nonempty and
+@@ -1289,10 +1293,14 @@ The right-hand side is independent of $g$.
+ 
+ \section{Envelopes and embedding types}
+ \label{sec:envelope}
++Throughout this section the $(\S,\M)$-tree is assumed to be
++\emph{strong}. This section is motivated by the big Ramsey degree
++applications. Its algorithm, hypotheses and validation remain unchanged;
++we do not use an unfinished weak-axiom Ramsey statement here.
+ \todo[inline]{\textbf{V13 validation --- checked abstract package.} \texttt{EnvelopeTheorem.exists\_minimalEnvelope} proves the nonempty height, finite-prefix minimality, uniqueness of selected levels and independence of embedding type, assuming the local one-level pullback (E1) and an actual top-level node. The empty-set convention is separate. The printed proof still needs the finite-prefix and inverse-choice explanations below; the normalized Kpt instance and its final big-Ramsey transfer have separate checked endpoints, subject to matching the current source definitions.}
+ The following concept often plays a crucial role in applications of Ramsey-type theorems on trees~(see e.g. \cite[Section 6]{todorcevic2010introduction} or \cite{dodos2016}).
+ \begin{definition}[Envelope]
+-	Let $\SNtree$ be an $(\S,\M)$-tree and $X\subseteq T$ be a set.
++	Let $\SNtree$ be a strong $(\S,\M)$-tree and $X\subseteq T$ be a set.
+ 	A function $f\in \M\cup \AM$ is called an \emph{envelope of $X$} if there exists a set $Y\subseteq T$ such that $f[Y]=X$.
+ 	In this setting, $Y$ is called the \emph{embedding type of $X$ in $f$}.
+ 	For the empty set the height is $0$. For nonempty finite sets $X$, the \emph{height} of envelope $f$ is $\max\{\ell(a):a\in Y\}+1$.
+@@ -1302,11 +1310,11 @@ the height, a \emph{minimal envelope}. In this section we give a general algorit
+ 
+ We start by determining some nodes that must be in the image of every envelope of set $X$.
+ \begin{definition}[Meet-closed set]
+-	Let $\SNtree$ be an $(\S,\M)$-tree and $X\subseteq T$.  We say that $X$ is  \emph{meet-closed}
++	Let $\SNtree$ be a strong $(\S,\M)$-tree and $X\subseteq T$.  We say that $X$ is  \emph{meet-closed}
+ 	if for every $a,b\in X$ with a common root also $a\meet b\in X$. Meets of nodes in different root components are not used.
+ \end{definition}
+ \begin{definition}[Parameter-closed set]
+-	Let $\SNtree$ be an $(\S,\M)$-tree, let $X\subseteq T$ be a set of nodes, and let $I\subseteq \omega$ be a set of levels.  We say that $X$ is \emph{parameter-closed over $I$}
++	Let $\SNtree$ be a strong $(\S,\M)$-tree, let $X\subseteq T$ be a set of nodes, and let $I\subseteq \omega$ be a set of levels.  We say that $X$ is \emph{parameter-closed over $I$}
+ 	if for every $i\in I$, $a\in X\cap T({>}i)$ and $b\in \Dp(a|_{i+1})$ it holds that $b\in X$.
+ 
+ 	We say that $X$ is \emph{parameter-closed} if it is parameter-closed over $L(X)=\{\ell(a):a\in X\}$.
+@@ -1318,7 +1326,7 @@ containing $X$ that is both meet-closed and parameter-closed over $I$. It is eas
+ % BEGIN successor-v8-validation-20261008: envelope
+ \leanenvelopeverified{SuccessorTree/EnvelopeRunExistence.lean}{algorithmRun\_nonempty}
+ % END successor-v8-validation-20261008: envelope
+-	Let $\SNtree$ be an $(\S,\M)$-tree and let $X\subset T$ be a finite set. If $X=\emptyset$, return $(\mathrm{Id},\emptyset)$ with height $0$. Otherwise put $\ell=\max \{\ell(a):a\in X\}$. Construct subsets $\{\ell\}=I_\ell\subseteq I_{\ell-1}\subseteq\cdots \subseteq I_{0}\subseteq \omega$
++	Let $\SNtree$ be a strong $(\S,\M)$-tree and let $X\subset T$ be a finite set. If $X=\emptyset$, return $(\mathrm{Id},\emptyset)$ with height $0$. Otherwise put $\ell=\max \{\ell(a):a\in X\}$. Construct subsets $\{\ell\}=I_\ell\subseteq I_{\ell-1}\subseteq\cdots \subseteq I_{0}\subseteq \omega$
+ 	of levels and functions $F_\ell,F_{\ell-1},\ldots, F_0\in \M$ by decreasing induction.
+ 
+ 	\begin{enumerate}
+@@ -1359,7 +1367,7 @@ The main result of this section is the following proposition.
+ \leanvthirteenverified{SuccessorTree/EnvelopeTheorem.lean}{exists\_minimalEnvelope}
+ \todo[inline]{\textbf{V13 source check.} The packaged nonempty proposition has passed Lean and standard-axiom checks under E1. For the printed argument, use finite-prefix closure when comparing an $\AM$ competitor, take the first source level $m'$ crossing $i$ in the two shape splittings, and prove embedding-type independence by a separate downward induction on $F_i^{-1}[X]$. Do not infer the latter from uniqueness of the interesting levels.}
+ % END successor-v8-validation-20261008: prop:envelopes
+-	Let $\SNtree$ be an $(\S,\M)$-tree. Assume that the following property is satisfied:
++	Let $\SNtree$ be a strong $(\S,\M)$-tree. Assume that the following property is satisfied:
+ 	\begin{enumerate}[label=(E\arabic*)]
+ 		\item \label{item:E1}For every function $F\in \M$ skipping only one level and for every $a\in T$, $\bar{p}\in T^{< \omega}$ and $c\in \Sigma$
+ 		      such that $\S(F(a),F(\bar{p}),c)$ is defined, $\S(a,\bar{p},c)$ is also defined.
+diff --git a/nthm.tex b/nthm.tex
+index 4e892ec..f747754 100644
+--- a/nthm.tex
++++ b/nthm.tex
+@@ -39,10 +39,10 @@ substitution of $e$ at every occurrence of $\lambda$, and $L(*)$ for
+ the prefix before its first occurrence. We write $u\conc v$ for
+ concatenation.
+ 
+-\begin{definition}[Block axioms]\label{def:block-monoid}
++\begin{definition}[$(\S,\M)$-tree]\label{def:block-monoid}
+ Let $\SNtree$ be a successor monoid with every level inhabited.
+ Fix finite alphabets $\Gamma_p\subseteq\AM^p_1(p+1)$ for $p\in\omega$.
+-We call it a \emph{block successor monoid}, relative to these alphabets,
++We call it an \emph{$(\S,\M)$-tree}, relative to these alphabets,
+ if the following conditions hold.
+ \begin{enumerate}[label=(M\arabic*)]
+ \setcounter{enumi}{1}
+@@ -150,15 +150,20 @@ is a limit of compositions of one-gap functions in $\M$.
+ We do not require this internal-cut factorisation in the block axioms.
+ 
+ \paragraph{Scope of the Ramsey statements.}
+-In the established fat-tree results, envelope results and applications,
+-``$(\S,\M)$-tree'' will continue to mean a strong $(\S,\M)$-tree.
+-Their hypotheses and proofs are therefore unchanged by the primed
+-notation. We state explicitly whenever only the weaker block axioms
+-are used. They give canonical completion and the local line lemma,
+-but do not by themselves give the unrestricted finite-dimensional
+-Ramsey theorem: Proposition~\ref{prop:bl-parity} gives a counterexample,
+-even with every $\Gamma_p$ nonempty. A sufficient additional
+-all-trace condition is not being assumed implicitly.
++An unqualified $(\S,\M)$-tree always means the weaker object of
++Definition~\ref{def:block-monoid}. A strong $(\S,\M)$-tree satisfies
++Definition~\ref{def:sntree}; the additional hypotheses are never implicit.
++Canonical completion, completed-block factorisation and the local line
++lemma use only the weaker assumptions. The aim of the separate block
++Ramsey development is to obtain the shape-preserving and fat-tree
++Ramsey results without the primed axioms. The unrestricted statements
++currently proved below retain an explicit strong hypothesis:
++Proposition~\ref{prop:bl-parity} rules out that conclusion from the
++present local package with merely nonempty designated alphabets.
++The relative representation and persistence needed for the weak
++Ramsey theorem are proof obligations, not additional axioms assumed
++here. The envelope section and its applications remain in the strong
++setting independently of that programme.
+ 
+ For the finite-dimensional statements we also use
+ $$\begin{aligned}
+@@ -170,7 +175,7 @@ Recall that $\AM^0_0=\{\emptyset\}$. The case $k=0$ in
+ Theorem~\ref{thm:shaperamseyN} is immediate: every member of $\M^n$
+ fixes the unique member of $\AM^n_0$.
+ 
+-We now state the finite-dimensional Ramsey theorem for $(\S,\M)$-trees.
++We now state the established finite-dimensional Ramsey theorem for strong $(\S,\M)$-trees.
+ \begin{theorem}
+ 	\label{thm:shaperamseyN}
+ \leanverified{SuccessorTree/ShapeFiniteRamsey.lean}{shapePreservingRamsey}
+diff --git a/weak-ramsey-progress.tex b/weak-ramsey-progress.tex
+new file mode 100644
+index 0000000..0c0c636
+--- /dev/null
++++ b/weak-ramsey-progress.tex
+@@ -0,0 +1,82 @@
++% Ramsey-first branch checkpoint. Generic Lean proof checked at
++% 70ae3b4e71de18d16dae2276a389574fc05da7d9, run 39128732027.
++% This file adds no axiom to the definition of an (S,M)-tree.
++\begin{lemma}[Simultaneous finite profiles]\label{lem:weak-finite-profiles}
++Under the hypotheses of Lemma~\ref{lem:bl-HJ}, let $I$ be finite,
++let $X$ be a set, and let $\tau_i\colon\AM^n_1\to X$ for $i\in I$.
++For every finite colouring $\chi$ of $X$, there is one $h\in\AM^n_2$
++such that
++$$
++ \chi(\tau_i(h\circ e))
++ =\chi(\tau_i(h\restriction_{T({\leq}n)}))
++ \qquad(i\in I,\ e\in\Gamma_n).
++$$
++\end{lemma}
++\begingroup\renewcommand{\leancommit}{70ae3b4e71de18d16dae2276a389574fc05da7d9}
++\leaninterface{SuccessorTree/Block/SeededPigeonhole.lean}{finiteProfilePigeonhole}
++\endgroup
++\begin{proof}
++Apply Lemma~\ref{lem:bl-HJ} to the finite tuple colouring
++$$
++ f\longmapsto (\chi(\tau_i(f)))_{i\in I}.
++$$
++Equality of the tuples gives all the asserted equalities for the same
++$h$. In particular, choosing a separate realisation for each profile
++is neither needed nor used.
++\end{proof}
++
++\begin{lemma}[A covered family]\label{lem:weak-covered-family}
++With the same data, suppose that to every $h\in\AM^n_2$ there are
++assigned a set $\Phi(h)\subseteq X$ and a point $a(h)\in X$ such that
++$$
++ \Phi(h)\subseteq
++ \bigcup_{i\in I}\left(
++ \{\tau_i(h\restriction_{T({\leq}n)})\}
++ \cup\{\tau_i(h\circ e):e\in\Gamma_n\}\right),
++$$
++and $\tau_i(h\restriction_{T({\leq}n)})=a(h)$ for all $i\in I$.
++For every finite colouring $\chi$ of $X$, some $h$ satisfies
++$\chi(t)=\chi(a(h))$ for every $t\in\Phi(h)$.
++\end{lemma}
++\begingroup\renewcommand{\leancommit}{70ae3b4e71de18d16dae2276a389574fc05da7d9}
++\leaninterface{SuccessorTree/Block/SeededPigeonhole.lean}{coveredFrontPigeonhole}
++\endgroup
++\begin{proof}
++Choose $h$ by Lemma~\ref{lem:weak-finite-profiles}. Represent each
++$t\in\Phi(h)$ using the displayed inclusion. Its colour equals the
++colour of the corresponding profile at the common base, hence equals
++$\chi(a(h))$.
++\end{proof}
++The common-base condition cannot be dropped merely because the tuple
++colouring is finite: it makes each profile homogeneous separately,
++not necessarily in the same colour. Without that condition, the same
++proof bounds the number of colours by $|I|$ when the inclusion holds.
++
++These lemmas are conditional tools, not new axioms. For fixed finite
++$I$ and $\Gamma_n$, the represented family is finite. Thus this is a
++\emph{bounded-stage} lemma, not a proof of (A4) for an unbounded
++front. A fat-tree application must exhaust all one-block extensions
++through finite boundary stages, prove a compatible common base (or
++further identify its colours), and preserve earlier decisions under
++later aligned reductions. One fusion must realise the whole sequence.
++Nonemptiness of the selected family must also be proved; it is not a
++consequence of the inclusion alone. The local line condition does not
++supply these facts. For example, the singleton alphabet can have every
++coded point and every line value equal to $0$ in $\{0,1\}$, while the
++family $\{0,1\}$ is not monochromatic for the identity colouring.
++This finite example is only a counterexample to an abstract coverage
++inference; the genuine successor-monoid obstruction is
++Proposition~\ref{prop:bl-parity}.
++
++\todo[inline]{\textbf{Weak-axiom Ramsey validation.}
++The seeded line theorem and its simultaneous finite-profile version
++are kernel-checked without the strong-tree record. The interface
++markers refer to this combinatorial core, not to a completed
++manuscript-to-Lean constructor. Next establish the relative whole-frontier
++representation and refinement persistence for the block fat trees of
++Appendix~\ref{app:ordered-blocks}. Keep both boundaries on actual ambient
++line boundaries, and do not move a committed endpoint when inserting a
++recording word. Only after this step can the weak A4 and unrestricted
++shape-Ramsey hypotheses be settled. The envelope section retains its
++strong hypotheses; its weakening and algorithmic applications are deferred.}
++

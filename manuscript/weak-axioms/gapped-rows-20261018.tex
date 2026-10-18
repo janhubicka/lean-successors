@@ -1,0 +1,85 @@
+% Experimental source excerpt, relative to successor-v20-marked-word-proof-sources.tgz.
+% Main manuscript source changes are available as the incremental patch
+% successor-v20-gap-fat-width-two.patch. This file is not included by the
+% repository's main .tex, which remains on the established strong proof.
+\paragraph{Using the existing cuts for whole-variable lines.}
+The schedules above are numerical data associated with a fat tree;
+there is no need to introduce a second family of cutting marks in the
+actual definition. The change from the original fat-tree convention
+is instead to retain \emph{two moving source levels} in each row.
+
+\begin{definition}[Gapped fat-tree rows]\label{def:bl-gapped-rows}
+A \emph{gapped fat tree} has the same single sequence of cuts
+$0=c_0<c_1<\cdots$ as before, but its $i$th row is a realised
+finite approximation
+$$
+ u_i\in\AM^{c_i}_2,\qquad\widetilde{u_i}(c_i+1)=c_{i+1}.
+$$
+Its distinguished visible level is \emph{derived} from that row:
+$$
+ \ell_i=\widetilde{u_i}(c_i).
+$$
+The canonical completion $u_i^+$ exists by~\ref{item:Mcompletion}.
+A row is a \emph{whole line}: it records the neutral segment before
+the new successor and the complete live segment up to the following
+cut, on the entire one-step frontier.
+\end{definition}
+\begin{observation}[The old fat rows are a special case]
+\label{obs:bl-old-rows-gapped}
+Every gapped fat tree satisfies
+$$
+ c_i\leq\ell_i<c_{i+1}\leq\ell_{i+1}.
+$$
+An old row $a_i\in\AM^{c_i}_1(m_i)$, with
+$c_{i+1}=m_i+1$, becomes a gapped row by taking
+$$
+ u_i=a_i^+\restriction_{T({<}c_i+2)}.
+$$
+It has $\ell_i=m_i$ and the same cutting marks. Hence this
+relaxation includes the original fat-tree objects without changing
+their cuts.
+\end{observation}
+\begin{proof}
+The map $u_i$ is the restriction of a member of $\M$ fixing
+$T({<}c_i)$. Strict increase of its level map gives
+$\ell_i<c_{i+1}$, while every strictly increasing map
+$\omega\to\omega$ satisfies $n\leq\widetilde{u_i}(n)$.
+Apply the latter inequality to the next row to obtain
+$c_{i+1}\leq\ell_{i+1}$. For the old row, canonical
+completion agrees through source level $c_i$ and has its next
+image level $m_i+1$, proving the claimed embedding.
+\end{proof}
+
+For words, write one line as $b(v)=h\conc v\conc t(v)$, with
+$h\in A^{<\omega}$. At a cut $c$, its gapped row acts on all
+$z\in A^c$ and $a\in A$ by
+$$
+ u(z)=z\conc h,\qquad
+ u(z\conc a)=z\conc h\conc a\conc t(a).
+$$
+It fixes shorter levels and is canonically continued with identity
+blocks. Thus $\ell=c+|h|$ is inside the line, whereas the next
+mark is $c+|b|$. In particular a line $00v1v0$ starts at a
+cut, branches two letters later, and closes only after the second
+occurrence of its variable. The data of a single
+$\AM^{c}_2$ approximation certify both ends and all successor
+choices simultaneously; requiring two independently extendible
+maps on either side of $\ell$ would again exclude $v0v$.
+
+This is only the \emph{row geometry}. The formula for the
+one-line lift needs no change:
+$$
+ \operatorname{Lift}_{\fat U}(X,i)
+   =u_i^+[\operatorname{Succ}(X)].
+$$
+What changes is the \emph{completion level}: $u_i^+$ must agree
+with the whole width-two row through source level $c_i+1$, whose
+image is already the next cut $c_{i+1}$. Thus the old source
+locality argument still applies after re-proving the new right-cut
+level equation. The geometric reduction and exact-trace theorems,
+however, must be rechecked for these larger row objects before
+asserting marked (A3) or (A4). We also keep the
+Carlson-style \emph{extracted-word} programme separate for later:
+non-adjacent ambient lines and transfer back to full fat trees
+require an additional padding/transfer lemma, not merely numerical
+thinning of row indices.
