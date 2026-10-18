@@ -2,6 +2,7 @@ import SuccessorTree.Block.SeededPigeonhole
 import SuccessorTree.Block.ParityFatObstruction
 import SuccessorTree.Block.BranchFirstParityObstruction
 import SuccessorTree.Block.MarkedCuts
+import SuccessorTree.FatTree.GappedBasic
 
 #print axioms SuccessorTree.Block.seededPigeonhole
 #print axioms SuccessorTree.Block.seededPigeonhole_pairwise
@@ -28,3 +29,9 @@ import SuccessorTree.Block.MarkedCuts
 #print axioms SuccessorTree.Block.MarkedIndexReduction.refl
 #print axioms SuccessorTree.Block.MarkedIndexReduction.comp
 #print axioms SuccessorTree.Block.SeparatedOccurrenceSchedule.toMarked
+
+#print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.cut_le_visible
+#print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.visible_lt_next_cut
+#print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.visible_strictMono
+#print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.cut_strictMono
+#print axioms SuccessorTree.SMTree.FatTree.GappedFatTree.toMarkedLevelSchedule
