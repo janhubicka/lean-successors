@@ -17,10 +17,10 @@ def weight : List Bool → Nat
   | [] => 0
   | x :: xs => (if x then 1 else 0) + weight xs
 
-def variables : List (Option Bool) → Nat
+def varCount : List (Option Bool) → Nat
   | [] => 0
-  | none :: xs => 1 + variables xs
-  | some _ :: xs => variables xs
+  | none :: xs => 1 + varCount xs
+  | some _ :: xs => varCount xs
 
 def evaluate (w : List (Option Bool)) (a : Bool) : List Bool :=
   w.map (fun s => match s with | none => a | some b => b)
@@ -33,19 +33,19 @@ theorem weight_append (xs ys : List Bool) :
 
 theorem weight_evaluate_true (w : List (Option Bool)) :
     weight (evaluate w true) =
-      weight (evaluate w false) + variables w := by
+      weight (evaluate w false) + varCount w := by
   induction w with
   | nil => rfl
   | cons sym xs ih =>
       cases sym with
       | none =>
-          simp [evaluate, weight, variables] at *
+          simp [evaluate, weight, varCount] at *
           omega
       | some b =>
-          cases b <;> simp [evaluate, weight, variables] at * <;> omega
+          cases b <;> simp [evaluate, weight, varCount] at * <;> omega
 
 theorem opposite_head_parity (head : List Bool) (w : List (Option Bool))
-    (hOdd : variables w % 2 = 1) :
+    (hOdd : varCount w % 2 = 1) :
     weight (head ++ evaluate w false) % 2 ≠
       weight (head ++ evaluate w true) % 2 := by
   rw [weight_append, weight_append, weight_evaluate_true]
@@ -66,7 +66,7 @@ theorem oneRowLift_subset_twoStep (head : List Bool)
   exact ⟨a, b, hb⟩
 
 theorem two_first_rows_opposite (head : List Bool)
-    (w : List (Option Bool)) (hOdd : variables w % 2 = 1) :
+    (w : List (Option Bool)) (hOdd : varCount w % 2 = 1) :
     ∃ h0 h1 : List Bool,
       oneRowLift h0 ⊆ twoStepLift head w ∧
       oneRowLift h1 ⊆ twoStepLift head w ∧
