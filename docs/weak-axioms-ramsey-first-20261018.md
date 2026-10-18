@@ -60,6 +60,8 @@ The code's conditional bridge is NOT a new axiom. Its coverage/common-base condi
 
 ## Next mathematical checkpoint
 
+IMPORTANT UPDATE: the parity monoid also refutes the ORIGINAL fat-tree A4 and the BRANCH-FIRST completed-block fat-tree A4 under weak M1–M4. Thus the following staged-fusion scheme is a research target only AFTER strengthening the colour-free hypotheses or restricting the Ramsey conclusion; it cannot prove the unrestricted theorem from the current package.
+
 For each completed stem and ambient block tree, organise admissible one-block extensions into finite batches ending at actual ambient line boundaries. Prove a relative simultaneous realisation for each batch, represent every extension in that batch, and retain the completed stem. Show that the decisions persist under later aligned reductions. Only then run one fusion and prove that every extension in its limit appeared in a controlled batch. Resolve any different base colours rather than treating coordinatewise tuple homogeneity as global homogeneity.
 
 Do not:
@@ -79,3 +81,29 @@ The next proof should provide this finite-stage/persistence step. Broad API rena
 The companion patch is against `successor-v20-compact-axioms-sources.tgz`, SHA-256 `83faf741dec0ff77b25fd1dbd4125bb2af238573e5c8ba96c438a72855aa207a`. It removes the convention that an unqualified (S,M)-tree secretly means strong, labels every changed strong use explicitly, and adds the finite-profile proof and bounded-front caveat. M1 and the primed-axiom definition are byte-for-byte unchanged. Appendix A and the application implementations are unchanged. The envelope text only gains explicit strong scope; the algorithm is not modified.
 
 The marker on the manuscript local lemma is an **interface** marker: it points to the checked generic proof, not a completed source-to-Lean constructor. No new global Ramsey theorem is marked green.
+
+
+## 18 October: two rigorous fat A4 counterexamples
+
+The genuine weak ordered-word monoid M_odd from manuscript Appendix B has arbitrary initial constant heads; every completed variable block starts with x, contains an odd number of occurrences of x and an even number of constant 1's. The earlier manuscript checked M1–M4 with singleton designated neutral alphabets.
+
+1. **Original fat convention:** For any ambient fat tree U, let its first head be c and its second row complete the prior variable with w(x). The two-row root lift is {c w(a) b : a,b in {0,1}}. For each a, a new first row with head c w(a), followed by the ambient rows beginning with row 2, gives a legal reduction. The cut map is 0→0 and i≥1→i+1; first full-lift inclusion and all later equalities hold. Since w has odd variable multiplicity, the two heads have opposite parity. Thus the first-row head-parity colouring violates A4 at the empty stem; its cylinder is Ellentuck-clopen and not Ramsey.
+
+2. **Branch-first completed-block convention:** In any ambient tree take blocks w0,w1,w2,w3, with odd variable counts m0,m1,m2,m3. Two of m1,m2,m3 have the same residue (1 or 3) mod 4; say j<k. Form v(x)=w0(x)t1(x)...tk(x), where tj=wj(x), tk=wk(x), and all other ti=wi(0). This begins with x, has odd variable count m0+mj+mk ≡ m0+2 mod 4, and even constant-1 parity. Therefore v is a legal parity block. Both its evaluations occur in the ambient first k+1-block span, with choices a at positions 0,j,k and 0 elsewhere. Grouping these rows into the new first row and retaining the rest gives an actual aligned block-fat reduction. Hence first-row variable-count mod 4 is persistently bichromatic below every ambient block-fat tree. A4 and clopen Ramsey fail for this convention too.
+
+The mod-four argument needs no arbitrary internal-cut extraction, and the reductions preserve complete ambient line boundaries. These are not merely gaps in the proposed good-pair proof: they disprove the intended unrestricted conclusion from weak M1–M4.
+
+### Formal and diagnostic evidence
+
+Exact proof commit: `7abbbe44e4eb131d166e3b543876e0c4f53bc2eb`. Focused GitHub Actions run: https://github.com/janhubicka/lean-successors/actions/runs/39137602165 — **success, 18 exact named axiom reports**, 606-file integrity check. The kernels are:
+- `ParityFat.two_first_rows_opposite`: two candidate one-row full lifts contained in the old two-row lift, with opposite head parity.
+- `ParityFat.four_blocks_flip`: admissible grouped block, literal two-input span containment, and variable-count mod-four flip.
+- `ParityFat.firstRowHomogeneity_false_of_splitting`: purely logical A4 obstruction under the explicitly stated splitting hypothesis.
+
+The infinite parity-monoid interpretation and full reduction-tail splice are proved in English, **not** by these Lean declarations. The corresponding manuscript markers must therefore be interface markers.
+
+Finite independent diagnostics: 495 head/block cases, 11,250 old-fat tail-lift checks, and 625 four-block branch-first ambient configurations. Both proofs are recorded in `manuscript/weak-axioms/weak-fat-A4-counterexample.tex` and the updated incremental manuscript patch.
+
+### Next objective
+
+Keep the original strong Ramsey theorems and the envelope/big Ramsey section unchanged. The next mathematical priority is **finding a minimal colour-free strengthening of M4 (or a precise generated-front conclusion) that excludes both parity colourings while retaining ordered variable words**. In particular, simple coverage/persistence technical lemmas cannot do so on their own. Avoid replacing the required condition by A4 itself or by a Ramsey axiom in disguise. Resume the all-trace finite-stage proof only after identifying a viable theorem statement.
