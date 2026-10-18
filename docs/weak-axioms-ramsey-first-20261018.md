@@ -102,7 +102,7 @@ Exact proof commit: `7abbbe44e4eb131d166e3b543876e0c4f53bc2eb`. Focused GitHub A
 
 The infinite parity-monoid interpretation and full reduction-tail splice are proved in English, **not** by these Lean declarations. The corresponding manuscript markers must therefore be interface markers.
 
-Finite independent diagnostics: 495 head/block cases, 11,250 old-fat tail-lift checks, and 625 four-block branch-first ambient configurations. Both proofs are recorded in `manuscript/weak-axioms/weak-fat-A4-counterexample.tex` and the updated incremental manuscript patch.
+Finite independent diagnostics: 495 head/block cases, 11,250 old-fat tail-lift checks, and 625 four-block branch-first ambient configurations. Both complete LaTeX proofs are supplied in the companion incremental manuscript patch (file `weak-fat-A4-counterexample.tex` in the patch); the full English proof and its validation boundary are also documented above in this branch note.
 
 ### Next objective
 
