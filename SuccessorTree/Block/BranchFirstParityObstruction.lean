@@ -20,12 +20,15 @@ def frozenZero (w : List (Option Bool)) : List (Option Bool) :=
     evaluate (frozenZero w) a = evaluate w false := by
   simp [frozenZero, evaluate, List.map_map, Function.comp_def]
 
-@[simp] theorem varCount_frozenZero (w : List (Option Bool)) :
-    varCount (frozenZero w) = 0 := by
-  induction w with
+theorem varCount_map_some (xs : List Bool) :
+    varCount (xs.map some) = 0 := by
+  induction xs with
   | nil => rfl
-  | cons b ws ih =>
-      cases b <;> simp [frozenZero, evaluate, varCount, ih]
+  | cons b bs ih => simp [varCount, ih]
+
+@[simp] theorem varCount_frozenZero (w : List (Option Bool)) :
+    varCount (frozenZero w) = 0 :=
+  varCount_map_some (evaluate w false)
 
 theorem evaluate_append (u v : List (Option Bool)) (a : Bool) :
     evaluate (u ++ v) a = evaluate u a ++ evaluate v a := by
@@ -108,9 +111,13 @@ theorem four_blocks_flip
       AllowedParity v ∧
       (∀ a : Bool, evaluate v a ∈ span4 w0 w1 w2 w3) ∧
       varCount v % 4 ≠ varCount w0 % 4 := by
+  rcases h0 with ⟨h0odd, h0even⟩
+  rcases h1 with ⟨h1odd, h1even⟩
+  rcases h2 with ⟨h2odd, h2even⟩
+  rcases h3 with ⟨h3odd, h3even⟩
   rcases equal_residue_among_three_odds
       (varCount w1) (varCount w2) (varCount w3)
-      h1.1 h2.1 h3.1 with heq | heq | heq
+      h1odd h2odd h3odd with heq | heq | heq
   · refine ⟨grouped12 w0 w1 w2 w3, ?_, grouped12_span w0 w1 w2 w3, ?_⟩
     · constructor
       · rw [grouped12_vars]
@@ -118,7 +125,7 @@ theorem four_blocks_flip
       · simp only [grouped12, weight_eval_append, evaluate_frozenZero]
         omega
     · rw [grouped12_vars]
-      exact same_odd_pair_flips _ _ _ h1.1 h2.1 heq
+      exact same_odd_pair_flips _ _ _ h1odd h2odd heq
   · refine ⟨grouped13 w0 w1 w2 w3, ?_, grouped13_span w0 w1 w2 w3, ?_⟩
     · constructor
       · rw [grouped13_vars]
@@ -126,7 +133,7 @@ theorem four_blocks_flip
       · simp only [grouped13, weight_eval_append, evaluate_frozenZero]
         omega
     · rw [grouped13_vars]
-      exact same_odd_pair_flips _ _ _ h1.1 h3.1 heq
+      exact same_odd_pair_flips _ _ _ h1odd h3odd heq
   · refine ⟨grouped23 w0 w1 w2 w3, ?_, grouped23_span w0 w1 w2 w3, ?_⟩
     · constructor
       · rw [grouped23_vars]
@@ -134,7 +141,7 @@ theorem four_blocks_flip
       · simp only [grouped23, weight_eval_append, evaluate_frozenZero]
         omega
     · rw [grouped23_vars]
-      exact same_odd_pair_flips _ _ _ h2.1 h3.1 heq
+      exact same_odd_pair_flips _ _ _ h2odd h3odd heq
 
 end ParityFat
 end SuccessorTree.Block
