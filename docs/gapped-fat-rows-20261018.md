@@ -48,6 +48,6 @@ This has internal level m_i, right cut m_i+1, and uses unchanged c. Thus the old
 
 ## Immediate next proof
 
-Define one-step gapped lift from level c_i to c_(i+1) using `u_i` on source levels c_i and c_i+1, **without** inserting an additional successor after `u_i^+`. Define an exact-trace marked reduction that respects full-frontier blocks and marks. Prove its A1--A3 before any A4 claim. Only then re-test the parity obstruction in that exact space. Keep the parity counterexamples to the prior prototype conventions separate.
+Keep the existing one-step lift formula `u_i^+[ImmediateSuccessors(X)]`. Re-prove its target-cut law with the width-two canonical extension (completed through source level c_i+1). The old code's `rowEnd+1` equation must not be reused: the new right cut is directly the image of c_i+1. Prove cut locality, then define exact-trace marked reductions that respect full-frontier blocks and marks. Prove its A1--A3 before any A4 claim. Only then re-test the parity obstruction in that exact space. Keep the parity counterexamples to the prior prototype conventions separate.
 
 The companion source patch `successor-v20-gap-fat-width-two.patch` modifies the gapped-cut appendix of the last marked-word proof source; it leaves M1--M4, strong M2'/M3', applications and envelopes unchanged.
