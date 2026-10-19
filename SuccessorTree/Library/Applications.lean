@@ -2,6 +2,7 @@ import SuccessorTree.V10.KptCompleteSMTree
 import SuccessorTree.V10.KptE1EnvelopeIntegration
 import SuccessorTree.V10.HUniformEnvelopeBound
 import SuccessorTree.V10.FiniteBigRamseyDegrees
+import SuccessorTree.Library.TypeRespecting
 
 /-!
 # Public finite relational applications
@@ -13,6 +14,8 @@ embeddings into a countable age-universal unary/binary structure.
 It also exports `AgeTestModel.HasOriginalFiniteBigRamseyDegrees`
 and its proven universal-age instance, matching the source paper's
 finite-degree definition directly.
+The intrinsic binary type-respecting full-profile theorem is also available
+separately through `SuccessorTree.Library.TypeRespecting`.
 
 These theorems are specifically about normalized finite families of
 irreducible forbidden patterns with the singleton convention encoded

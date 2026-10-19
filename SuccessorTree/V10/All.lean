@@ -9,6 +9,8 @@ import SuccessorTree.V10.M3RepresentativeIndependence
 import SuccessorTree.V10.M2BadCopySourceAge
 import SuccessorTree.V10.PrescribedB3BoundedCores
 import SuccessorTree.V10.KptRamseyApplications
+import SuccessorTree.V10.TypeRespectingRamsey
+import SuccessorTree.V10.FiniteTypeProfileFullType
 import SuccessorTree.V10.HUniformEnvelopeBound
 import SuccessorTree.V10.HTopRootFreeCut
 import SuccessorTree.V10.SingletonNormalization

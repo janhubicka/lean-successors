@@ -23,6 +23,7 @@ axiom reports; do not duplicate hundreds of V10 axiom checks here.
 #check @SuccessorTree.SMTree.shapePreservingRamsey_viaFatEllentuck
 #check @SuccessorTree.SMTree.shapeRamsey_bounded
 #check @SuccessorTree.SMTree.shapeRamsey_exact
+#check @SuccessorTree.SMTree.boundedRestrictionRamsey
 #check @SuccessorTree.SMTree.FatTree.fatTreeA4
 #check @SuccessorTree.SMTree.FatTree.fatTreeEllentuck
 #check @SuccessorTree.SMTree.Envelope.exists_minimalEnvelope
@@ -44,6 +45,15 @@ axiom reports; do not duplicate hundreds of V10 axiom checks here.
 #check @SuccessorTree.V10.universalBinaryUnaryModel_allEmbeddings_bigRamsey_bound
 #check @SuccessorTree.V10.AgeTestModel.HasOriginalFiniteBigRamseyDegrees
 #check @SuccessorTree.V10.AgeTestModel.hasOriginalFiniteBigRamseyDegrees_of_universal
+#check @SuccessorTree.V10.FiniteTypeBase
+#check @SuccessorTree.V10.TypeProfile
+#check @SuccessorTree.V10.ProfileContinuation
+#check @SuccessorTree.V10.FiniteTypeProfileMap
+#check @SuccessorTree.V10.TypeRespectingEmbedding
+#check @SuccessorTree.V10.FiniteTypeProfileMap.extends
+#check @SuccessorTree.V10.TypeRespectingEmbedding.restrictionEquiv
+#check @SuccessorTree.V10.TypeRespectingEmbedding.act
+#check @SuccessorTree.V10.normalizedKpt_typeRespectingRamsey
 
 #check @SuccessorTree.FreeAncestral.finiteShapeRamsey
 #check @SuccessorTree.FreeAncestral.projectionComposite_not_rightFactor
