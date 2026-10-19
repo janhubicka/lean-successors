@@ -28,7 +28,7 @@ def insertAncestorIndex (t j : Nat) : Nat :=
 
 /-- Ancestor indices remain below the new source level. -/
 theorem insertAncestorIndex_lt {n t j : Nat}
-    (ht : t ≤ n) (hj : j < n) :
+    (hj : j < n) :
     insertAncestorIndex t j < n + 1 := by
   unfold insertAncestorIndex
   split_ifs <;> omega
@@ -75,7 +75,8 @@ theorem allowed_later {n m : Nat} (hnm : n ≤ m)
         have hnew := S.insert (n := n + d) (t := n + d) (le_refl _) ih
         have hm : p.map (insertAncestorIndex (n + d)) = p :=
           map_insert_end p (n + d) (S.bounded ih)
-        simpa [hm, Nat.add_succ] using hnew
+        rw [hm] at hnew
+        exact hnew
   simpa [Nat.add_sub_of_le hnm] using h (m - n)
 
 /-- The root's parameter-free code remains usable at every level. -/
@@ -100,11 +101,11 @@ noncomputable def freeAncestralCodeScheme
     refine ⟨Classical.choice (inferInstance : Nonempty Label), ?_⟩
     simp
   insert := by
-    intro n t c p ht hp
+    intro n t c p _ht hp
     constructor
     · simpa only [List.length_map] using hp.1
     · intro j hj
       obtain ⟨k, hk, rfl⟩ := List.mem_map.mp hj
-      exact insertAncestorIndex_lt ht (hp.2 k hk)
+      exact insertAncestorIndex_lt (hp.2 k hk)
 
 end SuccessorTree
