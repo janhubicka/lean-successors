@@ -36,7 +36,7 @@ theorem closeGap_front_prefix (h : CoherentTypeProfileMap A B)
   have hFn : H.levelMap F.map n = h.levelMap n (Nat.le_of_lt hn) := by
     let q := TypeProfile.atCut A n (Nat.le_of_lt hn)
     calc
-      H.levelMap F.map n = (F q.1).1.1 := H.levelMap_eq F.map
+      H.levelMap F.map n = (F q.1).1.1 := H.levelMap_eq F.map (a := q.1)
       _ = (h q).1.1 := congrArg (fun x : AdmissibleKptNode family => x.1.1)
         (hAgree q le_rfl)
       _ = h.levelMap n (Nat.le_of_lt hn) := h.level_eq q
@@ -44,7 +44,8 @@ theorem closeGap_front_prefix (h : CoherentTypeProfileMap A B)
       (G u.1).1.1 = h.levelMap n (Nat.le_of_lt hn) + 1 := by
     intro u hu
     calc
-      (G u.1).1.1 = H.levelMap G.map u.level := (H.levelMap_eq G.map).symm
+      (G u.1).1.1 = H.levelMap G.map u.level :=
+        (H.levelMap_eq G.map (a := u.1)).symm
       _ = H.levelMap G.map (n + 1) := by rw [hu]
       _ = H.levelMap F.map n + 1 := H.closeGap_level_succ F n
       _ = h.levelMap n (Nat.le_of_lt hn) + 1 := by rw [hFn]
@@ -68,10 +69,17 @@ theorem closeGap_front_prefix (h : CoherentTypeProfileMap A B)
     omega
   obtain ⟨e, hGe, heb⟩ := G.map.weak_succ' hSource
   have hGe' : (admissibleKptSTree family).succ (h a) (q.map h) c = some e := by
-    simpa only [List.map_map, Function.comp_def, ha, hParams] using hGe
+    simp only [List.map_map, Function.comp_def] at hGe
+    change (admissibleKptSTree family).succ (G a.1)
+      (q.map (fun p => G p.1)) c = some e at hGe
+    rw [ha, hParams] at hGe
+    exact hGe
   have hed : e = d := Option.some.inj (hGe'.symm.trans hMapped)
   subst e
-  have hdG : d ≤ G u.1 := by simpa only [hb] using heb
+  have hdG : d ≤ G u.1 := by
+    change d ≤ G b.1 at heb
+    rw [hb] at heb
+    exact heb
   have hdLevel : LevelTree.lev d = (G u.1).1.1 := by
     have hcover := (admissibleKptSTree family).covBy_of_succ_eq_some hMapped
     have hd := LevelTree.covBy_level_eq hcover

@@ -8,6 +8,7 @@ mathematical bridge used by the self-contained BRD-section corollary.
 #print axioms SuccessorTree.V10.TypeProfile.front_nonempty
 #print axioms SuccessorTree.V10.CoherentTypeProfileMap.recovers_complete_record
 #print axioms SuccessorTree.V10.CoherentTypeProfileMap.vertexMap_preserves_atoms
+#print axioms SuccessorTree.V10.CoherentTypeProfileMap.vertexMap_strictMono
 #print axioms SuccessorTree.V10.CoherentTypeProfileMap.vertexMap_freeLevel
 #print axioms SuccessorTree.V10.CoherentTypeProfileMap.vertexType_transport
 #print axioms SuccessorTree.V10.CoherentTypeProfileMap.preserves_full_type_equality
@@ -17,6 +18,7 @@ mathematical bridge used by the self-contained BRD-section corollary.
 #print axioms SuccessorTree.V10.FiniteTypeProfileMap.extends
 #print axioms SuccessorTree.V10.FiniteTypeProfileMap.ofShapeMap
 #print axioms SuccessorTree.V10.TypeRespectingEmbedding.restrictionEquiv
+#print axioms SuccessorTree.V10.TypeRespectingEmbedding.act_apply
 #print axioms SuccessorTree.V10.TypeRespectingEmbedding.act_comp
 #print axioms SuccessorTree.V10.normalizedKpt_typeRespectingRamsey
 
@@ -30,3 +32,13 @@ example {db du dd : Nat}
         colour (SuccessorTree.V10.TypeRespectingEmbedding.act A F f) =
           colour (SuccessorTree.V10.TypeRespectingEmbedding.act A F g) :=
   SuccessorTree.V10.normalizedKpt_typeRespectingRamsey family A colour
+
+/-- The exported action is pointwise postcomposition on the coloured maps. -/
+example {db du dd : Nat}
+    {family : List (SuccessorTree.V10.NormalizedForbidden db du dd)}
+    (A : SuccessorTree.V10.FiniteTypeBase family)
+    (F : SuccessorTree.SMTree.MMap (SuccessorTree.V10.normalizedKptSMTree family))
+    (f : SuccessorTree.V10.TypeRespectingEmbedding A)
+    (u : SuccessorTree.V10.TypeProfile A) :
+    (SuccessorTree.V10.TypeRespectingEmbedding.act A F f).1 u = F (f.1 u) :=
+  SuccessorTree.V10.TypeRespectingEmbedding.act_apply A F f u

@@ -54,7 +54,7 @@ theorem fill_front (h : FiniteTypeProfileMap A B)
         obtain ⟨K, hKM, hKa, hKf⟩ := h.extend_front_once n (m + d)
           hn hnPos hLow' hHigh' G hGM hGa hGf
         refine ⟨K, hKM, hKa, ?_⟩
-        simpa only [Nat.add_succ, Nat.succ_eq_add_one] using hKf
+        simpa only [Nat.add_succ, Nat.add_zero] using hKf
   obtain ⟨G, hGM, hGa, hGf⟩ := build (top - m) (by omega)
   refine ⟨G, hGM, ?_⟩
   intro u hu
