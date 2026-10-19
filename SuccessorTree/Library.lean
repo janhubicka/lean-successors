@@ -14,6 +14,8 @@ entire development's assembly and audit surface (`SuccessorTree` and
 * `SuccessorTree.Library.Abstract`: the reusable M1–M3 Ramsey mathematics;
 * `SuccessorTree.Library.Applications`: normalized Kpt, E1 and the
   original unary/binary finite big-Ramsey theorem;
+* `SuccessorTree.Library.TypeRespecting`: intrinsic binary finite-profile
+  extension and its degree-one Ramsey corollary;
 * `SuccessorTree.Library.Examples`: the free-ancestral instance.
 
 These boundaries are intentionally allowed to evolve: no downstream

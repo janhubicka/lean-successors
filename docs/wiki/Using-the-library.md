@@ -11,6 +11,7 @@ import SuccessorTree.Library.Structures
 -- import SuccessorTree.Library.Abstract
 -- Add only if needed:
 -- import SuccessorTree.Library.Applications
+-- import SuccessorTree.Library.TypeRespecting
 -- import SuccessorTree.Library.Examples
 ```
 
@@ -58,6 +59,14 @@ These are existing declarations, not restated axioms. The API smoke test
 To inspect *complete implicit arguments and hypotheses*, use `#check @Name`
 or `#print Name`. A successful `#check` proves resolution, not the
 correctness of the mathematical translation from a paper.
+
+For the intrinsic binary type-respecting corollary, use the smaller
+`SuccessorTree.Library.TypeRespecting` import and
+`SuccessorTree.V10.normalizedKpt_typeRespectingRamsey`. It exports finite full
+profiles, their intrinsic labelled-continuation condition, the proved finite
+extension theorem and literal postcomposition action. See
+[the type-respecting interface](../type-respecting-ramsey.md) for the exact
+scope and named proof interfaces.
 
 ## Assumption boundaries
 
