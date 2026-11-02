@@ -99,7 +99,7 @@ theorem exists_starHJWindow
   have hStar : L.star.length ≤ N :=
     le_trans L.length_star_le_word_length hLen
   have hmono' : ext (L.eval a) = ext L.star := hmono a
-  simpa [ext, hEval, hStar] using hmono'
+  simpa only [ext, dif_pos hEval, dif_pos hStar] using hmono'
 
 end HalesJewett
 end SuccessorTree
