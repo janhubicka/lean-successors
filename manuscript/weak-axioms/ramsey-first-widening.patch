@@ -1,0 +1,51 @@
+diff --git a/main.tex b/main.tex
+--- a/main.tex
++++ b/main.tex
+@@ -529,16 +529,39 @@
+ \begin{proof}
+ 	Let $\fat{U}=(u_i)_{i\in \omega}$. From the definition of a fat subtree it follows that $u_i$ is the identity on $T({<} \fatc{U}(i))$ for every $i\in \omega$. It follows that the limit defining $\fatfn{U}{n}$ exists, and by~\ref{item:Nmonoid}, this limit is in $\M$. The second point is immediate.
+ \end{proof}
+-For a strong $(\S,\M)$-tree, every shape-preserving function can be widened to a fat subtree by a repeated application of Proposition~\ref{prop:shape-split} (note that this widening is not necessarily unique):
+-\begin{observation}
+-	\label{obs:shapetofat}
+-\leanvthirteenverified{SuccessorTree/FatTree/ShapeCorrespondence.lean}{associatedMap\_ofShapeMap}
+-	For a strong $(\S,\M)$-tree and every $F\in \M$ there exists $\fat{U}\in \mathcal{R}$ such that $\fatf{U}=F$.
++The reverse construction uses only completed-level factorisation, not
++arbitrary internal cuts. In particular, it is available for an
++$(\S,\M)$-tree without the primed axioms.
++\begin{observation}\label{obs:shapetofat}
++\leaninterface{SuccessorTree/FatTree/ShapeCorrespondence.lean}{associatedMap\_ofShapeMap}
++% The linked existing theorem has the strong Lean interface. The weaker
++% proof below is an English derivation; its interface constructor is deferred.
++For every $(\S,\M)$-tree and every $F\in\M$, there exists
++$\fat U\in\mathcal R$ with $\fatf U=F$.
+ \end{observation}
+ \begin{proof}
+-	Fix $F\in \M$. We construct $\fat{U}=(u_i)_{i\in \omega}$ as follows.
+-	Put $u_0=F\restriction_{T(0)}$.
+-	For a given $i>0$ put $f_i=F\restriction_{T({\leq}i)}$  and use Proposition~\ref{prop:shape-split} to decompose $f_i$ on level $\tilde{F}(i-1)+1$, choosing $u_i$ to satisfy $f_i=u_i\circ f_i|_{\tilde{F}(i-1)+1}.$
++Put $f_i=F\restriction_{T({\leq}i)}$ and $u_0=f_0$.
++For $i>0$ let $p=\widetilde F(i-1)$ and $q=\widetilde F(i)$.
++By~\ref{item:Mendpoint}, choose $D_i\in\M$ with
++$$
++ f_i^+=D_i\circ f_{i-1}^+.
++$$
++Proposition~\ref{prop:block-extraction} shows that $D_i$ fixes
++$T({\leq}p)$, sends level $p+1$ to $q$, and has consecutive image
++levels thereafter. Thus
++$$
++ u_i=D_i\restriction_{T({\leq}p+1)}\in\AM^{p+1}_1(q),
++ \qquad u_i^+=D_i.
++$$
++The rows form a fat subtree with $\fatc U(0)=0$ and
++$\fatc U(i+1)=\widetilde F(i)+1$.
++Their products satisfy
++$$
++ u_i^+\circ\cdots\circ u_0^+=f_i^+.
++$$
++Each product agrees with $F$ through source level $i$, so the
++associated pointwise limit is $F$. The initial root map need not be
++fixed. No internal-cut splitting or duplication is used.
+ \end{proof}
+ 
+ \section{Proof of the Ramsey theorem for fat subtrees}

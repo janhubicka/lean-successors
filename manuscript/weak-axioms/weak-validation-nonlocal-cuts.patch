@@ -1,0 +1,61 @@
+--- a/marked-fat-cuts.tex
++++ b/marked-fat-cuts.tex
+@@ -148,7 +148,7 @@
+ image level $m_i+1$, proving the claimed embedding.
+ \end{proof}
+ 
+-For words, write one line as $b(v)=h\conc v\conc t(v)$, with
++For the \emph{unrestricted} word monoid, write one line as $b(v)=h\conc v\conc t(v)$, with
+ $h\in A^{<\omega}$.  At a cut $c$, its gapped row acts on all
+ $z\in A^c$ and $a\in A$ by
+ $$
+@@ -164,6 +164,37 @@
+ choices simultaneously; requiring two independently extendible
+ maps on either side of $\ell$ would again exclude $v0v$.
+ 
++\begin{observation}[Arbitrary cutting marks need not be locally extendible]
++\label{obs:bl-mark-not-local}
++The requirement $u_i\in\AM^{c_i}_2$ defines a useful
++\emph{locally extendible} marked fat-tree space. For a restricted
++monoid it can exclude legal cutting marks of globally admissible
++variable words, and hence is not yet the full space intended by
++Definition~\ref{def:marked-word-reduction}.
++\end{observation}
++\begin{proof}
++In the binary parity monoid of Proposition~\ref{prop:bl-parity},
++the canonical blocks $v11$ and $v$ are admissible: each has an odd
++number of variable occurrences and an even number of constant $1$'s.
++Their concatenation $v11v$ admits a marked cut after $v1$, giving the
++marked blocks $v1$ and $1v$. The cut lies strictly after the last
++occurrence of the first variable and before the first occurrence of
++the next, so it is permitted by the marked-word definition.
++However the first proposed width-two row would satisfy
++$u(())=()$ and $u(a)=a1$ for $a\in\{0,1\}$.
++Its variable block would therefore be $v1$, whose constant-$1$
++parity is odd. No element of the parity monoid can extend that
++row. Thus the globally permitted marked word has no such
++locally extendible row representation. The obstruction concerns
++extendibility, not the numerical placement of cuts.
++\end{proof}
++This distinction must be retained in future definitions: either
++restrict explicitly to locally extendible marked rows, or use a
++\emph{globally coherent} marked profile (including partial line states)
++which need not admit separate monoid completions at every mark.
++In the latter case the candidate marks become genuine approximation
++data, and completion/fusion must be proved for their joint witnesses.
++
+ This is only the \emph{row geometry}.  The formula for the
+ one-line lift needs no change:
+ $$
+@@ -194,6 +225,11 @@
+ whole-frontier witness.  The marked reduction must preserve its
+ realisation on every successor profile, not only on one chosen copy.
+ 
++The combinatorial reduction of the full marked word space is already
++well-defined by complete-block substitution. The earlier width-two
++$\AM$-row construction is not a proof that every one of its globally
++legal cuts admits a row in the restricted monoid.
++
+ The preceding two parity propositions concern only their
+ \emph{explicitly defined provisional spaces}.  Numerical interleaving
+ alone cannot transfer either proposition to a new reduction relation.
