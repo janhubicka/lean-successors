@@ -26,11 +26,11 @@ ordinary evaluation belong to the same window. -/
 def StarHJWindow (α : Type u) (κ : Type v)
     [Fintype α] [Fintype κ] (N : Nat) : Prop :=
   ∀ colour : WindowWord α N → κ,
-    ∃ L : StarLine α, L.word.length ≤ N ∧
+    ∃ L : StarLine α, ∃ hL : L.word.length ≤ N,
       ∀ a : α,
-        colour ⟨L.eval a, by simpa using L.length_eval a ▸ ‹L.word.length ≤ N›⟩ =
+        colour ⟨L.eval a, by simpa using hL⟩ =
         colour ⟨L.star,
-          le_trans L.length_star_le_word_length ‹L.word.length ≤ N›⟩
+          le_trans L.length_star_le_word_length hL⟩
 
 /-- For fixed finite alphabet and finite nonempty colour type, one finite word
 window already contains a monochromatic starred line for every colouring.
@@ -91,7 +91,7 @@ theorem exists_starHJWindow
   obtain ⟨L, hL⟩ := Set.mem_iUnion.mp hfinite
   obtain ⟨hLs, hmono⟩ := Set.mem_iUnion.mp hL
   have hLen : L.word.length ≤ N := by
-    exact Finset.le_sup hLs
+    exact Finset.le_sup (f := fun L : StarLine α => L.word.length) hLs
   refine ⟨L, hLen, ?_⟩
   intro a
   have hEval : (L.eval a).length ≤ N := by
