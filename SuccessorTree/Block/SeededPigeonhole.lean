@@ -85,6 +85,89 @@ theorem finiteProfilePigeonhole
   intro i a
   exact congrFun (hb a) i
 
+
+/-- Two profiles overlap in a block when some (possibly different) inputs
+represent the same physical point.  This is deliberately weaker than requiring
+a common base point for all profiles. -/
+def ProfilesOverlap
+    (apply : Block → LineInput Γ → Approx)
+    (profile : ι → Approx → Point)
+    (b : Block) (i j : ι) : Prop :=
+  ∃ a a' : LineInput Γ,
+    profile i (apply b a) = profile j (apply b a')
+
+/-- One block homogenizes every finite profile, and connected literal overlaps
+between the represented lines then identify the colours of different profiles.
+
+This is still only a finite local theorem.  The connectivity hypothesis is an
+explicit colour-free property of the chosen block representation; no global A4
+or persistence under later reductions is asserted. -/
+theorem finiteProfilePigeonhole_connected
+    [Fintype Γ] [Fintype κ] [Fintype ι]
+    (wordApprox : List Γ → Approx)
+    (apply : Block → LineInput Γ → Approx)
+    (hRealise : HasSeededRealisation wordApprox apply)
+    (profile : ι → Approx → Point)
+    (hConnected : ∀ b i j,
+      Relation.ReflTransGen (ProfilesOverlap apply profile b) i j)
+    (colour : Point → κ) :
+    ∃ b : Block, ∀ i j : ι, ∀ a a' : LineInput Γ,
+      colour (profile i (apply b a)) =
+        colour (profile j (apply b a')) := by
+  obtain ⟨b, hb⟩ :=
+    finiteProfilePigeonhole wordApprox apply hRealise profile colour
+  have hstep :
+      ∀ {i j : ι}, ProfilesOverlap apply profile b i j →
+        colour (profile i (apply b .base)) =
+          colour (profile j (apply b .base)) := by
+    intro i j hij
+    obtain ⟨a, a', hEq⟩ := hij
+    calc
+      colour (profile i (apply b .base)) =
+          colour (profile i (apply b a)) := (hb i a).symm
+      _ = colour (profile j (apply b a')) := congrArg colour hEq
+      _ = colour (profile j (apply b .base)) := hb j a'
+  have hbase :
+      ∀ i j : ι,
+        colour (profile i (apply b .base)) =
+          colour (profile j (apply b .base)) := by
+    intro i j
+    have hpath := hConnected b i j
+    induction hpath with
+    | refl => rfl
+    | tail hpath hij ih =>
+        exact ih.trans (hstep hij)
+  refine ⟨b, ?_⟩
+  intro i j a a'
+  exact (hb i a).trans ((hbase i j).trans (hb j a').symm)
+
+/-- Connected profile overlap can replace the common-base hypothesis in the
+covered-front bridge.  Every represented front point then has the same colour
+as every other represented front point. -/
+theorem coveredFrontPigeonhole_connected
+    [Fintype Γ] [Fintype κ] [Fintype ι]
+    (wordApprox : List Γ → Approx)
+    (apply : Block → LineInput Γ → Approx)
+    (hRealise : HasSeededRealisation wordApprox apply)
+    (profile : ι → Approx → Point)
+    (front : Block → Set Point)
+    (hCover : ∀ b t, t ∈ front b →
+      ∃ i : ι, ∃ a : LineInput Γ, profile i (apply b a) = t)
+    (hConnected : ∀ b i j,
+      Relation.ReflTransGen (ProfilesOverlap apply profile b) i j)
+    (colour : Point → κ) :
+    ∃ b : Block, ∀ t ∈ front b, ∀ t' ∈ front b,
+      colour t = colour t' := by
+  obtain ⟨b, hb⟩ :=
+    finiteProfilePigeonhole_connected
+      wordApprox apply hRealise profile hConnected colour
+  refine ⟨b, ?_⟩
+  intro t ht t' ht'
+  obtain ⟨i, a, hit⟩ := hCover b t ht
+  obtain ⟨j, a', hjt⟩ := hCover b t' ht'
+  rw [← hit, ← hjt]
+  exact hb i j a a'
+
 /-- A conditional all-front bridge. Coverage concerns EVERY member of
 `front b`, and all profiles must share one base. These are explicit,
 colour-free hypotheses, not consequences of local M4.
