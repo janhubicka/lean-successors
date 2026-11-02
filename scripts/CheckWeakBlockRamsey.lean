@@ -1,4 +1,5 @@
 import SuccessorTree.Block.SeededPigeonhole
+import SuccessorTree.HalesJewett.FiniteWindow
 import SuccessorTree.Block.ParityFatObstruction
 import SuccessorTree.Block.BranchFirstParityObstruction
 import SuccessorTree.Block.MarkedParityExact
@@ -16,6 +17,8 @@ import SuccessorTree.FatTree.GappedBasic
 #print axioms SuccessorTree.Block.hasSeededRealisation_of_replay
 #print axioms SuccessorTree.Block.singletonRealisation
 #print axioms SuccessorTree.Block.fullFront_not_homogeneous
+#print axioms SuccessorTree.HalesJewett.exists_finiteStarHJCertificate
+#print axioms SuccessorTree.HalesJewett.exists_starHJWindow
 
 #print axioms SuccessorTree.Block.ParityFat.weight_evaluate_true
 #print axioms SuccessorTree.Block.ParityFat.opposite_head_parity
