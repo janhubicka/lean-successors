@@ -85,6 +85,59 @@ theorem finiteProfilePigeonhole
   intro i a
   exact congrFun (hb a) i
 
+/-- A conditional covered-front bridge in which the profile bases need not
+literally coincide.  A finite parent hierarchy aligns their colours through
+shared represented points.
+
+The hierarchy and its overlap witnesses are separate, colour-free hypotheses.
+This theorem is still only a finite one-block statement: it asserts neither
+persistence under later reductions nor global fat-tree A4. -/
+theorem coveredFrontPigeonhole_of_parent
+    [Fintype Γ] [Fintype κ] [Fintype ι]
+    (wordApprox : List Γ → Approx)
+    (apply : Block → LineInput Γ → Approx)
+    (hRealise : HasSeededRealisation wordApprox apply)
+    (profile : ι → Approx → Point)
+    (front : Block → Set Point) (anchor : Block → Point)
+    (root : ι) (level : ι → Nat) (parent : ι → ι)
+    (hCover : ∀ b t, t ∈ front b →
+      ∃ i : ι, ∃ a : LineInput Γ, profile i (apply b a) = t)
+    (hRoot : ∀ b, profile root (apply b .base) = anchor b)
+    (hParentLevel : ∀ i, i ≠ root → level (parent i) < level i)
+    (hParentLink : ∀ b i, i ≠ root →
+      ∃ a a' : LineInput Γ,
+        profile i (apply b a) = profile (parent i) (apply b a'))
+    (colour : Point → κ) :
+    ∃ b : Block, ∀ t ∈ front b, colour t = colour (anchor b) := by
+  classical
+  obtain ⟨b, hb⟩ := finiteProfilePigeonhole
+    wordApprox apply hRealise profile colour
+  have hAlign : ∀ i : ι,
+      colour (profile i (apply b .base)) = colour (anchor b) := by
+    intro i
+    generalize hn : level i = n
+    induction n using Nat.strong_induction_on generalizing i with
+    | h n ih =>
+        by_cases hir : i = root
+        · subst i
+          rw [hRoot b]
+        · obtain ⟨a, a', hEq⟩ := hParentLink b i hir
+          have hp : level (parent i) < n := by
+            simpa [hn] using hParentLevel i hir
+          calc
+            colour (profile i (apply b .base))
+                = colour (profile i (apply b a)) := (hb i a).symm
+            _ = colour (profile (parent i) (apply b a')) :=
+              congrArg colour hEq
+            _ = colour (profile (parent i) (apply b .base)) :=
+              hb (parent i) a'
+            _ = colour (anchor b) :=
+              ih (level (parent i)) hp (parent i) rfl
+  refine ⟨b, ?_⟩
+  intro t ht
+  obtain ⟨i, a, rfl⟩ := hCover b t ht
+  exact (hb i a).trans (hAlign i)
+
 /-- A conditional all-front bridge. Coverage concerns EVERY member of
 `front b`, and all profiles must share one base. These are explicit,
 colour-free hypotheses, not consequences of local M4.
