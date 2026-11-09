@@ -47,6 +47,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Verify umbrella-import closure is unchanged
         run: python3 scripts/check-umbrella-closure.py
       - name: Verify V10 checks are owned by counting workflow
@@ -152,6 +153,20 @@ jobs:
           }
       - name: Test axiom-audit checker
         run: python3 -m unittest discover -s tests -p 'test_axiom_audit.py' -v
+      - name: Check Borel and relative Ellentuck transfer axioms
+        run: |
+          if ! lake build SuccessorTree.FatTree.SourceTheorems SuccessorTree.FatTree.ProductContinuity SuccessorTree.FatTree.FatCategoryCriterion > proof-audit/shape-via-fat-ellentuck-build.log 2>&1; then
+            cat proof-audit/shape-via-fat-ellentuck-build.log
+            exit 1
+          fi
+          if ! lake env lean scripts/CheckShapeViaFatEllentuck.lean > proof-audit/shape-via-fat-ellentuck-axioms.log 2>&1; then
+            cat proof-audit/shape-via-fat-ellentuck-axioms.log
+            exit 1
+          fi
+          python3 scripts/check-axiom-log.py proof-audit/shape-via-fat-ellentuck-axioms.log scripts/CheckShapeViaFatEllentuck.lean || {
+            cat proof-audit/shape-via-fat-ellentuck-axioms.log
+            exit 1
+          }
       - name: Check envelope section statements and axioms
         run: bash scripts/audit-envelope.sh proof-audit
       - name: Check concrete free ancestral M2/M3 and Ramsey axioms

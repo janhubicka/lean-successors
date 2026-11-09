@@ -45,8 +45,9 @@ private theorem image_val_mem_iff
   · intro hy
     exact ⟨⟨x, hx⟩, hy, rfl⟩
 
-/-- The image of a Baire subset of an **open** subspace has the Baire
-property in the ambient topology. Openness is essential here. -/
+/-- The image of a Baire subset of an open subspace has the Baire
+property in the ambient topology. This sufficient hypothesis applies to
+the basic fat-tree neighbourhoods used by relative EA2. -/
 theorem baire_image_val_of_isOpen
     (C : Set α) (hC : IsOpen C)
     (S : Set C) (hS : BaireMeasurableSet S) :
