@@ -19,3 +19,6 @@ import SuccessorTree.ShapeEllentuckRamsey
 #print axioms SuccessorTree.RelativeCategory.meagre_of_relative_preimage
 #print axioms SuccessorTree.RelativeCategory.baire_of_relative_EA2
 #print axioms SuccessorTree.RelativeCategory.meagre_of_relative_EA2
+
+#print axioms SuccessorTree.SMTree.FatTree.coneRamsey_of_relativeEA2
+#print axioms SuccessorTree.SMTree.FatTree.coneNull_of_relativeEA2
