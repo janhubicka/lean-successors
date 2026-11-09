@@ -7,3 +7,8 @@ import SuccessorTree.ShapeEllentuckRamsey
 
 #print axioms SuccessorTree.SMTree.FatTree.associatedMap_eq_stage_of_level_le
 #print axioms SuccessorTree.SMTree.FatTree.fatImageHomogeneous_of_BaireFibres
+
+#print axioms SuccessorTree.SMTree.FatTree.pureDepthRefine_of_basicMember
+#print axioms SuccessorTree.SMTree.FatTree.coneHomogeneous_of_BairePullback_and_lifting
+#print axioms SuccessorTree.SMTree.FatTree.coneRamsey_of_BairePullback_and_lifting
+#print axioms SuccessorTree.SMTree.FatTree.coneNull_of_meagrePullback_and_lifting

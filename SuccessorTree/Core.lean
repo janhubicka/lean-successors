@@ -1,3 +1,4 @@
+import SuccessorTree.FatTree.RelativeEA
 import SuccessorTree.FatTree.BorelImage
 import SuccessorTree.HalesJewett.AlphabetInduction
 import SuccessorTree.ShapeFiniteRamsey
