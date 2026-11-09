@@ -1,5 +1,9 @@
+import SuccessorTree.FatTree.BorelImage
 import SuccessorTree.ShapeEllentuckRamsey
 
 #print axioms SuccessorTree.SMTree.FatTree.shapeOneDimensionalRamsey_viaFatEllentuck
 #print axioms SuccessorTree.SMTree.FatTree.shapeLocalPigeonhole_viaFatEllentuck
 #print axioms SuccessorTree.SMTree.shapePreservingRamsey_viaFatEllentuck
+
+#print axioms SuccessorTree.SMTree.FatTree.associatedMap_eq_stage_of_level_le
+#print axioms SuccessorTree.SMTree.FatTree.fatImageHomogeneous_of_BaireFibres
