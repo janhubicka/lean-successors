@@ -6,6 +6,7 @@ import SuccessorTree.V10.GPlusBoundedPalette
 import SuccessorTree.V10.GPlusEnvelopePairLift
 import SuccessorTree.ShapeEvents
 import SuccessorTree.FreeAncestralFiniteRamsey
+import SuccessorTree.V21SourceEndpoints
 
 /-!
 # Complete successor library entry point
